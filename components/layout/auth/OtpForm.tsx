@@ -84,7 +84,7 @@ export function OtpForm({ className }: OtpFormProps) {
               </h2>
             </CardTitle>
             <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary font-extralight font-sans">
-              <h4 className="text-center text-color-primary text-[10px] lg:text[16px] xl:text-[20px] mt-2">
+              <h4 className="text-center  mt-2">
                 Verification code sent via {email ? "email" : "WhatsApp"}{" "}
                 to {email || phoneNumber}
               </h4>
@@ -126,8 +126,9 @@ export function OtpForm({ className }: OtpFormProps) {
             <div className="mt-5 text-[11px] xs:text-[12px] sm:text-[13px] md:text-[12px] lg:text-[14px] xl:text-[15px] text-color-primary text-center">
               {isResendDisabled ? (
                 <h4>
-                  Tunggu <span className="font-bold">{timer} detik</span> untuk
-                  kirim ulang
+                  Tunggu <span className="font-bold text-color-secondary">{timer} detik</span> untuk
+                  {" "}
+                  <span className="font-bold text-color-secondary">kirim ulang</span>
                 </h4>
               ) : (
                 <h4>
@@ -136,7 +137,7 @@ export function OtpForm({ className }: OtpFormProps) {
                     onClick={handleResendOtp}
                     className="text-color-primaryDark font-semibold hover:opacity-80"
                   >
-                    <span className="font-bold">kirim ulang</span>
+                    <span className="font-bold text-color-secondary">kirim ulang</span>
                   </button>
                 </h4>
               )}
