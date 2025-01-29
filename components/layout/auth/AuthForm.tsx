@@ -76,7 +76,8 @@ export function AuthForm({ type, className }: AuthFormProps) {
                 <div className="grid gap-1 xs:gap-2">
                   <Label
                     htmlFor="email"
-                    className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4"
+                    className = {`${emailOrPhoneError ? "text-red-500" : ""} text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4`}
+
                   >
                     Nomor Hp atau Email
                   </Label>
@@ -96,13 +97,13 @@ export function AuthForm({ type, className }: AuthFormProps) {
                     onChange={handleEmailOrPhoneChange}
                   />
                   {emailOrPhoneError && (
-                    <p className="text-red-500 text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] mt-1">
+                    <p className="text-red-500 text-[10px] lg:text-[12px] xl:text-[14px] mt-1">
                       {emailOrPhoneError}
                     </p>
                   )}
                 </div>
                 {type === "register" ? (
-                  <div className="flex items-center space-x-2 my-3 md:my-4">
+                  <div className="flex items-center space-x-2 mt-4">
                     <Checkbox
                       onCheckedChange={handleCheckboxChange}
                       id="terms"
@@ -121,11 +122,15 @@ export function AuthForm({ type, className }: AuthFormProps) {
                       htmlFor="password"
                       className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4"
                     >
-                      Password
+                      <div className="flex justify-between p-1">
+                        <h4 className= {`${passwordError ? "text-red-500" : ""} text-color-primary text-[12px] lg:text-[14px] xl:text-[16px]`}>Password</h4>
+                        <Link href={"/login"}><h4 className="text-color-primaryDark font-bold hover:opacity-70 text-[12px] lg:text-[14px] xl:text-[16px]">Lupa Password?</h4></Link>
+                      </div>
+                      
                     </Label>
                     <Input
                       className={cn(
-                        "h-[50px] xs:h-[54px] md:h-[48px] text-[13px] xs:text-[14px] sm:text-[15px] md:text-[14px] lg:text-[16px]",
+                        "h-[50px] xs:h-[54px] md:h-[48px] text-[12px] lg:text-[14px] xl:text-[16px]",
                         "text-color-grayPrimary font-normal border-2 rounded-xl focus:ring-2 p-6",
                         passwordError
                           ? "border-red-500 focus:ring-red-500"
@@ -138,7 +143,7 @@ export function AuthForm({ type, className }: AuthFormProps) {
                       onChange={handlePasswordChange}
                     />
                     {passwordError && (
-                      <p className="text-red-500 text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] mt-1">
+                      <p className="text-red-500 text-[10px] lg:text-[12px] xl:text-[14px] mt-1">
                         {passwordError}
                       </p>
                     )}

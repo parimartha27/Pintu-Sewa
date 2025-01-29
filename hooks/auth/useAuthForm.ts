@@ -21,7 +21,7 @@ export const useAuthForm = (type: "login" | "register") => {
 
     if (phoneRegex.test(value)) {
       if (value.length < 10 || value.length > 13) {
-        return "Panjang Nomor HP Tidak Sesuai (Min 10 Digit & Maks 13 Digit)";
+        return "Nomor HP hanya boleh angka, dimulai dengan '08', dan terdiri dari 10-13 digit.";
       }
       return "";
     }
@@ -30,7 +30,7 @@ export const useAuthForm = (type: "login" | "register") => {
       return "Mohon Untuk Mengisi Nomor HP atau Email Anda";
     }
 
-    return "Format Email Salah";
+    return "Email harus dalam format “example@email.com”";
   };
 
   const validatePassword = (value: string) => {
@@ -104,6 +104,7 @@ export const useAuthForm = (type: "login" | "register") => {
         await registerService(data, (response) => {
           if (response.error_schema.error_message === "SUCCESS") {
             console.log("Valid input, masuk ke OTP...");
+            localStorage.setItem(data.email ? "email" : "phone_number", data.email || data.phone_number);
             window.location.href = "/otp";
           }
         });
