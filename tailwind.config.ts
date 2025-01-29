@@ -14,6 +14,7 @@ export default {
         'custom-gradient-tr': 'linear-gradient(to top right, #052659 43%, #0B52BF 100%)',
         'custom-circle-gradient-br': 'linear-gradient(to bottom right,  #06468A 0%, #021224 100%)',
         'custom-circle-gradient-bl': 'linear-gradient(to bottom left,  #06468A 0%, #021224 100%)',
+        
       },
 		fontFamily: {
 			sans: ["Inter", "sans-serif"],
@@ -74,5 +75,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), ('@tailwindcss/line-clamp')],
 } satisfies Config;
