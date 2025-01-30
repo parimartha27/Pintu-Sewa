@@ -35,10 +35,12 @@ export const useAuthForm = (type: "login" | "register") => {
 
   const validatePassword = (value: string) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/;
-    if (!passwordRegex.test(value) || value.length > 20) {
-      return "Password harus minimal 12 karakter dan maksimal 20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
-    }
+    
+    if(!value.trim())return "Field ini tidak boleh kosong";
+    else if (!passwordRegex.test(value) || value.length > 20) return "Password harus minimal 12 karakter dan maksimal 20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
+    
     return "";
+
   };
 
   const handleEmailOrPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +65,7 @@ export const useAuthForm = (type: "login" | "register") => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+
     setEmailOrPhoneError("");
     setPasswordError("");
     setAuthError("");
@@ -71,7 +73,6 @@ export const useAuthForm = (type: "login" | "register") => {
     const emailOrPhoneValidationError = validateEmailOrPhone(emailOrPhone);
     if (emailOrPhoneValidationError) {
       setEmailOrPhoneError(emailOrPhoneValidationError);
-      setIsLoading(false);
       return;
     }
 
@@ -79,7 +80,6 @@ export const useAuthForm = (type: "login" | "register") => {
       const passwordValidationError = validatePassword(password);
       if (passwordValidationError) {
         setPasswordError(passwordValidationError);
-        setIsLoading(false);
         return;
       }
     }
@@ -93,6 +93,7 @@ export const useAuthForm = (type: "login" | "register") => {
     };
 
     try {
+      setIsLoading(true);
       if (type === "login") {
         await loginService({ ...data, password }, (response) => {
           if (response.error_schema.error_message === "SUCCESS") {
