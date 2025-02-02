@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useState, useRef } from "react";
+import { useAuthForm } from "@/hooks/auth/useAuthForm";
 
 interface ForgotPasswordFormProps {
   className?: string;
@@ -27,56 +28,44 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const validatePassword = (value: string) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/;
-
-    if(!value.trim())return "Field ini tidak boleh kosong";
-    else if (!passwordRegex.test(value) || value.length > 20) return "Password harus minimal 12 karakter dan maksimal 20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
-    
-    return "";
-  };
+  // Ambil fungsi validatePassword dari useAuthForm
+  const { validatePassword } = useAuthForm();
 
   const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNewPassword(value);
-    setConfirmPasswordError("");
-    setNewPasswordError("");
+    setNewPasswordError(""); // Reset error saat input berubah
   };
 
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfirmPassword(value);
-    setConfirmPasswordError("");
-    setNewPasswordError("");
+    setConfirmPasswordError(""); // Reset error saat input berubah
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     setNewPasswordError("");
     setConfirmPasswordError("");
-  
-    if (!newPassword.trim()) {
-      setNewPasswordError("Password harus diisi.");
-      return; 
-    }
-  
+
     const newPasswordValidationError = validatePassword(newPassword);
     if (newPasswordValidationError) {
       setNewPasswordError(newPasswordValidationError);
       return; 
     }
-  
-    if (!confirmPassword.trim()) {
-      setConfirmPasswordError("Konfirmasi Password harus diisi.");
-      return; 
-    }
-  
+
+    // const confirmPasswordValidationError = validatePassword(confirmPassword);
+    // if (confirmPasswordValidationError) {
+    //   setConfirmPasswordError(confirmPasswordValidationError);
+    //   return; 
+    // }
+
     if (newPassword !== confirmPassword) {
-      setConfirmPasswordError("Password tidak sama dengan diatas.");
+      setConfirmPasswordError(!confirmPassword ? "Field ini tidak boleh kosong" : "Password tidak sama" )
       return; 
     }
-  
+
     try {
       setIsLoading(true);
       console.log("Password berhasil direset:", newPassword);
@@ -87,7 +76,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div
       className={cn(
@@ -147,6 +136,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                     </p>
                   )}
                 </div>
+
                 <div className="grid gap-1 xs:gap-2">
                   <Label
                     htmlFor="confirmPassword"
@@ -174,11 +164,13 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                     </p>
                   )}
                 </div>
+
                 {isLoading && (
                   <div className="flex justify-center items-center space-x-6">
                     <div className="h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>
                   </div>
                 )}
+
                 <Button
                   type="submit"
                   className="w-full h-[50px] xs:h-[54px] md:h-[48px] rounded-xl mt-3 text-[14px] xs:text-[15px] sm:text-[16px] md:text-[15px] lg:text-[17px] xl:text-[18px] bg-custom-gradient-tr hover:opacity-80"

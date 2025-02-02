@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { loginService, registerService } from "@/services/authServices";
 
-export const useAuthForm = (type: "login" | "register") => {
+export const useAuthForm = (type?: string) => {
   const [emailOrPhone, setEmailOrPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -77,9 +77,8 @@ export const useAuthForm = (type: "login" | "register") => {
     }
 
     if (type === "login") {
-      const passwordValidationError = validatePassword(password);
-      if (passwordValidationError) {
-        setPasswordError(passwordValidationError);
+      if (!password) {
+        setPasswordError("Field ini tidak boleh kosong");
         return;
       }
     }
@@ -114,6 +113,7 @@ export const useAuthForm = (type: "login" | "register") => {
       setAuthError("ERROR TERGANTUNG NANTI");
       console.error("Error during authentication:", error);
     } finally {
+      localStorage.setItem("otpType", "register");
       setIsLoading(false);
     }
   };
@@ -126,6 +126,7 @@ export const useAuthForm = (type: "login" | "register") => {
     emailOrPhone,
     password,
     isLoading,
+    validatePassword,
     emailOrPhoneError,
     passwordError,
     authError,

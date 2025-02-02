@@ -8,6 +8,7 @@ import Google from "../../../public/google.jpg";
 import RegisterImage from "../../../public/register.svg";
 import LoginImage from "../../../public/login.svg";
 import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 import {
   Card,
   CardContent,
@@ -37,7 +38,6 @@ export function AuthForm({ type, className }: AuthFormProps) {
     handlePasswordChange,
     handleCheckboxChange,
     handleSubmit,
-    loginGoogleHandler,
   } = useAuthForm(type);
 
   return (
@@ -76,8 +76,9 @@ export function AuthForm({ type, className }: AuthFormProps) {
                 <div className="grid gap-1 xs:gap-2">
                   <Label
                     htmlFor="email"
-                    className = {`${emailOrPhoneError ? "text-red-500" : ""} text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4`}
-
+                    className={`${
+                      emailOrPhoneError ? "text-red-500" : ""
+                    } text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4`}
                   >
                     Nomor Hp atau Email
                   </Label>
@@ -123,10 +124,19 @@ export function AuthForm({ type, className }: AuthFormProps) {
                       className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4"
                     >
                       <div className="flex justify-between p-1">
-                        <h4 className= {`${passwordError ? "text-red-500" : ""} text-color-primary text-[12px] lg:text-[14px] xl:text-[16px]`}>Password</h4>
-                        <Link href={"/login"}><h4 className="text-color-primaryDark font-bold hover:opacity-70 text-[12px] lg:text-[14px] xl:text-[16px]">Lupa Password?</h4></Link>
+                        <h4
+                          className={`${
+                            passwordError ? "text-red-500" : ""
+                          } text-color-primary text-[12px] lg:text-[14px] xl:text-[16px]`}
+                        >
+                          Password
+                        </h4>
+                        <Link href={"/login"}>
+                          <h4 className="text-color-primaryDark font-bold hover:opacity-70 text-[12px] lg:text-[14px] xl:text-[16px]">
+                            Lupa Password?
+                          </h4>
+                        </Link>
                       </div>
-                      
                     </Label>
                     <Input
                       className={cn(
@@ -166,48 +176,50 @@ export function AuthForm({ type, className }: AuthFormProps) {
                 >
                   {type === "login" ? "Masuk" : "Selanjutnya"}
                 </Button>
-                <div className="my-3 flex justify-between items-center">
-                  <hr className="block w-1/3 border-t border-gray-500" />
-                  <h4 className="text-[10px] xs:text-[11px] sm:text-[12px] md:text-[11px] lg:text-[13px] xl:text-[14px] text-gray-500">
-                    atau masuk dengan
-                  </h4>
-                  <hr className="block w-1/3 border-t border-gray-500" />
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={loginGoogleHandler}
-                  className="w-full mb-3 h-[50px] xs:h-[54px] md:h-[48px] flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-400 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <Image
-                    width={20}
-                    height={20}
-                    src={Google}
-                    alt="Google Logo"
-                    className="w-5 h-5 xs:w-6 xs:h-6 md:w-5 md:h-5"
-                  />
-                  <span className="text-[13px] xs:text-[14px] sm:text-[15px] md:text-[14px] lg:text-[16px] xl:text-[17px] text-color-grayPrimary font-medium">
-                    Google
-                  </span>
-                </Button>
-              </div>
-              <div className="text-[11px] xs:text-[12px] sm:text-[13px] md:text-[12px] lg:text-[14px] xl:text-[15px] text-color-primary text-center">
-                {type === "login" ? (
-                  <h4>
-                    Belum Punya Akun?{" "}
-                    <span className="text-color-primaryDark font-semibold hover:opacity-80">
-                      <Link href="/register">Daftar Sekarang</Link>
-                    </span>
-                  </h4>
-                ) : (
-                  <h4>
-                    Sudah Punya Akun?{" "}
-                    <span className="text-color-primaryDark font-semibold hover:opacity-80">
-                      <Link href="/login">Login</Link>
-                    </span>
-                  </h4>
-                )}
               </div>
             </form>
+            <div className="my-3 flex justify-between items-center">
+              <hr className="block w-1/3 border-t border-gray-500" />
+              <h4 className="text-[10px] my-3 xs:text-[11px] sm:text-[12px] md:text-[11px] lg:text-[13px] xl:text-[14px] text-gray-500">
+                atau masuk dengan
+              </h4>
+              <hr className="block w-1/3 border-t border-gray-500" />
+            </div>
+            <Button
+              variant="outline"
+              onClick={() =>
+                signIn("google", { callbackUrl: "/", redirect: false })
+              }
+              className="w-full mb-5 h-[50px] xs:h-[54px] md:h-[48px] flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-400 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <Image
+                width={20}
+                height={20}
+                src={Google}
+                alt="Google Logo"
+                className="w-5 h-5 xs:w-6 xs:h-6 md:w-5 md:h-5"
+              />
+              <span className="text-[13px] xs:text-[14px] sm:text-[15px] md:text-[14px] lg:text-[16px] xl:text-[17px] text-color-grayPrimary font-medium">
+                Google
+              </span>
+            </Button>
+            <div className="text-[11px] xs:text-[12px] sm:text-[13px] md:text-[12px] lg:text-[14px] xl:text-[15px] text-color-primary text-center">
+              {type === "login" ? (
+                <h4>
+                  Belum Punya Akun?{" "}
+                  <span className="text-color-primaryDark font-semibold hover:opacity-80">
+                    <Link href="/register">Daftar Sekarang</Link>
+                  </span>
+                </h4>
+              ) : (
+                <h4>
+                  Sudah Punya Akun?{" "}
+                  <span className="text-color-primaryDark font-semibold hover:opacity-80">
+                    <Link href="/login">Login</Link>
+                  </span>
+                </h4>
+              )}
+            </div>
           </CardContent>
         </div>
       </Card>

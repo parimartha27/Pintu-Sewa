@@ -58,6 +58,7 @@ export async function registerService(data: RegisterData, callback: (response: R
     const response = await axios.post<RegisterResponse>(`${API_BASE_URL}/register`, data);
     console.log("Register Request:", data);
     console.log("Register Response:", response.data);
+    localStorage.setItem("otp",response.data.output_schema.otp);
     callback(response.data);
     return response.data;
   } catch (error: unknown) {

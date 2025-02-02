@@ -23,15 +23,31 @@ interface OtpFormProps {
 }
 
 export function OtpForm({ className }: OtpFormProps) {
+  const [otp, setOtp] = useState("");
+  const [error, setError] = useState(""); 
+  const [isLoading, setIsLoading] = useState(false); 
   const [timer, setTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
 
   const email = typeof window !== "undefined" ? localStorage.getItem("email") : null;
   const phoneNumber = typeof window !== "undefined" ? localStorage.getItem("phone_number") : null;
+  const storedOtp = typeof window !== "undefined" ? localStorage.getItem("otp") : null; 
 
-  const otpSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const otpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitted Otp. . .");
+    setIsLoading(true);
+    setError("");
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (otp === storedOtp) {
+      console.log("OTP valid, mengarahkan ke dashboard...");
+      window.location.href = "/editProfile"; 
+    } else {
+      setError("OTP yang diinput tidak sesuai"); 
+    }
+
+    setIsLoading(false); 
   };
 
   const handleResendOtp = () => {
@@ -96,7 +112,12 @@ export function OtpForm({ className }: OtpFormProps) {
               onSubmit={otpSubmitHandler}
               className="w-full flex flex-col items-center"
             >
-              <InputOTP maxLength={4} pattern={REGEXP_ONLY_DIGITS}>
+              <InputOTP
+                maxLength={4}
+                pattern={REGEXP_ONLY_DIGITS}
+                value={otp}
+                onChange={(value) => setOtp(value)}
+              >
                 <InputOTPSlot
                   index={0}
                   className="w-12 h-12 text-[#73787B] text-center outline-none"
@@ -115,9 +136,22 @@ export function OtpForm({ className }: OtpFormProps) {
                 />
               </InputOTP>
 
+              {error && (
+                <p className="text-red-600 text-md mt-3 ">
+                  {error}
+                </p>
+              )}
+
+              {isLoading && (
+                <div className="flex justify-center items-center mt-5">
+                  <div className="h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>
+                </div>
+              )}
+
               <Button
                 type="submit"
                 className="w-full max-w-[440px] mt-10 h-[50px] rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80"
+                disabled={isLoading || otp.length !== 4}
               >
                 Konfirmasi
               </Button>
