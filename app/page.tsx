@@ -7,11 +7,19 @@ import Navbar from "@/components/layout/navbar/Navbar";
 import { signOut } from "next-auth/react";
 
 export default function Dashboard() {
+
+  const handleSignOut = async () => {
+    await signOut({callbackUrl: "/login" }); 
+  
+    localStorage.clear(); 
+    sessionStorage.clear(); 
+  
+  };
+
+  const sessionCredential: string = localStorage.getItem("session") || "";
+  const username: string = localStorage.getItem("username") || "";
   const { data: session } = useSession();
 
-  // if (!session?.user) {
-  //   return <div>Loading...</div>;
-  // }
   return (
     <>
       <Navbar />
@@ -32,12 +40,25 @@ export default function Dashboard() {
             </button>
           </Link>
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={handleSignOut}
             className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600"
           >
             Sign Out
           </button>
         </div>
+        {sessionCredential && (
+          <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
+            {/* <Image
+              width={200}
+              height={200}
+              src={session.user?.image || "/default-avatar.png"}
+              alt="Profile Picture"
+              className="w-24 h-24 rounded-full border-2 border-gray-300"
+            /> */}
+            <h1 className="text-2xl font-semibold">{username}</h1>
+            {/* <p className="text-gray-600">{session.user?.email}</p> */}
+          </div>
+        )}
         {session && (
           <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
             <Image

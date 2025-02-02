@@ -43,6 +43,8 @@ export async function loginService(data: LoginData, callback: (response: LoginRe
     const response = await axios.post<LoginResponse>(`${API_BASE_URL}/login`, data);
     console.log("Login Request:", data);
     console.log("Login Response:", response.data);
+    localStorage.setItem("username",response.data.output_schema.username);
+    localStorage.setItem("session",response.data.output_schema.session);
     callback(response.data);
     return response.data;
   } catch (error: unknown) {
