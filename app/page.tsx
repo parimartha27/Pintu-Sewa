@@ -3,27 +3,37 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import Navbar from "@/components/layout/navbar/Navbar";
+import Navbar from "@/components/layout/Navbar";
 import { signOut } from "next-auth/react";
+import Category from "@/components/layout/dashboard/Category";
+import ProductList from "@/components/layout/dashboard/ProductList";
 
 export default function Dashboard() {
+  // const handleSignOut = async () => {
+  //   await signOut({callbackUrl: "/login" });
 
-  const handleSignOut = async () => {
-    await signOut({callbackUrl: "/login" }); 
-  
-    localStorage.clear(); 
-    sessionStorage.clear(); 
-  
-  };
+  //   localStorage.clear();
+  //   sessionStorage.clear();
 
-  const sessionCredential: string = localStorage.getItem("session") || "";
-  const username: string = localStorage.getItem("username") || "";
-  const { data: session } = useSession();
+  // };
+
+  //=============== Navbar Servcice ===================
+
+  // const sessionCredential: string = localStorage.getItem("session") || "";
+  // const username: string = localStorage.getItem("username") || "";
+  // const { data: session } = useSession();
+
+  //=============== Navbar Servcice ===================
 
   return (
     <>
       <Navbar />
-      <div className="min-h-screen w-full bg-fuschia-200 flex flex-col justify-center items-center mx-auto">
+      <div className="flex flex-col">
+        <Category />
+        <ProductList />
+      </div>
+
+      {/* <div className="min-h-screen w-full bg-fuschia-200 flex flex-col justify-center items-center mx-auto">
         <h2 className="text-4xl text-fuchsia-500 font-bold mb-7 text-center">
           Dashboard
         </h2>
@@ -45,18 +55,12 @@ export default function Dashboard() {
           >
             Sign Out
           </button>
-        </div>
-        {sessionCredential && (
+        </div> */}
+      {/* {sessionCredential && (
           <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
-            {/* <Image
-              width={200}
-              height={200}
-              src={session.user?.image || "/default-avatar.png"}
-              alt="Profile Picture"
-              className="w-24 h-24 rounded-full border-2 border-gray-300"
-            /> */}
+         
             <h1 className="text-2xl font-semibold">{username}</h1>
-            {/* <p className="text-gray-600">{session.user?.email}</p> */}
+
           </div>
         )}
         {session && (
@@ -71,8 +75,8 @@ export default function Dashboard() {
             <h1 className="text-2xl font-semibold">{session.user?.name}</h1>
             <p className="text-gray-600">{session.user?.email}</p>
           </div>
-        )}
-      </div>
+        )} */}
+      {/* </div> */}
     </>
   );
 }

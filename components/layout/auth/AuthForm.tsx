@@ -180,7 +180,7 @@ export function AuthForm({ type, className }: AuthFormProps) {
             </form>
             <div className="my-3 flex justify-between items-center">
               <hr className="block w-1/3 border-t border-gray-500" />
-              <h4 className="text-[10px] my-3 xs:text-[11px] sm:text-[12px] md:text-[11px] lg:text-[13px] xl:text-[14px] text-gray-500">
+              <h4 className="text-[8px] my-3 xs:text-[11px] sm:text-[12px] md:text-[11px] lg:text-[13px] xl:text-[14px] text-gray-500">
                 atau masuk dengan
               </h4>
               <hr className="block w-1/3 border-t border-gray-500" />
