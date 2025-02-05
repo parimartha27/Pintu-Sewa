@@ -63,7 +63,7 @@ export function AuthForm({ type, className }: AuthFormProps) {
             <CardTitle className="text-[22px] lg:text-[24px] xl:text-[28px] text-color-primaryDark font-semibold">
               {type === "login" ? "Masuk ke Siap Sewa" : "Daftar Dulu Yuk!"}
             </CardTitle>
-            <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary font-extralight font-sans">
+            <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary">
               {type === "login"
                 ? "Nikmati Kemudahan Sewa Barang"
                 : "Langkah Awal Untuk Kemudahan Sewa"}

@@ -18,6 +18,7 @@ export default {
       },
 		fontFamily: {
 			sans: ["Inter", "sans-serif"],
+      jakartaSans: ["Plus Jakarta Sans", "sans-serif"],
 		  },
       colors: {
         color: {

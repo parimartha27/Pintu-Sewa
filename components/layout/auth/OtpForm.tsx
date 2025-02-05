@@ -99,7 +99,7 @@ export function OtpForm({ className }: OtpFormProps) {
                 Enter The Verification Code
               </h2>
             </CardTitle>
-            <CardDescription className="text-[12px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary font-extralight font-sans">
+            <CardDescription className="text-[12px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary ">
               <h4 className="text-center  mt-2">
                 Verification code sent via {email ? "email" : "WhatsApp"}{" "}
                 to {email || phoneNumber}
