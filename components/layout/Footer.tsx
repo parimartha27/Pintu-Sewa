@@ -1,13 +1,13 @@
-import Whatsapp from "../../public/whatsapp.svg";
-import Instagram from "../../public/instagram.svg";
-import Email from "../../public/email.svg";
+import Whatsapp from "@/public/whatsapp.svg";
+import Instagram from "@/public/instagram.svg";
+import Email from "@/public/email.svg";
 import Image from "next/image";
 
 const Footer = () => {
   return (
     <div className="w-full h-1/2 h-max-[800px] flex flex-col justify-center bg-gradient-to-r from-[#052659] to-[#0B52BF] mt-64 ">
       <div className="flex h-4/5 justify-around">
-        <div className="flex flex-col h-full w-full px-10 md:px-40 xl:px-96 ">
+        <div className="flex flex-col h-full w-full px-10 md:px-32 xl:px-80 ">
           <div className="h-2/5">
             <h2 className="font-jakartaSans font-semibold text-[40px] text-white my-5">
               siap-sewa.

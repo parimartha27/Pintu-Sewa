@@ -1,34 +1,33 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import Mobil from "../../../public/kategori/Mobil.svg";
-import PakaianPria from "../../../public/kategori/Pakaian Pria.svg";
-import AlatPertukangan from "../../../public/kategori/Alat Pertukangan.svg";
-import BoardGame from "../../../public/kategori/Board Game.svg";
-import Elektronik from "../../../public/kategori/Elektronik.svg";
-import Motor from "../../../public/kategori/Motor.svg";
-import AlatKesehatan from "../../../public/kategori/Alat Kesehatan.svg";
-import PeralatanSekolah from "../../../public/kategori/Peralatan Sekolah.svg";
-import Komputer from "../../../public/kategori/Komputer.svg";
-import AkunSubskripsi from "../../../public/kategori/Account Subscription.svg";
-import PeralatanBayi from "../../../public/kategori/Peralatan Bayi.svg";
-import Furniture from "../../../public/kategori/Furniture.svg";
-import AlatOlahraga from "../../../public/kategori/Alat Olahraga.svg";
-import Handphone from "../../../public/kategori/Handphone.svg";
-import PeralatanRumah from "../../../public/kategori/Peralatan Rumah.svg";
-import PakaianWanita from "../../../public/kategori/Pakaian Wanita.svg";
-import Banner1 from "../../../public/banner1.svg";
-import Banner2 from "../../../public/banner2.svg";
-import Banner3 from "../../../public/banner3.svg";
+import Mobil from "@/public/kategori/Mobil.svg";
+import PakaianPria from "@/public/kategori/Pakaian Pria.svg";
+import AlatPertukangan from "@/public/kategori/Alat Pertukangan.svg";
+import BoardGame from "@/public/kategori/Board Game.svg";
+import Elektronik from "@/public/kategori/Elektronik.svg";
+import Motor from "@/public/kategori/Motor.svg";
+import AlatKesehatan from "@/public/kategori/Alat Kesehatan.svg";
+import PeralatanSekolah from "@/public/kategori/Peralatan Sekolah.svg";
+import Komputer from "@/public/kategori/Komputer.svg";
+import AkunSubskripsi from "@/public/kategori/Account Subscription.svg";
+import PeralatanBayi from "@/public/kategori/Peralatan Bayi.svg";
+import Furniture from "@/public/kategori/Furniture.svg";
+import AlatOlahraga from "@/public/kategori/Alat Olahraga.svg";
+import Handphone from "@/public/kategori/Handphone.svg";
+import PeralatanRumah from "@/public/kategori/Peralatan Rumah.svg";
+import PakaianWanita from "@/public/kategori/Pakaian Wanita.svg";
+import Banner1 from "@/public/banner1.svg";
+import Banner2 from "@/public/banner2.svg";
+import Banner3 from "@/public/banner3.svg";
 
 const categories = [
   { name: "Mobil", icon: Mobil },
@@ -77,7 +76,7 @@ export function Category() {
           </CarouselContent>
         </Carousel>
       </div>
-      <h3 className="hidden md:block mt-0 lg:mt-14 mb-5 pb-2 text-xl lg:text-[24px] font-jakartaSans font-semibold text-color-primaryDark">
+      <h3 className="hidden md:block mt-0 lg:mt-20 mb-5 pb-2 text-xl lg:text-[24px] font-jakartaSans font-semibold text-color-primaryDark">
         Kategori
       </h3>
       <div className="py-4 hidden md:block mx-auto max-w-[1280px] w-full mb-10">
@@ -85,15 +84,18 @@ export function Category() {
           {categories.map((category, index) => (
             <div key={index} className="w-[100px] mr-3">
               <div className="h-auto mx-auto mb-1 flex flex-col items-center">
-                <Button className="bg-custom-gradient-tr p-2 rounded-sm shadow-md h-[60px] lg:h-[80px] w-[60px] lg:w-[80px] flex items-center justify-center hover:opacity-70 hover:transition hover:duration-100 hover:ease-in-out">
-                  <Image
-                    src={category.icon}
-                    width={40}
-                    height={40}
-                    alt={category.name}
-                    className="object-contain max-w-[30px] max-h-[30px] lg:max-w-[80px] lg:max-h-[80px]"
-                  />
-                </Button>
+                <Link href={""}>
+                  <Button className="bg-custom-gradient-tr p-2 rounded-sm shadow-md h-[60px] lg:h-[80px] w-[60px] lg:w-[80px] flex items-center justify-center hover:opacity-70 hover:transition hover:duration-100 hover:ease-in-out">
+                    <Image
+                      src={category.icon}
+                      width={40}
+                      height={40}
+                      alt={category.name}
+                      className="object-contain max-w-[30px] max-h-[30px] lg:max-w-[80px] lg:max-h-[80px]"
+                    />
+                  </Button>
+                </Link>
+
                 <h3 className="text-center text-color-primary text-[14px] font-medium mt-2">
                   {category.name}
                 </h3>

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/layout/Navbar";
+import MainLayout from "@/components/layout/MainLayout";
 import { signOut } from "next-auth/react";
 import Category from "@/components/layout/dashboard/Category";
 import ProductList from "@/components/layout/ProductList";
@@ -28,26 +29,25 @@ export default function Dashboard() {
 
   return (
     <>
-      <Navbar />
-      <div className="flex flex-col px-1 py-2 md:px-6 max-w-[1280px] mx-auto">
+      <Navbar type="non-product" />
+      <MainLayout>
         <Category />
 
         <div>
-          <h4 className="font-semibold text-start md:text-center xl:text-start  ml-1 text-color-primary text-[20px] lg:text-[24px] mt-7 md:mt-0 mb-4">
+          <h4 className="font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] lg:text-[24px] mt-7 md:mt-0 mb-4">
             Banyak orang menyewa ini
           </h4>
           <ProductList />
         </div>
-        
+
         <div className="mt-5 md:mt-20 lg:mt-32">
-          <h4 className="font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] lg:text-[24px] mt-7 md:mt-0 mb-4">
+          <h4 className="font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] lg:text-[24px] mt-7 md:mt-0 lg:-mt-4  mb-4">
             Dekat lokasi kamu
           </h4>
           <ProductList />
         </div>
-
-      </div>
-      <Footer/>
+      </MainLayout>
+      <Footer />
 
       {/* <div className="min-h-screen w-full bg-fuschia-200 flex flex-col justify-center items-center mx-auto">
         <h2 className="text-4xl text-fuchsia-500 font-bold mb-7 text-center">

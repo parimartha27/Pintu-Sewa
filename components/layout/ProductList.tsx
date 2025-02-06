@@ -16,7 +16,7 @@ interface ProductListProps {
 const ProductList = (props: ProductListProps) => {
   return (
     <div className="w-full">
-      {/* Mobile: Carousel (di bawah md) */}
+
       <div className="md:hidden">
         <Carousel>
           <CarouselContent className="flex justify-start">
@@ -45,7 +45,7 @@ const ProductList = (props: ProductListProps) => {
         </Carousel>
       </div>
 
-      {/* Desktop: Flex Wrap (md ke atas) */}
+  
       <div className="hidden md:flex flex-wrap md:justify-center xl:justify-start gap-2 gap-y-12 mt-2 w-full">
         <ProductCard />
         <ProductCard />

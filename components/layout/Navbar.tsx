@@ -1,14 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
-import Google from "../../public/google.jpg";
-import Toko from "../../public/toko.svg";
-import Cart from "../../public/cart.svg";
-import Chat from "../../public/chat.svg";
-import Line from "../../public/line.svg";
-import SiapSewa from "../../public/siap-sewa.svg";
+import Google from "@/public/google.jpg";
+import Toko from "@/public/toko.svg";
+import Cart from "@/public/cart.svg";
+import Chat from "@/public/chat.svg";
+import SiapSewa from "@/public/siap-sewa.svg";
+import Filter from "@/public/filter.svg";
 import { Button } from "../ui/button";
+import FilterSidebar from "./product/FilterSidebar";
 
 // Breakpoint prefix	Minimum width	CSS
 // sm	40rem (640px)	@media (width >= 40rem) { ... }
@@ -24,19 +27,27 @@ import { Button } from "../ui/button";
 
 // lg: 3/4(logo 1/4 searchbar 3/4) sisanya 1/4
 
-const Navbar = () => {
-  const { data: session } = useSession();
-  const [searchTerm, setSearchTerm] = useState("");
+interface NavbarProps {
+  type: string;
+}
+
+const Navbar = ({ type }: NavbarProps) => {
+  // const { data: session } = useSession();
+  // const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <div className="flex flex-col w-full sticky top-0 z-50">
       <div className="h-[24px] bg-color-primaryDark w-full"></div>
       <div className="flex h-[70px] lg:h-[70px] shadow-lg bg-white w-full p-2">
         <div className="hidden md:flex flex-col items-center justify-center w-1/6 lg:w-2/12 ">
-         <Image src={SiapSewa} alt="siap-sewa" className="w-[100px] h-[100px] md:w-[100px] md:h-[120px] lg:w-[150px] lg:h-[150px]"/>
+          <Image
+            src={SiapSewa}
+            alt="siap-sewa"
+            className="w-[100px] h-[100px] md:w-[100px] md:h-[120px] lg:w-[150px] lg:h-[150px]"
+          />
         </div>
 
-        <div className="flex w-4/5 md:w-3/6 lg:w-7/12 p-1.5 items-center justify-center">
+        <div className="flex w-4/5 md:w-3/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0 ">
           <form className="lg:w-11/12 lg:ml-10 w-full h-full ">
             <div className="relative h-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -65,21 +76,24 @@ const Navbar = () => {
               />
             </div>
           </form>
-          <Button className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:opacity-80">
+          <Button className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:opacity-70 hover:bg-blue-900">
             Cari
           </Button>
         </div>
 
-        
-
         <div className="flex justify-center items-center w-1/5 md:w-2/6 lg:w-3/12">
-        {/* ================== KALAU BELUM LOGIN ======================= */}
-          {/* <div className="flex w-full sm:hidden justify-center">
-            <Button className="w-full max-w-[80px] mr-2 text-[12px] h-[35px] text-white bg-color-primaryDark">
-              Cari
-            </Button>
+          {/* ================== KALAU BELUM LOGIN ======================= */}
+
+          {/* <div className="flex w-full md:hidden justify-center">
+            {type === "product" ? (
+              <FilterSidebar/>
+            ) : (
+              <Button className="w-full max-w-[80px] mr-2 text-[12px] h-[35px] text-white bg-color-primaryDark">
+                Cari
+              </Button>
+            )}
           </div>
-          <div className="hidden sm:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 ">
+          <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 ">
             <Link
               href={""}
               className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 hover:bg-slate-200"
@@ -104,6 +118,8 @@ const Navbar = () => {
             </div>
           </div> */}
 
+          {/* ================== KALAU BELUM LOGIN ======================= */}
+
           {/* ================== KALAU SUDAH LOGIN ======================= */}
 
           <div className="flex w-full sm:w-2/5 md:w-2/6 md:max-w-[100px] space-x-2 justify-start lg:justify-center">
@@ -114,7 +130,20 @@ const Navbar = () => {
                 alt="cart"
               />
             </Link>
-            <Link href={""} className="hover:bg-slate-200">
+
+            {type == "product" ? (
+              <FilterSidebar />
+            ) : (
+              <Link href={""} className="hover:bg-slate-200 md:hidden">
+                <Image
+                  className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
+                  src={Chat}
+                  alt="chat"
+                />
+              </Link>
+            )}
+
+            <Link href={""} className="hidden md:block hover:bg-slate-200">
               <Image
                 className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
                 src={Chat}
@@ -140,7 +169,11 @@ const Navbar = () => {
           </Link>
           <div className="hidden lg:flex lg:w-3/6  items-center justify-center ">
             <Link href={""} className="lg:ml-5">
-              <Image className="w-3/5 h-3/5 rounded-full xl:w-10 xl:h-10" src={Google} alt="" />
+              <Image
+                className="w-3/5 h-3/5 rounded-full xl:w-10 xl:h-10"
+                src={Google}
+                alt=""
+              />
             </Link>
 
             <div className="font-medium dark:text-white w-20">
@@ -149,6 +182,8 @@ const Navbar = () => {
               </div>
             </div>
           </div>
+
+          {/* ================== KALAU SUDAH LOGIN ======================= */}
         </div>
       </div>
     </div>
