@@ -84,19 +84,21 @@ const Navbar = ({ type }: NavbarProps) => {
         <div className="flex justify-center items-center w-1/5 md:w-2/6 lg:w-3/12">
           {/* ================== KALAU BELUM LOGIN ======================= */}
 
-          {/* <div className="flex w-full md:hidden justify-center">
+          {/* <div className="flex w-full justify-center">
             {type === "product" ? (
-              <FilterSidebar/>
+              <div className="lg:hidden mt-2 lg w-[40px] pl-2"><FilterSidebar/></div>
+              
             ) : (
-              <Button className="w-full max-w-[80px] mr-2 text-[12px] h-[35px] text-white bg-color-primaryDark">
+              <Button className="md:hidden w-full max-w-[80px] mr-2 text-[12px] h-[35px] text-white bg-color-primaryDark">
                 Cari
               </Button>
             )}
           </div>
-          <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 ">
+          <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 xl:mr-10">
+            
             <Link
               href={""}
-              className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 hover:bg-slate-200"
+              className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:bg-slate-200"
             >
               <Image
                 className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
@@ -109,10 +111,10 @@ const Navbar = ({ type }: NavbarProps) => {
             </div>
             <div className="w-7/12 flex space-x-3 md:mt-1 lg:mt-0">
               {" "}
-              <Button className="w-1/2 max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[16px]  rounded-sm bg-white text-color-primary outline-none border-2 border-color-primaryDark hover:bg-slate-200">
+              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px]   rounded-sm bg-white text-color-primary outline-none border-2 border-color-primaryDark hover:bg-slate-200">
                 Masuk
               </Button>
-              <Button className="w-1/2 max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[16px] rounded-sm bg-custom-gradient-tr hover:opacity-80">
+              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-custom-gradient-tr hover:opacity-80">
                 Daftar
               </Button>
             </div>
@@ -122,21 +124,22 @@ const Navbar = ({ type }: NavbarProps) => {
 
           {/* ================== KALAU SUDAH LOGIN ======================= */}
 
-          <div className="flex w-full sm:w-2/5 md:w-2/6 md:max-w-[100px] space-x-2 justify-start lg:justify-center">
-            <Link href={""} className="hover:bg-slate-200">
+          <div className="flex w-full sm:w-2/5 md:w-2/6 md:max-w-[100px] space-x-2 justify-start lg:justify-center mt-2">
+            <Link href={""} className="hover:bg-slate-200 lg:ml-2">
               <Image
-                className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
+                className="w-[25px] h-[25px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
                 src={Cart}
                 alt="cart"
               />
             </Link>
 
             {type == "product" ? (
-              <FilterSidebar />
+              <div className="md:mt-1"><FilterSidebar /></div>
+              
             ) : (
-              <Link href={""} className="hover:bg-slate-200 md:hidden">
+              <Link href={""} className="hover:bg-slate-200 lg:hidden">
                 <Image
-                  className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
+                  className="w-[25px] h-[25px]  md:w-[30px] md:h-[30px]"
                   src={Chat}
                   alt="chat"
                 />
@@ -151,12 +154,12 @@ const Navbar = ({ type }: NavbarProps) => {
               />
             </Link>
           </div>
-          <div className="hidden sm:block mx-2 h-[20px] md:h-[30px] w-[1px] md:w-[2px] bg-gray-500">
+          <div className="hidden sm:block mx-2 h-[20px] md:h-[30px] w-[1px] md:w-[2px] bg-gray-500 mt-2">
             {" "}
           </div>
           <Link
             href={""}
-            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 ml-4 hover:bg-slate-200"
+            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 ml-4 mt-2 hover:bg-slate-200"
           >
             <Image
               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
@@ -167,7 +170,7 @@ const Navbar = ({ type }: NavbarProps) => {
               Toko
             </h4>
           </Link>
-          <div className="hidden lg:flex lg:w-3/6  items-center justify-center ">
+          <div className="hidden lg:flex lg:w-3/6  items-center justify-center mt-2 ">
             <Link href={""} className="lg:ml-5">
               <Image
                 className="w-3/5 h-3/5 rounded-full xl:w-10 xl:h-10"

@@ -9,13 +9,13 @@ const FilterSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="lg:hidden">
+    <div className="lg:hidden pl-0 pr-1">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="hover:bg-slate-200 lg:hidden"
       >
         <Image
-          className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
+          className="w-[25px] h-[25px] "
           src={Filter}
           alt="chat"
         />
