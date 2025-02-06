@@ -143,7 +143,7 @@ const Navbar = ({ type }: NavbarProps) => {
               </Link>
             )}
 
-            <Link href={""} className="hidden md:block hover:bg-slate-200">
+            <Link href={""} className="hidden lg:block hover:bg-slate-200">
               <Image
                 className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
                 src={Chat}

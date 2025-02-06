@@ -52,6 +52,17 @@ const ProductList = (props: ProductListProps) => {
         <ProductCard />
         <ProductCard />
         <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
       </div>
     </div>
   );
