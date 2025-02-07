@@ -1,3 +1,4 @@
+"use client"
 import {OtpForm} from "@/components/layout/auth/OtpForm";
 
 const OtpPage = () => {

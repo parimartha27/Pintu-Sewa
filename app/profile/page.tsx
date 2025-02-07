@@ -1,15 +1,11 @@
 import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Toko from "@/public/toko.svg";
-
 
 const EditProfile = () => {
+
+    console.log("EditProfile rendered!");
     return (
         <div>
-            <Image src={Toko}/>
-            <h1>Edit Profile</h1>
+           asdd
         </div>
     );
 };

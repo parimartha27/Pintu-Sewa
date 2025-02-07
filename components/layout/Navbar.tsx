@@ -1,15 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+// import { useSession } from "next-auth/react";
+// import { useState } from "react";
 import Link from "next/link";
 import Google from "@/public/google.jpg";
 import Toko from "@/public/toko.svg";
 import Cart from "@/public/cart.svg";
 import Chat from "@/public/chat.svg";
 import SiapSewa from "@/public/siap-sewa.svg";
-import Filter from "@/public/filter.svg";
 import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
 
@@ -20,20 +19,28 @@ import FilterSidebar from "./product/FilterSidebar";
 // xl	80rem (1280px)	@media (width >= 80rem) { ... }
 // 2xl	96rem (1536px)	@media (width >= 96rem) { ... }
 
-// ======NAVBAR=====
-
-// mobile: searchbar 3/5, sisanya 2/5
-// md: logo 1/4 sisa 3/4(searchbar dan button search 3/4 sisanya 1/4), sudah ada carousel catalog, categori dan judulnya sudah ada, pindah kebawah carousel catalog kasih padding page untuk kiri kanan, 1/2 dari padding lg dan padding atas tetap
-
-// lg: 3/4(logo 1/4 searchbar 3/4) sisanya 1/4
-
 interface NavbarProps {
-  type: string;
+  type?: string;
 }
 
 const Navbar = ({ type }: NavbarProps) => {
+
+   // const handleSignOut = async () => {
+  //   await signOut({callbackUrl: "/login" });
+
+  //   localStorage.clear();
+  //   sessionStorage.clear();
+
+  // };
+
+  //=============== Navbar Servcice ===================
+
+  // const sessionCredential: string = localStorage.getItem("session") || "";
+  // const username: string = localStorage.getItem("username") || "";
   // const { data: session } = useSession();
-  // const [searchTerm, setSearchTerm] = useState("");
+
+  //=============== Navbar Servcice ===================
+  console.log("Navbar render");
 
   return (
     <div className="flex flex-col w-full sticky top-0 z-50">
@@ -70,13 +77,12 @@ const Navbar = ({ type }: NavbarProps) => {
               <input
                 type="search"
                 id="default-search"
-                className="w-full h-full pl-10 pr-4 text-[12px] lg:text-[16px] bg-[#EDEDED] rounded-sm font-jakartaSans text-color-grayPrimary "
+                className="w-full h-full pl-10 pr-4 text-[12px] lg:text-[16px] bg-[#EDEDED] rounded-sm font-jakartaSans text-color-primary focus:ring-1 focus:ring-color-primaryDark focus:border-color-primaryDark outline-none"
                 placeholder="Cari barang pengen disewa"
-                required
               />
             </div>
           </form>
-          <Button className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:opacity-70 hover:bg-blue-900">
+          <Button className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:bg-blue-900">
             Cari
           </Button>
         </div>
@@ -98,7 +104,7 @@ const Navbar = ({ type }: NavbarProps) => {
             
             <Link
               href={""}
-              className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:bg-slate-200"
+              className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:bg-color-third"
             >
               <Image
                 className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
@@ -111,10 +117,10 @@ const Navbar = ({ type }: NavbarProps) => {
             </div>
             <div className="w-7/12 flex space-x-3 md:mt-1 lg:mt-0">
               {" "}
-              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px]   rounded-sm bg-white text-color-primary outline-none border-2 border-color-primaryDark hover:bg-slate-200">
+              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-white text-color-primary outline-none border-2 border-color-primaryDark hover:bg-slate-200">
                 Masuk
               </Button>
-              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-custom-gradient-tr hover:opacity-80">
+              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-custom-gradient-tr hover:bg-blue-900">
                 Daftar
               </Button>
             </div>
@@ -125,7 +131,7 @@ const Navbar = ({ type }: NavbarProps) => {
           {/* ================== KALAU SUDAH LOGIN ======================= */}
 
           <div className="flex w-full sm:w-2/5 md:w-2/6 md:max-w-[100px] space-x-2 justify-start lg:justify-center mt-2">
-            <Link href={""} className="hover:bg-slate-200 lg:ml-2">
+            <Link href={""} className="hover:bg-color-third lg:ml-2">
               <Image
                 className="w-[25px] h-[25px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
                 src={Cart}
@@ -134,10 +140,11 @@ const Navbar = ({ type }: NavbarProps) => {
             </Link>
 
             {type == "product" ? (
-              <div className="md:mt-1"><FilterSidebar /></div>
-              
+              <div className="md:mt-1">
+                <FilterSidebar />
+              </div>
             ) : (
-              <Link href={""} className="hover:bg-slate-200 lg:hidden">
+              <Link href={""} className="hover:bg-color-third lg:hidden">
                 <Image
                   className="w-[25px] h-[25px]  md:w-[30px] md:h-[30px]"
                   src={Chat}
@@ -146,7 +153,7 @@ const Navbar = ({ type }: NavbarProps) => {
               </Link>
             )}
 
-            <Link href={""} className="hidden lg:block hover:bg-slate-200">
+            <Link href={""} className="hidden lg:block hover:bg-color-third">
               <Image
                 className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
                 src={Chat}
@@ -159,7 +166,7 @@ const Navbar = ({ type }: NavbarProps) => {
           </div>
           <Link
             href={""}
-            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 ml-4 mt-2 hover:bg-slate-200"
+            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 ml-4 mt-2 hover:bg-color-third"
           >
             <Image
               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"

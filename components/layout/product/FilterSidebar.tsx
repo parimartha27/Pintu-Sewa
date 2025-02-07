@@ -12,7 +12,7 @@ const FilterSidebar = () => {
     <div className="lg:hidden pl-0 pr-1">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="hover:bg-slate-200 lg:hidden"
+        className="hover:bg-color-third lg:hidden"
       >
         <Image
           className="w-[25px] h-[25px] "

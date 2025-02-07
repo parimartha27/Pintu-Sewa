@@ -5,6 +5,7 @@ import Star from "@/public/star.svg";
 import TextedCheckbox from "../TextedCheckbox";
 import FilterSection from "./Section";
 import Image from "next/image";
+import { useState } from "react";
 
 const FilterBody = () => {
   const categories = [
@@ -27,15 +28,20 @@ const FilterBody = () => {
   ];
 
   const locations = ["Jabodetabek", "Jawa Barat", "Bali", "Bandung"];
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
   return (
     <>
-      <div className="flex flex-col mb-4 shadow-sm p-4">
+      <div className="flex flex-col mb-4 shadow-sm p-2">
         <h2 className="mb-3 text-[16px] font-medium pl-2">Kategori</h2>
         <div className="flex flex-col w-full">
           {categories.map((category, index) => (
             <button
               key={index}
-              className="bg-white py-1 pl-2 text-color-primary text-[14px] text-start hover:bg-color-third hover:text-color-primaryDark"
+              onClick={() => setSelectedCategory(category.name)}
+              className={`bg-white py-1 pl-2 text-[14px] text-start hover:bg-color-third 
+                ${selectedCategory === category.name ? "text-color-primaryDark font-bold scale-y-105" : "text-color-primary font-normal"}`}
             >
               {category.name}
             </button>

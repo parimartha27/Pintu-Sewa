@@ -1,3 +1,5 @@
+"use client"
+
 const Tag = ({children} : {children: React.ReactNode}) => {
   return (
     <div className="bg-color-third px-2 py-1 rounded-sm">

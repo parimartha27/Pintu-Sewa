@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import Google from "../../../public/google.jpg";
 import RegisterImage from "../../../public/register.svg";
 import LoginImage from "../../../public/login.svg";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import {
   Card,
   CardContent,

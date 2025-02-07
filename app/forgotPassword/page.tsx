@@ -1,3 +1,5 @@
+"use client"
+
 import { ForgotPasswordForm } from "@/components/layout/auth/ForgotPasswordForm"
 
 const ForgotPasswordPage = () => {

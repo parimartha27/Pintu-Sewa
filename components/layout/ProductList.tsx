@@ -4,65 +4,25 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { ProductListType } from "@/types/productList";
 
-export interface Product {
-  name: string;
-}
-
-interface ProductListProps {
-  products: Product[];
-}
-
-const ProductList = (props: ProductListProps) => {
+const ProductList = ({ products }: ProductListType) => {
   return (
     <div className="w-full">
-
       <div className="md:hidden">
         <Carousel>
           <CarouselContent className="flex justify-start">
-           
-              <CarouselItem  className="basis-auto">
-                <ProductCard />
+            {products.map((product, index) => (
+              <CarouselItem key={index} className="basis-auto">
+                <ProductCard productName={product.name} />
               </CarouselItem>
-
-              <CarouselItem  className="basis-auto">
-                <ProductCard />
-              </CarouselItem>
-
-              <CarouselItem  className="basis-auto">
-                <ProductCard />
-              </CarouselItem>
-
-              <CarouselItem  className="basis-auto">
-                <ProductCard />
-              </CarouselItem>
-
-              <CarouselItem  className="basis-auto">
-                <ProductCard />
-              </CarouselItem>
-            
+            ))}
           </CarouselContent>
         </Carousel>
       </div>
 
-  
       <div className="hidden md:flex flex-wrap md:justify-center xl:justify-start gap-2 gap-y-12 mt-2 w-full">
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+        {products.map((product, index) => (<ProductCard key={index} productName={product.name}/>))}
       </div>
     </div>
   );

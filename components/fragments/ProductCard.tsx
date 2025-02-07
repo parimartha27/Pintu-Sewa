@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 import RegisterImage from "../../public/register.svg";
@@ -8,7 +10,6 @@ import Star from "../../public/star.svg";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -29,11 +30,15 @@ import Rnb from "../Elements/Rnb";
     - berapa kali tersewa
   */
 
-const ProductCard = () => {
+    interface ProductCardProps{
+      productName: string
+    }
+
+const ProductCard = ({productName} : ProductCardProps) => {
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={"/"}>
-        <Card className="hover:bg-slate-100 rounded-lg h-full shadow-lg">
+        <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-lg">
           <CardHeader className="h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg flex items-center justify-center">
             <Image
               src={RegisterImage}
@@ -51,7 +56,7 @@ const ProductCard = () => {
 
           <CardContent className="p-2 md:p-3 items-start">
             <h1 className="text-start text-[12px] md:text-[14px] text-color-primary font-medium">
-              Nama Produk - Hover Style
+              {productName}
             </h1>
 
             <div className="mt-2 md:mt-3 flex">
