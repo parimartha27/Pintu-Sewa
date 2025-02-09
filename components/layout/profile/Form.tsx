@@ -13,9 +13,9 @@ interface EditProfileProps {
 
 const EditProfileForm = ({ title, iconName, children }: EditProfileProps) => {
   return (
-<Card className="w-full max-w-[1000px] max-h-[350px] px-6">
-<CardHeader className="flex items-center justify-between w-full border-b-[1px] border-b-[#D9D9D9] px-0 pb-4">
-  <h2 className="text-[18px] font-semibold text-color-primary">{title}</h2>
+<Card className="w-full max-w-[1000px] max-h-auto xl:max-h-[350px] px-3 md:px-6">
+<CardHeader className="flex flex-col sm:flex-row items-start md:items-center justify-between w-full border-b-[1px] border-b-[#D9D9D9] px-0 pb-4">
+  <h2 className="text-[16px] md:text-[18px] font-semibold text-color-primary">{title}</h2>
   {iconName && (
     <Button className="flex items-center gap-x-2 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark">
       <Image src={Edit} alt="edit" width={18} height={18} className="mt-1" />
