@@ -8,7 +8,7 @@ import { ProductListType } from "@/types/productList";
 
 const ProductDetailBody = ({ products }: ProductListType) => {
   return (
-    <div className="flex flex-col px-1 py-2 md:px-6 max-w-[1400px] max-h-auto mx-auto bg-slate-100">
+    <div className="flex flex-col px-0 py-0 md:px-6 max-w-[1400px] max-h-auto mx-auto bg-slate-100">
       <div className="flex flex-col">
         <ProductDescription />
         <RentForm />
@@ -16,7 +16,7 @@ const ProductDetailBody = ({ products }: ProductListType) => {
       <div className="flex">
         <Review />
       </div>
-      <div className="flex"><ProductList products={products}/></div>
+      {/* <div className="flex"><ProductList products={products}/></div> */}
     </div>
   );
 };

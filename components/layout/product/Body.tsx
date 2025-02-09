@@ -6,6 +6,7 @@ import ProductList from "../ProductList";
 import { ProductListType } from "@/types/productList";
 
 const ProductBody = ({ products }: ProductListType) => {
+  
   return (
     <div className="flex flex-col px-1 py-2 md:px-6 max-w-[1400px] max-h-auto mx-auto">
       <div className="flex flex-col mt-[60px] w-full">

@@ -1,13 +1,16 @@
 import React from "react";
+import Navbar from "@/components/layout/Navbar";
+import ProfileBody from "@/components/layout/profile/Body";
+import Footer from "@/components/layout/Footer";
 
-const EditProfile = () => {
-
-    console.log("EditProfile rendered!");
-    return (
-        <div>
-           asdd
-        </div>
-    );
+const EditProfile = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <>
+      <Navbar />
+      <ProfileBody >{children}</ProfileBody>
+      <Footer />
+    </>
+  );
 };
 
 export default EditProfile;
