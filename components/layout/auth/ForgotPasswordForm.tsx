@@ -96,11 +96,11 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
         </div>
 
         <div className="w-full md:w-2/5">
-          <CardHeader>
+          <CardHeader className="flex-col">
             <CardTitle className="text-[22px] lg:text-[24px] xl:text-[28px] text-color-primaryDark font-semibold">
               Reset Password
             </CardTitle>
-            <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary font-extralight font-sans">
+            <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary font-normal font-sans">
               Yuk reset passwordmu biar bisa transaksi
             </CardDescription>
           </CardHeader>

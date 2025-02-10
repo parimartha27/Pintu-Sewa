@@ -60,7 +60,7 @@ export function AuthForm({ type, className }: AuthFormProps) {
         </div>
 
         <div className="w-full md:w-2/5">
-          <CardHeader>
+          <CardHeader className="flex-col">
             <CardTitle className="text-[22px] lg:text-[24px] xl:text-[28px] text-color-primaryDark font-semibold">
               {type === "login" ? "Masuk ke Siap Sewa" : "Daftar Dulu Yuk!"}
             </CardTitle>
