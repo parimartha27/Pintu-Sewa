@@ -108,7 +108,7 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </div>
-      <div className="w-full p-2 md:p-0">{children ? children : <DefaultLayout />}</div>
+      <div className="w-full p-2 md:p-0 max-h-auto">{children ? children : <DefaultLayout />}</div>
     </div>
   );
 };
@@ -118,9 +118,9 @@ export default ProfileBody;
 function DefaultLayout() {
   return (
     <div className="flex flex-col space-y-8">
-      <EditProfileForm title="Informasi Personal" iconName="Edit">
+      <EditProfileForm title="Informasi Personal" iconName="Edit" link="edit-profile">
         <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 xl:pb-0">
-          <div className="flex items-center mt-6 w-full md:w-2/3 md:space-x-16 lg:space-x-30 pb-6">
+          <div className="flex items-center mt-6 w-full md:w-2/3 md:space-x-16 lg:space-x-30">
             <div className="flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12">
               <Section title="Username" className="text-center lg:text-start">
                 <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
@@ -173,10 +173,11 @@ function DefaultLayout() {
           </div>
         </div>
       </EditProfileForm>
-      <EditProfileForm title="Alamat" iconName="Edit Alamat">
-      <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 xl:pb-0">
-          <div className="flex w-full md:space-x-5 mb-6 lg:mb-0">
-            <div className="flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12">
+
+      <EditProfileForm title="Alamat" iconName="Edit Alamat" link="edit-address">
+      <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 lg:pb-0 ">
+          <div className="flex w-full md:space-x-5 mb-6">
+            <div className="flex flex-col mx-auto md:mx-0 w-1/2 lg:mr-12">
               <Section title="Jalan" className="text-center lg:text-start">
                 <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
                   Jln. Foresta Raya, Cluster Naturale, Pagedangan
@@ -194,7 +195,7 @@ function DefaultLayout() {
               </Section>
             </div>
 
-            <div className="flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12">
+            <div className="flex flex-col mx-auto md:mx-0 w-1/2 lg:mr-12">
               <Section title="Kecamatan" className="text-center lg:text-start">
                 <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
                   Pagedangan
