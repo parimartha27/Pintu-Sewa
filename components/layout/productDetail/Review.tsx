@@ -1,7 +1,7 @@
 "use client"
 
 const Review = () => {
-    return (<div>REVIEW</div>);
+    return (<div></div>);
 }
 
 export default Review;

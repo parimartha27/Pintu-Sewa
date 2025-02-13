@@ -22,7 +22,7 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8">
-      <div className="flex flex-col w-1/4 max-w-[60px] md:max-w-[280px] h-auto max-h-[190px] md:shadow-md ">
+      <div className="flex flex-col w-1/4 max-w-[60px] md:max-w-[280px] h-auto max-h-[190px]">
         <Button
           variant="ghost"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -50,7 +50,7 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
         >
           <div className="flex flex-col w-full h-auto max-h-[190px]">
             <div className="flex flex-col">
-              <Accordion type="single" collapsible className="h-auto">
+              <Accordion type="single" collapsible className="h-auto shadow-md ">
                 <AccordionItem value="item-1" className="border-none">
                   <AccordionTrigger className="pl-5 pt-7 pr-5">
                     <div className="flex space-x-2">

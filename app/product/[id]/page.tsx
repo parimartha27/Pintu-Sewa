@@ -22,7 +22,7 @@ const Products = [{
 const ProductDetail = () => {
   return (
     <>
-      <Navbar />
+      <Navbar type="product"/>
         <ProductDetailBody products={Products}/>
       <Footer />
     </>
