@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const EditProfileBody = () => {
   return (
-    <div className="flex w-full h-auto">
+    <div className="flex w-full h-auto pb-12 md:pb-[174px]">
       <EditProfileForm title="Edit Informasi Personal">
         <div className="flex flex-col lg:flex-row-reverse w-full space-y-5">
           <div className="flex flex-col items-center w-full space-y-6 mt-5">

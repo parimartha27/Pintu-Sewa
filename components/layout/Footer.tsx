@@ -9,7 +9,7 @@ const Footer = () => {
 
   console.log("Footer render");
   return (
-    <div className="w-full h-1/2 h-max-[800px] flex flex-col justify-center bg-gradient-to-r from-[#052659] to-[#0B52BF] mt-64 ">
+    <div className="w-full h-1/2 h-max-[800px] flex flex-col justify-center bg-gradient-to-r from-[#052659] to-[#0B52BF]">
       <div className="flex h-4/5 justify-around">
         <div className="flex flex-col h-full w-full px-10 md:px-32 xl:px-80 ">
           <div className="h-2/5">

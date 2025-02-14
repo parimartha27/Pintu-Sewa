@@ -31,7 +31,8 @@ export default {
   				primary: '#2C3941',
   				grayPrimary: '#73787B',
   				third: '#C6DEFA',
-  				secondary: '#06468A'
+  				secondary: '#06468A',
+				layout: '#FAFAFA,'
   			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

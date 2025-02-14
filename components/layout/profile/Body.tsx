@@ -21,7 +21,7 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8">
+    <div className="flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout">
       <div className="flex flex-col w-1/4 max-w-[60px] md:max-w-[280px] h-auto max-h-[190px]">
         <Button
           variant="ghost"
@@ -49,7 +49,7 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
           }`}
         >
           <div className="flex flex-col w-full h-auto max-h-[190px]">
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-4">
               <Accordion type="single" collapsible className="h-auto shadow-md ">
                 <AccordionItem value="item-1" className="border-none">
                   <AccordionTrigger className="pl-5 pt-7 pr-5">
@@ -117,7 +117,7 @@ export default ProfileBody;
 
 function DefaultLayout() {
   return (
-    <div className="flex flex-col space-y-8">
+    <div className="flex flex-col space-y-8 pb-12 md:pb-[325px]">
       <EditProfileForm title="Informasi Personal" iconName="Edit" link="edit-profile">
         <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 xl:pb-0">
           <div className="flex items-center mt-6 w-full md:w-2/3 md:space-x-16 lg:space-x-30">

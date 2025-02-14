@@ -38,7 +38,7 @@ const ProductCard = ({productName} : ProductCardProps) => {
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={"/"}>
-        <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-lg">
+        <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
           <CardHeader className="h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg flex items-center justify-center">
             <Image
               src={RegisterImage}

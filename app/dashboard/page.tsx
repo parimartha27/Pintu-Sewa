@@ -20,39 +20,6 @@ const Products = [
     {
       name: "sepatu",
     },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
-    {
-      name: "sepatu",
-    },
   ];
 
 const Dashboard = () => {

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const EditAddressBody = () => {
   return (
-    <div className="flex w-full h-auto">
+    <div className="flex w-full h-auto pb-12 md:pb-[462px]">
       <EditProfileForm title="Edit Alamat">
         <form onSubmit={() => alert("Perubahan Disimpan")} className="flex flex-col lg:flex-row mt-5 space-y-5 lg:space-y-0 lg:space-x-10 w-full">
           <div className="flex flex-col space-y-5 lg:w-1/2">
