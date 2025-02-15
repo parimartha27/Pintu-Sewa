@@ -178,7 +178,7 @@ const Navbar = ({ type }: NavbarProps) => {
             </h4>
           </Link>
           <div className="hidden lg:flex lg:w-3/6  items-center justify-center mt-2 ">
-            <Link href={""} className="lg:ml-5">
+            <Link href={"/profile"} className="lg:ml-5">
               <Image
                 className="w-3/5 h-3/5 rounded-full xl:w-10 xl:h-10"
                 src={Google}

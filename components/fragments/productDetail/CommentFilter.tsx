@@ -21,7 +21,7 @@ const CommentFilterBody = () => {
                   src={Star}
                   alt={`Star ${rating}`}
                 />
-                <p className="text-[12px] text-color-primary">{rating}</p>
+                <h4 className="text-[12px] text-color-primary">{rating}</h4>
               </div>
             </TextedCheckbox>
           ))}
