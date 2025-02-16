@@ -26,7 +26,7 @@ const ProductDescription = () => {
   return (
     <div className="flex flex-col lg:flex-row w-full lg:w-2/3 h-auto max-h-auto md:mt-[60px] shadow-sm md:shadow-none rounded-md ">
       <div className="w-full lg:max-w-[406px] lg:w-1/2">
-        <Carousel className="w-full md:hidden max-w-lg h-full">
+        <Carousel className="w-full md:hidden max-w-lg h-full justify-self-center">
           <CarouselContent>
             {images.map((src, index) => (
               <CarouselItem key={index} className="relative w-full h-64">
@@ -94,7 +94,7 @@ const ProductDescription = () => {
         <div className="mt-6 w-full">
           <Tabs
             defaultValue="detail"
-            className="w-full max-w-[311px] rounded-none"
+            className="w-full md:max-w-[311px] rounded-none"
           >
             <TabsList className="w-full border-y-[1px] border-y-[#D9D9D9] justify-start">
               <TabsTrigger
