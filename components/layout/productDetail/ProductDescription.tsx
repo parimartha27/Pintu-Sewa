@@ -17,8 +17,11 @@ import Box from "@/public/box.svg";
 import Coin from "@/public/coin.svg";
 import Special from "@/public/special.svg";
 import TestImage from "@/public/register.svg";
+import Tooltip from "@/public/tooltip.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShopAndLocation from "./ShopAndLocation";
+import { TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 
 const images = [Image1, Image2, Image3, Image4, Image5];
 
@@ -153,9 +156,12 @@ const ProductDescription = () => {
                     Fitur Special
                   </h3>
                 </div>
+                
                 <ul className="pl-8 space-y-2 text-color-primary text-[12px] xl:text-[14px] font-normal list-disc list-inside ">
-                  <li>Rent to Buy</li>
-                  <li>Co Renting</li>
+
+                  <div className="flex space-x-2"> <li>Rent to Buy</li> <Image src={Tooltip} alt="tooltip" className="hover:opacity-70"/></div>
+                 
+                  <div className="flex space-x-2"> <li>Co Renting</li> <Image src={Tooltip} alt="tooltip" className="hover:opacity-70"/></div>
                 </ul>
               </div>
             </TabsContent>

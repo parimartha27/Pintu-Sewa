@@ -1,37 +1,30 @@
 "use client";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import AddressForm from "./AddressForm";
+import MetodePembayaranLayout from "./MetodePembayaran";
 import ProductForm from "./ProductForm";
 
 const CheckOutBody = () => {
   return (
-    <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-slate-200 p-2">
+    <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-color-layout p-2">
       <div className="flex flex-col">
-        <div className="flex flex-col w-full mt-[60px] space-y-4">
+        <div className="flex flex-col w-full mt-[28px] space-y-4">
           <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">
-            Ringkasan Sewa
+            Pembayaran
           </h2>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>Hover me</TooltipTrigger>
-              <TooltipContent
-              >
-                Ini tooltip dengan ekor
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
           <AddressForm />
         </div>
-        <ProductForm />
+        <div className="flex flex-col max-h-[1000px] overflow-y-scroll mt-8">
+          <ProductForm />
+          <ProductForm />
+          <ProductForm />
+          <ProductForm />
+        </div>
       </div>
+      <div className="mt-8">
 
-      <div className="flex flex-col"></div>
+        <MetodePembayaranLayout/>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import { OtpForm } from "@/components/layout/auth/OtpForm";
+import OtpForm from "@/components/layout/auth/OtpForm";
 
 const OtpPage = () => {
   return (

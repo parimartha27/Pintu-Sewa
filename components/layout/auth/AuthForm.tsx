@@ -25,7 +25,7 @@ interface AuthFormProps {
   className?: string;
 }
 
-export function AuthForm({ type, className }: AuthFormProps) {
+const AuthForm  = ({ type, className }: AuthFormProps) => {
   const {
     emailOrPhone,
     password,
@@ -227,3 +227,5 @@ export function AuthForm({ type, className }: AuthFormProps) {
     </div>
   );
 }
+
+export default AuthForm;

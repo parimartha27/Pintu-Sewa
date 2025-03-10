@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Profile from "@/public/profile.svg";
 import Pesanan from "@/public/pesanan.svg";
+import Logout from "@/public/logout.svg";
 import Guest from "@/public/guest.svg";
 import Dots from "@/public/dots.png";
 import EditProfileForm from "@/components/layout/profile/Form";
@@ -48,7 +49,7 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
               : "-translate-x-full md:translate-x-0"
           }`}
         >
-          <div className="flex flex-col w-full h-auto max-h-[190px]">
+          <div className="flex flex-col w-full h-auto max-h-[300px]">
             <div className="flex flex-col mt-4">
               <Accordion type="single" collapsible className="h-auto shadow-md ">
                 <AccordionItem value="item-1" className="border-none">
@@ -98,6 +99,25 @@ const ProfileBody = ({ children }: { children: React.ReactNode }) => {
                         />
                         <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
                           Pesanan Saya
+                        </h4>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href={"/profile"}
+                    className="group"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <div className="pl-5 pr-2 pb-6">
+                      <div className="flex space-x-2">
+                        <Image
+                          src={Logout}
+                          alt="profile"
+                          width={18}
+                          height={20}
+                        />
+                        <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
+                          Logout 
                         </h4>
                       </div>
                     </div>

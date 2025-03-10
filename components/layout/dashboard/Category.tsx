@@ -48,7 +48,7 @@ const categories = [
   { name: "Pakaian Wanita", icon: PakaianWanita },
 ];
 
-export function Category() {
+const Category = () => {
   return (
     <>
       <div className="hidden md:block w-full max-h-[400px] mt-5 lg:mt-10 rounded-sm overflow-hidden">

@@ -8,7 +8,7 @@ import Google from "@/public/google.jpg";
 import Toko from "@/public/toko.svg";
 import Cart from "@/public/cart.svg";
 import Chat from "@/public/chat.svg";
-import SiapSewa from "@/public/siap-sewa.svg";
+import PintuSewa from "@/public/pintuSewa.svg";
 import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
 
@@ -48,9 +48,9 @@ const Navbar = ({ type }: NavbarProps) => {
       <div className="flex h-[70px] lg:h-[70px] shadow-lg bg-white w-full p-2">
         <div className="hidden md:flex flex-col items-center justify-center w-1/6 lg:w-2/12 ">
           <Image
-            src={SiapSewa}
+            src={PintuSewa}
             alt="siap-sewa"
-            className="w-[100px] h-[100px] md:w-[100px] md:h-[120px] lg:w-[150px] lg:h-[150px]"
+            className="w-[200px] h-[120px]"
           />
         </div>
 

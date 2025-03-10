@@ -22,7 +22,7 @@ interface OtpFormProps {
   className?: string;
 }
 
-export function OtpForm({ className }: OtpFormProps) {
+const OtpForm = ({ className }: OtpFormProps) => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState(""); 
   const [isLoading, setIsLoading] = useState(false); 
@@ -182,3 +182,5 @@ export function OtpForm({ className }: OtpFormProps) {
     </div>
   );
 }
+
+export default OtpForm;

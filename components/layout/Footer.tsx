@@ -4,6 +4,7 @@ import Whatsapp from "@/public/whatsapp.svg";
 import Instagram from "@/public/instagram.svg";
 import Email from "@/public/email.svg";
 import Image from "next/image";
+import WebLogo from "@/public/pintuSewaWhite.svg";
 
 const Footer = () => {
 
@@ -13,9 +14,10 @@ const Footer = () => {
       <div className="flex h-4/5 justify-around">
         <div className="flex flex-col h-full w-full px-10 md:px-32 xl:px-80 ">
           <div className="h-2/5">
-            <h2 className="font-jakartaSans font-semibold text-[40px] text-white my-5">
+            {/* <h2 className="font-jakartaSans font-semibold text-[40px] text-white my-5">
               siap-sewa.
-            </h2>
+            </h2> */}
+            <Image src={WebLogo} alt="logo" className="w-[200px] h-[150px] md:w-[250px] md:h-[150px]" />
           </div>
           <div className="h-3/5 flex flex-wrap justify-between">
             <div className="flex flex-col justify-between space-y-7 md:space-y-0 mb-10">

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import PageImage from "../../../public/login.svg";
+import PageImage from "../../../public/resetPassword.svg";
 import {
   Card,
   CardContent,
@@ -20,27 +20,25 @@ interface ForgotPasswordFormProps {
   className?: string;
 }
 
-export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
+const ForgotPasswordForm =({ className }: ForgotPasswordFormProps) => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [newPasswordError, setNewPasswordError] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Ambil fungsi validatePassword dari useAuthForm
   const { validatePassword } = useAuthForm();
 
   const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNewPassword(value);
-    setNewPasswordError(""); // Reset error saat input berubah
+    setNewPasswordError(""); 
   };
 
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfirmPassword(value);
-    setConfirmPasswordError(""); // Reset error saat input berubah
+    setConfirmPasswordError(""); 
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -186,3 +184,5 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
     </div>
   );
 }
+
+export default ForgotPasswordForm;
