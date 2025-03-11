@@ -12,7 +12,7 @@ const MetodePembayaranFragments = ({
   gambar,
 }: MetodePembayaranFragmentsProps) => {
   return (
-    <div className="flex flex-col md:flex-row md:justify-between">
+    <div className="flex flex-col md:flex-row items-center md:justify-between  ">
       <RadioGroup defaultValue="option-one" className="flex space-x-6 mt-1">
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="laki-laki" id="option-one" />

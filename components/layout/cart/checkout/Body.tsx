@@ -2,7 +2,7 @@
 
 import AddressForm from "./AddressForm";
 import MetodePembayaranLayout from "./MetodePembayaran";
-import ProductForm from "./ProductForm";
+import CheckoutProductForm from "./ProductForm";
 
 const CheckOutBody = () => {
   return (
@@ -14,11 +14,11 @@ const CheckOutBody = () => {
           </h2>
           <AddressForm />
         </div>
-        <div className="flex flex-col max-h-[1000px] overflow-y-scroll mt-8">
-          <ProductForm />
-          <ProductForm />
-          <ProductForm />
-          <ProductForm />
+        <div className="flex flex-col max-h-[1100px] pb-3 pt-0 overflow-y-scroll mt-8">
+          <CheckoutProductForm />
+          <CheckoutProductForm />
+          <CheckoutProductForm />
+          <CheckoutProductForm />
         </div>
       </div>
       <div className="mt-8">

@@ -40,7 +40,6 @@ const Navbar = ({ type }: NavbarProps) => {
   // const { data: session } = useSession();
 
   //=============== Navbar Servcice ===================
-  console.log("Navbar render");
 
   return (
     <div className="flex flex-col w-full sticky top-0 z-50">
@@ -50,11 +49,11 @@ const Navbar = ({ type }: NavbarProps) => {
           <Image
             src={PintuSewa}
             alt="siap-sewa"
-            className="w-[200px] h-[120px]"
+            className="min-w-[150px] ml-8 lg:ml-8 md:w-[200px] h-[120px]"
           />
         </div>
 
-        <div className="flex w-4/5 md:w-3/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0 ">
+        <div className="flex w-4/5 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0">
           <form className="lg:w-11/12 lg:ml-10 w-full h-full ">
             <div className="relative h-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -87,7 +86,7 @@ const Navbar = ({ type }: NavbarProps) => {
           </Button>
         </div>
 
-        <div className="flex justify-center items-center w-1/5 md:w-2/6 lg:w-3/12">
+        <div className="flex justify-center md:justify-start lg:justify-center items-center lg:ml-0 lg:mr-0 w-1/5 md:w-2/6 lg:w-3/12">
           {/* ================== KALAU BELUM LOGIN ======================= */}
 
           {/* <div className="flex w-full justify-center">
@@ -107,12 +106,12 @@ const Navbar = ({ type }: NavbarProps) => {
               className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:bg-color-third"
             >
               <Image
-                className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
+                className="min-w-[30px]"
                 src={Cart}
                 alt="cart"
               />
             </Link>
-            <div className="hidden align-self-center md:block h-[40px] w-[2px] bg-gray-500">
+            <div className="hidden align-self-center md:block h-[40px] min-w-[2px] bg-gray-500">
               {" "}
             </div>
             <div className="w-7/12 flex space-x-3 md:mt-1 lg:mt-0">
@@ -130,7 +129,7 @@ const Navbar = ({ type }: NavbarProps) => {
 
           {/* ================== KALAU SUDAH LOGIN ======================= */}
 
-          <div className="flex w-full sm:w-2/5 md:w-2/6 md:max-w-[100px] space-x-2 justify-start lg:justify-center mt-2">
+          <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
             <Link href={""} className="hover:bg-color-third lg:ml-2">
               <Image
                 className="w-[25px] h-[25px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
@@ -161,12 +160,12 @@ const Navbar = ({ type }: NavbarProps) => {
               />
             </Link>
           </div>
-          <div className="hidden sm:block mx-2 h-[20px] md:h-[30px] w-[1px] md:w-[2px] bg-gray-500 mt-2">
+          <div className="hidden sm:block mx-2 min-h-[30px] min-w-[2px] bg-gray-500 mt-2">
             {" "}
           </div>
           <Link
             href={""}
-            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 ml-4 mt-2 hover:bg-color-third"
+            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 mt-1 ml-1 hover:bg-color-third lg:ml-3"
           >
             <Image
               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
