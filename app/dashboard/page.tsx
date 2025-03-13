@@ -37,6 +37,7 @@ const Products = [
 const Dashboard = () => {
   return (
     <>
+    <h1 className="hidden">SIAP SEWA, SEWA BARANG LENGKAP 2025 DI SIAP SEWA AJA</h1>
       <Navbar />
         <DashboardBody products={Products}/>
       <Footer />

@@ -1,31 +1,37 @@
-"use client";
-
-import Link from "next/link";
-import EditProfileForm from "../Form";
-import Guest from "@/public/guest.svg";
-import Upload from "@/public/upload.svg";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import LabelledInput from "@/components/fragments/editProfile/LabelledInput";
-import Section from "@/components/fragments/editProfile/Section";
+import Section from "@/components/fragments/filter/Section";
+import AuthenticationStepNavigation from "@/components/fragments/input-information/AuthenticationStepNavigation";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { ChevronDown } from "lucide-react";
 import { id } from "date-fns/locale";
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import Guest from "@/public/guest.svg";
+import Upload from "@/public/upload.svg";
+import Next from "@/public/next.svg";
+import { useState } from "react";
 
-const EditProfileBody = () => {
+const InputInformationForm = () => {
   const [date, setDate] = useState<Date>();
   return (
-    <div className="flex w-full h-auto pb-12 md:pb-[174px]">
-      <EditProfileForm title="Edit Informasi Personal">
+    <Card className="relative z-10 px-20 py-10 w-full max-w-[1280px] my-8">
+      <CardHeader className="flex justify-between items-center px-0">
+        <h2 className="text-2xl w-full lg:text-[28px] font-semibold text-color-primary text-center lg:text-start">
+          Yuk Lengkapi Profil Kamu!
+        </h2>
+        <AuthenticationStepNavigation indikator={1} />
+      </CardHeader>
+      <CardContent className="w-full border-t-[1px] border-[#D9D9D9] pt-8 px-0">
         <div className="flex flex-col lg:flex-row-reverse w-full space-y-5">
           <div className="flex flex-col items-center w-full space-y-6 mt-5">
             <Link href={""}>
@@ -87,7 +93,14 @@ const EditProfileBody = () => {
                 id="handphone"
                 type="text"
               />
-              <Section title="Jenis Kelamin">
+              <LabelledInput
+                label="Password"
+                htmlFor="password"
+                id="password"
+                type="password"
+              />
+
+              <Section Header="Jenis Kelamin">
                 <RadioGroup
                   defaultValue="option-one"
                   className="flex space-x-6 mt-1"
@@ -141,20 +154,20 @@ const EditProfileBody = () => {
                     />
                   </PopoverContent>
                 </Popover>
+                <Button
+                  type="submit"
+                  className="space-x-[10px] w-full max-w-[200px] h-[48px] mt-[60px] rounded-xl hover:opacity-80 bg-custom-gradient-tr"
+                >
+                  <Image src={Next} alt="next" className="w-4 h-[14px]" />
+                  <h4 className="text-sm font-medium ">Checkout</h4>
+                </Button>
               </div>
-
-              <Button
-                type="submit"
-                className="w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
-              >
-                Simpan Perubahan
-              </Button>
             </form>
           </div>
         </div>
-      </EditProfileForm>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
-export default EditProfileBody;
+export default InputInformationForm;
