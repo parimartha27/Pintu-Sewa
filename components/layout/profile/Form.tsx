@@ -4,16 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Edit from "@/public/edit.svg";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface EditProfileProps {
   title: string;
   iconName?: string;
   children?: React.ReactNode;
-  link?:string
+  link?: string;
 }
 
-const EditProfileForm = ({ title, iconName, children, link }: EditProfileProps) => {
+const EditProfileForm = ({
+  title,
+  iconName,
+  children,
+  link,
+}: EditProfileProps) => {
+  const router = useRouter();
   return (
     <Card className="w-full max-w-[1000px] max-h-auto px-3 md:px-6 pb-6 shadow-lg border-none">
       <CardHeader className="flex flex-col sm:flex-row items-start md:items-center justify-between w-full border-b-[1px] border-b-[#D9D9D9] px-0 pb-4">
@@ -21,19 +27,19 @@ const EditProfileForm = ({ title, iconName, children, link }: EditProfileProps) 
           {title}
         </h2>
         {iconName && (
-          <Link href={`/profile/${link}`}>
-     
-            <Button className="flex items-center gap-x-2 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark">
-              <Image
-                src={Edit}
-                alt="edit"
-                width={18}
-                height={18}
-                className="mt-1"
-              />
-              <h4 className="text-color-primaryDark text-[12px]">{iconName}</h4>
-            </Button>
-          </Link>
+          <Button
+            onClick={() => router.push(`/profile/${link}`)}
+            className="flex items-center gap-x-2 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark"
+          >
+            <Image
+              src={Edit}
+              alt="edit"
+              width={18}
+              height={18}
+              className="mt-1"
+            />
+            <h4 className="text-color-primaryDark text-[12px]">{iconName}</h4>
+          </Button>
         )}
       </CardHeader>
       <CardContent className="p-0">{children}</CardContent>

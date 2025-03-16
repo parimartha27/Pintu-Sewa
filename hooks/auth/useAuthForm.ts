@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { loginService, registerService } from "@/services/authServices";
+import { useRouter } from "next/navigation";
 
 export const useAuthForm = (type?: string) => {
   const [emailOrPhone, setEmailOrPhone] = useState<string>("");
@@ -10,6 +11,7 @@ export const useAuthForm = (type?: string) => {
   const [authError, setAuthError] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const validateEmailOrPhone = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -97,7 +99,7 @@ export const useAuthForm = (type?: string) => {
         await loginService({ ...data, password }, (response) => {
           if (response.error_schema.error_message === "SUCCESS") {
             console.log("Valid input, masuk ke Dashboard");
-            window.location.href = "/";
+            router.push("/");
           }
         });
       } else if (type === "register" && isChecked) {
@@ -105,7 +107,7 @@ export const useAuthForm = (type?: string) => {
           if (response.error_schema.error_message === "SUCCESS") {
             console.log("Valid input, masuk ke OTP...");
             localStorage.setItem(data.email ? "email" : "phone_number", data.email || data.phone_number);
-            window.location.href = "/otp";
+            router.push("/otp");
           }
         });
       }

@@ -12,7 +12,7 @@ import Edit from "@/public/edit.svg";
 
 const CheckoutProductForm = () => {
   return (
-    <Card className="w-full max-h-auto p-1 pt-4 shadow-lg border-0 outline-none mt-8 px-6">
+    <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">
         <Checkbox />
         <h2 className="text-[16px] font-semibold text-color-primary pb-1">

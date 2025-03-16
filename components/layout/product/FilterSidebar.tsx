@@ -42,8 +42,7 @@ const FilterSidebar = () => {
           </h2>
         </div>
 
-        {/* Body (Scrollable) */}
-        <div className="h-[calc(100vh-120px)] overflow-y-auto flex flex-col px-4">
+        <div className="h-[calc(100vh-120px)] overflow-y-auto flex flex-col px-4 pl-4">
           {/* Section 1 */}
           <FilterBody />
         </div>

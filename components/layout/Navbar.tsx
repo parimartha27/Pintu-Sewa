@@ -11,6 +11,7 @@ import Chat from "@/public/chat.svg";
 import PintuSewa from "@/public/pintuSewa.svg";
 import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
+import { useRouter } from "next/navigation";
 
 // Breakpoint prefix	Minimum width	CSS
 // sm	40rem (640px)	@media (width >= 40rem) { ... }
@@ -24,6 +25,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ type }: NavbarProps) => {
+  const router = useRouter();
 
    // const handleSignOut = async () => {
   //   await signOut({callbackUrl: "/login" });
@@ -102,7 +104,7 @@ const Navbar = ({ type }: NavbarProps) => {
           <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 xl:mr-10">
             
             <Link
-              href={""}
+              href={"/cart"}
               className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:bg-color-third"
             >
               <Image
@@ -116,10 +118,10 @@ const Navbar = ({ type }: NavbarProps) => {
             </div>
             <div className="w-7/12 flex space-x-3 md:mt-1 lg:mt-0">
               {" "}
-              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-white text-color-primary outline-none border-2 border-color-primaryDark hover:bg-slate-200">
+              <Button onClick={() => router.push("/login")} className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-white text-color-primary outline-none border-2 border-color-primaryDark hover:bg-slate-200">
                 Masuk
               </Button>
-              <Button className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-custom-gradient-tr hover:bg-blue-900">
+              <Button onClick={() => router.push("/register")} className="w-1/2 xl:w-[150px] max-w-[80px] lg:max-w-[120px] h-[30px] lg:h-[40px]  text-[10px] lg:text-[14px] rounded-sm bg-custom-gradient-tr hover:bg-blue-900">
                 Daftar
               </Button>
             </div>
@@ -130,7 +132,7 @@ const Navbar = ({ type }: NavbarProps) => {
           {/* ================== KALAU SUDAH LOGIN ======================= */}
 
           <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
-            <Link href={""} className="hover:bg-color-third lg:ml-2">
+            <Link href={"/cart"} className="hover:bg-color-third lg:ml-2">
               <Image
                 className="w-[25px] h-[25px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
                 src={Cart}
@@ -161,7 +163,6 @@ const Navbar = ({ type }: NavbarProps) => {
             </Link>
           </div>
           <div className="hidden sm:block mx-2 min-h-[30px] min-w-[2px] bg-gray-500 mt-2">
-            {" "}
           </div>
           <Link
             href={""}
