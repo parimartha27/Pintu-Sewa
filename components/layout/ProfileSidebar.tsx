@@ -73,7 +73,7 @@ const ProfileSidebarLayout = () => {
                     </h4>
                   </Link>
                   <Link
-                    href={"/profile"}
+                    href={"/reset-password"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <h4 className="pl-8 py-1.5 text-[#2C3941] text-[10px] lg:text-[12px] font-medium hover:bg-color-third hover:text-color-primaryDark">
@@ -82,7 +82,7 @@ const ProfileSidebarLayout = () => {
                   </Link>
                 </AccordionContent>
                 <Link
-                  href={"/profile"}
+                  href={"/order-history"}
                   className="group"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
