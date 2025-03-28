@@ -114,5 +114,5 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate"), ('@tailwindcss/line-clamp')],
+  plugins: [require("tailwindcss-animate"), ('@tailwindcss/line-clamp'), ("tailwind-scrollbar-hide")],
 } satisfies Config;

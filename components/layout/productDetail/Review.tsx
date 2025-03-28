@@ -59,7 +59,7 @@ const Review = () => {
           </Sheet>
         </div>
         {/*User Comment Section*/}
-        <div className="flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[300px] overflow-y-scroll">
+        <div className="flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[300px] overflow-y-auto">
           {[1, 2, 3].map((index) => (
             <div key={index} className="flex flex-col space-y-1">
               <div className="flex space-x-3">

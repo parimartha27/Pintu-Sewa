@@ -73,10 +73,6 @@ const FilterBody = () => {
             Lihat Selengkapnya
           </button>
         </FilterSection>
-        <FilterSection Header="Co-renting">
-          <TextedCheckbox>Ya</TextedCheckbox>
-          <TextedCheckbox>Tidak</TextedCheckbox>
-        </FilterSection>
         <FilterSection Header="Harga">
           <form className="max-w-[220px] w-auto">
             <div className="relative h-[40px]">
