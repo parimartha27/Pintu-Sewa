@@ -14,7 +14,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import TextedCheckbox from "@/components/fragments/TextedCheckbox";
 
 const RentForm = () => {
   const [startDate, setStartDate] = useState<Date>();

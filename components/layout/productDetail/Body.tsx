@@ -3,29 +3,11 @@
 import ProductDescription from "./ProductDescription";
 import RentForm from "./RentForm";
 import Review from "./Review";
-import { ProductType } from "@/types/product";
 import ShopAndLocation from "./ShopAndLocation";
 import ProductList from "../ProductList";
+import { ProductListType } from "@/types/productList";
 
-const Products = [
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-];
-
-const ProductDetailBody = ({ product }: ProductType) => {
+const ProductDetailBody = ({ products }: ProductListType) => {
   return (
     <div className="flex flex-col px-0 py-0 md:px-6 max-w-[1300px] min-h-screen max-h-auto mx-auto bg-color-layout pb-12 md:pb-[273px]">
       <div className="flex flex-col md:flex-row ">
@@ -41,7 +23,7 @@ const ProductDetailBody = ({ product }: ProductType) => {
           <h2 className="text-lg xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
             Barang lainnya di toko ini
           </h2>
-          <ProductList products={Products} />
+          <ProductList products={products} />
         </div>
       </div>
       {/* <div className="flex"><ProductList products={products}/></div> */}
