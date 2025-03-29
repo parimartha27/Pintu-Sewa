@@ -1,21 +1,21 @@
 "use client";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
-import Guest from "@/public/guest.svg";
 import Location from "@/public/location.svg";
 import Chat from "@/public/chat.svg";
 import { Button } from "@/components/ui/button";
 import Star from "@/public/star.svg";
 import { useRouter } from "next/navigation";
+import Product from "@/public/productTest.jpeg";
 
 const ShopHeader = () => {
   const router = useRouter();
   return (
-    <Card className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 w-full items-center lg:justify-between py-4 px-4 lg:py-6 lg:px-8 border-none shadow-xl">
+    <Card className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 w-full items-center lg:justify-between py-4 px-4 lg:py-6 lg:px-8 border-none shadow-md">
       <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-4 sm:space-y-0 w-full sm:w-auto">
         <Image
-          className="w-16 h-16 sm:w-[100px] sm:h-[100px] self-center"
-          src={Guest}
+          className="w-16 h-16 sm:w-[100px] sm:h-[100px] self-center rounded-full"
+          src={Product}
           alt="guest"
         />
         <div className="flex flex-col items-center sm:items-start">

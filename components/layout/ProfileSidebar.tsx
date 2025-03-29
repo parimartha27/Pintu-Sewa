@@ -1,22 +1,23 @@
-"use client"
+"use client";
 
 import { Button } from "../ui/button";
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-  } from "@/components/ui/accordion";
-  import Image from "next/image";
-  import Link from "next/link";
-  import Profile from "@/public/profile.svg";
-  import Pesanan from "@/public/pesanan.svg";
-  import Logout from "@/public/logout.svg";
-  import Dots from "@/public/dots.png";
-  import { useState } from "react";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import Image from "next/image";
+import Link from "next/link";
+import Profile from "@/public/profile.svg";
+import Pesanan from "@/public/pesanan.svg";
+import Logout from "@/public/logout.svg";
+import Dots from "@/public/dots.png";
+import Chat from "@/public/chat.svg";
+import { useState } from "react";
 
 const ProfileSidebarLayout = () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   return (
     <div className="flex flex-col w-1/4 max-w-[60px] md:max-w-[280px] h-auto max-h-[190px]">
       <Button
@@ -86,7 +87,7 @@ const ProfileSidebarLayout = () => {
                   className="group"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <div className="pl-5 pr-2 pb-6">
+                  <div className="pl-5 pr-2 pb-3">
                     <div className="flex space-x-2">
                       <Image
                         src={Pesanan}
@@ -96,6 +97,20 @@ const ProfileSidebarLayout = () => {
                       />
                       <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
                         Pesanan Saya
+                      </h4>
+                    </div>
+                  </div>
+                </Link>
+                <Link
+                  href={"/chat"}
+                  className="group"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="pl-3.5 pr-2 pb-3">
+                    <div className="flex items-center space-x-1">
+                      <Image src={Chat} alt="profile" width={30} height={30} />
+                      <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
+                        Chat
                       </h4>
                     </div>
                   </div>

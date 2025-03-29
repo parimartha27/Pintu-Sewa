@@ -55,10 +55,10 @@ const ReviewContent = () => {
                 key={index}
                 src={Product}
                 alt="product"
-                className="w-[88px] h-[88px] rounded-md bg-amber-300"
+                className="w-[70px] h-[70px] xl:w-[88px] xl:h-[88px] rounded-md bg-amber-300"
               />
 
-              <h2 className="font-semibold text-base text-color-primary">Nama Produk</h2>
+              <h2 className="font-semibold text-sm lg:text-base text-color-primary">Nama Produk</h2>
             </div>
             <div className="flex flex-col space-y-1 pl-[34px] pr-6">
               <div className="flex space-x-3">
