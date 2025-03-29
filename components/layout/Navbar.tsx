@@ -105,7 +105,7 @@ const Navbar = ({ type }: NavbarProps) => {
             
             <Link
               href={"/cart"}
-              className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:bg-color-third"
+              className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:opacity-75"
             >
               <Image
                 className="min-w-[30px]"
@@ -132,7 +132,7 @@ const Navbar = ({ type }: NavbarProps) => {
           {/* ================== KALAU SUDAH LOGIN ======================= */}
 
           <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
-            <Link href={"/cart"} className="hover:bg-color-third lg:ml-2">
+            <Link href={"/cart"} className="hover:opacity-75 lg:ml-2">
               <Image
                 className="w-[25px] h-[25px] sm:w-[25px] sm:h-[25px] md:w-[30px] md:h-[30px]"
                 src={Cart}
@@ -145,7 +145,7 @@ const Navbar = ({ type }: NavbarProps) => {
                 <FilterSidebar />
               </div>
             ) : (
-              <Link href={"/chat"} className="hover:bg-color-third lg:hidden">
+              <Link href={"/chat"} className="hover:opacity-75 lg:hidden">
                 <Image
                   className="w-[25px] h-[25px]  md:w-[30px] md:h-[30px]"
                   src={Chat}
@@ -154,7 +154,7 @@ const Navbar = ({ type }: NavbarProps) => {
               </Link>
             )}
 
-            <Link href={"/chat"} className="hidden lg:block hover:bg-color-third">
+            <Link href={"/chat"} className="hidden lg:block hover:opacity-75">
               <Image
                 className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
                 src={Chat}
@@ -166,7 +166,7 @@ const Navbar = ({ type }: NavbarProps) => {
           </div>
           <Link
             href={""}
-            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 mt-1 ml-1 hover:bg-color-third lg:ml-3"
+            className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 mt-1 ml-1 hover:opacity-75 lg:ml-3"
           >
             <Image
               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]  md:w-[30px] md:h-[30px]"
