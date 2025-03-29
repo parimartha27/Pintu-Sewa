@@ -6,6 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import CartProductForm from "./ProductForm";
 import Image from "next/image";
 import Next from "@/public/next.svg";
+import NoCart from "@/public/noCart.svg";
+import Link from "next/link";
 
 const CartBody = () => {
   return (
@@ -13,6 +15,20 @@ const CartBody = () => {
       <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">
         Keranjang Sewa
       </h2>
+
+      {/* Jika tidak ada barang pada cart  */}
+      {/* <div className="flex flex-col space-y-6 w-full justify-center items-center py-20 ">
+        <Image className="w-[500px] h-[372px]" src={NoCart} alt="noCart" />
+        <div>
+          <h2 className="text-color-primary text-xl text-center font-medium">
+          Keranjangmu masih kosong. Yuk tambah produk ke keranjang sekarang!
+          </h2>
+        </div>
+        <Button className="w-[200px] lg:w-[300px] mt-7 h-[50px] font-medium rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80">
+          <Link href={"/"}>Kembali ke Dashboard</Link>
+        </Button>
+      </div> */}
+      {/* Jika tidak ada barang pada cart  */}
 
       <Card className="p-0 mt-4">
         <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-[29px] pt-0 py-[14px]">

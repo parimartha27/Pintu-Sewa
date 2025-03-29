@@ -1,5 +1,3 @@
-"use client"
-
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductContentLayout from "./ProductContent";
 import ReviewContentLayout from "./ReviewContentLayout";

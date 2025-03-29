@@ -1,5 +1,3 @@
-"use client"
-
 import Whatsapp from "@/public/whatsapp.svg";
 import Instagram from "@/public/instagram.svg";
 import Email from "@/public/email.svg";

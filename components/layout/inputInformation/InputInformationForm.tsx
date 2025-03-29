@@ -1,4 +1,3 @@
-
 import AuthenticationStepNavigation from "@/components/fragments/input-information/AuthenticationStepNavigation"
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 

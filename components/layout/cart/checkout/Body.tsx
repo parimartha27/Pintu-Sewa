@@ -1,5 +1,3 @@
-"use client";
-
 import AddressForm from "./AddressForm";
 import MetodePembayaranLayout from "./MetodePembayaran";
 import CheckoutProductForm from "./ProductForm";

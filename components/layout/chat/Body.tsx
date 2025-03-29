@@ -1,4 +1,3 @@
-"use client"
 import ProfileSidebarLayout from "../ProfileSidebar";
 import ChatContentLayout from "./Content";
 

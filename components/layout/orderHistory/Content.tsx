@@ -1,5 +1,3 @@
-"use client"
-
 import OrderHistoryContentBody from "./ContentBody";
 import OrderHistoryContentHeader from "./ContentHeader";
 

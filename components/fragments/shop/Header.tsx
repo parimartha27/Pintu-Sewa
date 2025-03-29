@@ -1,4 +1,3 @@
-"use client";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Location from "@/public/location.svg";

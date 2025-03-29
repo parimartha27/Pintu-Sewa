@@ -1,5 +1,3 @@
-"use client";
-
 import ProductList from "../ProductList";
 import Category from "./Category";
 import { ProductListType } from "@/types/productList";
