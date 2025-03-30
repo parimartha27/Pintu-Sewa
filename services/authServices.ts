@@ -38,6 +38,26 @@ interface ValidateOtpResponse {
   output_schema: null;
 }
 
+interface LoginGoogleResponse {
+  username: string;
+  email: string;
+  profilePicture: string;
+}
+
+export async function sendOauthData(userData: LoginGoogleResponse): Promise<void> {
+  try {
+    await axios.post("https://your-backend.com/api/save-user", userData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("User data successfully sent to backend");
+  } catch (error) {
+    console.error("Error saving user data:", error);
+  }
+}
+
 export async function loginService(data: LoginData, callback: (response: LoginResponse) => void) {
   try {
     const response = await axios.post<LoginResponse>(`${API_BASE_URL}/login`, data);

@@ -15,9 +15,19 @@ import Logout from "@/public/logout.svg";
 import Dots from "@/public/dots.png";
 import Chat from "@/public/chat.svg";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 
 const ProfileSidebarLayout = () => {
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleSignOut = async () => {
+    await signOut({callbackUrl: "/login" });
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+  };
+
   return (
     <div className="flex flex-col w-1/4 max-w-[60px] md:max-w-[280px] h-auto max-h-[190px]">
       <Button
@@ -128,7 +138,7 @@ const ProfileSidebarLayout = () => {
                         width={18}
                         height={20}
                       />
-                      <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
+                      <h4 onClick={handleSignOut} className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
                         Logout
                       </h4>
                     </div>

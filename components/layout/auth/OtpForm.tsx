@@ -161,8 +161,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
               {isResendDisabled ? (
                 <h4>
                   Tunggu <span className="font-bold text-color-secondary">{timer} detik</span> untuk
-                  {" "}
-                  <span className="font-bold text-color-secondary">kirim ulang</span>
+                  <span className="font-bold text-color-secondary">{" "}kirim ulang</span>
                 </h4>
               ) : (
                 <h4>

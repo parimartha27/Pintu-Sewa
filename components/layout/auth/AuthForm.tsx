@@ -132,7 +132,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                         >
                           Password
                         </h4>
-                        <Link href={"/login"}>
+                        <Link href={"/reset-password"}>
                           <h4 className="text-color-primaryDark font-bold hover:opacity-70 text-[12px] lg:text-[14px] xl:text-[16px]">
                             Lupa Password?
                           </h4>
@@ -179,12 +179,12 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                 </Button>
               </div>
             </form>
-            <div className="my-3 flex justify-between items-center">
-              <hr className="block w-1/3 border-t border-gray-500" />
-              <h4 className="text-[8px] my-3 xs:text-[11px] sm:text-[12px] md:text-[11px] lg:text-[13px] xl:text-[14px] text-gray-500">
+            <div className="my-3 flex justify-center xl:justify-start space-x-2 items-center">
+              <hr className="hidden xl:block w-1/3 border-t border-gray-500" />
+              <h4 className="my-3 text-xs xl:text-[14px] text-gray-500">
                 atau masuk dengan
               </h4>
-              <hr className="block w-1/3 border-t border-gray-500" />
+              <hr className="hidden xl:block w-1/3 border-t border-gray-500" />
             </div>
             <Button
               variant="outline"

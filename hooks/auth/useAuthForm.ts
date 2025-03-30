@@ -1,6 +1,17 @@
 import { useState, useRef } from "react";
-import { loginService, registerService } from "@/services/authServices";
+import {
+  loginService,
+  registerService,
+  sendOauthData,
+} from "@/services/authServices";
 import { useRouter } from "next/navigation";
+import { getSession, signIn } from "next-auth/react";
+
+interface userdataProps {
+  email: string;
+  username: string;
+  profilePicture: string;
+}
 
 export const useAuthForm = (type?: string) => {
   const [emailOrPhone, setEmailOrPhone] = useState<string>("");
@@ -37,12 +48,12 @@ export const useAuthForm = (type?: string) => {
 
   const validatePassword = (value: string) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/;
-    
-    if(!value.trim())return "Field ini tidak boleh kosong";
-    else if (!passwordRegex.test(value) || value.length > 20) return "Password harus minimal 12 karakter dan maksimal 20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
-    
-    return "";
 
+    if (!value.trim()) return "Field ini tidak boleh kosong";
+    else if (!passwordRegex.test(value) || value.length > 20)
+      return "Password harus minimal 12 karakter dan maksimal 20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
+
+    return "";
   };
 
   const handleEmailOrPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,10 +83,12 @@ export const useAuthForm = (type?: string) => {
     setPasswordError("");
     setAuthError("");
 
-    const emailOrPhoneValidationError = validateEmailOrPhone(emailOrPhone);
-    if (emailOrPhoneValidationError) {
-      setEmailOrPhoneError(emailOrPhoneValidationError);
-      return;
+    if (type === "register") {
+      const emailOrPhoneValidationError = validateEmailOrPhone(emailOrPhone);
+      if (emailOrPhoneValidationError) {
+        setEmailOrPhoneError(emailOrPhoneValidationError);
+        return;
+      }
     }
 
     if (type === "login") {
@@ -89,7 +102,9 @@ export const useAuthForm = (type?: string) => {
     setPasswordError("");
 
     const data = {
-      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone) ? emailOrPhone : "",
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone)
+        ? emailOrPhone
+        : "",
       phone_number: /^08\d+/.test(emailOrPhone) ? emailOrPhone : "",
     };
 
@@ -106,13 +121,16 @@ export const useAuthForm = (type?: string) => {
         await registerService(data, (response) => {
           if (response.error_schema.error_message === "SUCCESS") {
             console.log("Valid input, masuk ke OTP...");
-            localStorage.setItem(data.email ? "email" : "phone_number", data.email || data.phone_number);
+            localStorage.setItem(
+              data.email ? "email" : "phone_number",
+              data.email || data.phone_number
+            );
             router.push("/otp");
           }
         });
       }
     } catch (error) {
-      setAuthError("ERROR TERGANTUNG NANTI");
+      setAuthError("Belum ada error dari backend");
       console.error("Error during authentication:", error);
     } finally {
       localStorage.setItem("otpType", "register");
@@ -120,8 +138,30 @@ export const useAuthForm = (type?: string) => {
     }
   };
 
-  const loginGoogleHandler = () => {
-    console.log("Login with Google");
+  const loginGoogleHandler = async () => {
+    try {
+      const response = await signIn("google", {
+        callbackUrl: "/",
+        redirect: false,
+      });
+
+      if (response?.ok) {
+        const session = await getSession();
+
+        if (session?.user) {
+          const userData: userdataProps = {
+            username: session.user.name || "Guest",
+            email: session.user.email || "",
+            profilePicture: session.user.image || "/default-profile.png",
+          };
+
+          await sendOauthData(userData);
+          router.push("/");
+        }
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   return {
@@ -140,6 +180,6 @@ export const useAuthForm = (type?: string) => {
     handlePasswordChange,
     handleCheckboxChange,
     handleSubmit,
-    loginGoogleHandler
+    loginGoogleHandler,
   };
 };
