@@ -19,6 +19,7 @@ interface RegisterResponse {
     email?: string;
     phoneNumber?: string;
     user_id?: string;
+    status?: string
   };
 }
 
@@ -56,8 +57,12 @@ interface OauthResponse {
     email?: string;
     phone_number?: string;
     user_id?: string;
+    status?: string
   };
 }
+
+
+
 
 export async function sendOauthData(
   userData: OauthPayload,
@@ -128,7 +133,7 @@ export async function registerService(
     console.log("Register Response:", response.data);
 
     if (response.data.output_schema) {
-      localStorage.setItem("userId", response.data.output_schema.user_id || "");
+      document.cookie = `status=${response.data.output_schema?.status || ""}; path=/; Secure; SameSite=Lax`;
     } else {
       console.warn("No output_schema in response");
     }

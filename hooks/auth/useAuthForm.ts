@@ -125,7 +125,8 @@ export const useAuthForm = (type?: string) => {
               data.email ? "email" : "phone_number",
               data.email || data.phone_number
             );
-            document.cookie = `userId=${ response?.output_schema?.user_id }; path=/; Secure; SameSite=Lax`;
+            document.cookie = `status=${ response?.output_schema?.status }; path=/; Secure; SameSite=Lax`;
+            localStorage.setItem("userId", response?.output_schema?.user_id || "Tidak ada user id");
             router.push("/otp");
           }
         });
