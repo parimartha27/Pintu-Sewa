@@ -13,6 +13,15 @@ interface RegisterData {
   phone_number: string;
 }
 
+interface RegisterResponse {
+  error_schema?: ErrorSchema;
+  output_schema?: {
+    email?: string;
+    phoneNumber?: string;
+    user_id?: string;
+  };
+}
+
 interface ErrorSchema {
   error_code: string;
   error_message: string;
@@ -21,15 +30,12 @@ interface ErrorSchema {
 interface LoginResponse {
   error_schema: ErrorSchema;
   output_schema: {
+    customer_id: string;
     username: string;
-    session: string;
-  };
-}
-
-interface RegisterResponse {
-  error_schema: ErrorSchema;
-  output_schema: {
-    otp: string;
+    email: string;
+    phone_number: string;
+    token: string;
+    duration:number;
   };
 }
 
@@ -38,33 +44,67 @@ interface ValidateOtpResponse {
   output_schema: null;
 }
 
-interface LoginGoogleResponse {
-  username: string;
+interface OauthPayload {
+  // username: string;
   email: string;
   profilePicture: string;
 }
 
-export async function sendOauthData(userData: LoginGoogleResponse): Promise<void> {
-  try {
-    await axios.post("https://your-backend.com/api/save-user", userData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+interface OauthResponse {
+  error_schema: ErrorSchema;
+  output_schema: {
+    email?: string;
+    phone_number?: string;
+    user_id?: string;
+  };
+}
 
-    console.log("User data successfully sent to backend");
-  } catch (error) {
-    console.error("Error saving user data:", error);
+export async function sendOauthData(
+  userData: OauthPayload,
+  callback: (response: OauthResponse) => void
+): Promise<OauthResponse> {
+  try {
+    const response = await axios.post<OauthResponse>(
+      `${API_BASE_URL}/register/oauth`,
+      userData
+    );
+
+    console.log("OAuth Request:", userData);
+    console.log("OAuth Response:", response.data);
+
+    // localStorage.setItem("username", response.data.output_schema.username);
+    // localStorage.setItem("session", response.data.output_schema.session);
+
+    callback(response.data);
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "Error saving user data:",
+        error.response?.data || error.message
+      );
+      throw error.response?.data || error.message;
+    }
+    throw new Error("An unexpected error occurred during OAuth login.");
   }
 }
 
-export async function loginService(data: LoginData, callback: (response: LoginResponse) => void) {
+export async function loginService(
+  data: LoginData,
+  callback: (response: LoginResponse) => void
+) {
   try {
-    const response = await axios.post<LoginResponse>(`${API_BASE_URL}/login`, data);
+    const response = await axios.post<LoginResponse>(
+      `${API_BASE_URL}/login`,
+      data
+    );
     console.log("Login Request:", data);
     console.log("Login Response:", response.data);
-    localStorage.setItem("username",response.data.output_schema.username);
-    localStorage.setItem("session",response.data.output_schema.session);
+    if (response.data.output_schema) {
+      const { username, token, duration } = response.data.output_schema;
+      localStorage.setItem("username", username);
+      document.cookie = `token=${token}; path=/; Secure; SameSite=Lax; max-age=${duration}`;
+    }
     callback(response.data);
     return response.data;
   } catch (error: unknown) {
@@ -75,12 +115,23 @@ export async function loginService(data: LoginData, callback: (response: LoginRe
   }
 }
 
-export async function registerService(data: RegisterData, callback: (response: RegisterResponse) => void) {
+export async function registerService(
+  data: RegisterData,
+  callback: (response: RegisterResponse) => void
+) {
   try {
-    const response = await axios.post<RegisterResponse>(`${API_BASE_URL}/register`, data);
+    const response = await axios.post<RegisterResponse>(
+      `${API_BASE_URL}/register`,
+      data
+    );
     console.log("Register Request:", data);
     console.log("Register Response:", response.data);
-    localStorage.setItem("otp",response.data.output_schema.otp);
+
+    if (response.data.output_schema) {
+      localStorage.setItem("userId", response.data.output_schema.user_id || "");
+    } else {
+      console.warn("No output_schema in response");
+    }
     callback(response.data);
     return response.data;
   } catch (error: unknown) {
@@ -91,12 +142,18 @@ export async function registerService(data: RegisterData, callback: (response: R
   }
 }
 
-export async function validateOtpService(otpConfirm: string, validOtp: string): Promise<ValidateOtpResponse> {
+export async function validateOtpService(
+  otpConfirm: string,
+  validOtp: string
+): Promise<ValidateOtpResponse> {
   try {
-    const response = await axios.post<ValidateOtpResponse>(`${API_BASE_URL}/validate-otp`, {
-      otp_confirm: otpConfirm,
-      valid_otp: validOtp,
-    });
+    const response = await axios.post<ValidateOtpResponse>(
+      `${API_BASE_URL}/validate-otp`,
+      {
+        otp_confirm: otpConfirm,
+        valid_otp: validOtp,
+      }
+    );
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

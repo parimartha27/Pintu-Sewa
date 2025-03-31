@@ -9,7 +9,7 @@ import { getSession, signIn } from "next-auth/react";
 
 interface userdataProps {
   email: string;
-  username: string;
+  // username: string;
   profilePicture: string;
 }
 
@@ -119,12 +119,13 @@ export const useAuthForm = (type?: string) => {
         });
       } else if (type === "register" && isChecked) {
         await registerService(data, (response) => {
-          if (response.error_schema.error_message === "SUCCESS") {
+          if (response.error_schema?.error_message === "SUCCESS") {
             console.log("Valid input, masuk ke OTP...");
             localStorage.setItem(
               data.email ? "email" : "phone_number",
               data.email || data.phone_number
             );
+            document.cookie = `userId=${ response?.output_schema?.user_id }; path=/; Secure; SameSite=Lax`;
             router.push("/otp");
           }
         });
@@ -150,13 +151,17 @@ export const useAuthForm = (type?: string) => {
 
         if (session?.user) {
           const userData: userdataProps = {
-            username: session.user.name || "Guest",
+            // username: session.user.name || "Guest",
             email: session.user.email || "",
             profilePicture: session.user.image || "/default-profile.png",
           };
 
-          await sendOauthData(userData);
-          router.push("/");
+          await sendOauthData(userData, (response) => {
+            if (response.error_schema?.error_message === "SUCCESS") {
+             document.cookie = `userId=${ response.output_schema.user_id }; path=/; Secure; SameSite=Lax`;
+              router.push("/input-biodata");
+            }
+          });
         }
       }
     } catch (error) {

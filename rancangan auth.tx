@@ -1,0 +1,135 @@
+1. /api/authentication/register
+Request:
+{
+    "email" : "aguspari86@gmail.com",
+    "phone_number" : ""
+}
+
+Validasi:
+format email -> harus pakai @
+format no hp -> harus no hp Indonesia dan terdiri dari 10 - 13 digit
+
+response:
+{
+    "error_schema": {
+        "error_code": "PS-00-000",
+        "error_message": "SUCCESS"
+    },
+    "output_schema": {
+        "email": "aguspari86@gmail.com",
+        "phone_number": null,
+        "user_id": "41488d60-5eef-42a7-93ab-0db15f24a791"
+    }
+}
+
+
+2. /api/authentication/register/oauth
+request: 
+{
+    "email" : "aguspari86@gmail.com",
+    "image" : "url image"
+}
+
+
+response
+{
+    "error_schema": {
+        "error_code": "PS-00-000",
+        "error_message": "SUCCESS"
+    },
+    "output_schema": {
+        "email": "aguspari86@gmail.com",
+        "phone_number": null,
+        "user_id": "41488d60-5eef-42a7-93ab-0db15f24a791"
+    }
+}
+
+3. /api/authentication/login
+request:
+{
+    "error_schema": {
+        "error_code": "PS-00-000",
+        "error_message": "SUCCESS"
+    },
+    "output_schema": {
+        "customer_id": "41488d60-5eef-42a7-93ab-0db15f24a791",
+        "username": "Parimartha Ganteng",
+        "email": "aguspari86@gmail.com",
+        "phone_number": "081529518909",
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MTQ4OGQ2MC01ZWVmLTQyYTctOTNhYi0wZGIxNWYyNGE3OTEiLCJpYXQiOjE3NDMzNDE3MDksImV4cCI6MTc0MzM0NTMwOX0.ikoTMFqw6rSpJhyCqaD_iz60iVlz_6XDGohy644ZkYo",
+        "duration": 1800
+    }
+}
+
+4. /api/otp/verify
+Request:
+{
+    "otp_code": "1114",
+   "verify_counnt" : 1,
+   "resend_otp_count" : 0,
+    "customer_id": "41488d60-5eef-42a7-93ab-0db15f24a791"
+}
+
+Validasi: 
+Butuh customer ID Ketika proses registrasi. Disimpan di local storage dan Ketika tembak path validasi dengan customer ID
+
+response:
+{
+    "error_schema": {
+        "error_code": "PS-00-000",
+        "error_message": "SUCCESS"
+    },
+    "output_schema": {
+        "customer_id": "41488d60-5eef-42a7-93ab-0db15f24a791",
+        "username": null,
+        "email": "aguspari86@gmail.com",
+        "phone_number": null,
+        "verify_count": 0,
+        "resend_otp_count": 0,
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MTQ4OGQ2MC01ZWVmLTQyYTctOTNhYi0wZGIxNWYyNGE3OTEiLCJpYXQiOjE3NDMzNDA0MzMsImV4cCI6MTc0MzM0NDAzM30.oZYNImiMO2DTU9PGsglsbVxEG25wOe0WBDqhgHyaBJM",
+        "duration": 1800
+    }
+}
+
+5. /api/customers/create
+Butuh customer ID Ketika proses registrasi. Disimpan di local storage dan Ketika tembak path validasi dengan customer ID
+
+request:
+{
+    "id": "41488d60-5eef-42a7-93ab-0db15f24a791",
+    "username": "Parimartha Ganteng",
+    "name": "Putu Agus Parimartha",
+    "street": "Jln. Foresta Raya, ",
+    "phone_number" : "081529518909",
+    "district": "Pagedangan",
+    "regency": "Tangerang",
+    "province": "Banten",
+    "gender": "Laki-laki",
+    "birth_date": "2002-12-27T00:00:00",
+    "post_code": "15339",
+    "password" : "1234",
+    "note" : "Kos warna orange"
+}
+
+response:
+{
+    "error_schema": {
+        "error_code": "PS-00-000",
+        "error_message": "SUCCESS"
+    },
+    "output_schema": {
+        "username": "Parimartha Ganteng",
+        "name": "Putu Agus Parimartha",
+        "email": "aguspari86@gmail.com",
+        "phone_number": "081529518909",
+        "gender": "Laki-laki",
+        "birth_date": "2002-12-27T00:00:00",
+        "image": null,
+        "street": "Jln. Foresta Raya, ",
+        "district": "Pagedangan",
+        "regency": "Tangerang",
+        "province": "Banten",
+        "post_code": "15339",
+        "note": null
+    }
+}
