@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -13,6 +13,7 @@ import PintuSewa from "@/public/pintuSewa.svg";
 import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
 import { Skeleton } from "../ui/skeleton";
+import optionDots from "@/public/optionDots.svg";
 
 interface NavbarProps {
   type?: string;
@@ -23,7 +24,25 @@ const Navbar = ({ type }: NavbarProps) => {
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [,setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const popupRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
 
   useEffect(() => {
     if (status !== "loading") {
@@ -56,7 +75,7 @@ const Navbar = ({ type }: NavbarProps) => {
         </div>
 
         {/* Search Bar Section */}
-        <div className="flex w-4/5 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0">
+        <div className="flex w-11/12 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0">
           <form className="lg:w-11/12 lg:ml-10 w-full h-full">
             <div className="relative h-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -193,21 +212,35 @@ const Navbar = ({ type }: NavbarProps) => {
                     <FilterSidebar />
                   </div>
                 ) : (
-                  <Button className="md:hidden w-full max-w-[80px] mr-2 text-[12px] h-[35px] text-white bg-color-primaryDark">
-                    Cari
-                  </Button>
-                )}
-              </div>
-
-              <div className="flex w-full justify-center">
-                {type === "product" ? (
-                  <div className="lg:hidden mt-2 lg w-[40px] pl-2">
-                    <FilterSidebar />
+                  <>  <Image
+                  className="md:hidden min-w-[5px] hover:opacity-75 cursor-pointer"
+                  src={optionDots}
+                  alt="optionDots"
+                  width={5}
+                  height={5}
+                  onClick={() => setOpen(!open)} // Toggle popup
+                />
+          
+                {/* Popup Menu */}
+                {open && (
+                  <div
+                    ref={popupRef}
+                    className="absolute top-10 right-5 w-40 bg-white shadow-lg rounded-md z-10"
+                  >
+                    <button
+                      className="block w-full text-color-primaryDark text-left p-2 hover:bg-color-third"
+                      onClick={()=>router.push("/login")}
+                    >
+                      Login
+                    </button>
+                    <button
+                      className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
+                      onClick={() => router.push("/register")}
+                    >
+                      Register
+                    </button>
                   </div>
-                ) : (
-                  <Button className="md:hidden w-full max-w-[80px] mr-2 text-[12px] h-[35px] text-white bg-color-primaryDark">
-                    Cari
-                  </Button>
+                )}</>
                 )}
               </div>
               <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 xl:mr-10">

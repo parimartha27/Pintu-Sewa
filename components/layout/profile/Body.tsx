@@ -7,12 +7,12 @@ import EditProfileForm from "@/components/layout/profile/Form";
 import Section from "@/components/fragments/editProfile/Section";
 import ProfileSidebarLayout from "../ProfileSidebar";
 
-const ProfileBody = ({ children }: { children: React.ReactNode }) => {
+const ProfileBody = () => {
 
   return (
     <div className="flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout">
       <ProfileSidebarLayout/>
-      <div className="w-full p-2 md:p-0 max-h-auto">{children ? children : <DefaultLayout />}</div>
+      <div className="w-full p-2 md:p-0 max-h-auto"><DefaultLayout /></div>
     </div>
   );
 };

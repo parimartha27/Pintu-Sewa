@@ -6,8 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import CartProductForm from "./ProductForm";
 import Image from "next/image";
 import Next from "@/public/next.svg";
-import NoCart from "@/public/noCart.svg";
-import Link from "next/link";
+// import NoCart from "@/public/noCart.svg";
+// import Link from "next/link";
 
 const CartBody = () => {
   return (

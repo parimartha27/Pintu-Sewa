@@ -20,7 +20,7 @@ import {
 import { InputOTP, InputOTPSlot } from "@/components/ui/input-otp";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3001/api/authentication";
+const API_BASE_URL = "https://pintu-sewa.up.railway.app/api";
 
 interface OtpFormProps {
   className?: string;
@@ -41,8 +41,8 @@ interface OtpAccessValid {
 
 interface OtpRequest {
   otp_code: string;
-  verify_count: number;
-  resend_otp_count: number;
+  // verify_count: number;
+  // resend_otp_count: number;
   customer_id: string;
 }
 
@@ -66,33 +66,62 @@ const OtpForm = ({ className }: OtpFormProps) => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(3);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [verifyCount, setVerifyCount] = useState(0);
   const [resendOtpCount, setResendOtpCount] = useState(0);
-
-  const email =
-    typeof window !== "undefined" ? localStorage.getItem("email") : null;
-  const phoneNumber =
-    typeof window !== "undefined" ? localStorage.getItem("phone_number") : null;
+  const [email, setEmail] = useState<string | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get<OtpAccessValid>(
-          `${API_BASE_URL}/valid`
-        );
-        setVerifyCount(response.data.output_schema.verify_count);
-        setResendOtpCount(response.data.output_schema.resend_otp_count);
-        if (verifyCount > 10) {
-          console.log("salah mulu otp lu cuy");
-          router.push("/");
-        }
-      } catch (error) {
-        console.error("Error fetching OTP access validity:", error);
-      }
-    })();
+    const storedEmail = localStorage.getItem("email");
+    const storedPhoneNumber = localStorage.getItem("phone_number");
+
+    setEmail(storedEmail);
+    setPhoneNumber(storedPhoneNumber);
   }, []);
+
+
+  const fetchOtpValidity = async () => {
+    try {
+      const response = await axios.get<OtpAccessValid>(
+        `${API_BASE_URL}/otp/valid?customerId=${localStorage.getItem("userId")}`
+      );
+      setVerifyCount(response.data.output_schema.verify_count);
+      setResendOtpCount(response.data.output_schema.resend_otp_count);
+      
+      // Blokir jika verify attempt melebihi 10x
+      if (response.data.output_schema.verify_count > 10) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Error fetching OTP access validity:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOtpValidity();
+  }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const response = await axios.get<OtpAccessValid>(
+  //         `${API_BASE_URL}/otp/valid?customerId=${localStorage.getItem(
+  //           "userId"
+  //         )}`
+  //       );
+  //       setVerifyCount(response.data.output_schema.verify_count);
+  //       setResendOtpCount(response.data.output_schema.resend_otp_count);
+  //       if (verifyCount > 10) {
+  //         console.log("salah mulu otp lu cuy");
+  //         router.push("/");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching OTP access validity:", error);
+  //     }
+  //   })();
+  // }, []);
 
   const otpSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -107,14 +136,19 @@ const OtpForm = ({ className }: OtpFormProps) => {
         return;
       }
 
-      const payload:OtpRequest = {
+      const payload: OtpRequest = {
         otp_code: otp,
-        verify_count: verifyCount,
-        resend_otp_count: resendOtpCount,
+        // verify_count: verifyCount,
+        // resend_otp_count: resendOtpCount,
         customer_id: customerId,
       };
 
-      const response = await axios.post<OtpRespone>("/api/otp/verify", payload);
+      console.log(payload);
+
+      const response = await axios.post<OtpRespone>(
+        `${API_BASE_URL}/otp/verify`,
+        payload
+      );
 
       if (response.data.error_schema?.error_message === "SUCCESS") {
         console.log(
@@ -141,6 +175,9 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
   const handleResendOtp = async () => {
     try {
+      setIsResendDisabled(true);
+      setError("");
+      
       const customerId = localStorage.getItem("userId");
       if (!customerId) {
         console.error("User ID tidak ditemukan di localStorage.");
@@ -148,16 +185,17 @@ const OtpForm = ({ className }: OtpFormProps) => {
       }
 
       const response = await axios.post(
-        `/api/otp/resend?customerId=${customerId}`
+        `${API_BASE_URL}/otp/resend?customerId=${customerId}`,
+        ""
       );
 
       if (response.data.error_schema?.error_message === "SUCCESS") {
-        console.log("OTP berhasil dikirim ulang.");
+        // Update state dari response API
         setVerifyCount(response.data.output_schema.verify_count);
         setResendOtpCount(response.data.output_schema.resend_otp_count);
+        setTimer(3); // Reset timer ke 60 detik
       } else {
-        console.error("Gagal mengirim ulang OTP.");
-        setError("OTP tidak sesuai");
+        setError("Gagal mengirim ulang OTP");
       }
     } catch (error) {
       console.error("Terjadi kesalahan saat mengirim ulang OTP:", error);
@@ -172,9 +210,11 @@ const OtpForm = ({ className }: OtpFormProps) => {
       }, 1000);
       return () => clearInterval(interval);
     } else {
-      setIsResendDisabled(false);
+      if (resendOtpCount < 3) {
+        setIsResendDisabled(false);
+      }
     }
-  }, [timer]);
+  }, [timer, resendOtpCount]);
 
   return (
     <div
@@ -245,7 +285,9 @@ const OtpForm = ({ className }: OtpFormProps) => {
                 />
               </InputOTP>
 
-              {error && <p className="text-red-600 text-md mt-3 ">{error}</p>}
+              {error && (
+                <p className="text-red-600 text-xs md:text-lg mt-3 ">{error}</p>
+              )}
 
               {isLoading && (
                 <div className="flex justify-center items-center mt-5">
@@ -254,6 +296,23 @@ const OtpForm = ({ className }: OtpFormProps) => {
               )}
 
               <Button
+                onClick={async () => {
+                  const response = await axios.get<OtpAccessValid>(
+                    `${API_BASE_URL}/otp/valid?customerId=${localStorage.getItem(
+                      "userId"
+                    )}`
+                  );
+                  setVerifyCount(response.data.output_schema.verify_count);
+                  setResendOtpCount(
+                    response.data.output_schema.resend_otp_count
+                  );
+                  console.log("verify count" + verifyCount);
+                  console.log("resend count" + resendOtpCount);
+                  if (verifyCount > 10) {
+                    console.log("salah mulu otp lu cuy");
+                    router.push("/");
+                  }
+                }}
                 type="submit"
                 className="w-full max-w-[440px] mt-10 h-[50px] rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80"
                 disabled={isLoading || otp.length !== 4}
@@ -263,39 +322,36 @@ const OtpForm = ({ className }: OtpFormProps) => {
             </form>
 
             <div className="mt-5 text-[11px] xs:text-[12px] sm:text-[13px] md:text-[12px] lg:text-[14px] xl:text-[15px] text-color-primary text-center">
-              {isResendDisabled ? (
-                <h4>
-                  Tunggu{" "}
-                  <span className="font-bold text-color-secondary">
-                    {timer} detik
-                  </span>{" "}
-                  untuk
-                  <span className="font-bold text-color-secondary">
-                    {" "}
-                    kirim ulang
-                  </span>
-                </h4>
-              ) : (
-                <h4>
-                  {resendOtpCount >= 3 ? (
-                    <span className="text-red-500 font-semibold">
-                      Kesempatan minta OTP telah habis
-                    </span>
-                  ) : (
-                    <>
-                      Tidak menerima OTP?{" "}
-                      <button
-                        onClick={handleResendOtp}
-                        className="text-color-primaryDark font-semibold hover:opacity-80"
-                      >
-                        <span className="font-bold text-color-secondary">
-                          kirim ulang
-                        </span>
-                      </button>
-                    </>
-                  )}
-                </h4>
-              )}
+            {timer > 0 ? (
+        <h4>
+          Tunggu{" "}
+          <span className="font-bold text-color-secondary">
+            {timer} detik
+          </span>{" "}
+          untuk kirim ulang OTP
+        </h4>
+      ) : (
+        <h4>
+          {resendOtpCount >= 3 ? (
+            <span className="text-red-500 font-semibold">
+              Kesempatan minta OTP telah habis
+            </span>
+          ) : (
+            <>
+              Tidak menerima OTP?{" "}
+              <button
+                onClick={handleResendOtp}
+                className="text-color-primaryDark font-semibold hover:opacity-80"
+                disabled={isResendDisabled}
+              >
+                <span className="font-bold text-color-secondary">
+                  kirim ulang
+                </span>
+              </button>
+            </>
+          )}
+        </h4>
+      )}
             </div>
           </CardContent>
         </div>

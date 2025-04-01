@@ -69,7 +69,7 @@ const EditAddressBody = () => {
             />
               <Button
               type="submit"
-              className="lg:hidden w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
+              className="lg:hidden self-center lg:self-start w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
             >
               Simpan Perubahan
             </Button>

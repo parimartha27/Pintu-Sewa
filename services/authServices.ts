@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3001/api/authentication";
+// const API_BASE_URL = "http://localhost:3001/api/authentication";
+const API_BASE_URL = "https://pintu-sewa.up.railway.app/api/authentication";
 
 interface LoginData {
   email: string;
@@ -18,7 +19,7 @@ interface RegisterResponse {
   output_schema?: {
     email?: string;
     phoneNumber?: string;
-    user_id?: string;
+    customer_id?: string;
     status?: string
   };
 }
@@ -60,9 +61,6 @@ interface OauthResponse {
     status?: string
   };
 }
-
-
-
 
 export async function sendOauthData(
   userData: OauthPayload,

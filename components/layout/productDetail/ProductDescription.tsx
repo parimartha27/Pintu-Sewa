@@ -20,7 +20,7 @@ import TestImage from "@/public/register.svg";
 import Tooltip from "@/public/tooltip.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShopAndLocation from "./ShopAndLocation";
-import { TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+// import { TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const images = [Image1, Image2, Image3, Image4, Image5];
 

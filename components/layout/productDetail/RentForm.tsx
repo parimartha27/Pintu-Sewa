@@ -19,7 +19,7 @@ const RentForm = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [qty, setQty] = useState<number>(1);
-  const [max, setMax] = useState<number>(8);
+  const [max] = useState<number>(8);
 
   function handleDecreaseQty() {
     if (qty > 1) setQty(qty - 1);

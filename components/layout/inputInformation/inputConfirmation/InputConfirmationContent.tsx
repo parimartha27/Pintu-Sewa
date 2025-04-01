@@ -21,7 +21,7 @@ const InputConfirmationContentLayout = () => {
         </Link>
       </div>
 
-      <div className="flex flex-col w-full pt-6 lg:pt-0">
+      <div className="flex flex-col w-full pt-6 lg:pt-0 ">
         <form
           onSubmit={() => alert("Perubahan Disimpan")}
           className="flex flex-col items-center lg:items-start space-y-5"
@@ -45,21 +45,21 @@ const InputConfirmationContentLayout = () => {
           <InputtedData label="Kode Pos" input="78910" />
           <InputtedData label="Catatan" input="Pintu Sewa Is The Best" />
         </form>
-        <div className="flex self-center lg:self-start space-x-6 mt-[60px]">
-          <Button
-            type="submit"
-            className="w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr rounded-xl hover:opacity-90"
-          >
-            Simpan
-          </Button>
-          <Button
-            type="button"
-            onClick={() => router.push("/input-address")}
-            className="w-[200px] h-[48px] mt-3 text-[14px] font-medium text-color-primaryDark bg-transparent border-[1px] border-color-primaryDark rounded-xl hover:bg-slate-200 hover:opacity-90"
-          >
-            Kembali
-          </Button>
-        </div>
+        <div className="flex flex-col lg:flex-row self-center lg:self-start space-y-3 lg:space-y-0 lg:space-x-6 mt-8 lg:mt-[60px] w-full max-w-[250px] lg:max-w-none px-4 sm:px-0">
+            <Button
+              type="submit"
+              className="w-full lg:w-[200px] h-[48px] text-white text-sm sm:text-[14px] font-medium bg-custom-gradient-tr rounded-xl hover:opacity-90"
+            >
+              Simpan
+            </Button>
+            <Button
+              type="button"
+              onClick={() => router.push("/input-address")}
+              className="w-full lg:w-[200px] h-[48px] text-sm sm:text-[14px] font-medium text-color-primaryDark bg-transparent border-[1px] border-color-primaryDark rounded-xl hover:bg-slate-200 hover:opacity-90"
+            >
+              Kembali
+            </Button>
+          </div>
       </div>
     </div>
   );

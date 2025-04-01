@@ -62,7 +62,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
         <div className="w-full md:w-2/5">
           <CardHeader className="flex-col">
             <CardTitle className="text-[22px] lg:text-[24px] xl:text-[28px] text-color-primaryDark font-semibold">
-              {type === "login" ? "Masuk ke Siap Sewa" : "Daftar Dulu Yuk!"}
+              {type === "login" ? "Masuk ke Pintu Sewa" : "Daftar Dulu Yuk!"}
             </CardTitle>
             <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary">
               {type === "login"

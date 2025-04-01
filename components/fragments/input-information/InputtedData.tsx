@@ -4,12 +4,12 @@ interface MyComponentProps {
 }
 const InputtedData = ({ label, input }: MyComponentProps) => {
   return (
-    <div className="flex max-w-[440px]">
-      <div className="min-w-[220px]">
-        <h3 className="text-sm text-color-primary">{label}</h3>
+    <div className="flex flex-col md:flex-row max-w-[440px]">
+      <div className="min-w-[200px] lg:min-w-[220px]">
+        <h3 className="text-sm text-color-primary text-center md:text-start">{label}</h3>
       </div>
-      <div className="min-w-[220px]">
-        <h3 className="text-sm font-semibold text-color-grayPrimary">
+      <div className="min-w-[200px] max-w-[180px] lg:min-w-[220px]">
+        <h3 className="text-sm font-semibold text-color-grayPrimary text-center md:text-start">
           {input}
         </h3>
       </div>

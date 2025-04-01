@@ -145,7 +145,7 @@ const EditProfileBody = () => {
 
               <Button
                 type="submit"
-                className="w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
+                className="w-[200px] h-[48px] mt-3 text-white text-[14px] self-center lg:self-start font-medium bg-custom-gradient-tr hover:opacity-90"
               >
                 Simpan Perubahan
               </Button>

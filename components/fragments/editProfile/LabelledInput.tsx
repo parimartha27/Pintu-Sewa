@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
+import { HTMLInputTypeAttribute } from "react";
 import { cn } from "@/lib/utils";
 
 interface LabelledInputProps {
@@ -12,7 +12,7 @@ interface LabelledInputProps {
   type: HTMLInputTypeAttribute;
   placeholder?: string;
   value?: string | number;
-  onChange?: ChangeEventHandler;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;  
   readonly?: boolean;
 }
 

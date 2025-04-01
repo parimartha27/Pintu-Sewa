@@ -3,46 +3,52 @@
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Dropdown from "@/public/dropdown.svg";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 
 interface LabelledDropdownProps {
   label?: string;
   htmlFor: string;
   id: string;
   options: { value: string | number; label: string }[];
+  value: string | number; // ✅ Tambahkan value agar bisa dikontrol dari parent
+  onValueChange: (value: string | number) => void; // ✅ Tambahkan event handler
+  disabled?: boolean;
 }
 
-const LabelledDropdown = ({ label, htmlFor, id, options }: LabelledDropdownProps) => {
-  const [selectedValue, setSelectedValue] = useState(options[0].value);
-  const [selectedLabel, setSelectedLabel] = useState(options[0].label);
-
+const LabelledDropdown = ({
+  label,
+  htmlFor,
+  id,
+  options,
+  value,
+  onValueChange,
+  disabled = false,
+}: LabelledDropdownProps) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = options.find((option) => option.value === e.target.value);
+    const selectedOption = options.find((option) => String(option.value) === e.target.value);
     if (selectedOption) {
-      setSelectedValue(selectedOption.value);
-      setSelectedLabel(selectedOption.label);
+      onValueChange(selectedOption.value); // ✅ Pastikan mengembalikan `string | number`
     }
   };
 
   return (
     <div className="flex flex-col space-y-2">
-      <Label htmlFor={htmlFor} className="text-[14px] font-normal text-color-primary">
-        {label}
-      </Label>
+      {label && (
+        <Label htmlFor={htmlFor} className="text-[14px] font-normal text-color-primary">
+          {label}
+        </Label>
+      )}
       <div className="relative">
         <select
           id={id}
-          value={selectedValue}
+          value={String(value)} // ✅ Pastikan value diubah ke string agar sesuai dengan HTML
           onChange={handleChange}
+          disabled={disabled}
           className="appearance-none border-[1px] border-[#73787B] text-[#73787B] text-[12px] h-[48px] pl-4 pr-10 
           focus:border-color-primaryDark focus:outline-none bg-white rounded-lg w-full"
         >
           {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              className="bg-white text-[12px] text-[#2C3941] hover:bg-color-primaryDark hover:text-white px-4 py-2"
-            >
+            <option key={option.value} value={String(option.value)}>
               {option.label}
             </option>
           ))}

@@ -126,13 +126,15 @@ export const useAuthForm = (type?: string) => {
               data.email || data.phone_number
             );
             document.cookie = `status=${ response?.output_schema?.status }; path=/; Secure; SameSite=Lax`;
-            localStorage.setItem("userId", response?.output_schema?.user_id || "Tidak ada user id");
+            localStorage.setItem("userId", response?.output_schema?.customer_id || "Tidak ada user id");
             router.push("/otp");
+          }else{
+            setAuthError(response?.error_schema?.error_message || " ");
           }
         });
       }
     } catch (error) {
-      setAuthError("Belum ada error dari backend");
+      setAuthError("Internal Server Error");
       console.error("Error during authentication:", error);
     } finally {
       localStorage.setItem("otpType", "register");
