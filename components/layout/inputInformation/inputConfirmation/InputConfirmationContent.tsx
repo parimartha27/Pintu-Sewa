@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 
-const baseUrl = "https://pintu-sewa.up.railway.app"
+const baseUrl = "https://pintu-sewa.up.railway.app/api/customers/create"
 
 interface CustomerRequest {
   id: string;
@@ -16,6 +16,7 @@ interface CustomerRequest {
   name: string;
   street: string;
   phone_number: string;
+  email:string;
   district: string;
   regency: string;
   province: string;
@@ -32,19 +33,12 @@ interface CustomerResponse {
     error_message: string;
   };
   output_schema: {
-    username: string;
-    name: string;
-    email: string;
-    phone_number: string;
-    gender: string;
-    birth_date: string;
-    image?: string | null;
-    street: string;
-    district: string;
-    regency: string;
-    province: string;
-    post_code: string;
-    note?: string | null;
+  customer_id: string;
+  username:string;
+  email:string;
+  phone_number:string;
+  token:string;
+  image:string;
   };
 }
 
@@ -64,6 +58,7 @@ const InputConfirmationContentLayout = () => {
         name: localStorage.getItem("fullname") || "",
         street: localStorage.getItem("jalan") || "",
         phone_number: localStorage.getItem("handphone") || "",
+        email: localStorage.getItem("email") || "",
         district: localStorage.getItem("kecamatan") || "",
         regency: localStorage.getItem("kabupaten") || "",
         province: localStorage.getItem("provinsi") || "",
@@ -74,18 +69,24 @@ const InputConfirmationContentLayout = () => {
         note: localStorage.getItem("catatan") || "",
       };
 
-      const response: CustomerResponse = await axios.post(
-        `${baseUrl}/api/customers/create`,
+      console.log(payload);
+
+      const response = await axios.post<CustomerResponse>(
+       baseUrl,
         payload
       );
 
-      if (response.error_schema.error_code === "PS-00-000") {
-        const username = response.output_schema.username;
+      if (response.data.error_schema.error_code === "PS-00-000") {
+        const username = response.data.output_schema.username;
         localStorage.clear();
         localStorage.setItem("username", username);
+        localStorage.setItem("image", response.data.output_schema.image);
+        
+        document.cookie = `token=${response.data.output_schema?.token || ""}; path=/; Secure; SameSite=Lax`;
+        document.cookie = `userId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`;
         router.push("/");
       } else {
-        alert("Registrasi gagal: " + response.error_schema.error_message);
+        alert("Registrasi gagal: " + response.data.error_schema.error_message);
         router.push("/input-biodata")
       }
     } catch (error) {

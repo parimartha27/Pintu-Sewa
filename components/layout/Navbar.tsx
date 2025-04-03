@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Google from "@/public/google.jpg";
 import Toko from "@/public/toko.svg";
 import Cart from "@/public/cart.svg";
 import Chat from "@/public/chat.svg";
+import Guest from "@/public/guest.svg";
 import PintuSewa from "@/public/pintuSewa.svg";
 import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
@@ -16,21 +16,25 @@ import { Skeleton } from "../ui/skeleton";
 import optionDots from "@/public/optionDots.svg";
 
 interface NavbarProps {
-  type?: string;
+  type?: string | null;
+  token?: string | null;
 }
 
-const Navbar = ({ type }: NavbarProps) => {
+const Navbar = ({ type, token }: NavbarProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
-  const [,setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     }
@@ -50,11 +54,27 @@ const Navbar = ({ type }: NavbarProps) => {
 
       if (status === "authenticated") {
         setUsername(session?.user?.name || "Guest");
-        setProfileImage(session?.user?.image || Google.src);
+        setProfileImage(session?.user?.image || Guest);
+      }
+
+    
+      if (token) {
+        const image = localStorage.getItem("image");
+        console.log("ada token: " + token);
+        console.log("google image: " + image + " guest " + Guest.src);
+
+        setUsername(localStorage.getItem("username") || "Guest");
+
+        if (image) {
+          console.log("ada image");
+          setProfileImage(image);
+        } else {
+          console.log("tidak ada image");
+          setProfileImage(Guest.src);
+        }
       }
     }
-  }, [status, session]);
-
+  }, [status, session, token]);
 
   return (
     <div className="flex flex-col w-full sticky top-0 z-50">
@@ -112,7 +132,6 @@ const Navbar = ({ type }: NavbarProps) => {
           {status === "loading" ? (
             <div className="flex items-center gap-4 pr-4">
               <div className="hidden md:flex items-center gap-4">
-          
                 <Skeleton className="h-[30px] w-[60px] rounded-full ml-5" />
 
                 <div className="hidden lg:flex items-center gap-2 ml-2">
@@ -126,8 +145,7 @@ const Navbar = ({ type }: NavbarProps) => {
                 </div>
               </div>
             </div>
-          ) : session ? (
-
+          ) : session || token ? (
             /* ================== Sudah login ======================= */
             <>
               <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
@@ -189,7 +207,7 @@ const Navbar = ({ type }: NavbarProps) => {
               <div className="hidden lg:flex lg:w-3/6 items-center justify-center mt-2">
                 <Link href="/profile" className="lg:ml-5">
                   <Image
-                    src={profileImage || Google.src}
+                    src={profileImage || Guest.src}
                     alt="profile"
                     width={40}
                     height={40}
@@ -212,35 +230,37 @@ const Navbar = ({ type }: NavbarProps) => {
                     <FilterSidebar />
                   </div>
                 ) : (
-                  <>  <Image
-                  className="md:hidden min-w-[5px] hover:opacity-75 cursor-pointer"
-                  src={optionDots}
-                  alt="optionDots"
-                  width={5}
-                  height={5}
-                  onClick={() => setOpen(!open)} // Toggle popup
-                />
-          
-                {/* Popup Menu */}
-                {open && (
-                  <div
-                    ref={popupRef}
-                    className="absolute top-10 right-5 w-40 bg-white shadow-lg rounded-md z-10"
-                  >
-                    <button
-                      className="block w-full text-color-primaryDark text-left p-2 hover:bg-color-third"
-                      onClick={()=>router.push("/login")}
-                    >
-                      Login
-                    </button>
-                    <button
-                      className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
-                      onClick={() => router.push("/register")}
-                    >
-                      Register
-                    </button>
-                  </div>
-                )}</>
+                  <>
+                    {" "}
+                    <Image
+                      className="md:hidden min-w-[5px] hover:opacity-75 cursor-pointer"
+                      src={optionDots}
+                      alt="optionDots"
+                      width={5}
+                      height={5}
+                      onClick={() => setOpen(!open)} // Toggle popup
+                    />
+                    {/* Popup Menu */}
+                    {open && (
+                      <div
+                        ref={popupRef}
+                        className="absolute top-10 right-5 w-40 bg-white shadow-lg rounded-md z-10"
+                      >
+                        <button
+                          className="block w-full text-color-primaryDark text-left p-2 hover:bg-color-third"
+                          onClick={() => router.push("/login")}
+                        >
+                          Login
+                        </button>
+                        <button
+                          className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
+                          onClick={() => router.push("/register")}
+                        >
+                          Register
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 xl:mr-10">

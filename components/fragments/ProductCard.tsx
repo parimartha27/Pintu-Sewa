@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import RegisterImage from "../../public/register.svg";
-import Jam from "../../public/jam.svg";
-import Location from "../../public/location.svg";
-import Star from "../../public/star.svg";
+import RegisterImage from "@/public/register.svg";
+import Jam from "@/public/jam.svg";
+import Location from "@/public/location.svg";
+import Star from "@/public/star.svg";
+import ProductTest from "@/public/productTest.jpeg";
 
 import {
   Card,
@@ -16,31 +17,56 @@ import {
 } from "@/components/ui/card";
 import Tag from "../Elements/Tag";
 import Rnb from "../Elements/Rnb";
-import { ProductType } from "@/types/product"; 
+import { ProductType } from "@/types/product";
 
-const ProductCard = ({product}: {product:ProductType}) => {
+const getMinDuration = (product: ProductType) => {
+  if (product.daily_price) return "1 Hari";
+  if (product.weekly_price) return "1 Minggu";
+  if (product.monthly_price) return "1 Bulan";
+  return "Tidak ada durasi";
+};
+
+const getPrice = (product: ProductType) => {
+  const formatRupiah = (value: number) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+
+  if (product.daily_price) return formatRupiah(product.daily_price);
+  if (product.weekly_price) return formatRupiah(product.weekly_price);
+  if (product.monthly_price) return formatRupiah(product.monthly_price);
+
+  return "gratis";
+};
+
+const ProductCard = ({ product }: { product: ProductType }) => {
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={"/"}>
         <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
-          <CardHeader className="h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg flex items-center justify-center">
+          <CardHeader className="relative h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg">
             <Image
-              src={product.image || RegisterImage}
-              className="w-full h-full max-w-[200px] md:max-w-[240px] max-h-[120px] md:max-h-[167px] object-cover"
+              src={ProductTest}
               alt="register"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-t-lg"
             />
           </CardHeader>
 
           <CardTitle className="flex justify-between mt-2 md:mt-3 mx-2 md:mx-3 items-center">
             <h2 className="text-[16px] md:text-[20px] text-color-primary font-semibold">
-             {product.daily_price || "Rp 1.350.000"}
+              {getPrice(product) || "harga product"}
             </h2>
-            <Rnb />
+            {product.rnb && <Rnb />}
           </CardTitle>
 
           <CardContent className="p-2 md:p-3 items-start">
             <h1 className="text-start text-[12px] md:text-[14px] text-color-primary font-medium">
-             {product.name || "sepatu super"}
+              {product.name.substring(0, 20) + "..." || "nama product"}
             </h1>
 
             <div className="mt-2 md:mt-3 flex">
@@ -50,14 +76,14 @@ const ProductCard = ({product}: {product:ProductType}) => {
                 alt="jam"
               />
               <h2 className="text-[10px] md:text-[12px] text-color-primary">
-                Durasi - Min. <span>1 Hari</span>
+                Durasi - Min. <span>{getMinDuration(product)}</span>
               </h2>
             </div>
 
             <div className="flex space-x-1 mt-1 md:mt-2">
-              <Tag>Harian</Tag>
-              <Tag>Mingguan</Tag>
-              <Tag>Bulanan</Tag>
+              {product.daily_price && <Tag>Harian</Tag>}
+              {product.weekly_price && <Tag>Mingguan</Tag>}
+              {product.monthly_price && <Tag>Bulanan</Tag>}
             </div>
             <div className="flex mt-3">
               <Image
@@ -66,7 +92,7 @@ const ProductCard = ({product}: {product:ProductType}) => {
                 alt="location"
               />
               <h2 className="text-[10px] md:text-[12px] text-color-primary">
-                Jakarta Utara
+                {product.address || "alamat product"}
               </h2>
             </div>
           </CardContent>
@@ -77,12 +103,12 @@ const ProductCard = ({product}: {product:ProductType}) => {
             <div className="flex items-center">
               <Image className="w-3 h-3 md:w-4 md:h-4" src={Star} alt="star" />
               <h4 className="text-[8px] md:text-[10px] text-color-primary ml-1">
-                5.0
+                {product.rating || "rating product"}
               </h4>
             </div>
             <div className="flex items-center">
               <h4 className="text-[8px] md:text-[10px] text-color-primary">
-                100
+                {product.rented_times || "rent count"}
               </h4>
               <h4 className="text-[8px] md:text-[10px] text-color-primary ml-1">
                 Kali Tersewa

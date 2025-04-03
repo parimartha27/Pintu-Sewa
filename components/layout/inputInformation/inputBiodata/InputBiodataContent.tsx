@@ -27,7 +27,7 @@ const InputBiodataContent = () => {
   const [email, setEmail] = useState("");
   const [handphone, setHandphone] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState("laki-laki");
+  const [gender, setGender] = useState("Laki-Laki");
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -45,6 +45,7 @@ const InputBiodataContent = () => {
         ? new Date(localStorage.getItem("date")!)
         : undefined
     );
+
     setUsername(localStorage.getItem("username") || "");
     setFullname(localStorage.getItem("fullname") || "");
     setEmail(localStorage.getItem("email") || "");
@@ -121,12 +122,7 @@ const InputBiodataContent = () => {
     if (!validateForm()) {
       return;
     }
-
-    const formattedDate = date?.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }) || "";
+    const formattedDate = date?.toISOString().split("T")[0];
 
     localStorage.setItem("username", username);
     localStorage.setItem("fullname", fullname);
@@ -134,7 +130,7 @@ const InputBiodataContent = () => {
     localStorage.setItem("handphone", handphone);
     localStorage.setItem("password", password);
     localStorage.setItem("gender", gender);
-    localStorage.setItem("date", date ? formattedDate : "");
+    localStorage.setItem("date", formattedDate || ""); 
     localStorage.setItem("image", profileImage || "");
 
     router.push("/input-address");
@@ -288,7 +284,7 @@ const InputBiodataContent = () => {
                 onValueChange={(value) => setGender(value)}
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="laki-laki" id="option-one" />
+                  <RadioGroupItem value="Laki-Laki" id="option-one" />
                   <Label
                     htmlFor="option-one"
                     className="text-[12px] text-color-primary font-medium"
@@ -297,7 +293,7 @@ const InputBiodataContent = () => {
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="perempuan" id="option-two" />
+                  <RadioGroupItem value="Perempuan" id="option-two" />
                   <Label
                     htmlFor="option-two"
                     className="text-[12px] text-color-primary font-medium"

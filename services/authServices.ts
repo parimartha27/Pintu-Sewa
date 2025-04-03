@@ -38,6 +38,7 @@ interface LoginResponse {
     phone_number: string;
     token: string;
     duration:number;
+    image: string;
   };
 }
 
@@ -103,11 +104,6 @@ export async function loginService(
     );
     console.log("Login Request:", data);
     console.log("Login Response:", response.data);
-    if (response.data.output_schema) {
-      const { username, token, duration } = response.data.output_schema;
-      localStorage.setItem("username", username);
-      document.cookie = `token=${token}; path=/; Secure; SameSite=Lax; max-age=${duration}`;
-    }
     callback(response.data);
     return response.data;
   } catch (error: unknown) {

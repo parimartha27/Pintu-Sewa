@@ -16,6 +16,7 @@ import Dots from "@/public/dots.png";
 import Chat from "@/public/chat.svg";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
+import Cookies from "js-cookie";
 
 const ProfileSidebarLayout = () => {
 
@@ -25,6 +26,7 @@ const ProfileSidebarLayout = () => {
 
     localStorage.clear();
     sessionStorage.clear();
+    Object.keys(Cookies.get()).forEach((cookie) => Cookies.remove(cookie));
 
   };
 
