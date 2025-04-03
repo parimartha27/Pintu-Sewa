@@ -16,32 +16,16 @@ import {
 } from "@/components/ui/card";
 import Tag from "../Elements/Tag";
 import Rnb from "../Elements/Rnb";
+import { ProductType } from "@/types/product"; 
 
-/*
-    Attribute:
-    - Gambar
-    - Harga
-    - RNB or not
-    - Nama produk
-    - Durasi - Min. xx hari
-    - Tag IsDaily IsWeekly IsMonthly
-    - Location
-    - Rating
-    - berapa kali tersewa
-  */
-
-    interface ProductCardProps{
-      productName: string
-    }
-
-const ProductCard = ({productName} : ProductCardProps) => {
+const ProductCard = ({product}: {product:ProductType}) => {
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={"/"}>
         <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
           <CardHeader className="h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg flex items-center justify-center">
             <Image
-              src={RegisterImage}
+              src={product.image || RegisterImage}
               className="w-full h-full max-w-[200px] md:max-w-[240px] max-h-[120px] md:max-h-[167px] object-cover"
               alt="register"
             />
@@ -49,14 +33,14 @@ const ProductCard = ({productName} : ProductCardProps) => {
 
           <CardTitle className="flex justify-between mt-2 md:mt-3 mx-2 md:mx-3 items-center">
             <h2 className="text-[16px] md:text-[20px] text-color-primary font-semibold">
-              Rp 1.350.000
+             {product.daily_price || "Rp 1.350.000"}
             </h2>
             <Rnb />
           </CardTitle>
 
           <CardContent className="p-2 md:p-3 items-start">
             <h1 className="text-start text-[12px] md:text-[14px] text-color-primary font-medium">
-              {productName}
+             {product.name || "sepatu super"}
             </h1>
 
             <div className="mt-2 md:mt-3 flex">

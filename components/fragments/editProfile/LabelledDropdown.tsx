@@ -25,10 +25,7 @@ const LabelledDropdown = ({
   disabled = false,
 }: LabelledDropdownProps) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = options.find((option) => String(option.value) === e.target.value);
-    if (selectedOption) {
-      onValueChange(selectedOption.value); // ✅ Pastikan mengembalikan `string | number`
-    }
+    onValueChange(e.target.value); // Langsung kirim nilai yang dipilih
   };
 
   return (
@@ -41,7 +38,7 @@ const LabelledDropdown = ({
       <div className="relative">
         <select
           id={id}
-          value={String(value)} // ✅ Pastikan value diubah ke string agar sesuai dengan HTML
+          value={String(value)} 
           onChange={handleChange}
           disabled={disabled}
           className="appearance-none border-[1px] border-[#73787B] text-[#73787B] text-[12px] h-[48px] pl-4 pr-10 
