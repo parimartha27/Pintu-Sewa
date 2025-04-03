@@ -97,7 +97,6 @@ const DashboardBody = () => {
         console.log("nearCustomerProducts:", nearCustomer.output_schema);
       } catch (err) {
         setError("Failed to fetch data" + err);
-        setLoading(false);
       }
     };
 
