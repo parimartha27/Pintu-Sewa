@@ -14,13 +14,14 @@ import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
 import { Skeleton } from "../ui/skeleton";
 import optionDots from "@/public/optionDots.svg";
+import useAuth from "@/hooks/auth/useAuth";
 
 interface NavbarProps {
   type?: string | null;
-  token?: string | null;
 }
 
-const Navbar = ({ type, token }: NavbarProps) => {
+const Navbar = ({ type }: NavbarProps) => {
+  const {token} = useAuth();
   const { data: session, status } = useSession();
   const router = useRouter();
   const [username, setUsername] = useState<string>("");

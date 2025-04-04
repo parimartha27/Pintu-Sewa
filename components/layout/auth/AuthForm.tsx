@@ -49,17 +49,17 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
       )}
     >
       <Card className="w-full flex p-1 md:p-5 rounded-3xl">
-        <div className="hidden md:block md:w-3/5 self-center">
+        <div className="hidden lg:block lg:w-1/2 self-center">
           <Image
             src={type === "login" ? LoginImage : RegisterImage}
-            width={500}
-            height={400}
+            width={450}
+            height={350}
             alt="auth"
             className="justify-self-center object-contain"
           />
         </div>
 
-        <div className="w-full md:w-2/5">
+        <div className="w-full lg:w-1/2">
           <CardHeader className="flex-col">
             <CardTitle className="text-[22px] lg:text-[24px] xl:text-[28px] text-color-primaryDark font-semibold">
               {type === "login" ? "Masuk ke Pintu Sewa" : "Daftar Dulu Yuk!"}

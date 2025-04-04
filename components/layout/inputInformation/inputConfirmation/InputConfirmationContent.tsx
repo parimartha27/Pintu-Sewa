@@ -46,7 +46,6 @@ const InputConfirmationContentLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

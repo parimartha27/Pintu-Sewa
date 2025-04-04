@@ -90,26 +90,18 @@ const DashboardBody = () => {
         setRecommendedProducts(recommended.output_schema);
         setNearCustomerProducts(nearCustomer.output_schema);
 
-        setLoading(false);
-
         console.log("mostRentedProducts:", mostRented.output_schema);
         console.log("RecommendedProducts:", recommended.output_schema);
         console.log("nearCustomerProducts:", nearCustomer.output_schema);
       } catch (err) {
         setError("Failed to fetch data" + err);
+      } finally{
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [userId, token]);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error: {error}</div>;
-  // }
 
   return (
     <div className="flex flex-col px-1 py-2 md:px-6 max-w-[1280px] mx-auto bg-color-layout pb-12 md:pb-[273px]">

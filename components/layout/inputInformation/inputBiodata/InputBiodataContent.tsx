@@ -130,7 +130,7 @@ const InputBiodataContent = () => {
     localStorage.setItem("handphone", handphone);
     localStorage.setItem("password", password);
     localStorage.setItem("gender", gender);
-    localStorage.setItem("date", formattedDate || ""); 
+    localStorage.setItem("date", formattedDate || "");
     localStorage.setItem("image", profileImage || "");
 
     router.push("/input-address");
@@ -160,19 +160,18 @@ const InputBiodataContent = () => {
       )}
       <div className="flex flex-col lg:flex-row-reverse w-full space-y-5">
         <div className="flex flex-col items-center w-full space-y-6 mt-5">
-          {profileImage && (
-            <Image
-              className="cursor-pointer w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] xl:w-[200px] xl:h-[200px] rounded-full border object-cover"
-              src={profileImage}
-              alt="Profile"
-              width={200}
-              height={200}
-              onClick={() => setIsModalOpen(true)}
-            />
-          )}
+          <Image
+            className="cursor-pointer w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] xl:w-[200px] xl:h-[200px] rounded-full border object-cover"
+            src={profileImage || Guest}
+            alt="Profile"
+            width={200}
+            height={200}
+            onClick={() => setIsModalOpen(true)}
+          />
+
           <label className="flex items-center gap-x-2 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark px-4 py-2 rounded-lg cursor-pointer">
             <Image
-              src={Upload || Guest}
+              src={Upload}
               alt="upload"
               width={18}
               height={18}

@@ -113,14 +113,17 @@ export const useAuthForm = (type?: string) => {
       if (type === "login") {
         await loginService({ ...data, password }, (response) => {
           if (response.error_schema.error_message === "SUCCESS") {
-            console.log("login token:" +  response?.output_schema?.token);
-            console.log("login userId:" +  response?.output_schema?.customer_id);
-            document.cookie = `token=${ response?.output_schema?.token }; path=/; Secure; SameSite=Lax`;
-            document.cookie = `userId=${ response?.output_schema?.customer_id }; path=/; Secure; SameSite=Lax`;
+            console.log("login token:" + response?.output_schema?.token);
+            console.log("login userId:" + response?.output_schema?.customer_id);
+            document.cookie = `token=${response?.output_schema?.token}; path=/; Secure; SameSite=Lax`;
+            document.cookie = `userId=${response?.output_schema?.customer_id}; path=/; Secure; SameSite=Lax`;
             localStorage.setItem("username", response?.output_schema?.username);
             localStorage.setItem("image", response?.output_schema?.image);
             localStorage.setItem("token", response?.output_schema?.token);
-            localStorage.setItem("userId", response?.output_schema?.customer_id);
+            localStorage.setItem(
+              "userId",
+              response?.output_schema?.customer_id
+            );
             console.log("Valid input, masuk ke Dashboard");
             router.push("/");
           }
@@ -133,17 +136,25 @@ export const useAuthForm = (type?: string) => {
               data.email ? "email" : "phone_number",
               data.email || data.phone_number
             );
-            document.cookie = `status=${ response?.output_schema?.status }; path=/; Secure; SameSite=Lax`;
-            localStorage.setItem("userId", response?.output_schema?.customer_id || "Tidak ada user id");
+            document.cookie = `status=${response?.output_schema?.status}; path=/; Secure; SameSite=Lax`;
+            localStorage.setItem(
+              "userId",
+              response?.output_schema?.customer_id || "Tidak ada user id"
+            );
             router.push("/otp");
-          }else{
+          } else {
             setAuthError(response?.error_schema?.error_message || " ");
           }
         });
       }
     } catch (error) {
-      setAuthError("Internal Server Error");
-      console.error("Error during authentication:", error);
+      const err = error as { status: number };
+
+      if (err.status === 401) {
+        setAuthError("Username atau Password Tidak Sesuai");
+      } else {
+        setAuthError("Terjadi kesalahan saat login");
+      }
     } finally {
       localStorage.setItem("otpType", "register");
       setIsLoading(false);
@@ -169,7 +180,7 @@ export const useAuthForm = (type?: string) => {
 
           await sendOauthData(userData, (response) => {
             if (response.error_schema?.error_message === "SUCCESS") {
-             document.cookie = `userId=${ response.output_schema.user_id }; path=/; Secure; SameSite=Lax`;
+              document.cookie = `userId=${response.output_schema.user_id}; path=/; Secure; SameSite=Lax`;
               router.push("/input-biodata");
             }
           });

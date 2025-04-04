@@ -10,9 +10,10 @@ import ProductCardSkeleton from "../fragments/ProductCardSkeleton";
 interface ProductListProps {
   products: ProductType[];
   loading: boolean;
+  numberCard?: number ;
 }
 
-const ProductList = ({ products, loading }: ProductListProps) => {
+const ProductList = ({ products, loading, numberCard=5 }: ProductListProps) => {
   return (
     <div className="w-full">
       <div className="md:hidden">
@@ -22,7 +23,7 @@ const ProductList = ({ products, loading }: ProductListProps) => {
               products.map((product: ProductType, index) => (
                 <CarouselItem key={index} className="basis-auto">
                   {loading &&
-                    Array.from({ length: 5 }).map((_, index) => (
+                    Array.from({ length: numberCard }).map((_, index) => (
                       <CarouselItem key={index} className="basis-auto">
                         <ProductCardSkeleton />
                       </CarouselItem>
@@ -36,7 +37,7 @@ const ProductList = ({ products, loading }: ProductListProps) => {
 
       <div className="hidden md:flex flex-wrap md:justify-center xl:justify-start gap-2 gap-y-12 mt-2 w-full">
         {loading &&
-          Array.from({ length: 5 }).map((_, index) => (
+          Array.from({ length: numberCard }).map((_, index) => (
               <ProductCardSkeleton key={index} />
           ))}
         {products &&

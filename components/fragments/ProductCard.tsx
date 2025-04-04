@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import RegisterImage from "@/public/register.svg";
 import Jam from "@/public/jam.svg";
 import Location from "@/public/location.svg";
 import Star from "@/public/star.svg";

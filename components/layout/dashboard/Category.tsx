@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Carousel,
   CarouselContent,
@@ -28,6 +28,7 @@ import PakaianWanita from "@/public/Kategori/Pakaian Wanita.svg";
 import Banner1 from "@/public/banner1.svg";
 import Banner2 from "@/public/banner2.svg";
 import Banner3 from "@/public/banner3.svg";
+import { ka } from "date-fns/locale";
 
 const categories = [
   { name: "Mobil", icon: Mobil },
@@ -49,6 +50,11 @@ const categories = [
 ];
 
 const Category = () => {
+  const router = useRouter();
+
+  const handleClick = (kategori: string) => {
+    router.push(`/product?category=${encodeURIComponent(kategori)}`);
+  };
   return (
     <>
       <div className="hidden md:block w-full max-h-[400px] mt-5 lg:mt-10 rounded-sm overflow-hidden">
@@ -84,17 +90,15 @@ const Category = () => {
           {categories.map((category, index) => (
             <div key={index} className="w-[100px] mr-3">
               <div className="h-auto mx-auto mb-1 flex flex-col items-center">
-                <Link href={""}>
-                  <Button className="bg-custom-gradient-tr p-2 rounded-sm shadow-md h-[60px] lg:h-[80px] w-[60px] lg:w-[80px] flex items-center justify-center hover:opacity-70 hover:transition hover:duration-100 hover:ease-in-out">
-                    <Image
-                      src={category.icon}
-                      width={40}
-                      height={40}
-                      alt={category.name}
-                      className="object-contain max-w-[30px] max-h-[30px] lg:max-w-[80px] lg:max-h-[80px]"
-                    />
-                  </Button>
-                </Link>
+                <Button onClick={() => handleClick(category.name)} className="bg-custom-gradient-tr p-2 rounded-sm shadow-md h-[60px] lg:h-[80px] w-[60px] lg:w-[80px] flex items-center justify-center hover:opacity-70 hover:transition hover:duration-100 hover:ease-in-out">
+                  <Image
+                    src={category.icon}
+                    width={40}
+                    height={40}
+                    alt={category.name}
+                    className="object-contain max-w-[30px] max-h-[30px] lg:max-w-[80px] lg:max-h-[80px]"
+                  />
+                </Button>
 
                 <h3 className="text-center text-color-primary text-[14px] font-medium mt-2">
                   {category.name}
@@ -117,7 +121,7 @@ const Category = () => {
             {categories.map((category, index) => (
               <CarouselItem key={index} className="basis-[auto] w-[80px]">
                 <div className="max-h-[100px] h-auto w-[60px] mx-auto mb-2 flex flex-col items-center">
-                  <Button className="bg-custom-gradient-tr p-2 rounded-xs h-[35px] w-[35px] flex-col items-center justify-center flex hover:opacity-70">
+                  <Button onClick={() => handleClick(category.name)} className="bg-custom-gradient-tr p-2 rounded-xs h-[35px] w-[35px] flex-col items-center justify-center flex hover:opacity-70">
                     <Image
                       src={category.icon}
                       width={40}
@@ -157,6 +161,6 @@ const Category = () => {
       </div> */}
     </>
   );
-}
+};
 
 export default Category;

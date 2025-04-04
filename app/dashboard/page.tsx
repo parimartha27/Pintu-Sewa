@@ -1,18 +1,13 @@
-"use client"
 import DashboardBody from "@/components/layout/dashboard/Body";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import useAuth from "@/hooks/auth/useAuth";
 
 const Dashboard = () => {
 
-  const {token, userId} = useAuth();
-  console.log("token di dashboard:", token);
-  console.log("userId di dashboard:", userId);
-
   return (
     <>
-      <Navbar token={token} />
+    <h1 className="hidden">Siap Sewa, Platform Sewa Menyewa Barang Terlengkap dan Terkini 2025</h1>
+      <Navbar />
         <DashboardBody/>
       <Footer />
     </>
