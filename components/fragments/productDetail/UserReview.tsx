@@ -15,9 +15,9 @@ const UserReview = ({ reviewDetail }: { reviewDetail: ReviewProps }) => {
           </h2>
           <div className="flex space-x-2">
             <div className="flex space-x-1 py-1">
-              {[...Array(reviewDetail.rating)].map((_, index) => (
+              {[...Array(Math.floor(reviewDetail.rating || 0))].map((_, i) => (
                 <Image
-                  key={index}
+                  key={i}
                   src={Star}
                   alt="star"
                   className="w-2 h-2 lg:w-[14px] lg:h-[12.73px]"
