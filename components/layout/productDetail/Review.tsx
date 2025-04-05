@@ -13,8 +13,9 @@ import CommentFilterBody from "@/components/fragments/productDetail/CommentFilte
 import FotoVideoPenyewa from "./FotoVideoPenyewa";
 import Link from "next/link";
 import UserReview from "@/components/fragments/productDetail/UserReview";
+import { ReviewProps } from "@/types/review";
 
-const Review = () => {
+const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
   return (
     <div className="px-2 pt-8 flex ">
       <div className="lg:flex flex-col hidden ">
@@ -58,8 +59,8 @@ const Review = () => {
 
         {/*User Comment Section*/}
         <div className="flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[300px] overflow-y-auto">
-          {[1, 2, 3].map((index) => (
-            <UserReview key={index} />
+          {reviewDetail.map((review) => (
+            <UserReview key={review.id} reviewDetail={review} />
           ))}
         </div>
         {/*User Comment Section*/}

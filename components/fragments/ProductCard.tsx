@@ -17,26 +17,14 @@ import {
 import Tag from "../Elements/Tag";
 import Rnb from "../Elements/Rnb";
 import { ProductType } from "@/types/product";
-
-const getMinDuration = (product: ProductType) => {
-  if (product.daily_price) return "1 Hari";
-  if (product.weekly_price) return "1 Minggu";
-  if (product.monthly_price) return "1 Bulan";
-  return "Tidak ada durasi";
-};
+import { formatToRupiah } from "@/hooks/useConvertRupiah";
+import { getMinDuration } from "@/hooks/useMinRentDuration";
 
 const getPrice = (product: ProductType) => {
-  const formatRupiah = (value: number) =>
-    new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
 
-  if (product.daily_price) return formatRupiah(product.daily_price);
-  if (product.weekly_price) return formatRupiah(product.weekly_price);
-  if (product.monthly_price) return formatRupiah(product.monthly_price);
+  if (product.daily_price) return formatToRupiah(product.daily_price);
+  if (product.weekly_price) return formatToRupiah(product.weekly_price);
+  if (product.monthly_price) return formatToRupiah(product.monthly_price);
 
   return "gratis";
 };
@@ -44,7 +32,7 @@ const getPrice = (product: ProductType) => {
 const ProductCard = ({ product }: { product: ProductType }) => {
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
-      <Link href={"/"}>
+      <Link href={`/product/${product.id}`}>
         <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
           <CardHeader className="relative h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg">
             <Image

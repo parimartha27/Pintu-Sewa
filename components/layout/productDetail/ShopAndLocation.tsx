@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import RegisterImage from "@/public/register.svg";
@@ -6,8 +8,11 @@ import Chat from "@/public/chat.svg";
 import Truck from "@/public/truck.svg";
 import Location from "@/public/location.svg";
 import { Button } from "@/components/ui/button";
+import { ShopProps } from "@/types/shop";
+import { useRouter } from "next/navigation";
 
-const ShopAndLocation = () => {
+const ShopAndLocation = ({shopDetail}: {shopDetail: ShopProps}) => {
+  const router = useRouter();
   return (
     <div className="w-full mt-7 flex flex-col px-2">
       <div className="flex justify-between border-y-[1px] border-[#D9D9D9]">
@@ -18,8 +23,8 @@ const ShopAndLocation = () => {
             className="w-[40px] h-[40px] lg:w-[50px] lg:h-[50px] rounded-md bg-amber-500"
           />
           <div className="flex flex-col">
-            <h2 className="text-[14px] lg:text-lg text-color-primary font-medium">
-              Nama Toko
+            <h2 onClick={() => router.push(`/shop/${shopDetail.id}`)} className="text-[14px] lg:text-sm text-color-primary font-medium hover:opacity-70 hover:cursor-pointer">
+              {shopDetail.name || "Shop Name"}
             </h2>
             <div className="flex space-x-[6px] items-center">
               <Image
@@ -28,10 +33,10 @@ const ShopAndLocation = () => {
                 className="w-[12px] h-[11px] lg:w-[15.4px] lg:h-[14px]"
               />
               <h4 className="font-normal text-[10px] lg:text-sm text-color-primary">
-                5.0
+               x.x
               </h4>
               <h4 className="font-normal text-[10px] lg:text-sm text-color-grayPrimary">
-                (40 ribu)
+                (xx ribu)
               </h4>
             </div>
           </div>
@@ -60,7 +65,7 @@ const ShopAndLocation = () => {
             className="w-[14px] h-[10px] lg:w-[16px] lg:h-[16px]"
           />
           <h4 className="text-[10px] lg:text-sm lg:font-medium text-color-primary">
-            Dikirim dari <span className="font-bold">Jakarta Utara</span>
+            Dikirim dari <span className="font-bold">{shopDetail.province}</span>
           </h4>
         </div>
         <div className="flex space-x-[6px]">
@@ -70,7 +75,7 @@ const ShopAndLocation = () => {
             className="w-[14px] h-[10px] lg:w-[16px] lg:h-[16px]"
           />
           <h4 className="text-[10px] lg:text-sm lg:font-medium text-color-primary">
-            Ongkir mulai Rp 50.000
+            Ongkir mulai Rp 50.000 (ini belum)
           </h4>
         </div>
       </div>

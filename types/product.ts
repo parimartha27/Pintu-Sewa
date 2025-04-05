@@ -1,4 +1,5 @@
 export interface ProductType {
+  id: string;
   name: string;
   category: string;
   rent_category: number;

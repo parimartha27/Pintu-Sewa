@@ -6,13 +6,9 @@ import { ProductType } from "@/types/product";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { ErrorSchema } from "@/types/errorSchema";
 
 const baseUrl = "https://pintu-sewa.up.railway.app/api/product";
-
-interface ErrorSchema {
-  error_code: string;
-  error_message: string;
-}
 
 interface ResponseSchema {
   error_schema: ErrorSchema;
@@ -36,6 +32,7 @@ const fetchNearCustomerProducts = async (
     const response = await axios.get(
       `${baseUrl}/near-customer?customerId=${customerId}`
     );
+
     return response.data;
   } catch (error) {
     console.error("Error fetching near customer products:", error);
@@ -71,8 +68,6 @@ const DashboardBody = () => {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("userId di body:", userId);
-    console.log("token di body:", token);
 
     setUserId(localStorage.getItem("userId"));
     setToken(localStorage.getItem("token"));
@@ -89,10 +84,7 @@ const DashboardBody = () => {
         setMostRentedProducts(mostRented.output_schema);
         setRecommendedProducts(recommended.output_schema);
         setNearCustomerProducts(nearCustomer.output_schema);
-
-        console.log("mostRentedProducts:", mostRented.output_schema);
-        console.log("RecommendedProducts:", recommended.output_schema);
-        console.log("nearCustomerProducts:", nearCustomer.output_schema);
+        
       } catch (err) {
         setError("Failed to fetch data" + err);
       } finally{

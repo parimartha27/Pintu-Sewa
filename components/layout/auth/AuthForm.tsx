@@ -161,7 +161,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                   </div>
                 )}
                 {isLoading && (
-                  <div className="flex justify-center items-center space-x-6">
+                  <div className="flex justify-center items-center space-x-6 mt-3">
                     <div className="h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>
                   </div>
                 )}

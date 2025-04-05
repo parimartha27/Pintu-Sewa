@@ -39,7 +39,7 @@ export const useAuthForm = (type?: string) => {
       return "";
     }
 
-    if (value === "") {
+    if (!value.trim()) {
       return "Mohon Untuk Mengisi Nomor HP atau Email Anda";
     }
 
@@ -92,8 +92,12 @@ export const useAuthForm = (type?: string) => {
     }
 
     if (type === "login") {
+      if(!emailOrPhone) {
+        setEmailOrPhoneError("Mohon Untuk Mengisi Nomor HP atau Email Anda Telebih Dahulu");
+        return;
+      }
       if (!password) {
-        setPasswordError("Field ini tidak boleh kosong");
+        setPasswordError("Mohon Untuk Mengisi Password Anda Telebih Dahulu");
         return;
       }
     }

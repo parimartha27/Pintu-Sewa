@@ -15,13 +15,15 @@ import FilterSidebar from "./product/FilterSidebar";
 import { Skeleton } from "../ui/skeleton";
 import optionDots from "@/public/optionDots.svg";
 import useAuth from "@/hooks/auth/useAuth";
+import Search from "@/public/search.svg";
+import Suggestion from "../fragments/navbar/Suggestion";
 
 interface NavbarProps {
   type?: string | null;
 }
 
 const Navbar = ({ type }: NavbarProps) => {
-  const {token} = useAuth();
+  const { token } = useAuth();
   const { data: session, status } = useSession();
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
@@ -29,25 +31,29 @@ const Navbar = ({ type }: NavbarProps) => {
   const [, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement | null>(null);
+  const [suggestionOpen, setSuggestionOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+
+      if (popupRef.current && !popupRef.current.contains(target)) {
         setOpen(false);
+      }
+
+      if (formRef.current && !formRef.current.contains(target)) {
+        setSuggestionOpen(false);
       }
     }
 
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (status !== "loading") {
@@ -58,7 +64,6 @@ const Navbar = ({ type }: NavbarProps) => {
         setProfileImage(session?.user?.image || Guest);
       }
 
-    
       if (token) {
         const image = localStorage.getItem("image");
         console.log("ada token: " + token);
@@ -96,34 +101,34 @@ const Navbar = ({ type }: NavbarProps) => {
         </div>
 
         {/* Search Bar Section */}
-        <div className="flex w-11/12 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0">
-          <form className="lg:w-11/12 lg:ml-10 w-full h-full">
+        <div className="flex w-11/12 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0 relative">
+          <form
+            className="lg:w-11/12 lg:ml-10 w-full h-full"
+            ref={formRef}
+            onClick={() => setSuggestionOpen(!suggestionOpen)}
+          >
             <div className="relative h-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-500"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
+              <Image src={Search} alt="search" />
               </div>
               <input
                 type="search"
-                id="default-search"
-                className="w-full h-full pl-10 pr-4 text-[12px] lg:text-[16px] bg-[#EDEDED] rounded-sm font-jakartaSans text-color-primary focus:ring-1 focus:ring-color-primaryDark focus:border-color-primaryDark outline-none"
+                className="w-full h-full pl-10 pr-4 py-5 text-[12px] lg:text-sm border-2 border-[#D9D9D9] border-opacity-75 rounded-sm font-jakartaSans text-color-primary focus:ring-0 focus:ring-color-secondary focus:border-color-secondary outline-none"
                 placeholder="Cari barang pengen disewa"
               />
+
+              {suggestionOpen && (
+                <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-md mt-1 z-50 max-h-[400px]">
+
+                  <Suggestion type="history" title="Sepeda Polygon"/>
+                  <Suggestion type="search" title="Kamera Canon EOS R"/>
+                  <Suggestion type="shop" title="toko jaya wijaya" image={Toko}/>
+                  
+                </div>
+              )}
             </div>
           </form>
+
           <Button className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:bg-blue-900">
             Cari
           </Button>

@@ -9,7 +9,7 @@ import ProductCardSkeleton from "../fragments/ProductCardSkeleton";
 
 interface ProductListProps {
   products: ProductType[];
-  loading: boolean;
+  loading?: boolean;
   numberCard?: number ;
 }
 

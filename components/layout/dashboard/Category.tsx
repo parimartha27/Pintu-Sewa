@@ -28,7 +28,6 @@ import PakaianWanita from "@/public/Kategori/Pakaian Wanita.svg";
 import Banner1 from "@/public/banner1.svg";
 import Banner2 from "@/public/banner2.svg";
 import Banner3 from "@/public/banner3.svg";
-import { ka } from "date-fns/locale";
 
 const categories = [
   { name: "Mobil", icon: Mobil },
@@ -55,6 +54,7 @@ const Category = () => {
   const handleClick = (kategori: string) => {
     router.push(`/product?category=${encodeURIComponent(kategori)}`);
   };
+  
   return (
     <>
       <div className="hidden md:block w-full max-h-[400px] mt-5 lg:mt-10 rounded-sm overflow-hidden">

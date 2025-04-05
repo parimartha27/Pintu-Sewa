@@ -88,7 +88,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
         <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 xl:pb-0">
           <div className="flex flex-col md:flex-row items-center mt-6 w-full md:w-2/3 md:space-x-16 lg:space-x-30">
             <div className="flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12">
-              <Section title="Username" className="text-center lg:text-start">
+              <Section title="Username" className="text-center lg:text-start self-center md:self-start">
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -111,7 +111,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
               </Section>
               <Section
                 title="Jenis Kelamin"
-                className="text-center lg:text-start"
+                className="text-center lg:text-start self-center md:self-start"
               >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
@@ -127,7 +127,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
             <div className="flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12">
               <Section
                 title="Nama Lengkap"
-                className="text-center lg:text-start"
+                className="text-center lg:text-start self-center md:self-start"
               >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
@@ -139,7 +139,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
               </Section>
               <Section
                 title="Nomor Telepon"
-                className="text-center lg:text-start"
+                className="text-center lg:text-start self-center md:self-start"
               >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
@@ -151,7 +151,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
               </Section>
               <Section
                 title="Tanggal Lahir"
-                className="text-center lg:text-start"
+                className="text-center lg:text-start self-center md:self-start"
               >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
@@ -197,7 +197,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
         <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 lg:pb-0">
           <div className="flex flex-col md:flex-row w-full md:space-x-5 mb-6">
             <div className="flex flex-col mx-auto md:mx-0 w-1/2 lg:mr-12">
-              <Section title="Jalan" className="text-center lg:text-start">
+              <Section title="Jalan" className="text-center lg:text-start self-center md:self-start">
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -208,7 +208,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
               </Section>
               <Section
                 title="Kabupaten / Kota"
-                className="text-center lg:text-start"
+                className="text-center lg:text-start self-center md:self-start"
               >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
@@ -218,7 +218,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   </h4>
                 )}
               </Section>
-              <Section title="Kode Pos" className="text-center lg:text-start">
+              <Section title="Kode Pos" className="text-center lg:text-start self-center md:self-start">
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -230,7 +230,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
             </div>
 
             <div className="flex flex-col mx-auto md:mx-0 w-1/2 lg:mr-12">
-              <Section title="Kecamatan" className="text-center lg:text-start">
+              <Section title="Kecamatan" className="text-center lg:text-start self-center md:self-start">
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -239,7 +239,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   </h4>
                 )}
               </Section>
-              <Section title="Provinsi" className="text-center lg:text-start">
+              <Section title="Provinsi" className="text-center lg:text-start self-center md:self-start">
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -248,7 +248,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   </h4>
                 )}
               </Section>
-              <Section title="Catatan" className="text-center lg:text-start">
+              <Section title="Catatan" className="text-center lg:text-start self-center md:self-start">
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
