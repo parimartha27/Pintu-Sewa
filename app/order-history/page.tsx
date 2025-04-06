@@ -3,12 +3,13 @@ import Navbar from "@/components/layout/Navbar";
 import OrderHistoryBody from "@/components/layout/orderHistory/Body";
 
 const OrderHistoryPage = () => {
-    return(<>
-    <Navbar/>
-    <OrderHistoryBody/>
-    <Footer/>
-    
-    </>);
-}
+  return (
+    <>
+      <Navbar />
+      <OrderHistoryBody />
+      <Footer />
+    </>
+  );
+};
 
-export default OrderHistoryPage
+export default OrderHistoryPage;

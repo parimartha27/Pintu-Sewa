@@ -12,7 +12,7 @@ const useAuth = () => {
     };
     
     setToken(getCookie('token'));
-    setUserId(getCookie('userId'));
+    setUserId(getCookie('customerId'));
   }, []);
 
   return { token, userId };

@@ -120,16 +120,18 @@ export const useAuthForm = (type?: string) => {
             console.log("login token:" + response?.output_schema?.token);
             console.log("login userId:" + response?.output_schema?.customer_id);
             document.cookie = `token=${response?.output_schema?.token}; path=/; Secure; SameSite=Lax`;
-            document.cookie = `userId=${response?.output_schema?.customer_id}; path=/; Secure; SameSite=Lax`;
+            document.cookie = `customerId=${response?.output_schema?.customer_id}; path=/; Secure; SameSite=Lax`;
             localStorage.setItem("username", response?.output_schema?.username);
             localStorage.setItem("image", response?.output_schema?.image);
             localStorage.setItem("token", response?.output_schema?.token);
             localStorage.setItem(
-              "userId",
+              "customerId",
               response?.output_schema?.customer_id
             );
             console.log("Valid input, masuk ke Dashboard");
             router.push("/");
+          }else{
+            setAuthError(response?.error_schema?.error_message || " ");
           }
         });
       } else if (type === "register" && isChecked) {
@@ -142,7 +144,7 @@ export const useAuthForm = (type?: string) => {
             );
             document.cookie = `status=${response?.output_schema?.status}; path=/; Secure; SameSite=Lax`;
             localStorage.setItem(
-              "userId",
+              "customerId",
               response?.output_schema?.customer_id || "Tidak ada user id"
             );
             router.push("/otp");

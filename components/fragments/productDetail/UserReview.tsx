@@ -11,7 +11,7 @@ const UserReview = ({ reviewDetail }: { reviewDetail: ReviewProps }) => {
         <Image src={Guest} alt="guest" className="w-8 h-8 lg:w-10 lg:h-10" />
         <div className="flex flex-col">
           <h2 className="text-[12px] lg:text-[16px] text-color-primary font-medium lg:font-semibold">
-            {reviewDetail.customer_id}
+            {reviewDetail.username}
           </h2>
           <div className="flex space-x-2">
             <div className="flex space-x-1 py-1">
@@ -25,7 +25,7 @@ const UserReview = ({ reviewDetail }: { reviewDetail: ReviewProps }) => {
               ))}
             </div>
             <h3 className="text-[10px] lg:text-xs text-color-primary mt-1 ">
-              XX jam yang lalu
+              {reviewDetail.time_ago}
             </h3>
           </div>
         </div>

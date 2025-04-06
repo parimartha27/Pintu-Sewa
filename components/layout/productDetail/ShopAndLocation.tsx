@@ -33,10 +33,10 @@ const ShopAndLocation = ({shopDetail}: {shopDetail: ShopProps}) => {
                 className="w-[12px] h-[11px] lg:w-[15.4px] lg:h-[14px]"
               />
               <h4 className="font-normal text-[10px] lg:text-sm text-color-primary">
-               x.x
+               {shopDetail.rating}
               </h4>
               <h4 className="font-normal text-[10px] lg:text-sm text-color-grayPrimary">
-                (xx ribu)
+                review: {shopDetail.total_reviewed_times} kali
               </h4>
             </div>
           </div>

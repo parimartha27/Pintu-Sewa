@@ -1,8 +1,11 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductContentLayout from "./ProductContent";
 import ReviewContentLayout from "./ReviewContentLayout";
+import { ShopProps } from "@/types/shop";
 
-const ShopContentLayout = () => {
+
+
+const ShopContentLayout = ({data}: {data: ShopProps}) => {
     return (
         <div className="flex flex-col lg:flex-row space-x-6 w-full">
             <Tabs defaultValue="product" className="w-full bg-white">
@@ -10,7 +13,7 @@ const ShopContentLayout = () => {
                     <TabsTrigger value="product" className="text-lg lg:text-base">Produk</TabsTrigger>
                     <TabsTrigger value="review" className="text-lg lg:text-base">Ulasan</TabsTrigger>
                 </TabsList>
-                <TabsContent value="product" className="pt-8"><ProductContentLayout/></TabsContent>
+                <TabsContent value="product" className="pt-8"><ProductContentLayout data={data}/></TabsContent>
                 <TabsContent value="review" className="pt-8"><ReviewContentLayout/></TabsContent>
             </Tabs>
         </div>

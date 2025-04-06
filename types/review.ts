@@ -1,7 +1,8 @@
 export interface ReviewProps {
     id: string;
-    customer_id: string;
+    username: string;
     comment: string;
-    image: string;
+    image: string[];
     rating: number;
+    time_ago:string;
   }

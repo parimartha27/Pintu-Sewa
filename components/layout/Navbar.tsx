@@ -14,7 +14,7 @@ import { Button } from "../ui/button";
 import FilterSidebar from "./product/FilterSidebar";
 import { Skeleton } from "../ui/skeleton";
 import optionDots from "@/public/optionDots.svg";
-import useAuth from "@/hooks/auth/useAuth";
+// import useAuth from "@/hooks/auth/useAuth";
 import Search from "@/public/search.svg";
 import Suggestion from "../fragments/navbar/Suggestion";
 
@@ -23,10 +23,10 @@ interface NavbarProps {
 }
 
 const Navbar = ({ type }: NavbarProps) => {
-  const { token } = useAuth();
+  const [token,] = useState<string>(localStorage.getItem("token") || "");
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [username, setUsername] = useState<string>("");
+  const [username, setUsername] = useState<string>(localStorage.getItem("username") || "Guest");
   const [profileImage, setProfileImage] = useState<string>("");
   const [, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -64,6 +64,7 @@ const Navbar = ({ type }: NavbarProps) => {
         setProfileImage(session?.user?.image || Guest);
       }
 
+      console.log("token: " + token);
       if (token) {
         const image = localStorage.getItem("image");
         console.log("ada token: " + token);
@@ -80,7 +81,7 @@ const Navbar = ({ type }: NavbarProps) => {
         }
       }
     }
-  }, [status, session, token]);
+  }, []);
 
   return (
     <div className="flex flex-col w-full sticky top-0 z-50">

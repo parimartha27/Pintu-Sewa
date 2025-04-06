@@ -40,6 +40,7 @@ const ProductDescription = ({
   productDetail: ProductDetailProps;
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  
 
   console.log(productDetail.shop)
   return (
@@ -153,7 +154,7 @@ const ProductDescription = ({
               <div className="flex space-x-2">
                 <Image src={Box} alt="jam" className="w-[16px] h-[16px]" />
                 <h3 className="text-[12px] xl:text-[14px]  text-color-primary font-normal">
-                  Min. Jumlah Sewa: <span className="font-bold">1 Buah</span>
+                  Min. Jumlah Sewa: <span className="font-bold">{productDetail.min_rented}</span>
                 </h3>
               </div>
               <div className="flex flex-col">

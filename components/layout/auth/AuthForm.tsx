@@ -181,7 +181,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
             </form>
             <div className="my-3 flex justify-center xl:justify-start space-x-2 items-center">
               <hr className="hidden xl:block w-1/3 border-t border-gray-500" />
-              <h4 className="my-3 text-xs xl:text-[14px] text-gray-500">
+              <h4 className="my-3 text-xs xl:text-[14px] text-gray-500 text-center w-1/3">
                 atau masuk dengan
               </h4>
               <hr className="hidden xl:block w-1/3 border-t border-gray-500" />

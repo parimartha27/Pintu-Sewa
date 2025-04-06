@@ -28,7 +28,7 @@ const InputBiodataContent = () => {
   const [handphone, setHandphone] = useState("");
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("Laki-Laki");
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -39,6 +39,7 @@ const InputBiodataContent = () => {
     password: "",
     date: "",
   });
+
   useEffect(() => {
     setDate(
       localStorage.getItem("date")
@@ -52,7 +53,7 @@ const InputBiodataContent = () => {
     setHandphone(localStorage.getItem("handphone") || "");
     setPassword(localStorage.getItem("password") || "");
     setGender(localStorage.getItem("gender") || "");
-    setProfileImage(localStorage.getItem("image") || Guest);
+    setProfileImage(localStorage.getItem("image") || Guest.src);
   }, []);
 
   const validateEmail = (value: string) => {
@@ -149,7 +150,7 @@ const InputBiodataContent = () => {
             </button>
 
             <Image
-              src={profileImage || Guest}
+              src={profileImage?.trim() === "" ?  profileImage : Guest}
               alt="Profile Full Size"
               width={300}
               height={300}

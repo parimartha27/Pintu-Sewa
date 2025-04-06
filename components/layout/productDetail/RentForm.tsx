@@ -14,12 +14,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { ProductDetailProps } from "@/types/productDetail";
 
-const RentForm = () => {
+const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [qty, setQty] = useState<number>(1);
-  const [max] = useState<number>(8);
+  const max = productDetail.stock;
 
   function handleDecreaseQty() {
     if (qty > 1) setQty(qty - 1);
@@ -29,11 +30,20 @@ const RentForm = () => {
     if (qty < max) setQty(qty + 1);
   }
 
+  function calculateTotal() {
+    if (!startDate || !endDate) return 0;
+    const diffInTime = endDate.getTime() - startDate.getTime();
+    const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24)) || 1;
+    return productDetail.daily_price * qty * diffInDays;
+  }
+
   return (
     <div className="flex flex-col mt-[15px] md:mt-[60px] xl:max-w-[400px] xl:w-full pt-3 lg:pt-7 pb-4 xl:pb-[35px] px-3 xl:px-7 shadow-md outline-none bg-white">
       <h2 className="text-[14px] xl:text-[18px] text-color-primary font-medium">
         Formulir Penyewaan
       </h2>
+
+      {/* PERIODE SEWA */}
       <div className="flex space-x-2 mt-[27px] items-center">
         <Image
           src={CalendarImage}
@@ -44,7 +54,9 @@ const RentForm = () => {
           Periode Sewa
         </h4>
       </div>
+
       <div className="flex mt-[14px] space-x-[6px] items-center">
+        {/* TANGGAL MULAI */}
         <div className="flex flex-col space-y-[6px]">
           <h4 className="text-[10px] xl:text-xs font-normal text-color-primary">
             Mulai
@@ -74,7 +86,10 @@ const RentForm = () => {
             </PopoverContent>
           </Popover>
         </div>
+
         <h4 className="text-color-primary mt-5">-</h4>
+
+        {/* TANGGAL SELESAI */}
         <div className="flex flex-col space-y-[6px]">
           <h4 className="text-[10px] xl:text-xs font-normal text-color-primary">
             Selesai
@@ -105,37 +120,45 @@ const RentForm = () => {
           </Popover>
         </div>
       </div>
+
+      {/* QUANTITY */}
       <div className="flex flex-col mt-[14px] space-y-[4px]">
         <div className="flex flex-col space-y-[6px]">
           <h2 className="text-[12px] xl:text-sm font-medium text-color-primary">
             Quantity
           </h2>
           <div className="flex space-x-[7px] xl:space-x-6 px-2.5 xl:px-3 py-3 items-center border-[1px] border-[#73787B] bg-transparent w-full max-w-[60px] xl:max-w-[100px] h-[20px] rounded-sm">
-            <button onClick={handleDecreaseQty} className="hover:opacity-75 ">
+            <button onClick={handleDecreaseQty} className="hover:opacity-75">
               -
             </button>
-            <h4 className=" block text-[12px] text-color-primary">{qty}</h4>
-            <button
-              className="mb-[2px] hover:opacity-75 "
-              onClick={handleIncreaseQty}
-            >
+            <h4 className="block text-[12px] text-color-primary">{qty}</h4>
+            <button onClick={handleIncreaseQty} className="mb-[2px] hover:opacity-75">
               +
             </button>
           </div>
         </div>
         <h3 className="text-[8px] xl:text-[10px] text-color-grayPrimary font-normal">
-          Max. sewa 8 buah
+          Max. sewa {productDetail.stock} buah
         </h3>
+
+        {productDetail.rnb && (
+          <p className="text-[10px] text-color-grayPrimary mt-1">
+            Minimal sewa {productDetail.min_rented} hari
+          </p>
+        )}
       </div>
 
+      {/* SUBTOTAL */}
       <div className="flex justify-between items-center w-full mt-3">
         <h3 className="text-normal text-color-primary text-[12px] xl:text-[14px]">
           Subtotal
         </h3>
         <h2 className="text-lg xl:text-[20px] text-color-primaryDark font-bold">
-          Rp 500.000
+          Rp {calculateTotal().toLocaleString("id-ID")}
         </h2>
       </div>
+
+      {/* BUTTONS */}
       <div className="flex flex-col mt-[14px] space-y-3">
         <Button className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]">
           <Image
@@ -147,7 +170,7 @@ const RentForm = () => {
         </Button>
         <Button className="w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px]">
           <Image src={Cart} alt="cart" className="w-3 h-[14px] xl:w-5 xl:h-5" />
-          <h4 className="text-[12px] xl:text-lg font-medium text-color-primaryDark ">
+          <h4 className="text-[12px] xl:text-lg font-medium text-color-primaryDark">
             Keranjang
           </h4>
         </Button>

@@ -5,7 +5,6 @@ import RentForm from "./RentForm";
 import Review from "./Review";
 import ShopAndLocation from "./ShopAndLocation";
 import ProductList from "../ProductList";
-import { ProductListType } from "@/types/productList";
 import { useParams } from "next/navigation";
 import {
   ProductDetailProps,
@@ -14,19 +13,32 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorSchema } from "@/types/errorSchema";
+import { ProductType } from "@/types/product";
 
-const baseUrl = "https://pintu-sewa.up.railway.app/api/product";
+const baseUrl = "https://pintu-sewa.up.railway.app/api";
 
-const ProductDetailBody = ({ products }: ProductListType) => {
+interface ProductDitokoProps{
+  error_schema:ErrorSchema,
+  output_schema:ProductType[];
+}
+
+
+const ProductDetailBody = () => {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<ProductDetailProps>();
   const [loading, setLoading] = useState(true);
+  const[shopProducts, setShopProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get<ProductDetailResponse>(`${baseUrl}/${id}`);
+        const res = await axios.get<ProductDetailResponse>(`${baseUrl}/product/${id}`);
         setProductDetail(res.data.output_schema);
+
+        const res2 = await axios.get<ProductDitokoProps>(`${baseUrl}/product/shop/${res.data.output_schema.shop?.id}`);
+        setShopProducts(res2.data?.output_schema);
+        
         console.log("Product Detail:", res.data.output_schema);
       } catch (error) {
         console.error("Failed to fetch product detail:", error);
@@ -44,7 +56,7 @@ const ProductDetailBody = ({ products }: ProductListType) => {
     <div className="flex flex-col px-0 py-0 md:px-6 max-w-[1300px] min-h-screen mx-auto bg-color-layout pb-12 md:pb-[273px]">
       <div className="flex flex-col md:flex-row">
         {productDetail && <ProductDescription productDetail={productDetail} />}
-        <RentForm />
+        <RentForm productDetail={productDetail as ProductDetailProps}/>
       </div>
       <div className="flex flex-col space-y-3">
         <div className="lg:hidden">
@@ -60,7 +72,7 @@ const ProductDetailBody = ({ products }: ProductListType) => {
           <h2 className="text-lg xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
             Barang lainnya di toko ini
           </h2>
-          <ProductList products={products} />
+          <ProductList products={shopProducts} />
         </div>
       </div>
     </div>
@@ -71,7 +83,7 @@ export default ProductDetailBody;
 
 const ProductDetailSkeleton = () => {
   return (
-    <div className="flex flex-col px-0 py-0 md:px-6 max-w-[1300px] mx-auto bg-color-layout pb-12 md:pb-[273px]">
+    <div className="flex flex-col px-0 py-0 md:px-6 mt-12 max-w-[1300px] mx-auto bg-color-layout pb-12 md:pb-[273px]">
       <div className="flex flex-col md:flex-row w-full gap-6">
         <div className="hidden xl:flex flex-col w-full max-w-[406px]">
           <Skeleton className="bg-slate-300 w-[406px] h-[403px] rounded-md" />

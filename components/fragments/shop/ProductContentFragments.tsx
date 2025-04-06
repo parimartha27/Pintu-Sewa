@@ -10,51 +10,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { ShopProps } from "@/types/shop";
 
-const Products = [
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  },
-  {
-    name: "sepatu",
-  }
-];
 
-const ProductContent = () => {
+const ProductContent = ({data}: {data: ShopProps}) => {
   return (
     <div className="flex flex-col w-full h-auto space-y-3 md:space-y-16">
       <div className="w-full xl:pl-6 flex flex-col">
-        <ProductList products={Products}></ProductList>
+        <ProductList products={data.products} numberCard={12}></ProductList>
       </div>
       <Pagination>
         <PaginationContent>

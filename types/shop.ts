@@ -1,3 +1,5 @@
+import { ProductType } from "./product";
+
 export interface ShopProps {
     id: string;
     name: string;
@@ -10,4 +12,9 @@ export interface ShopProps {
     regency: string;
     province: string;
     post_code: string;
+    rating:string;
+    total_reviewed_times:number;
+    customer_id:string;
+    products:ProductType[]
+    work_hours:string
   }

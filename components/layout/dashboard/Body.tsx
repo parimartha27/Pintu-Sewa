@@ -64,12 +64,12 @@ const DashboardBody = () => {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
-  const [userId, setUserId] = useState<string | null>(null);
+  const [customerId, setCustomerId] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
 
-    setUserId(localStorage.getItem("userId"));
+    setCustomerId(localStorage.getItem("customerId"));
     setToken(localStorage.getItem("token"));
 
     const fetchData = async () => {
@@ -78,12 +78,14 @@ const DashboardBody = () => {
         const [mostRented, recommended, nearCustomer] = await Promise.all([
           fetchMostRentedProducts(),
           fetchRecommendedProducts(),
-          fetchNearCustomerProducts(userId || ""),
+          fetchNearCustomerProducts(customerId || ""),
         ]);
 
         setMostRentedProducts(mostRented.output_schema);
         setRecommendedProducts(recommended.output_schema);
         setNearCustomerProducts(nearCustomer.output_schema);
+
+        console.log(mostRented.output_schema);
         
       } catch (err) {
         setError("Failed to fetch data" + err);
@@ -93,7 +95,7 @@ const DashboardBody = () => {
     };
 
     fetchData();
-  }, [userId, token]);
+  }, [customerId, token]);
 
   return (
     <div className="flex flex-col px-1 py-2 md:px-6 max-w-[1280px] mx-auto bg-color-layout pb-12 md:pb-[273px]">

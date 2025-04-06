@@ -39,7 +39,7 @@ const ProductBody = () => {
 
   const category = searchParams.get("category") || "";
   const page = parseInt(searchParams.get("page") || "1");
-  const size = 16;
+  const size = 2;
   const sort = "name,desc";
 
   const [products, setProducts] = useState<ProductType[]>([]);

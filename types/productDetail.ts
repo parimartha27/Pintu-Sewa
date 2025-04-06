@@ -4,7 +4,7 @@ import { ShopProps } from "./shop";
 
 export interface ProductDetailResponse {
   error_schema: ErrorSchema;
-  output_schema: ProductDetail;
+  output_schema: ProductDetailProps;
 }
 
 export interface ProductDetailProps {
@@ -30,4 +30,5 @@ export interface ProductDetailProps {
   shop: ShopProps;
   reviews: ReviewProps[];
   rnb: boolean;
+  min_rented:number;
 }

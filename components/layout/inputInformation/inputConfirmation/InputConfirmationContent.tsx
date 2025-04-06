@@ -52,7 +52,7 @@ const InputConfirmationContentLayout = () => {
     setLoading(true);
     try {
       const payload: CustomerRequest = {
-        id: localStorage.getItem("customer_id") || "",
+        id: localStorage.getItem("customerId") || "",
         username: localStorage.getItem("username") || "",
         name: localStorage.getItem("fullname") || "",
         street: localStorage.getItem("jalan") || "",
@@ -80,9 +80,11 @@ const InputConfirmationContentLayout = () => {
         localStorage.clear();
         localStorage.setItem("username", username);
         localStorage.setItem("image", response.data.output_schema.image);
+        localStorage.setItem("token", response.data.output_schema.token);
+        localStorage.setItem("customerId", response.data.output_schema.customer_id);
         
         document.cookie = `token=${response.data.output_schema?.token || ""}; path=/; Secure; SameSite=Lax`;
-        document.cookie = `userId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`;
+        document.cookie = `customerId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`;
         router.push("/");
       } else {
         alert("Registrasi gagal: " + response.data.error_schema.error_message);
