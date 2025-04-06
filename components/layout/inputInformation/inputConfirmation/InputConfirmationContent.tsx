@@ -24,7 +24,7 @@ interface CustomerRequest {
   birth_date: string;
   post_code: string;
   password: string;
-  note?: string;
+  notes?: string;
 }
 
 interface CustomerResponse {
@@ -65,7 +65,7 @@ const InputConfirmationContentLayout = () => {
         birth_date: localStorage.getItem("date") || "",
         post_code: localStorage.getItem("kodepos") || "",
         password: localStorage.getItem("password") || "",
-        note: localStorage.getItem("catatan") || "",
+        notes: localStorage.getItem("catatan") || "",
       };
 
       console.log(payload);

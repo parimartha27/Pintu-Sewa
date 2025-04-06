@@ -29,20 +29,20 @@ interface ProfileResponse {
 }
 
 const ProfileBody = () => {
-  const userId = localStorage.getItem("userId");
+  const customerId = localStorage.getItem("customerId");
   const [customerData, setCustomerData] = useState<ProfileResponse>();
   const [loading, setLoading] = useState(true);
   const [, setError] = useState("");
 
   useEffect(() => {
-    if (!userId) {
+    if (!customerId) {
       setError("User ID tidak ditemukan di localStorage.");
       setLoading(false);
       return;
     }
 
     axios
-      .get(`${baseUrl}/${userId}`)
+      .get(`${baseUrl}/${customerId}`)
       .then((res) => {
         if (res.data.error_schema?.error_code === "PS-00-000") {
           setCustomerData(res.data.output_schema);
