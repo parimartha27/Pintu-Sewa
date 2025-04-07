@@ -1,4 +1,5 @@
 import AddressForm from "./AddressForm";
+import CheckoutSkeleton from "./CheckoutSkeleton";
 import MetodePembayaranLayout from "./MetodePembayaran";
 import CheckoutProductForm from "./ProductForm";
 
@@ -10,6 +11,7 @@ const CheckOutBody = () => {
           <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">
             Pembayaran
           </h2>
+          {/* <CheckoutSkeleton/> */}
           <AddressForm />
         </div>
         <div className="flex flex-col max-h-[1100px] pb-3 pt-0 overflow-y-scroll mt-8">

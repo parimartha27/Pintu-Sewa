@@ -74,6 +74,32 @@ const ProductBody = () => {
     router.push(`/product?${query.toString()}`);
   };
 
+  const getMiddlePages = (
+    current: number,
+    total: number,
+    rangeCount: number = 5
+  ): (number | "...")[] => {
+    const pages: (number | "...")[] = [];
+
+    const half = Math.floor(rangeCount / 2);
+    let start = Math.max(current - half, 2);
+    const end = Math.min(start + rangeCount - 1, total - 1);
+
+    if (end - start < rangeCount - 1) {
+      start = Math.max(end - rangeCount + 1, 2);
+    }
+
+    if (start > 2) pages.push("...");
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    if (end < total - 1) pages.push("...");
+
+    return pages;
+  };
+
+  const middlePages = getMiddlePages(page, totalPages);
+
   return (
     <div className="flex flex-col px-1 py-2 md:px-6 max-w-[1400px] h-auto mx-auto bg-color-layout pb-12 md:pb-[133px]">
       <div className="flex flex-col mt-[60px] w-full">
@@ -94,6 +120,7 @@ const ProductBody = () => {
               />
             </div>
 
+           
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
@@ -103,33 +130,53 @@ const ProductBody = () => {
                   />
                 </PaginationItem>
 
-                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => (
-                  <PaginationItem key={i}>
-                    <PaginationLink
-                      href="#"
-                      className="text-[14px] text-color-primary"
-                      onClick={() => goToPage(i + 1)}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
+                {/* Page 1 always visible */}
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    className={`text-[14px] text-color-primary ${
+                      page === 1 ? "font-bold underline" : ""
+                    }`}
+                    onClick={() => goToPage(1)}
+                  >
+                    1
+                  </PaginationLink>
+                </PaginationItem>
 
-                {totalPages > 5 && (
-                  <>
-                    <PaginationItem>
+                {/* Middle pages with "..." */}
+                {middlePages.map((p, i) =>
+                  p === "..." ? (
+                    <PaginationItem key={`ellipsis-${i}`}>
                       <PaginationEllipsis />
                     </PaginationItem>
-                    <PaginationItem>
+                  ) : (
+                    <PaginationItem key={p}>
                       <PaginationLink
                         href="#"
-                        className="text-[14px] text-color-primary"
-                        onClick={() => goToPage(totalPages)}
+                        className={`text-[14px] text-color-primary ${
+                          p === page ? "font-bold underline" : ""
+                        }`}
+                        onClick={() => goToPage(Number(p))}
                       >
-                        {totalPages}
+                        {p}
                       </PaginationLink>
                     </PaginationItem>
-                  </>
+                  )
+                )}
+
+                {/* Last page always visible */}
+                {totalPages > 1 && (
+                  <PaginationItem>
+                    <PaginationLink
+                      href="#"
+                      className={`text-[14px] text-color-primary ${
+                        page === totalPages ? "font-bold underline" : ""
+                      }`}
+                      onClick={() => goToPage(totalPages)}
+                    >
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
                 )}
 
                 <PaginationItem>

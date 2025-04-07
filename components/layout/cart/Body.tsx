@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import CartProductForm from "./ProductForm";
 import Image from "next/image";
 import Next from "@/public/next.svg";
+import CartSkeleton from "./CartSkeleton";
 // import NoCart from "@/public/noCart.svg";
 // import Link from "next/link";
 
@@ -15,6 +16,8 @@ const CartBody = () => {
       <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">
         Keranjang Sewa
       </h2>
+
+      {/* <CartSkeleton/> */}
 
       {/* Jika tidak ada barang pada cart  */}
       {/* <div className="flex flex-col space-y-6 w-full justify-center items-center py-20 ">

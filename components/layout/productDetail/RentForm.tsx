@@ -15,10 +15,20 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 import { ProductDetailProps } from "@/types/productDetail";
+import { formatToRupiah } from "@/hooks/useConvertRupiah";
 
 const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset jam biar hanya bandingin tanggal
+
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    () => new Date()
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  });
   const [qty, setQty] = useState<number>(1);
   const max = productDetail.stock;
 
@@ -32,11 +42,70 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
   function calculateTotal() {
     if (!startDate || !endDate) return 0;
+
     const diffInTime = endDate.getTime() - startDate.getTime();
-    const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24)) || 1;
-    return productDetail.daily_price * qty * diffInDays;
+    const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
+    const days = diffInDays < 1 ? 1 : diffInDays;
+
+    let total = 0;
+
+    if (days % 30 === 0) {
+      const months = days / 30;
+      total = productDetail.monthly_price * months * qty;
+    } else if (days % 7 === 0) {
+      const weeks = days / 7;
+      total = productDetail.weekly_price * weeks * qty;
+    } else {
+      total = productDetail.daily_price * days * qty;
+    }
+
+    return formatToRupiah(total);
   }
 
+  const handleSelectStartDate = (date: Date | undefined) => {
+    if (!date) return;
+
+    const selected = new Date(date);
+    selected.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selected < today) {
+      alert("Tanggal mulai tidak boleh sebelum hari ini");
+      return;
+    }
+
+    if (endDate && selected > endDate) {
+      alert("Tanggal mulai tidak boleh setelah tanggal selesai");
+      return;
+    }
+
+    setStartDate(selected);
+  };
+
+  const handleSelectEndDate = (date: Date | undefined) => {
+    if (!date) return;
+
+    const selected = new Date(date);
+    selected.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selected < today) {
+      alert("Tanggal selesai tidak boleh sebelum hari ini");
+      return;
+    }
+
+    if (startDate && selected < startDate) {
+      alert("Tanggal selesai tidak boleh sebelum tanggal mulai");
+      return;
+    }
+
+    setEndDate(selected);
+  };
+  
   return (
     <div className="flex flex-col mt-[15px] md:mt-[60px] xl:max-w-[400px] xl:w-full pt-3 lg:pt-7 pb-4 xl:pb-[35px] px-3 xl:px-7 shadow-md outline-none bg-white">
       <h2 className="text-[14px] xl:text-[18px] text-color-primary font-medium">
@@ -80,7 +149,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
               <Calendar
                 mode="single"
                 selected={startDate}
-                onSelect={setStartDate}
+                onSelect={handleSelectStartDate}
                 initialFocus
               />
             </PopoverContent>
@@ -113,7 +182,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
               <Calendar
                 mode="single"
                 selected={endDate}
-                onSelect={setEndDate}
+                onSelect={handleSelectEndDate}
                 initialFocus
               />
             </PopoverContent>
@@ -132,7 +201,10 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
               -
             </button>
             <h4 className="block text-[12px] text-color-primary">{qty}</h4>
-            <button onClick={handleIncreaseQty} className="mb-[2px] hover:opacity-75">
+            <button
+              onClick={handleIncreaseQty}
+              className="mb-[2px] hover:opacity-75"
+            >
               +
             </button>
           </div>
@@ -140,12 +212,6 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
         <h3 className="text-[8px] xl:text-[10px] text-color-grayPrimary font-normal">
           Max. sewa {productDetail.stock} buah
         </h3>
-
-        {productDetail.rnb && (
-          <p className="text-[10px] text-color-grayPrimary mt-1">
-            Minimal sewa {productDetail.min_rented} hari
-          </p>
-        )}
       </div>
 
       {/* SUBTOTAL */}
@@ -154,7 +220,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           Subtotal
         </h3>
         <h2 className="text-lg xl:text-[20px] text-color-primaryDark font-bold">
-          Rp {calculateTotal().toLocaleString("id-ID")}
+          {calculateTotal()}
         </h2>
       </div>
 

@@ -17,6 +17,7 @@ import optionDots from "@/public/optionDots.svg";
 // import useAuth from "@/hooks/auth/useAuth";
 import Search from "@/public/search.svg";
 import Suggestion from "../fragments/navbar/Suggestion";
+import { debounce } from "lodash";
 
 interface NavbarProps {
   type?: string | null;
@@ -33,6 +34,25 @@ const Navbar = ({ type }: NavbarProps) => {
   const popupRef = useRef<HTMLDivElement | null>(null);
   const [suggestionOpen, setSuggestionOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [searchResults, setSearchResults] = useState<any[]>([]); 
+
+  // const debouncedSearch = useRef(
+  //   debounce(async (query: string) => {
+  //     if (query.trim() === "") return;
+  
+  //     try {
+  //       const res = await axios.get(`/api/search?query=${query}`);
+  //       setSearchResults(res.data);
+  //     } catch (error) {
+  //       console.error("Search error:", error);
+  //     }
+  //   }, 500)
+  // ).current;
+
+  // useEffect(() => {
+  //   debouncedSearch(searchQuery);
+  // }, [searchQuery]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -116,6 +136,8 @@ const Navbar = ({ type }: NavbarProps) => {
                 type="search"
                 className="w-full h-full pl-10 pr-4 py-5 text-[12px] lg:text-sm border-2 border-[#D9D9D9] border-opacity-75 rounded-sm font-jakartaSans text-color-primary focus:ring-0 focus:ring-color-secondary focus:border-color-secondary outline-none"
                 placeholder="Cari barang pengen disewa"
+                // value={searchQuery}
+                // onChange={(e) => setSearchQuery(e.target.value)}
               />
 
               {suggestionOpen && (

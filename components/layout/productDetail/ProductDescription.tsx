@@ -17,13 +17,18 @@ import Box from "@/public/box.svg";
 import Coin from "@/public/coin.svg";
 import Special from "@/public/special.svg";
 import TestImage from "@/public/register.svg";
-import Tooltip from "@/public/tooltip.svg";
+import TooltipIcon from "@/public/tooltip.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShopAndLocation from "./ShopAndLocation";
 import { useState } from "react";
 import { ProductDetailProps } from "@/types/productDetail";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
-// import { TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const images = [TestImage, Image1, Image3, Image2, Image5];
 
@@ -40,9 +45,8 @@ const ProductDescription = ({
   productDetail: ProductDetailProps;
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  
 
-  console.log(productDetail.shop)
+  console.log(productDetail.shop);
   return (
     <div className="flex flex-col lg:flex-row w-full lg:w-2/3 h-auto max-h-auto md:mt-[60px] shadow-sm md:shadow-none rounded-md ">
       <div className="w-full lg:max-w-[406px] lg:w-1/2">
@@ -154,7 +158,8 @@ const ProductDescription = ({
               <div className="flex space-x-2">
                 <Image src={Box} alt="jam" className="w-[16px] h-[16px]" />
                 <h3 className="text-[12px] xl:text-[14px]  text-color-primary font-normal">
-                  Min. Jumlah Sewa: <span className="font-bold">{productDetail.min_rented}</span>
+                  Min. Jumlah Sewa:{" "}
+                  <span className="font-bold">{productDetail.min_rented}</span>
                 </h3>
               </div>
               <div className="flex flex-col">
@@ -184,6 +189,12 @@ const ProductDescription = ({
                     </span>
                   </li>
                 </ul>
+                <h2 className="text-sm text-color-primary mt-3 text-justify">
+                  Selain kelipatan rentang sewa{" "}
+                  <span className="font-bold">7 hari</span> (mingguan) dan{" "}
+                  <span className="font-bold">30 hari</span> (bulanan), akan
+                  dikenakan harga <span className="font-bold">harian</span>.
+                </h2>
               </div>
               <div className="flex flex-col">
                 {productDetail.rnb && (
@@ -200,13 +211,24 @@ const ProductDescription = ({
                       </h3>
                     </div>
                     <ul className="pl-8 space-y-2 text-color-primary text-[12px] xl:text-[14px] font-normal list-disc list-inside ">
-                      <div className="flex space-x-2">
-                        <li>Rent to Buy</li>{" "}
-                        <Image
-                          src={Tooltip}
-                          alt="tooltip"
-                          className="hover:opacity-70"
-                        />
+                      <div className="flex space-x-2 items-center">
+                        <TooltipProvider>
+                          <li>Rent to Buy</li>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Image
+                                src={TooltipIcon}
+                                alt="tooltip"
+                                className="hover:opacity-70 cursor-pointer"
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-white border-[1px] border-color-primary rounded-sm">
+                              <p className="text-[12px] text-color-secondary">
+                                Barang Bisa Dibeli Setelah Masa Sewa Selesai
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
 
                       {/* <div className="flex space-x-2">
@@ -223,13 +245,20 @@ const ProductDescription = ({
                 )}
               </div>
             </TabsContent>
-            <TabsContent value="info-penting" className="flex flex-col px-3 space-y-4 items-start justify-start">
-              <h2 className="text-sm text-color-primary px-3 mb-10">{productDetail.description || "Tidak Ada Info Penting. . ."}</h2>
-              </TabsContent>
+            <TabsContent
+              value="info-penting"
+              className="flex flex-col px-3 space-y-4 items-start justify-start"
+            >
+              <h2 className="text-sm text-color-primary px-3 mb-10">
+                {productDetail.description || "Tidak Ada Info Penting. . ."}
+              </h2>
+            </TabsContent>
           </Tabs>
         </div>
         <div className="hidden lg:block pr-[46.5px]">
-        {productDetail.shop && <ShopAndLocation shopDetail={productDetail.shop} />}
+          {productDetail.shop && (
+            <ShopAndLocation shopDetail={productDetail.shop} />
+          )}
         </div>
       </div>
     </div>

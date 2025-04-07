@@ -9,25 +9,26 @@ import { ShopProps } from "@/types/shop";
 import { ErrorSchema } from "@/types/errorSchema";
 import ShopHeaderSkeleton from "@/components/layout/shop/ShopHeaderSkeleton";
 import ShopContentSkeleton from "./ShopContentSkeleton";
+import { PagedProduct, ShopDetail, ShopDetailProps } from "@/types/shopDetail";
 
 const baseUrl = "https://pintu-sewa.up.railway.app/api/shop";
 
-interface ShopDetailResponse{
-  error_schema: ErrorSchema;
-  output_schema: ShopProps;
-}
 
 const ShopLayout = () => {
   const { id } = useParams();
-  const[shopData, setShopData] = useState<ShopProps>();
+  const[shopData, setShopData] = useState<ShopDetail>();
   const[loading, setLoading] = useState(true);
+  const[shopProducts, setShopProducts] = useState<PagedProduct>();
+
 
   useEffect(() => {
     const fetchShopData = async () => {
       try {
-        const res = await axios.get<ShopDetailResponse>(`${baseUrl}/${id}`);
+        const res = await axios.get<ShopDetailProps>(`${baseUrl}/${id}`);
         setShopData(res.data.output_schema);
         console.log("Shop Data:", res);
+
+
       } catch (error) {
         console.error("Failed to fetch shop data:", error);
       } finally {
