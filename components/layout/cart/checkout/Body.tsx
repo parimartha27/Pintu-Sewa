@@ -1,5 +1,5 @@
 import AddressForm from "./AddressForm";
-import CheckoutSkeleton from "./CheckoutSkeleton";
+import CheckoutSkeleton from "./CheckoutSkeleton";//
 import MetodePembayaranLayout from "./MetodePembayaran";
 import CheckoutProductForm from "./ProductForm";
 

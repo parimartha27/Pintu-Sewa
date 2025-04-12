@@ -45,7 +45,7 @@ const InputEmailOtpForm = () => {
   return (
     <div className="flex justify-center w-full h-full max-w-[1280px] max-h-[726px] mx-auto z-10">
       <Card className="w-full h-[600px] flex justify-center items-center p-1 md:p-5 rounded-3xl">
-        <div className="hidden md:block md:w-3/5 self-center">
+        <div className="hidden lg:block lg:w-1/2 self-center">
           <Image
             src={PageImage}
             width={500}
@@ -55,7 +55,7 @@ const InputEmailOtpForm = () => {
           />
         </div>
 
-        <div className="w-full md:w-2/5">
+        <div className="w-full lg:w-1/2">
           <CardHeader className="flex-col">
             <CardTitle className="text-[22px] lg:text-[24px] xl:text-[28px] text-color-primaryDark font-semibold">
               Reset Password

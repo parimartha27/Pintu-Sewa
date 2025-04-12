@@ -132,7 +132,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                         >
                           Password
                         </h4>
-                        <Link href={"/reset-password"}>
+                        <Link href={"/input-email-otp"}>
                           <h4 className="text-color-primaryDark font-bold hover:opacity-70 text-[12px] lg:text-[14px] xl:text-[16px]">
                             Lupa Password?
                           </h4>
