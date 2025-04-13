@@ -1,8 +1,14 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductContentLayout from "./ProductContent";
 import ReviewContentLayout from "./ReviewContentLayout";
+import { ShopReviewProps } from "@/types/shopDetail";
 
-const ShopContentLayout = () => {
+interface ShopReviewContentProps{
+  shopReview: ShopReviewProps[]
+  loading: boolean
+}
+
+const ShopContentLayout = ({shopReview, loading}: ShopReviewContentProps) => {
 
     return (
         <div className="flex flex-col lg:flex-row space-x-6 w-full">
@@ -12,7 +18,7 @@ const ShopContentLayout = () => {
                     <TabsTrigger value="review" className="text-lg lg:text-base">Ulasan</TabsTrigger>
                 </TabsList>
                 <TabsContent value="product" className="pt-8"><ProductContentLayout/></TabsContent>
-                <TabsContent value="review" className="pt-8"><ReviewContentLayout/></TabsContent>
+                <TabsContent value="review" className="pt-8"><ReviewContentLayout shopReview={shopReview} loading={loading}/></TabsContent>
             </Tabs>
         </div>
     );

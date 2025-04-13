@@ -34,6 +34,7 @@ export interface ShopHeaderProps {
   province: string;
   post_code: string;
   work_hours: string;
+  rating: string;
 }
 
 export interface ShopReviewProps {
@@ -44,5 +45,6 @@ export interface ShopReviewProps {
   created_at: string;
   product_image: string;
   product_name: string;
+  user_profile: string;
 }
 

@@ -13,35 +13,19 @@ import CommentFilterBody from "../productDetail/CommentFilter";
 import Product from "@/public/productTest.jpeg";
 import Guest from "@/public/guest.svg";
 import Star from "@/public/star.svg";
-import { useParams } from "next/navigation";
-import { ShopDetailReviewProps, ShopReviewProps } from "@/types/shopDetail";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import ReviewContentSkeleton from "@/components/layout/shop/ReviewContentSkeleton";
+import { X } from "lucide-react";
+import { ShopReviewProps } from "@/types/shopDetail";
+import { useState } from "react";
 
-const baseUrl = "https://pintu-sewa.up.railway.app/api/review/shop";
 
-const ReviewContent = () => {
-  const { id } = useParams();
-  const [shopReview, setShopReview] = useState<ShopReviewProps[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ShopReviewContentProps{
+  shopReview: ShopReviewProps[]
+  loading: boolean
+}
 
-  useEffect(() => {
-    const fetchShopData = async () => {
-      try {
-        const shopReviewRes = await axios.get<ShopDetailReviewProps>(
-          `${baseUrl}/${id}?rating=4&hasMedia=true`
-        );
-        setShopReview(shopReviewRes.data.output_schema.content);
-        console.log("Shop Review Data:", shopReviewRes);
-      } catch (error) {
-        console.error("Failed to fetch shop data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) fetchShopData();
-  }, [id]);
+const ReviewContent = ({shopReview, loading}: ShopReviewContentProps) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col w-full lg:pl-8">
@@ -76,13 +60,14 @@ const ReviewContent = () => {
             className="flex flex-col lg:flex-row bg-white py-6 border-b-[1px] border-[#D9D9D9] border-opacity-50 shadow-sm"
             key={index}
           >
-            <div className="flex flex-col items-center lg:items-start min-w-[193px] space-y-3 px-6 border-r-[1px] border-[#D9D9D9] border-opacity-55">
+            <div className="flex flex-col items-center lg:items-start min-w-[250px] space-y-3 px-6 border-r-[1px] border-[#D9D9D9] border-opacity-55">
               <Image
                 width={70}
                 height={70}
                 src={review.product_image || Product}
                 alt="product"
-                className="w-[70px] h-[70px] xl:w-[88px] xl:h-[88px] rounded-md bg-amber-300"
+                className="w-[70px] h-[70px] xl:w-[88px] xl:h-[88px] rounded-md bg-amber-300 hover:cursor-pointer"
+                onClick={() => setSelectedImage(review.product_image)}
               />
 
               <h2 className="font-semibold text-sm lg:text-base text-color-primary">
@@ -90,13 +75,13 @@ const ReviewContent = () => {
               </h2>
             </div>
             <div className="flex flex-col space-y-1 pl-[34px] pr-6">
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 mt-4 lg:mt-0">
                 <Image
                   width={40}
                   height={40}
-                  src={Guest}
+                  src={review.user_profile|| Guest}
                   alt="guest"
-                  className="w-8 h-8 lg:w-10 lg:h-10"
+                  className="w-8 h-8 lg:w-10 lg:h-10 rounded-full object-fit"
                 />
                 <div className="flex flex-col">
                   <h2 className="text-[12px] lg:text-[16px] text-color-primary font-medium lg:font-semibold">
@@ -113,7 +98,7 @@ const ReviewContent = () => {
                         />
                       ))}
                     </div>
-                    <h3 className="text-[10px] lg:text-xs text-color-primary">
+                    <h3 className="text-[10px] lg:text-xs text-color-primary lg:mt-1">
                       {review.created_at || "x tahun yang lalu"}
                     </h3>
                   </div>
@@ -128,11 +113,12 @@ const ReviewContent = () => {
                 {review.images.map((path, index) => (
                   <Image
                     key={index}
-                    width={40}
-                    height={40}
-                    src={path || Product.src}
-                    alt="product"
-                    className="w-8 h-8 lg:w-[60px] lg:h-[60px] rounded-md bg-amber-300"
+                    src={path || Product}
+                    alt={`review-image-${index}`}
+                    width={60}
+                    height={60}
+                    className="w-8 h-8 lg:w-[60px] lg:h-[60px] rounded-md bg-amber-300 cursor-pointer object-cover"
+                    onClick={() => setSelectedImage(path)}
                   />
                 ))}
               </div>
@@ -140,6 +126,25 @@ const ReviewContent = () => {
           </div>
         ))}
       </div>
+      {selectedImage && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center">
+          <div className="relative w-[90vw] h-[90vh]">
+            <button
+              className="absolute top-2 right-2 z-50 bg-white text-black rounded-full p-1 hover:bg-red-500 hover:text-white transition"
+              onClick={() => setSelectedImage(null)}
+            >
+              <X size={20} />
+            </button>
+
+            <Image
+              src={selectedImage}
+              alt="fullscreen-review-image"
+              fill
+              className="object-contain rounded-md"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

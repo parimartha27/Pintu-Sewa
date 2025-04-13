@@ -19,8 +19,7 @@ import {
 
 import { InputOTP, InputOTPSlot } from "@/components/ui/input-otp";
 import axios from "axios";
-
-const API_BASE_URL = "https://pintu-sewa.up.railway.app/api";
+import { otpBaseUrl } from "@/types/globalVar";
 
 interface OtpFormProps {
   className?: string;
@@ -85,12 +84,11 @@ const OtpForm = ({ className }: OtpFormProps) => {
   const fetchOtpValidity = async () => {
     try {
       const response = await axios.get<OtpAccessValid>(
-        `${API_BASE_URL}/otp/valid?customerId=${localStorage.getItem("userId")}`
+        `${otpBaseUrl}/valid?customerId=${localStorage.getItem("userId")}`
       );
       setVerifyCount(response.data.output_schema.verify_count);
       setResendOtpCount(response.data.output_schema.resend_otp_count);
       
-      // Blokir jika verify attempt melebihi 10x
       if (response.data.output_schema.verify_count > 10) {
         router.push("/");
       }
@@ -107,7 +105,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
   //   (async () => {
   //     try {
   //       const response = await axios.get<OtpAccessValid>(
-  //         `${API_BASE_URL}/otp/valid?customerId=${localStorage.getItem(
+  //         `${otpBaseUrl}/valid?customerId=${localStorage.getItem(
   //           "userId"
   //         )}`
   //       );
@@ -146,7 +144,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
       console.log(payload);
 
       const response = await axios.post<OtpRespone>(
-        `${API_BASE_URL}/otp/verify`,
+        `${otpBaseUrl}/verify`,
         payload
       );
 
@@ -185,7 +183,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
       }
 
       const response = await axios.post(
-        `${API_BASE_URL}/otp/resend?customerId=${customerId}`,
+        `${otpBaseUrl}/resend?customerId=${customerId}`,
         ""
       );
 
@@ -298,7 +296,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
               <Button
                 onClick={async () => {
                   const response = await axios.get<OtpAccessValid>(
-                    `${API_BASE_URL}/otp/valid?customerId=${localStorage.getItem(
+                    `${otpBaseUrl}/valid?customerId=${localStorage.getItem(
                       "userId"
                     )}`
                   );

@@ -17,12 +17,17 @@ import { ErrorSchema } from "@/types/errorSchema";
 import { ProductCardProps } from "@/types/productCard";
 import { ProductDetailShopProps } from "@/types/shop";
 import { ReviewProps } from "@/types/review";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/api";
+import {
+  anotherShopProductBaseUrl,
+  productBaseUrl,
+  productReviewBaseUrl,
+  shopProductBaseUrl,
+} from "@/types/globalVar";
+import NoProduct from "@/components/fragments/NoProduct";
 
 interface ProductDitokoProps {
   error_schema: ErrorSchema;
-  output_schema: ProductCardProps[];
+  output_schema: { content: ProductCardProps[] };
 }
 
 interface ShopDetailResProps {
@@ -49,27 +54,28 @@ const ProductDetailBody = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get<ProductDetailResponse>(
-          `${baseUrl}/product/${id}`
+          `${productBaseUrl}/${id}`
         );
         setProductDetail(res.data.output_schema);
 
         const shopDetailRes = await axios.get<ShopDetailResProps>(
-          `${baseUrl}/shop/product/${id}`
+          `${shopProductBaseUrl}/${id}`
         );
         setShopDetail(shopDetailRes.data.output_schema);
 
         const reviewDetailRes = await axios.get<ProductReviewResponse>(
-          `${baseUrl}/review/product/${id}`
+          `${productReviewBaseUrl}/${id}`
         );
         setProductReview(reviewDetailRes.data.output_schema.content);
         console.log("review Detail:", reviewDetailRes.data.output_schema);
 
         const res2 = await axios.get<ProductDitokoProps>(
-          `${baseUrl}/product/shop/${shopDetailRes?.data?.output_schema?.id}`
+          `${anotherShopProductBaseUrl}/${shopDetailRes?.data?.output_schema?.id}`
         );
-        setShopProducts(res2.data?.output_schema);
-
+        setShopProducts(res2.data?.output_schema.content);
+        
         console.log("Product Detail:", res.data.output_schema);
+        console.log("Another Shop Product Detail:", res2.data.output_schema);
       } catch (error) {
         console.error("Failed to fetch product detail:", error);
       } finally {
@@ -103,7 +109,11 @@ const ProductDetailBody = () => {
           <h2 className="text-lg xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
             Barang lainnya di toko ini
           </h2>
-          {shopProducts && <ProductList products={shopProducts} />}
+          {shopProducts != null ? (
+            shopProducts && <ProductList products={shopProducts} />
+          ) : (
+            <NoProduct />
+          )}
         </div>
       </div>
     </div>

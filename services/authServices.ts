@@ -1,7 +1,5 @@
 import axios from "axios";
-
-// const API_BASE_URL = "http://localhost:3001/api/authentication";
-const API_BASE_URL = "https://pintu-sewa.up.railway.app/api/authentication";
+import { authBaseUrl } from "@/types/globalVar";
 
 interface LoginData {
   email: string;
@@ -69,7 +67,7 @@ export async function sendOauthData(
 ): Promise<OauthResponse> {
   try {
     const response = await axios.post<OauthResponse>(
-      `${API_BASE_URL}/register/oauth`,
+      `${authBaseUrl}/register/oauth`,
       userData
     );
 
@@ -99,7 +97,7 @@ export async function loginService(
 ) {
   try {
     const response = await axios.post<LoginResponse>(
-      `${API_BASE_URL}/login`,
+      `${authBaseUrl}/login`,
       data
     );
     console.log("Login Request:", data);
@@ -120,7 +118,7 @@ export async function registerService(
 ) {
   try {
     const response = await axios.post<RegisterResponse>(
-      `${API_BASE_URL}/register`,
+      `${authBaseUrl}/register`,
       data
     );
     console.log("Register Request:", data);
@@ -148,7 +146,7 @@ export async function validateOtpService(
 ): Promise<ValidateOtpResponse> {
   try {
     const response = await axios.post<ValidateOtpResponse>(
-      `${API_BASE_URL}/validate-otp`,
+      `${authBaseUrl}/validate-otp`,
       {
         otp_confirm: otpConfirm,
         valid_otp: validOtp,

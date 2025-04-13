@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/api/customers/create"
+import { createCustomerBaseUrl } from "@/types/globalVar";
 
 interface CustomerRequest {
   id: string;
@@ -71,7 +70,7 @@ const InputConfirmationContentLayout = () => {
       console.log(payload);
 
       const response = await axios.post<CustomerResponse>(
-       baseUrl,
+       createCustomerBaseUrl,
         payload
       );
 

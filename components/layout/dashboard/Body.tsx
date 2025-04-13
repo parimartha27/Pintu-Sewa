@@ -2,22 +2,22 @@
 
 import ProductList from "../ProductList";
 import Category from "./Category";
-import { ProductType } from "@/types/product";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { ErrorSchema } from "@/types/errorSchema";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/api/product";
+import { productBaseUrl } from "@/types/globalVar";
+import { ProductCardProps } from "@/types/productCard";
+import NoProduct from "@/components/fragments/NoProduct";
 
 interface ResponseSchema {
   error_schema: ErrorSchema;
-  output_schema: ProductType[];
+  output_schema: ProductCardProps[];
 }
 
 const fetchMostRentedProducts = async (): Promise<ResponseSchema> => {
   try {
-    const response = await axios.get(`${baseUrl}/most-rented`);
+    const response = await axios.get(`${productBaseUrl}/most-rented`);
     return response.data;
   } catch (error) {
     console.error("Error fetching most rented products:", error);
@@ -30,7 +30,7 @@ const fetchNearCustomerProducts = async (
 ): Promise<ResponseSchema> => {
   try {
     const response = await axios.get(
-      `${baseUrl}/near-customer?customerId=${customerId}`
+      `${productBaseUrl}/near-customer?customerId=${customerId}`
     );
 
     return response.data;
@@ -42,7 +42,7 @@ const fetchNearCustomerProducts = async (
 
 const fetchRecommendedProducts = async (): Promise<ResponseSchema> => {
   try {
-    const response = await axios.get(`${baseUrl}/recommended`);
+    const response = await axios.get(`${productBaseUrl}/recommended`);
     return response.data;
   } catch (error) {
     console.error("Error fetching near customer products:", error);
@@ -53,22 +53,21 @@ const fetchRecommendedProducts = async (): Promise<ResponseSchema> => {
 const DashboardBody = () => {
   const { data: session } = useSession();
 
-  const [mostRentedProducts, setMostRentedProducts] = useState<ProductType[]>(
-    []
-  );
-  const [nearCustomerProducts, setNearCustomerProducts] = useState<
-    ProductType[]
+  const [mostRentedProducts, setMostRentedProducts] = useState<
+    ProductCardProps[]
   >([]);
-  const [recommendedProducts, setRecommendedProducts] = useState<ProductType[]>(
-    []
-  );
+  const [nearCustomerProducts, setNearCustomerProducts] = useState<
+    ProductCardProps[]
+  >([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<
+    ProductCardProps[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-
     setCustomerId(localStorage.getItem("customerId"));
     setToken(localStorage.getItem("token"));
 
@@ -86,10 +85,9 @@ const DashboardBody = () => {
         setNearCustomerProducts(nearCustomer.output_schema);
 
         console.log(mostRented.output_schema);
-        
       } catch (err) {
         setError("Failed to fetch data" + err);
-      } finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -105,8 +103,10 @@ const DashboardBody = () => {
           Banyak Orang Menyewa Ini
         </h4>
         {error && <div>{error}</div>}
-        {mostRentedProducts && (
+        {mostRentedProducts != null ? (
           <ProductList products={mostRentedProducts} loading={loading} />
+        ) : (
+          <NoProduct />
         )}
       </div>
 
@@ -117,7 +117,11 @@ const DashboardBody = () => {
               Dekat Lokasi Kamu
             </h4>
             {error && <div>{error}</div>}
-            <ProductList products={nearCustomerProducts} loading={loading} />
+            {nearCustomerProducts != null ? (
+              <ProductList products={nearCustomerProducts} loading={loading} />
+            ) : (
+              <NoProduct />
+            )}
           </>
         ) : (
           <>
@@ -125,7 +129,11 @@ const DashboardBody = () => {
               Rekomendasi Untuk Kamu
             </h4>
             {error && <div>{error}</div>}
-            <ProductList products={recommendedProducts} loading={loading} />
+            {recommendedProducts != null ? (
+              <ProductList products={recommendedProducts} loading={loading} />
+            ) : (
+              <NoProduct />
+            )}
           </>
         )}
       </div>

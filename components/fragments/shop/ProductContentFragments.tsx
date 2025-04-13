@@ -15,8 +15,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ProductCardProps } from "@/types/productCard";
 import { ShopDetailPagedProductProps } from "@/types/shopDetail";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/api/product/shop";
+import { anotherShopProductBaseUrl } from "@/types/globalVar";
 
 const ProductContent = () => {
   const router = useRouter();
@@ -33,7 +32,7 @@ const ProductContent = () => {
   const fetchShopData = async () => {
     try {
       const response = await axios.get<ShopDetailPagedProductProps>(
-        `${baseUrl}/${shopId}?page=${page}&size=${size}`
+        `${anotherShopProductBaseUrl}/${shopId}?page=${page}`
       );
       setData(response.data.output_schema.content);
       setTotalPages(response.data.output_schema.total_pages || 1);

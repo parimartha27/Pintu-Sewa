@@ -13,7 +13,7 @@ const UserReview = ({ reviewDetail }: { reviewDetail: ReviewProps }) => {
     <>
       <div className="flex flex-col space-y-1">
         <div className="flex space-x-3">
-          <Image src={Guest} alt="guest" className="w-8 h-8 lg:w-10 lg:h-10" />
+          <Image width={40} height={40} src={reviewDetail.user_profile || Guest} alt="guest" className="w-8 h-8 lg:w-10 lg:h-10 rounded-full object-fit" />
           <div className="flex flex-col">
             <h2 className="text-[12px] lg:text-[16px] text-color-primary font-medium lg:font-semibold">
               {reviewDetail.username}

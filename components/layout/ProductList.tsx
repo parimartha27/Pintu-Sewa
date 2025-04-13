@@ -23,7 +23,7 @@ const ProductList = ({
       <div className="md:hidden">
         <Carousel>
           <CarouselContent className="flex justify-start">
-            {Array.isArray(products) &&
+            {Array.isArray(products) && products.length > 0 &&
               products.map((product: ProductCardProps, index) => (
                 <CarouselItem key={index} className="basis-auto">
                   {loading ? (

@@ -9,8 +9,7 @@ import ProfileSidebarLayout from "../ProfileSidebar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/api/customers";
+import { customerBaseUrl } from "@/types/globalVar";
 
 interface ProfileResponse {
   id: string;
@@ -42,7 +41,7 @@ const ProfileBody = () => {
     }
 
     axios
-      .get(`${baseUrl}/${customerId}`)
+      .get(`${customerBaseUrl}/${customerId}`)
       .then((res) => {
         if (res.data.error_schema?.error_code === "PS-00-000") {
           setCustomerData(res.data.output_schema);

@@ -17,8 +17,8 @@ import {
 import ProductList from "../ProductList";
 import { ProductCardProps } from "@/types/productCard";
 import { ErrorSchema } from "@/types/errorSchema";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/api/product/filter";
+import { filteredProductBaseUrl } from "@/types/globalVar";
+import NoProduct from "@/components/fragments/NoProduct";
 
 interface ProductResponse {
   error_schema: ErrorSchema;
@@ -48,16 +48,11 @@ const ProductBody = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = `${baseUrl}?category=${category}&name=${name}&page=${page}&size=${size}`;
+        const url = `${filteredProductBaseUrl}?category=${category}&name=${name}&page=${page}&size=${size}`;
 
         const response = await axios.get<ProductResponse>(url);
-        const resProduct = response.data.output_schema.content;
 
-        if (resProduct.length > 0) {
-          setProducts(response.data.output_schema.content);
-        } else {
-          setProducts([]);
-        }
+        setProducts(response.data.output_schema.content || []);
 
         setTotalPages(response.data.output_schema.total_pages || 1);
       } catch (error) {
@@ -116,18 +111,18 @@ const ProductBody = () => {
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              {products ? (
+              {products.length!=null ? (
                 <ProductList
                   products={products}
                   loading={loading}
                   numberCard={16}
                 />
               ) : (
-                <p className="text-center text-gray-400">Tidak ada produk</p>
+               <NoProduct/>
               )}
             </div>
 
-            <Pagination>
+            <Pagination className="xl:pl-20">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious

@@ -4,4 +4,5 @@ export interface ReviewProps {
     images: string[];
     rating: number;
     created_at:string;
+    user_profile:string;
   }

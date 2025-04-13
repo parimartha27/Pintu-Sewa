@@ -20,8 +20,7 @@ import Suggestion from "../fragments/navbar/Suggestion";
 import { debounce } from "@/hooks/useDebounce";
 import axios from "axios";
 import { SearchResponseProps } from "@/types/searchResponse";
-
-const baseUrl = "https://pintu-sewa.up.railway.app/";
+import { searchSuggestionBaseUrl } from "@/types/globalVar";
 
 interface NavbarProps {
   type?: string | null;
@@ -48,7 +47,7 @@ const Navbar = ({ type }: NavbarProps) => {
       if (query.trim() === "") return;
 
       axios
-        .get(`${baseUrl}api/search?keyword=${query}`)
+        .get(`${searchSuggestionBaseUrl}?keyword=${query}`)
         .then((res) => {
           setSearchResults(res.data);
         })
