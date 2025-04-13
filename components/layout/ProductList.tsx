@@ -4,11 +4,11 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { ProductType } from "@/types/product";
 import ProductCardSkeleton from "../fragments/ProductCardSkeleton";
+import { ProductCardProps } from "@/types/productCard";
 
 interface ProductListProps {
-  products: ProductType[];
+  products: ProductCardProps[];
   loading?: boolean;
   numberCard?: number ;
 }
@@ -20,7 +20,7 @@ const ProductList = ({ products, loading, numberCard=5 }: ProductListProps) => {
         <Carousel>
           <CarouselContent className="flex justify-start">
             {products &&
-              products.map((product: ProductType, index) => (
+              products.map((product: ProductCardProps, index) => (
                 <CarouselItem key={index} className="basis-auto">
                   {loading &&
                     Array.from({ length: numberCard }).map((_, index) => (
@@ -41,7 +41,7 @@ const ProductList = ({ products, loading, numberCard=5 }: ProductListProps) => {
               <ProductCardSkeleton key={index} />
           ))}
         {products &&
-          products.map((product: ProductType, index) => (
+          products.map((product: ProductCardProps, index) => (
             <ProductCard key={index} product={product} />
           ))}
       </div>

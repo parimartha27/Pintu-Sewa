@@ -17,47 +17,54 @@ import optionDots from "@/public/optionDots.svg";
 // import useAuth from "@/hooks/auth/useAuth";
 import Search from "@/public/search.svg";
 import Suggestion from "../fragments/navbar/Suggestion";
-import { debounce } from "lodash";
+import { debounce } from "@/hooks/useDebounce";
+import axios from "axios";
+import { SearchResponseProps } from "@/types/searchResponse";
+
+const baseUrl = "https://pintu-sewa.up.railway.app/";
 
 interface NavbarProps {
   type?: string | null;
 }
 
 const Navbar = ({ type }: NavbarProps) => {
-  const [token,] = useState<string>(localStorage.getItem("token") || "");
+  const [token] = useState<string>(localStorage.getItem("token") || "");
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [username, setUsername] = useState<string>(localStorage.getItem("username") || "Guest");
+  const [username, setUsername] = useState<string>(
+    localStorage.getItem("username") || "Guest"
+  );
   const [profileImage, setProfileImage] = useState<string>("");
   const [, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement | null>(null);
   const [suggestionOpen, setSuggestionOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [searchResults, setSearchResults] = useState<any[]>([]); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResponseProps>();
 
-  // const debouncedSearch = useRef(
-  //   debounce(async (query: string) => {
-  //     if (query.trim() === "") return;
-  
-  //     try {
-  //       const res = await axios.get(`/api/search?query=${query}`);
-  //       setSearchResults(res.data);
-  //     } catch (error) {
-  //       console.error("Search error:", error);
-  //     }
-  //   }, 500)
-  // ).current;
+  const debouncedSearch = useRef(
+    debounce((query: string) => {
+      if (query.trim() === "") return;
 
-  // useEffect(() => {
-  //   debouncedSearch(searchQuery);
-  // }, [searchQuery]);
+      axios
+        .get(`${baseUrl}api/search?keyword=${query}`)
+        .then((res) => {
+          setSearchResults(res.data);
+        })
+        .catch((error) => {
+          console.error("Search error:", error);
+        });
+    }, 500)
+  ).current;
+
+  useEffect(() => {
+    debouncedSearch(searchQuery);
+  }, [searchQuery, debouncedSearch]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
-
 
       if (popupRef.current && !popupRef.current.contains(target)) {
         setOpen(false);
@@ -127,32 +134,66 @@ const Navbar = ({ type }: NavbarProps) => {
             className="lg:w-11/12 lg:ml-10 w-full h-full"
             ref={formRef}
             onClick={() => setSuggestionOpen(!suggestionOpen)}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim() !== "") {
+                router.push(
+                  `/product?name=${encodeURIComponent(
+                    searchQuery
+                  )}&page=1&size=16`
+                );
+              }
+            }}
           >
             <div className="relative h-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <Image src={Search} alt="search" />
+                <Image src={Search} alt="search" />
               </div>
               <input
                 type="search"
                 className="w-full h-full pl-10 pr-4 py-5 text-[12px] lg:text-sm border-2 border-[#D9D9D9] border-opacity-75 rounded-sm font-jakartaSans text-color-primary focus:ring-0 focus:ring-color-secondary focus:border-color-secondary outline-none"
                 placeholder="Cari barang pengen disewa"
-                // value={searchQuery}
-                // onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
 
-              {suggestionOpen && (
-                <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-md mt-1 z-50 max-h-[400px]">
+              {suggestionOpen && searchResults && (
+                <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-md mt-1 z-50 max-h-[400px] overflow-y-auto">
+                  {searchResults.output_schema.products.map((product) => (
+                    <Suggestion
+                      key={product.id}
+                      type="search"
+                      title={product.name}
+                      category={product.category}
+                    />
+                  ))}
 
-                  <Suggestion type="history" title="Sepeda Polygon"/>
-                  <Suggestion type="search" title="Kamera Canon EOS R"/>
-                  <Suggestion type="shop" title="toko jaya wijaya" image={Toko}/>
-                  
+                  {searchResults.output_schema.shops.map((shop) => (
+                    <Suggestion
+                      key={shop.id}
+                      type="shop"
+                      title={shop.name}
+                      id={shop.id}
+                      image={shop.image}
+                    />
+                  ))}
                 </div>
               )}
             </div>
           </form>
-
-          <Button className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:bg-blue-900">
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim() !== "") {
+                router.push(
+                  `/product?name=${encodeURIComponent(
+                    searchQuery
+                  )}&page=1&size=16`
+                );
+              }
+            }}
+            className="hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:bg-blue-900"
+          >
             Cari
           </Button>
         </div>

@@ -1,6 +1,4 @@
 import { ErrorSchema } from "./errorSchema";
-import { ReviewProps } from "./review";
-import { ShopProps } from "./shop";
 
 export interface ProductDetailResponse {
   error_schema: ErrorSchema;
@@ -27,8 +25,6 @@ export interface ProductDetailProps {
   rating: number;
   rented_times: number;
   buy_times: number;
-  shop: ShopProps;
-  reviews: ReviewProps[];
   rnb: boolean;
   min_rented:number;
 }

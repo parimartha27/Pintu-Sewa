@@ -15,21 +15,19 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 import ProductList from "../ProductList";
-import { ProductType } from "@/types/product";
+import { ProductCardProps } from "@/types/productCard";
+import { ErrorSchema } from "@/types/errorSchema";
 
-const baseUrl = "https://pintu-sewa.up.railway.app/api/product";
+const baseUrl = "https://pintu-sewa.up.railway.app/api/product/filter";
 
 interface ProductResponse {
-  error_schema: {
-    error_code: string;
-    error_message: string;
-  };
+  error_schema: ErrorSchema;
   output_schema: {
-    content: ProductType[];
-    currentPage: number;
-    pageSize: number;
-    totalItems: number;
-    totalPages: number;
+    content: ProductCardProps[];
+    current_page: number;
+    page_size: number;
+    total_items: number;
+    total_pages: number;
   };
 }
 
@@ -38,25 +36,30 @@ const ProductBody = () => {
   const router = useRouter();
 
   const category = searchParams.get("category") || "";
+  const name = searchParams.get("name") || "";
   const page = parseInt(searchParams.get("page") || "1");
-  const size = 2;
-  const sort = "name,desc";
+  const size = 8;
+  // const sort = "name,asc";
 
-  const [products, setProducts] = useState<ProductType[]>([]);
+  const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = `${baseUrl}?category=${encodeURIComponent(
-          category
-        )}&page=${page}&size=${size}&sort=${sort}`;
+        const url = `${baseUrl}?category=${category}&name=${name}&page=${page}&size=${size}`;
 
         const response = await axios.get<ProductResponse>(url);
-        setProducts(response.data.output_schema.content);
-        console.log("Products:", response.data.output_schema.content);
-        setTotalPages(response.data.output_schema.totalPages || 1);
+        const resProduct = response.data.output_schema.content;
+
+        if (resProduct.length > 0) {
+          setProducts(response.data.output_schema.content);
+        } else {
+          setProducts([]);
+        }
+
+        setTotalPages(response.data.output_schema.total_pages || 1);
       } catch (error) {
         console.error("Error fetching products", error);
       } finally {
@@ -65,7 +68,7 @@ const ProductBody = () => {
     };
 
     fetchProducts();
-  }, [category, page]);
+  }, [category, page, name]);
 
   const goToPage = (newPage: number) => {
     const query = new URLSearchParams(searchParams.toString());
@@ -113,14 +116,17 @@ const ProductBody = () => {
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              <ProductList
-                products={products}
-                loading={loading}
-                numberCard={16}
-              />
+              {products ? (
+                <ProductList
+                  products={products}
+                  loading={loading}
+                  numberCard={16}
+                />
+              ) : (
+                <p className="text-center text-gray-400">Tidak ada produk</p>
+              )}
             </div>
 
-           
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
@@ -130,7 +136,6 @@ const ProductBody = () => {
                   />
                 </PaginationItem>
 
-                {/* Page 1 always visible */}
                 <PaginationItem>
                   <PaginationLink
                     href="#"
@@ -143,7 +148,6 @@ const ProductBody = () => {
                   </PaginationLink>
                 </PaginationItem>
 
-                {/* Middle pages with "..." */}
                 {middlePages.map((p, i) =>
                   p === "..." ? (
                     <PaginationItem key={`ellipsis-${i}`}>
@@ -164,7 +168,6 @@ const ProductBody = () => {
                   )
                 )}
 
-                {/* Last page always visible */}
                 {totalPages > 1 && (
                   <PaginationItem>
                     <PaginationLink

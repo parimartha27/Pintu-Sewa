@@ -16,20 +16,10 @@ import {
 } from "@/components/ui/card";
 import Tag from "../Elements/Tag";
 import Rnb from "../Elements/Rnb";
-import { ProductType } from "@/types/product";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
-import { getMinDuration } from "@/hooks/useMinRentDuration";
+import { ProductCardProps } from "@/types/productCard";
 
-const getPrice = (product: ProductType) => {
-
-  if (product.daily_price) return formatToRupiah(product.daily_price);
-  if (product.weekly_price) return formatToRupiah(product.weekly_price);
-  if (product.monthly_price) return formatToRupiah(product.monthly_price);
-
-  return "gratis";
-};
-
-const ProductCard = ({ product }: { product: ProductType }) => {
+const ProductCard = ({ product }: { product: ProductCardProps }) => {
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={`/product/${product.id}`}>
@@ -46,7 +36,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
           <CardTitle className="flex justify-between mt-2 md:mt-3 mx-2 md:mx-3 items-center">
             <h2 className="text-[16px] md:text-[20px] text-color-primary font-semibold">
-              {getPrice(product) || "harga product"}
+              {formatToRupiah(product.price) || "harga product"}
             </h2>
             {product.rnb && <Rnb />}
           </CardTitle>
@@ -63,14 +53,23 @@ const ProductCard = ({ product }: { product: ProductType }) => {
                 alt="jam"
               />
               <h2 className="text-[10px] md:text-[12px] text-color-primary">
-                Durasi - Min. <span>{getMinDuration(product)}</span>
+                Durasi - Min.{" "}
+                <span>
+                  {product.rent_category.includes("Harian")
+                    ? "1 hari"
+                    : product.rent_category.includes("Mingguan")
+                    ? "1 minggu"
+                    : product.rent_category.includes("Bulanan")
+                    ? "1 bulan"
+                    : "-"}
+                </span>
               </h2>
             </div>
 
             <div className="flex space-x-1 mt-1 md:mt-2">
-              {product.daily_price && <Tag>Harian</Tag>}
-              {product.weekly_price && <Tag>Mingguan</Tag>}
-              {product.monthly_price && <Tag>Bulanan</Tag>}
+              {product.rent_category.split(";").map((category) => (
+                <Tag key={category}>{category}</Tag>
+              ))}
             </div>
             <div className="flex mt-3">
               <Image

@@ -14,13 +14,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorSchema } from "@/types/errorSchema";
-import { ProductType } from "@/types/product";
+import { ProductCardProps } from "@/types/productCard";
 
 const baseUrl = "https://pintu-sewa.up.railway.app/api";
 
 interface ProductDitokoProps{
   error_schema:ErrorSchema,
-  output_schema:ProductType[];
+  output_schema:ProductCardProps[];
 }
 
 
@@ -28,7 +28,7 @@ const ProductDetailBody = () => {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<ProductDetailProps>();
   const [loading, setLoading] = useState(true);
-  const[shopProducts, setShopProducts] = useState<ProductType[]>([]);
+  const[shopProducts, setShopProducts] = useState<ProductCardProps[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
