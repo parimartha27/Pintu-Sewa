@@ -8,19 +8,21 @@ import Chat from "@/public/chat.svg";
 import Truck from "@/public/truck.svg";
 import Location from "@/public/location.svg";
 import { Button } from "@/components/ui/button";
-import { ShopProps } from "@/types/shop";
+import { ProductDetailShopProps} from "@/types/shop";
 import { useRouter } from "next/navigation";
 
-const ShopAndLocation = ({shopDetail}: {shopDetail: ShopProps}) => {
+const ShopAndLocation = ({shopDetail}: {shopDetail: ProductDetailShopProps}) => {
   const router = useRouter();
   return (
     <div className="w-full mt-7 flex flex-col px-2">
       <div className="flex justify-between border-y-[1px] border-[#D9D9D9]">
         <div className="flex space-x-3 py-[14px]">
           <Image
-            src={RegisterImage}
+            src={shopDetail.image || RegisterImage.src}
             alt="register"
-            className="w-[40px] h-[40px] lg:w-[50px] lg:h-[50px] rounded-md bg-amber-500"
+            width={40}
+            height={40}
+            className="w-[40px] h-[40px] lg:w-[50px] lg:h-[50px] rounded-md"
           />
           <div className="flex flex-col">
             <h2 onClick={() => router.push(`/shop/${shopDetail.id}`)} className="text-[14px] lg:text-sm text-color-primary font-medium hover:opacity-70 hover:cursor-pointer">
@@ -36,7 +38,7 @@ const ShopAndLocation = ({shopDetail}: {shopDetail: ShopProps}) => {
                {shopDetail.rating}
               </h4>
               <h4 className="font-normal text-[10px] lg:text-sm text-color-grayPrimary">
-                review: {shopDetail.total_reviewed_times} kali
+                review: {shopDetail.total_review} kali
               </h4>
             </div>
           </div>
@@ -65,7 +67,7 @@ const ShopAndLocation = ({shopDetail}: {shopDetail: ShopProps}) => {
             className="w-[14px] h-[10px] lg:w-[16px] lg:h-[16px]"
           />
           <h4 className="text-[10px] lg:text-sm lg:font-medium text-color-primary">
-            Dikirim dari <span className="font-bold">{shopDetail.province}</span>
+            Dikirim dari <span className="font-bold">{shopDetail.regency}</span>
           </h4>
         </div>
         <div className="flex space-x-[6px]">

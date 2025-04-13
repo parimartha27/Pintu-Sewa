@@ -1,36 +1,48 @@
 import { ErrorSchema } from "./errorSchema";
-import { ProductType } from "./product";
+import { ProductCardProps } from "./productCard";
 
-export interface ShopDetailProps {
+export interface ShopDetailHeaderProps {
   error_schema: ErrorSchema;
-  output_schema: ShopDetail;
+  output_schema: ShopHeaderProps;
 }
 
-export interface ShopDetail {
+export interface ShopDetailReviewProps {
+  error_schema: ErrorSchema;
+  output_schema: {
+    content: ShopReviewProps[];
+  };
+}
+
+export interface ShopDetailPagedProductProps {
+  error_schema: ErrorSchema;
+  output_schema: { content: ProductCardProps[] ,
+    current_page: number;
+    page_size: number;
+    total_items: number;
+    total_pages: number;
+  };
+}
+
+export interface ShopHeaderProps {
   id: string;
   name: string;
   description: string;
-  email: string;
-  shop_status: string;
   image: string;
   street: string;
   district: string;
   regency: string;
   province: string;
   post_code: string;
-  customer_id: string;
+  work_hours: string;
+}
+
+export interface ShopReviewProps {
+  username: string;
+  comment: string;
+  images: string[];
   rating: number;
-  total_reviewed_times: number;
-  products: PagedProduct;
-  work_hours: string
+  created_at: string;
+  product_image: string;
+  product_name: string;
 }
-
-export interface PagedProduct {
-  content: ProductType[];
-  currentPage: number;
-  pageSize: number;
-  totalItems: number;
-  totalPages: number;
-}
-
 

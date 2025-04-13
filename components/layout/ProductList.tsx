@@ -10,25 +10,31 @@ import { ProductCardProps } from "@/types/productCard";
 interface ProductListProps {
   products: ProductCardProps[];
   loading?: boolean;
-  numberCard?: number ;
+  numberCard?: number;
 }
 
-const ProductList = ({ products, loading, numberCard=5 }: ProductListProps) => {
+const ProductList = ({
+  products,
+  loading,
+  numberCard = 5,
+}: ProductListProps) => {
   return (
     <div className="w-full">
       <div className="md:hidden">
         <Carousel>
           <CarouselContent className="flex justify-start">
-            {products &&
+            {Array.isArray(products) &&
               products.map((product: ProductCardProps, index) => (
                 <CarouselItem key={index} className="basis-auto">
-                  {loading &&
+                  {loading ? (
                     Array.from({ length: numberCard }).map((_, index) => (
                       <CarouselItem key={index} className="basis-auto">
                         <ProductCardSkeleton />
                       </CarouselItem>
-                    ))}
-                  <ProductCard product={product} />
+                    ))
+                  ) : (
+                    <ProductCard product={product} />
+                  )}
                 </CarouselItem>
               ))}
           </CarouselContent>
@@ -38,9 +44,9 @@ const ProductList = ({ products, loading, numberCard=5 }: ProductListProps) => {
       <div className="hidden md:flex flex-wrap md:justify-center xl:justify-start gap-2 gap-y-12 mt-2 w-full">
         {loading &&
           Array.from({ length: numberCard }).map((_, index) => (
-              <ProductCardSkeleton key={index} />
+            <ProductCardSkeleton key={index} />
           ))}
-        {products &&
+        {Array.isArray(products) &&
           products.map((product: ProductCardProps, index) => (
             <ProductCard key={index} product={product} />
           ))}

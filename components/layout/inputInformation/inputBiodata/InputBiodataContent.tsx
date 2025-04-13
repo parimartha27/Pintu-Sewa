@@ -12,7 +12,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
 import Guest from "@/public/guest.svg";
 import Upload from "@/public/upload.svg";
@@ -143,14 +143,14 @@ const InputBiodataContent = () => {
         <div className="fixed mt-0 inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 ">
           <div className="relative flex justify-center items-center">
             <button
-              className="absolute -top-20 -right-10 text-white text-3xl font-bold hover:bg-slate-800"
+              className="absolute -top-10 -right-11 z-50 bg-white text-black rounded-full p-1 hover:bg-red-500 hover:text-white transition"
               onClick={() => setIsModalOpen(false)}
             >
-              x
+              <X size={20} />
             </button>
 
             <Image
-              src={profileImage?.trim() === "" ?  profileImage : Guest}
+              src={profileImage?.trim() === "" ? profileImage : Guest}
               alt="Profile Full Size"
               width={300}
               height={300}

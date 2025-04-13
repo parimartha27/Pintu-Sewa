@@ -42,25 +42,31 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
   function calculateTotal() {
     if (!startDate || !endDate) return 0;
-
+  
     const diffInTime = endDate.getTime() - startDate.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
     const days = diffInDays < 1 ? 1 : diffInDays;
-
+  
     let total = 0;
-
-    if (days % 30 === 0) {
-      const months = days / 30;
-      total = productDetail.monthly_price * months * qty;
-    } else if (days % 7 === 0) {
-      const weeks = days / 7;
-      total = productDetail.weekly_price * weeks * qty;
-    } else {
-      total = productDetail.daily_price * days * qty;
-    }
-
-    return formatToRupiah(total);
+    let remainingDays = days;
+  
+    const monthlyPrice = productDetail.monthly_price || 0;
+    const weeklyPrice = productDetail.weekly_price || 0;
+    const dailyPrice = productDetail.daily_price || 0;
+  
+    const months = Math.floor(remainingDays / 30);
+    total += months * monthlyPrice;
+    remainingDays %= 30;
+  
+    const weeks = Math.floor(remainingDays / 7);
+    total += weeks * weeklyPrice;
+    remainingDays %= 7;
+  
+    total += remainingDays * dailyPrice;
+  
+    return formatToRupiah(total * qty);
   }
+  
 
   const handleSelectStartDate = (date: Date | undefined) => {
     if (!date) return;

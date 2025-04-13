@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const ReviewContentSkeleton =() => {
   return (
     <div className="space-y-6">
-      {[...Array(5)].map((_, i) => (
+      {[...Array(3)].map((_, i) => (
         <div key={i} className="flex gap-4 items-start border-b pb-4">
           {/* Gambar produk */}
           <Skeleton className="w-32 h-20 rounded-md" />

@@ -1,4 +1,4 @@
-import { ProductType } from "./product";
+import { ProductCardProps } from "./productCard";
 
 export interface ShopProps {
     id: string;
@@ -15,6 +15,15 @@ export interface ShopProps {
     rating:string;
     total_reviewed_times:number;
     customer_id:string;
-    products:ProductType[]
+    products:ProductCardProps[]
     work_hours:string
   }
+
+export interface ProductDetailShopProps{
+  id: string;
+  name: string;
+  rating:string;
+  total_review:number;
+  regency: string;
+  image: string;
+}

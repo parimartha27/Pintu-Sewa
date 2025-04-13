@@ -47,7 +47,7 @@ const Suggestion = ({ type, title, image, id, category }: SuggestionProps) => {
     >
       <Image
         src={imageDecider(type)}
-        className="w-[20px] h-[20px] mr-2 rounded-full object-cover"
+        className="w-[25px] h-[25px] mr-2 rounded-full object-cover"
         alt="history"
         width={20}
         height={20}

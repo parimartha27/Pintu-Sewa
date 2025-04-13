@@ -55,7 +55,7 @@ const Navbar = ({ type }: NavbarProps) => {
         .catch((error) => {
           console.error("Search error:", error);
         });
-    }, 500)
+    }, 250)
   ).current;
 
   useEffect(() => {
@@ -115,7 +115,6 @@ const Navbar = ({ type }: NavbarProps) => {
       <div className="h-[24px] bg-color-primaryDark w-full"></div>
 
       <div className="flex h-[70px] lg:h-[70px] shadow-lg bg-white w-full p-2">
-        {/* Logo Section */}
         <div className="hidden md:flex flex-col items-center justify-center w-1/6 lg:w-2/12">
           <Link href="/">
             <Image
@@ -127,8 +126,6 @@ const Navbar = ({ type }: NavbarProps) => {
             />
           </Link>
         </div>
-
-        {/* Search Bar Section */}
         <div className="flex w-11/12 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0 relative">
           <form
             className="lg:w-11/12 lg:ml-10 w-full h-full"

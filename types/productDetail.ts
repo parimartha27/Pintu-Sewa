@@ -21,7 +21,7 @@ export interface ProductDetailProps {
   condition_description: string;
   stock: number;
   status: "AVAILABLE" | "UNAVAILABLE" | string;
-  image: string;
+  images: string[];
   rating: number;
   rented_times: number;
   buy_times: number;

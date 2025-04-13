@@ -1,7 +1,7 @@
 export interface ReviewProps {
     username: string;
     comment: string;
-    image: string[];
+    images: string[];
     rating: number;
     created_at:string;
   }

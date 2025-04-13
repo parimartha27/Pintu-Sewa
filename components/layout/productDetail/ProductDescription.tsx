@@ -29,8 +29,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ProductDetailShopProps } from "@/types/shop";
 
-const images = [TestImage, Image1, Image3, Image2, Image5];
+// const images = [TestImage, Image1, Image3, Image2, Image5];
+
+interface ProductDescriptionProps {
+  productDetail: ProductDetailProps;
+  shopDetail: ProductDetailShopProps;
+}
 
 const getMinDuration = (product: ProductDetailProps) => {
   if (product.daily_price) return "1 Hari";
@@ -41,32 +47,37 @@ const getMinDuration = (product: ProductDetailProps) => {
 
 const ProductDescription = ({
   productDetail,
-}: {
-  productDetail: ProductDetailProps;
-}) => {
+  shopDetail,
+}: ProductDescriptionProps) => {
+
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  console.log(productDetail.shop);
+  console.log("product detail image"+productDetail.images)
+
   return (
     <div className="flex flex-col lg:flex-row w-full lg:w-2/3 h-auto max-h-auto md:mt-[60px] shadow-sm md:shadow-none rounded-md ">
       <div className="w-full lg:max-w-[406px] lg:w-1/2">
         <Carousel className="w-full md:hidden max-w-lg h-full justify-self-center">
           <CarouselContent>
-            {images.map((src, index) => (
-              <CarouselItem key={index} className="relative w-full h-64">
-                <Image
-                  src={src}
-                  alt={`Image ${index + 1}`}
-                  fill
-                  className="object-contain"
-                />
-              </CarouselItem>
-            ))}
+            {Array.isArray(productDetail.images) &&
+              productDetail &&
+              productDetail.images.map((src, index) => (
+                <CarouselItem key={index} className="relative w-full  h-[300px]">
+                  <Image
+                    key={index}
+                    src={src || TestImage.src}
+                    alt={`Image ${index + 1}`}
+                    width={406}
+                    height={406}
+                    className="object-contain"
+                  />
+                </CarouselItem>
+              ))}
           </CarouselContent>
         </Carousel>
         <div className="hidden w-full xl:max-w-[406px] md:flex md:flex-col">
           <Image
-            src={images[selectedIndex]}
+            src={productDetail.images[selectedIndex] || TestImage.src}
             alt={`product-image-${selectedIndex}`}
             width={406}
             height={403}
@@ -74,22 +85,26 @@ const ProductDescription = ({
           />
 
           <div className="flex mt-[14px] py-[6.5px] space-x-[13px]">
-            {images.map((img, index) => (
-              <Image
-                key={index}
-                src={img}
-                alt={`thumbnail-${index}`}
-                className={`w-[40px] h-[40px] xl:w-[70px] xl:h-[70px] rounded-md object-cover cursor-pointer ${
-                  index === selectedIndex ? "ring-2 ring-blue-500" : ""
-                }`}
-                onClick={() => setSelectedIndex(index)}
-              />
-            ))}
+            {Array.isArray(productDetail.images) &&
+              productDetail &&
+              productDetail.images.map((src, index) => (
+                <Image
+                  key={index}
+                  src={src || TestImage.src}
+                  alt={`thumbnail-${index}`}
+                  width={406}
+                  height={406}
+                  className={`w-[40px] h-[40px] xl:w-[70px] xl:h-[70px] rounded-md object-cover cursor-pointer ${
+                    index === selectedIndex ? "ring-2 ring-blue-500" : ""
+                  }`}
+                  onClick={() => setSelectedIndex(index)}
+                />
+              ))}
           </div>
         </div>
       </div>
 
-      <div className="w-full xl:w-full xl:max-w-[381px] pt-2 px-[10px] flex-flex-col lg:pl-20 xl:pl-4 lg:justify-self-center  xl:ml-[46.5px]">
+      <div className="w-full xl:w-full xl:max-w-[381px] pt-2 px-[10px] md:px-0 flex-flex-col lg:pl-20 xl:pl-4 lg:justify-self-center  xl:ml-[46.5px]">
         <div className="flex flex-col space-y-2">
           <h2 className="text-[16px] xl:text-[24px] text-color-primary font-medium">
             {productDetail.name || "Product Name"}
@@ -189,12 +204,6 @@ const ProductDescription = ({
                     </span>
                   </li>
                 </ul>
-                <h2 className="text-sm text-color-primary mt-3 text-justify">
-                  Selain kelipatan rentang sewa{" "}
-                  <span className="font-bold">7 hari</span> (mingguan) dan{" "}
-                  <span className="font-bold">30 hari</span> (bulanan), akan
-                  dikenakan harga <span className="font-bold">harian</span>.
-                </h2>
               </div>
               <div className="flex flex-col">
                 {productDetail.rnb && (
@@ -230,16 +239,6 @@ const ProductDescription = ({
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-
-                      {/* <div className="flex space-x-2">
-                    {" "}
-                    <li>Co Renting</li>{" "}
-                    <Image
-                      src={Tooltip}
-                      alt="tooltip"
-                      className="hover:opacity-70"
-                    />
-                  </div> */}
                     </ul>
                   </>
                 )}
@@ -256,9 +255,7 @@ const ProductDescription = ({
           </Tabs>
         </div>
         <div className="hidden lg:block pr-[46.5px]">
-          {productDetail.shop && (
-            <ShopAndLocation shopDetail={productDetail.shop} />
-          )}
+          {shopDetail && <ShopAndLocation shopDetail={shopDetail} />}
         </div>
       </div>
     </div>

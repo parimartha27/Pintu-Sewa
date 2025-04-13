@@ -5,28 +5,22 @@ import ShopHeader from "@/components/fragments/shop/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import { ShopProps } from "@/types/shop";
-import { ErrorSchema } from "@/types/errorSchema";
 import ShopHeaderSkeleton from "@/components/layout/shop/ShopHeaderSkeleton";
-import ShopContentSkeleton from "./ShopContentSkeleton";
-import { PagedProduct, ShopDetail, ShopDetailProps } from "@/types/shopDetail";
+import { ShopDetailHeaderProps, ShopHeaderProps } from "@/types/shopDetail";
 
 const baseUrl = "https://pintu-sewa.up.railway.app/api/shop";
 
-
 const ShopLayout = () => {
   const { id } = useParams();
-  const[shopData, setShopData] = useState<ShopDetail>();
+  const[shopHeaderData, setShopHeaderData] = useState<ShopHeaderProps>();
   const[loading, setLoading] = useState(true);
-  const[shopProducts, setShopProducts] = useState<PagedProduct>();
-
 
   useEffect(() => {
     const fetchShopData = async () => {
       try {
-        const res = await axios.get<ShopDetailProps>(`${baseUrl}/${id}`);
-        setShopData(res.data.output_schema);
-        console.log("Shop Data:", res);
+        const shopHeaderRes = await axios.get<ShopDetailHeaderProps>(`${baseUrl}/${id}`);
+        setShopHeaderData(shopHeaderRes.data.output_schema);
+        console.log("Shop Data:", shopHeaderRes);
 
 
       } catch (error) {
@@ -40,9 +34,8 @@ const ShopLayout = () => {
   
   return (
     <div className="flex flex-col justify-self-center max-w-[1370px] max-h-auto space-y-8 w-full mb-32 p-2 md:p-0 md:px-6 md:pt-12 bg-color-layout">
-      {loading ? <ShopHeaderSkeleton /> : <ShopHeader data={shopData as ShopProps} />}
-      
-       {loading ? <ShopContentSkeleton/> : <ShopContentLayout data={shopData as ShopProps} />}
+      {loading ? <ShopHeaderSkeleton /> : <ShopHeader data={shopHeaderData as ShopHeaderProps} />}
+      <ShopContentLayout />
       
     </div>
   );

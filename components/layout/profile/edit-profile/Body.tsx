@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { ChevronDown } from "lucide-react";
 import { id } from "date-fns/locale";
+import { X } from "lucide-react";
 
 const EditProfileBody = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -55,10 +56,10 @@ const EditProfileBody = () => {
         <div className="fixed mt-0 inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 ">
           <div className="relative flex justify-center items-center">
             <button
-              className="absolute -top-20 -right-10 text-white text-3xl font-bold hover:bg-slate-800"
+              className="absolute -top-10 -right-11 z-50 bg-white text-black rounded-full p-1 hover:bg-red-500 hover:text-white transition"
               onClick={() => setIsModalOpen(false)}
             >
-              x
+              <X size={20} />
             </button>
 
             <Image

@@ -15,30 +15,60 @@ import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorSchema } from "@/types/errorSchema";
 import { ProductCardProps } from "@/types/productCard";
+import { ProductDetailShopProps } from "@/types/shop";
+import { ReviewProps } from "@/types/review";
 
 const baseUrl = "https://pintu-sewa.up.railway.app/api";
 
-interface ProductDitokoProps{
-  error_schema:ErrorSchema,
-  output_schema:ProductCardProps[];
+interface ProductDitokoProps {
+  error_schema: ErrorSchema;
+  output_schema: ProductCardProps[];
 }
 
+interface ShopDetailResProps {
+  error_schema: ErrorSchema;
+  output_schema: ProductDetailShopProps;
+}
+
+interface ProductReviewResponse {
+  error_schema: ErrorSchema;
+  output_schema: {
+    content: ReviewProps[];
+  };
+}
 
 const ProductDetailBody = () => {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<ProductDetailProps>();
   const [loading, setLoading] = useState(true);
-  const[shopProducts, setShopProducts] = useState<ProductCardProps[]>([]);
+  const [shopProducts, setShopProducts] = useState<ProductCardProps[]>([]);
+  const [shopDetail, setShopDetail] = useState<ProductDetailShopProps>();
+  const [productReview, setProductReview] = useState<ReviewProps[]>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get<ProductDetailResponse>(`${baseUrl}/product/${id}`);
+        const res = await axios.get<ProductDetailResponse>(
+          `${baseUrl}/product/${id}`
+        );
         setProductDetail(res.data.output_schema);
 
-        const res2 = await axios.get<ProductDitokoProps>(`${baseUrl}/product/shop/${res.data.output_schema.shop?.id}`);
+        const shopDetailRes = await axios.get<ShopDetailResProps>(
+          `${baseUrl}/shop/product/${id}`
+        );
+        setShopDetail(shopDetailRes.data.output_schema);
+
+        const reviewDetailRes = await axios.get<ProductReviewResponse>(
+          `${baseUrl}/review/product/${id}`
+        );
+        setProductReview(reviewDetailRes.data.output_schema.content);
+        console.log("review Detail:", reviewDetailRes.data.output_schema);
+
+        const res2 = await axios.get<ProductDitokoProps>(
+          `${baseUrl}/product/shop/${shopDetailRes?.data?.output_schema?.id}`
+        );
         setShopProducts(res2.data?.output_schema);
-        
+
         console.log("Product Detail:", res.data.output_schema);
       } catch (error) {
         console.error("Failed to fetch product detail:", error);
@@ -53,26 +83,27 @@ const ProductDetailBody = () => {
   return loading ? (
     <ProductDetailSkeleton />
   ) : (
-    <div className="flex flex-col px-0 py-0 md:px-6 max-w-[1300px] min-h-screen mx-auto bg-color-layout pb-12 md:pb-[273px]">
+    <div className="w-full flex flex-col px-0 py-0 md:px-6 max-w-[1300px] min-h-screen mx-auto bg-color-layout pb-12 md:pb-[273px]">
       <div className="flex flex-col md:flex-row">
-        {productDetail && <ProductDescription productDetail={productDetail} />}
-        <RentForm productDetail={productDetail as ProductDetailProps}/>
-      </div>
-      <div className="flex flex-col space-y-3">
-        <div className="lg:hidden">
-          {productDetail?.shop && (
-            <ShopAndLocation shopDetail={productDetail.shop} />
-          )}
-        </div>
-        {productDetail?.reviews && (
-          <Review reviewDetail={productDetail.reviews} />
+        {productDetail && shopDetail && (
+          <ProductDescription
+            productDetail={productDetail}
+            shopDetail={shopDetail}
+          />
         )}
+        <RentForm productDetail={productDetail as ProductDetailProps} />
+      </div>
+      <div className="flex flex-col space-y-3 w-full">
+        <div className="lg:hidden">
+          {shopDetail && <ShopAndLocation shopDetail={shopDetail} />}
+        </div>
+        {productReview && <Review reviewDetail={productReview} />}
 
         <div className="flex flex-col pl-2 pt-8 xl:pt-[72px]">
           <h2 className="text-lg xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
             Barang lainnya di toko ini
           </h2>
-          <ProductList products={shopProducts} />
+          {shopProducts && <ProductList products={shopProducts} />}
         </div>
       </div>
     </div>
