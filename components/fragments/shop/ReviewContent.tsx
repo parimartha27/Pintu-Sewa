@@ -26,7 +26,7 @@ interface ShopReviewContentProps{
 
 const ReviewContent = ({shopReview, loading}: ShopReviewContentProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
+console.log("shop review"+shopReview)
   return (
     <div className="flex flex-col w-full lg:pl-8">
       <div className="flex w-full justify-between">
@@ -55,6 +55,7 @@ const ReviewContent = ({shopReview, loading}: ShopReviewContentProps) => {
 
       <div className="flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[1158px] overflow-y-auto">
         {loading && <ReviewContentSkeleton />}
+        {shopReview == null && <p className="text-3xl">Tidak ada ulasan</p>}
         {shopReview.map((review, index) => (
           <div
             className="flex flex-col lg:flex-row bg-white py-6 border-b-[1px] border-[#D9D9D9] border-opacity-50 shadow-sm"

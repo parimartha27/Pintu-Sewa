@@ -6,11 +6,6 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-import Image1 from "@/public/banner1.svg";
-import Image2 from "@/public/banner2.svg";
-import Image3 from "@/public/banner3.svg";
-// import Image4 from "@/public/register.svg";
-import Image5 from "@/public/login.svg";
 import Star from "@/public/star.svg";
 import Jam from "@/public/jam.svg";
 import Box from "@/public/box.svg";
@@ -51,8 +46,6 @@ const ProductDescription = ({
 }: ProductDescriptionProps) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  console.log("product detail image"+productDetail.images)
 
   return (
     <div className="flex flex-col lg:flex-row w-full lg:w-2/3 h-auto max-h-auto md:mt-[60px] shadow-sm md:shadow-none rounded-md ">

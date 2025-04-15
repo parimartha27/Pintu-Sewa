@@ -10,18 +10,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ProductCardProps } from "@/types/productCard";
 import { ShopDetailPagedProductProps } from "@/types/shopDetail";
 import { anotherShopProductBaseUrl } from "@/types/globalVar";
+import NoProduct from "../NoProduct";
 
 const ProductContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const shopId = searchParams.get("id") || "";
+  const { id } = useParams(); 
   const page = parseInt(searchParams.get("page") || "1");
   const size = 12;
 
@@ -32,7 +33,7 @@ const ProductContent = () => {
   const fetchShopData = async () => {
     try {
       const response = await axios.get<ShopDetailPagedProductProps>(
-        `${anotherShopProductBaseUrl}/${shopId}?page=${page}`
+        `${anotherShopProductBaseUrl}/${id}?page=${page}&size=${size}`
       );
       setData(response.data.output_schema.content);
       setTotalPages(response.data.output_schema.total_pages || 1);
@@ -44,15 +45,16 @@ const ProductContent = () => {
   };
 
   useEffect(() => {
-    if (shopId) {
+    if (id) {
       fetchShopData();
     }
-  }, [shopId, page]);
+  }, [id, page]);
 
   const goToPage = (newPage: number) => {
     const query = new URLSearchParams(searchParams.toString());
     query.set("page", newPage.toString());
-    router.push(`/shop?id=${shopId}&${query.toString()}`);
+    query.set("size", size.toString());
+    router.push(`/shop/${id}?${query.toString()}`);
   };
 
   const getMiddlePages = (
@@ -83,6 +85,7 @@ const ProductContent = () => {
   return (
     <div className="flex flex-col w-full h-auto space-y-3 md:space-y-16">
       <div className="w-full xl:pl-6 flex flex-col">
+        {!data && <NoProduct/>}
         {data && (
           <ProductList products={data} numberCard={12} loading={loading} />
         )}

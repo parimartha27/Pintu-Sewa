@@ -117,10 +117,8 @@ const DashboardBody = () => {
               Dekat Lokasi Kamu
             </h4>
             {error && <div>{error}</div>}
-            {nearCustomerProducts != null ? (
+            {nearCustomerProducts != null && (
               <ProductList products={nearCustomerProducts} loading={loading} />
-            ) : (
-              <NoProduct />
             )}
           </>
         ) : (
@@ -129,10 +127,8 @@ const DashboardBody = () => {
               Rekomendasi Untuk Kamu
             </h4>
             {error && <div>{error}</div>}
-            {recommendedProducts != null ? (
+            {recommendedProducts != null && (
               <ProductList products={recommendedProducts} loading={loading} />
-            ) : (
-              <NoProduct />
             )}
           </>
         )}

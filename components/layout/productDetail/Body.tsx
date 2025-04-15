@@ -18,7 +18,6 @@ import { ProductCardProps } from "@/types/productCard";
 import { ProductDetailShopProps } from "@/types/shop";
 import { ReviewProps } from "@/types/review";
 import {
-  anotherShopProductBaseUrl,
   productBaseUrl,
   productReviewBaseUrl,
   shopProductBaseUrl,
@@ -27,7 +26,7 @@ import NoProduct from "@/components/fragments/NoProduct";
 
 interface ProductDitokoProps {
   error_schema: ErrorSchema;
-  output_schema: { content: ProductCardProps[] };
+  output_schema: ProductCardProps[];
 }
 
 interface ShopDetailResProps {
@@ -49,6 +48,7 @@ const ProductDetailBody = () => {
   const [shopProducts, setShopProducts] = useState<ProductCardProps[]>([]);
   const [shopDetail, setShopDetail] = useState<ProductDetailShopProps>();
   const [productReview, setProductReview] = useState<ReviewProps[]>();
+  const [productReviewError, setProductReviewError] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,17 +63,23 @@ const ProductDetailBody = () => {
         );
         setShopDetail(shopDetailRes.data.output_schema);
 
-        const reviewDetailRes = await axios.get<ProductReviewResponse>(
-          `${productReviewBaseUrl}/${id}`
-        );
-        setProductReview(reviewDetailRes.data.output_schema.content);
-        console.log("review Detail:", reviewDetailRes.data.output_schema);
+        try {
+          const reviewDetailRes = await axios.get<ProductReviewResponse>(
+            `${productReviewBaseUrl}/${id}`
+          );
+
+          setProductReview(reviewDetailRes.data.output_schema.content);
+          console.log("review Detail:", reviewDetailRes.data.output_schema);
+        } catch {
+          console.error("Tidak ada review untuk produk")
+          setProductReviewError("Tidak Ada Ulasan Untuk Produk Ini");
+        }
 
         const res2 = await axios.get<ProductDitokoProps>(
-          `${anotherShopProductBaseUrl}/${shopDetailRes?.data?.output_schema?.id}`
+          `${productBaseUrl}/top?shopId=${shopDetailRes?.data?.output_schema?.id}`
         );
-        setShopProducts(res2.data?.output_schema.content);
-        
+        setShopProducts(res2.data?.output_schema);
+
         console.log("Product Detail:", res.data.output_schema);
         console.log("Another Shop Product Detail:", res2.data.output_schema);
       } catch (error) {
@@ -103,6 +109,7 @@ const ProductDetailBody = () => {
         <div className="lg:hidden">
           {shopDetail && <ShopAndLocation shopDetail={shopDetail} />}
         </div>
+        {productReviewError && <p className="text-color-secondary text-2xl font-semibold text-center pt-8">{productReviewError}</p>}
         {productReview && <Review reviewDetail={productReview} />}
 
         <div className="flex flex-col pl-2 pt-8 xl:pt-[72px]">

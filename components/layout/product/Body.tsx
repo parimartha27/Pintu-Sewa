@@ -44,6 +44,7 @@ const ProductBody = () => {
   const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,11 +53,13 @@ const ProductBody = () => {
 
         const response = await axios.get<ProductResponse>(url);
 
-        setProducts(response.data.output_schema.content || []);
-
+        setProducts(response.data.output_schema.content);
+     
         setTotalPages(response.data.output_schema.total_pages || 1);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        console.error("Error fetching products", error);
+        setError("Tidak ada produk");
+        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -111,7 +114,8 @@ const ProductBody = () => {
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              {products.length!=null ? (
+              {error && <NoProduct/>}
+              {products ? (
                 <ProductList
                   products={products}
                   loading={loading}

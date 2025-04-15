@@ -21,14 +21,11 @@ const ShopLayout = () => {
       try {
         const shopHeaderRes = await axios.get<ShopDetailHeaderProps>(`${shopBaseUrl}/${id}`);
         setShopHeaderData(shopHeaderRes.data.output_schema);
-        console.log("Shop Data:", shopHeaderRes);
 
         const shopReviewRes = await axios.get<ShopDetailReviewProps>(
           `${shopReviewBaseUrl}/${id}?rating=4&hasMedia=true`
         );
         setShopReview(shopReviewRes.data.output_schema.content);
-
-
       } catch (error) {
         console.error("Failed to fetch shop data:", error);
       } finally {

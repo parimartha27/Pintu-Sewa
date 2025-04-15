@@ -53,7 +53,7 @@ const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
 
         {/*User Comment Section*/}
         <div className="w-full flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[300px] overflow-y-auto">
-          {reviewDetail &&
+          {reviewDetail!=null &&
             reviewDetail.map((item, index) => (
               <UserReview key={index} reviewDetail={item} />
             ))}
