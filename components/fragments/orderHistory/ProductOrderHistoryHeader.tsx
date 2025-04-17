@@ -2,12 +2,16 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CardHeader } from "@/components/ui/card";
 import Chat from "@/public/chat.svg";
+import { Shop } from "@/types/orderHistory";
 
 interface OrderStatusCardProps {
   status: string;
+  transaction_date: string;
+  reference_number: string;
+  shop:Shop
 }
 
-const ProductOrderHistoryHeader = ({ status }: OrderStatusCardProps) => {
+const ProductOrderHistoryHeader = ({ status, transaction_date, reference_number, shop }: OrderStatusCardProps) => {
   let bgColor = "bg-gray-300";
   let textColor = "text-black";
 
@@ -49,14 +53,14 @@ const ProductOrderHistoryHeader = ({ status }: OrderStatusCardProps) => {
         >
           {status || "Status Tidak Diketahui"}
         </div>
-        <h2 className="text-xs sm:text-sm text-color-primary">17 Maret 2025</h2>
+        <h2 className="text-xs sm:text-sm text-color-primary">{transaction_date || "Tanggal Tidak Diketahui"}</h2>
         <h2 className="text-xs sm:text-sm text-color-primary">
-          PS20250317141010123
+          {reference_number || "Referensi Tidak Diketahui"}
         </h2>
       </div>
       <div className="flex items-center space-x-2">
         <h2 className="text-xs sm:text-sm text-color-primary font-semibold">
-          Parimartha Studio
+          {shop.name || "Toko Tidak Diketahui"}
         </h2>
         <Button
           onClick={() => alert("Chat")}

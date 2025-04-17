@@ -17,7 +17,7 @@ const OrderHistoryContentHeader = () => {
         History Pesanan
       </h2>
       <div className="flex space-x-[14px]">
-        <form className="w-full max-w-[754px] h-full rounded-md">
+        <form className="w-full max-w-[800px] h-full rounded-md">
           <div className="relative h-full">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -49,7 +49,7 @@ const OrderHistoryContentHeader = () => {
               <Button
          
                 className={cn(
-                  "w-auto md:w-[220px] h-[43px] flex justify-center space-x-1 text-left font-normal text-[12px] text-color-grayPrimary border-[1px] border-[#D9D9D9] bg-transparent hover:bg-slate-200",
+                  "w-auto md:w-[230px] h-[43px] flex justify-center space-x-1 text-left font-normal text-[12px] text-color-grayPrimary border-[1px] border-[#D9D9D9] bg-transparent hover:bg-slate-200",
                   !transactionDate && "text-muted-foreground"
                 )}
               >

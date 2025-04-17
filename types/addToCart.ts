@@ -6,7 +6,6 @@ export interface AddToCartRequestProps{
     quantity: number;
     start_rent_date: string; 
     end_rent_date: string;   
-    shipping_address: string;
 }
 
 export interface AddToCartResponse{

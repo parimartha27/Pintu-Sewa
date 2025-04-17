@@ -30,7 +30,7 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
           <CardHeader className="relative h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg">
             <Image
               src={isValidImage(product.image) ? product.image : ProductTest}
-              alt="register"
+              alt={product.name}
               layout="fill"
               objectFit="cover"
               className="rounded-t-lg"

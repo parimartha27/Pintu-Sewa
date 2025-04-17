@@ -36,7 +36,9 @@ const Navbar = ({ type }: NavbarProps) => {
   const [profileImage, setProfileImage] = useState<string>("");
   const [, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openOptionMobile, setOpenOptionMobile] = useState(false);
   const popupRef = useRef<HTMLDivElement | null>(null);
+  const popupMobileRef = useRef<HTMLDivElement | null>(null);
   const [suggestionOpen, setSuggestionOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,6 +74,10 @@ const Navbar = ({ type }: NavbarProps) => {
       if (formRef.current && !formRef.current.contains(target)) {
         setSuggestionOpen(false);
       }
+
+      if (popupMobileRef.current && !popupMobileRef.current.contains(target)) {
+        setOpenOptionMobile(false);
+      }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -80,6 +86,8 @@ const Navbar = ({ type }: NavbarProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+ 
 
   useEffect(() => {
     if (status !== "loading") {
@@ -214,7 +222,7 @@ const Navbar = ({ type }: NavbarProps) => {
           ) : session || token ? (
             /* ================== Sudah login ======================= */
             <>
-              <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
+              <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-3 pr-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
                 <Link href="/cart" className="hover:opacity-75 lg:ml-2">
                   <Image
                     src={Cart}
@@ -230,7 +238,8 @@ const Navbar = ({ type }: NavbarProps) => {
                     <FilterSidebar />
                   </div>
                 ) : (
-                  <Link href="/chat" className="hover:opacity-75 lg:hidden">
+                  <>
+                  <Link href="/chat" className="hidden hover:opacity-75 md:block lg:hidden">
                     <Image
                       src={Chat}
                       alt="chat"
@@ -239,6 +248,47 @@ const Navbar = ({ type }: NavbarProps) => {
                       className="w-[25px] h-[25px] md:w-[30px] md:h-[30px]"
                     />
                   </Link>
+                    <Image
+                      className="md:hidden w-[5px] hover:opacity-75 cursor-pointer "
+                      src={optionDots}
+                      alt="optionDots"
+                      width={5}
+                      height={5}
+                      onClick={() => setOpenOptionMobile(!openOptionMobile)} // Toggle popup
+                    />
+                    {/* Popup Menu */}
+                    {openOptionMobile && (
+                      <div
+                        ref={popupMobileRef}
+                        className="absolute md:hidden top-10 right-5 w-40 bg-white shadow-lg rounded-md z-10"
+                      >
+                        <button
+                          className="block w-full text-color-primaryDark text-left p-2 hover:bg-color-third"
+                          onClick={() => router.push("/profile")}
+                        >
+                          Profile
+                        </button>
+                        <button
+                          className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
+                          onClick={() => router.push("/create-shop")}
+                        >
+                          Toko
+                        </button>
+                        <button
+                          className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
+                          onClick={() => router.push("/chat")}
+                        >
+                          Chat
+                        </button>
+                        <button
+                          className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
+                          onClick={() => router.push("/")}
+                        >
+                          Dashboard
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 <Link href="/chat" className="hidden lg:block hover:opacity-75">

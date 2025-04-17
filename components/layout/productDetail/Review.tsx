@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import Filter from "@/public/filter.svg";
 import CommentFilterBody from "@/components/fragments/productDetail/CommentFilter";
-import FotoVideoPenyewa from "./FotoVideoPenyewa";
+// import FotoVideoPenyewa from "./FotoVideoPenyewa";
 import UserReview from "@/components/fragments/productDetail/UserReview";
 import { ReviewProps } from "@/types/review";
 
@@ -26,8 +26,7 @@ const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
         </div>
       </div>
       <div className="flex flex-col space-y-[19px] xl:max-w-[600px] w-full">
-        <FotoVideoPenyewa />
-        <div className="flex justify-between lg:pt-[35px]">
+        <div className="flex justify-between ">
           <h2 className="text-lg xl:text-2xl text-color-primary font-medium hidden lg:block">
             Ulasan Penyewa
           </h2>
@@ -52,7 +51,7 @@ const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
         </div>
 
         {/*User Comment Section*/}
-        <div className="w-full flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[300px] overflow-y-auto">
+        <div className="w-full flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[450px] overflow-y-auto">
           {reviewDetail!=null &&
             reviewDetail.map((item, index) => (
               <UserReview key={index} reviewDetail={item} />

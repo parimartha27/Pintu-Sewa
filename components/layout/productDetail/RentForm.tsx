@@ -28,6 +28,7 @@ function formatDate(date: Date | undefined) {
 const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const cartIconRef = useRef<HTMLDivElement>(null);
+  const [addToCartLoading, setAddToCartLoading] = useState(false);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -132,19 +133,19 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
     quantity: qty,
     start_rent_date: formatDate(startDate) ||  "",
     end_rent_date: formatDate(endDate) ||  "",
-    shipping_address: "TEST ADDRESS",
   };
 
   const handleAddToCart = async () => {
     try {
+      setAddToCartLoading(true);
       console.log("add to cart req: ", addToCartReq);
       const res = await axios.post<AddToCartResponse>(
         `${cartBaseUrl}/add`,
         addToCartReq
       );
-      if (res.data.error_schema.error_message === "Success") {
+      if (res.data.error_schema.error_message === "SUCCESS") {
+        setAddToCartLoading(false);
         alert("Produk berhasil ditambahkan ke keranjang");
-        localStorage.setItem("cartId", res.data.output_schema.cart_id);
       }
       console.log("add to cart res: ",res);
     } catch (error) {
@@ -284,7 +285,8 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           <Button
             ref={buttonRef}
             onClick={handleAddToCart}
-            className="w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px]"
+            disabled={addToCartLoading}
+            className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${addToCartLoading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <Image
               src={Cart}

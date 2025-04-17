@@ -67,13 +67,13 @@ const CartBody = () => {
               </h2>
             </CardHeader>
           </Card>
-          <div className="flex flex-col w-full max-h-[400px] overflow-y-scroll space-y-[18px] pb-8 mt-[18px]">
+          <div className="flex flex-col w-full space-y-[18px] pb-8 mt-[18px]">
             {shopCartItems.map((item) => (
               <CartProductForm key={item.shop_id} shopCart={item} />
             ))}
           </div>
           <Button onClick={() => alert("checkoutnya nanti ya. . . .")}
-           className="flex self-center md:self-end space-x-[10px] w-full max-w-[200px] h-[48px] mt-8 rounded-xl hover:opacity-80 bg-custom-gradient-tr">
+           className="flex self-center md:self-end space-x-[10px] w-full max-w-[200px] h-[48px] mt-8 mb-[210px] rounded-xl hover:opacity-80 bg-custom-gradient-tr">
             <Image src={Next} alt="next" className="w-5 h-5" />
             <h4 className="text-lg font-medium ">Checkout</h4>
           </Button>

@@ -4,7 +4,7 @@ import ProductDetailBody from "@/components/layout/productDetail/Body";
 const ProductDetail = () => {
   return (
     <>
-      <Navbar type="product"/>
+      <Navbar/>
         <ProductDetailBody/>
       <Footer />
     </>

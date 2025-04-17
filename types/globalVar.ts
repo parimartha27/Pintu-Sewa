@@ -13,3 +13,4 @@ export const anotherShopProductBaseUrl = `${productBaseUrl}/shop`;
 export const productReviewBaseUrl = `${reviewBaseUrl}/product`;
 export const shopReviewBaseUrl = `${reviewBaseUrl}/shop`;
 export const cartBaseUrl = `${baseUrl}/cart`;
+export const transactionBaseUrl = `${baseUrl}/transaction`;
