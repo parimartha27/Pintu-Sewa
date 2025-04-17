@@ -3,15 +3,22 @@ import Image from "next/image";
 import { CardHeader } from "@/components/ui/card";
 import Chat from "@/public/chat.svg";
 import { Shop } from "@/types/orderHistory";
+import { useRouter } from "next/navigation";
 
 interface OrderStatusCardProps {
   status: string;
   transaction_date: string;
   reference_number: string;
-  shop:Shop
+  shop: Shop;
 }
 
-const ProductOrderHistoryHeader = ({ status, transaction_date, reference_number, shop }: OrderStatusCardProps) => {
+const ProductOrderHistoryHeader = ({
+  status,
+  transaction_date,
+  reference_number,
+  shop,
+}: OrderStatusCardProps) => {
+  const router = useRouter();
   let bgColor = "bg-gray-300";
   let textColor = "text-black";
 
@@ -53,7 +60,9 @@ const ProductOrderHistoryHeader = ({ status, transaction_date, reference_number,
         >
           {status || "Status Tidak Diketahui"}
         </div>
-        <h2 className="text-xs sm:text-sm text-color-primary">{transaction_date || "Tanggal Tidak Diketahui"}</h2>
+        <h2 className="text-xs sm:text-sm text-color-primary">
+          {transaction_date || "Tanggal Tidak Diketahui"}
+        </h2>
         <h2 className="text-xs sm:text-sm text-color-primary">
           {reference_number || "Referensi Tidak Diketahui"}
         </h2>
@@ -76,7 +85,7 @@ const ProductOrderHistoryHeader = ({ status, transaction_date, reference_number,
           <h4 className="text-color-primary">Chat</h4>
         </Button>
         <Button
-          onClick={() => alert("Chat")}
+          onClick={() => router.push(`/shop/${shop.id}`)}
           className="px-2 py-1 rounded-sm bg-transparent hover:bg-slate-200 border border-color-primary text-color-primary text-xs sm:text-sm"
         >
           Lihat Toko

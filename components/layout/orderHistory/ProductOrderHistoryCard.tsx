@@ -13,9 +13,9 @@ const OrderStatusCard = ({
   return (
     <Card className="w-full px-4 sm:px-5 py-3">
       <ProductOrderHistoryHeader status={orderHistoryProps.status} transaction_date={orderHistoryProps.transaction_date} reference_number={orderHistoryProps.reference_number} shop={orderHistoryProps.shop} />
-      {orderHistoryProps.products != null && orderHistoryProps.products.map((product) => (
+      {orderHistoryProps.products != null && orderHistoryProps.products.map((product, index) => (
         <ProductOrderHistoryContent
-          key={product.id}
+          key={index}
           orderHistoryProduct={product}
         />
       ))}

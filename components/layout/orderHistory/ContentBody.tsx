@@ -1,70 +1,84 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ProductOrderHistoryCard from "./ProductOrderHistoryCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { transactionBaseUrl } from "@/types/globalVar";
 import { OrderHistoryProps, OrderHistoryResponseProps } from "@/types/orderHistory";
+import ProductOrderHistoryCardSkeleton from "./ProductOrderHistoryCardSkeleton";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const OrderCategory = [
-  { value: "semua", label: "Semua" },
-  { value: "belum-dibayar", label: "Belum Dibayar" },
-  { value: "diproses", label: "Diproses" },
-  { value: "dikirim", label: "Dikirim" },
-  { value: "sedang-disewa", label: "Sedang Disewa" },
-  { value: "dibatalkan", label: "Dibatalkan" },
-  { value: "dikembalikan", label: "Dikembalikan" },
-  { value: "selesai", label: "Selesai" },
+  { value: "Semua", label: "Semua" },
+  { value: "Belum Dibayar", label: "Belum Dibayar" },
+  { value: "Diproses", label: "Diproses" },
+  { value: "Dikirim", label: "Dikirim" },
+  { value: "Sedang Disewa", label: "Sedang Disewa" },
+  { value: "Dibatalkan", label: "Dibatalkan" },
+  { value: "Dikembalikan", label: "Dikembalikan" },
+  { value: "Selesai", label: "Selesai" },
 ];
 
-
 const OrderHistoryContentBody = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const statusParam = searchParams.get("status") || "Semua";
+  const search = searchParams.get("search") || "";
+  const startDate = searchParams.get("startDate") || "";
+  const endDate = searchParams.get("endDate") || "";
 
   const [loading, setLoading] = useState(true);
   const customerId = localStorage.getItem("customerId");
-  const[orderHistoryData, setOrderHistoryData] = useState<OrderHistoryProps[]>([]);
-  
+  const [orderHistoryData, setOrderHistoryData] = useState<OrderHistoryProps[] | null>(null);
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value && value !== "semua") {
+      params.set("status", value);
+    } else {
+      params.delete("status");
+    }
+    router.push(`?${params.toString()}`);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get<OrderHistoryResponseProps>(`${transactionBaseUrl}/customer/${customerId}`);
-        console.log("order history content: ",res.data.output_schema);
-        setOrderHistoryData(res.data.output_schema);
-        setLoading(false);
+        const params = new URLSearchParams();
+        if (statusParam && statusParam !== "semua") params.set("status", statusParam);
+        if (search) params.set("search", search);
+        if (startDate) params.set("startDate", startDate);
+        if (endDate) params.set("endDate", endDate);
+
+        const url = `${transactionBaseUrl}/customer/${customerId}?${params.toString()}`;
+        const res = await axios.get<OrderHistoryResponseProps>(url);
+        setOrderHistoryData(res.data.output_schema || []);
       } catch (error) {
         console.error("Failed to fetch data:", error);
+        setOrderHistoryData(null);
+      } finally {
         setLoading(false);
       }
     };
     fetchData();
-
-  }, []);
+  }, [searchParams, customerId, statusParam, search, startDate, endDate]);
 
   return (
     <div className="w-full mt-[35px]">
-      <Tabs defaultValue="semua" className="w-full rounded-none ">
+      <Tabs value={statusParam} onValueChange={handleTabChange} className="w-full rounded-none">
         <Carousel
-          opts={{
-            dragFree: true,
-            containScroll: "keepSnaps",
-            align: "start",
-          }}
+          opts={{ dragFree: true, containScroll: "keepSnaps", align: "start" }}
           className="overflow-x-auto scrollbar-hide border-b-[1px] border-[#D9D9D9] border-opacity-50 max-w-[1070px]"
         >
           <CarouselContent>
-            {OrderCategory.map((tab) => (
-              <CarouselItem key={tab.value} className="basis-auto flex-none">
+            {OrderCategory.map((tab, index) => (
+              <CarouselItem key={index} className="basis-auto flex-none">
                 <TabsList className="bg-white flex-nowrap whitespace-nowrap">
-                  <TabsTrigger
-                    value={tab.value}
-                    className="px-[17.5px] xl:text-[16px]"
-                  >
+                  <TabsTrigger value={tab.value} className="px-[17.5px] xl:text-[16px]">
                     {tab.label}
                   </TabsTrigger>
                 </TabsList>
@@ -74,22 +88,22 @@ const OrderHistoryContentBody = () => {
         </Carousel>
 
         <div className="mt-3">
-          {OrderCategory.map((tab) => (
-            <TabsContent key={tab.value} value={tab.value}>
+          {OrderCategory.map((tab, index) => (
+            <TabsContent key={index} value={tab.value}>
               <div className="space-y-3">
-                {orderHistoryData == null && !loading && (
+                {loading ? (
+                  [1, 2, 3, 4].map((idx) => <ProductOrderHistoryCardSkeleton key={idx} />)
+                ) : orderHistoryData && orderHistoryData.length > 0 ? (
+                  orderHistoryData.map((order, index) => (
+                    <ProductOrderHistoryCard key={index} orderHistoryProps={order} />
+                  ))
+                ) : (
                   <div className="flex items-center justify-center h-[300px]">
                     <p className="text-2xl font-semibold text-color-secondary">
-                      Tidak ada data
+                      History Pesanan Tidak Ditemukan
                     </p>
                   </div>
                 )}
-                {orderHistoryData != null && orderHistoryData.map((order) => (
-                  <ProductOrderHistoryCard
-                    key={order.order_id}
-                    orderHistoryProps={order}
-                  />
-                ))}
               </div>
             </TabsContent>
           ))}
