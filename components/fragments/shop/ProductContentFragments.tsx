@@ -22,9 +22,19 @@ const ProductContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { id } = useParams(); 
+  const { id } = useParams();
   const page = parseInt(searchParams.get("page") || "1");
   const size = 12;
+
+  const filters = {
+    rentDuration: searchParams.get("rentDuration") || "",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    isRnb: searchParams.get("isRnb") || "",
+    minRating: searchParams.get("minRating") || "",
+    sortBy: searchParams.get("sortBy") || "",
+    sortDirection: searchParams.get("sortDirection") || "",
+  };
 
   const [data, setData] = useState<ProductCardProps[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -33,7 +43,7 @@ const ProductContent = () => {
   const fetchShopData = async () => {
     try {
       const response = await axios.get<ShopDetailPagedProductProps>(
-        `${anotherShopProductBaseUrl}/${id}?page=${page}&size=${size}`
+        ` ${anotherShopProductBaseUrl}/${id}?page=${page}&size=${size}&rentDuration=${filters.rentDuration}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}`
       );
       setData(response.data.output_schema.content);
       setTotalPages(response.data.output_schema.total_pages || 1);
@@ -85,7 +95,7 @@ const ProductContent = () => {
   return (
     <div className="flex flex-col w-full h-auto space-y-3 md:space-y-16">
       <div className="w-full xl:pl-6 flex flex-col">
-        {!data && <NoProduct/>}
+        {!data && <NoProduct />}
         {data && (
           <ProductList products={data} numberCard={12} loading={loading} />
         )}

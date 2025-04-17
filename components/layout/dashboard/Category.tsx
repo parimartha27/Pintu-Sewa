@@ -43,7 +43,7 @@ const categories = [
   { name: "Peralatan Bayi", icon: PeralatanBayi },
   { name: "Furniture", icon: Furniture },
   { name: "Alat Olahraga", icon: AlatOlahraga },
-  { name: "Gadget", icon: Handphone },
+  { name: "Handphone", icon: Handphone },
   { name: "Peralatan Rumah", icon: PeralatanRumah },
   { name: "Pakaian Wanita", icon: PakaianWanita },
 ];

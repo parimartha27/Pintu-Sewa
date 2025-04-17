@@ -41,6 +41,21 @@ const ProductBody = () => {
   const size = 8;
   // const sort = "name,asc";
 
+  const filters = {
+    category: searchParams.get("category") || "",
+    rentDuration: searchParams.get("rentDuration") || "",
+    location: searchParams.get("location") || "",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    isRnb: searchParams.get("isRnb") || "",
+    minRating: searchParams.get("minRating") || "",
+    sortBy: searchParams.get("sortBy") || "",
+    sortDirection: searchParams.get("sortDirection") || "",
+    page: searchParams.get("page") || "",
+    size: searchParams.get("size") || "",
+    name: searchParams.get("name") || "",
+  };
+
   const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -49,14 +64,15 @@ const ProductBody = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = `${filteredProductBaseUrl}?category=${category}&name=${name}&page=${page}&size=${size}`;
-
+        const url = `${filteredProductBaseUrl}?category=${category}&name=${name}&rentDuration=${filters.rentDuration}&location=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}&page=${page}&size=${size}`;
+        console.log(url);
         const response = await axios.get<ProductResponse>(url);
+        console.log(response);
 
         setProducts(response.data.output_schema.content);
-     
+
         setTotalPages(response.data.output_schema.total_pages || 1);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
       } catch (error) {
         setError("Tidak ada produk");
         console.log(error);
@@ -114,7 +130,7 @@ const ProductBody = () => {
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              {error && <NoProduct/>}
+              {error && <NoProduct />}
               {products ? (
                 <ProductList
                   products={products}
@@ -122,7 +138,7 @@ const ProductBody = () => {
                   numberCard={16}
                 />
               ) : (
-               <NoProduct/>
+                <NoProduct />
               )}
             </div>
 

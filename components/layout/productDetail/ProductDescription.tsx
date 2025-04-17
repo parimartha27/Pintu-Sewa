@@ -11,7 +11,7 @@ import Jam from "@/public/jam.svg";
 import Box from "@/public/box.svg";
 import Coin from "@/public/coin.svg";
 import Special from "@/public/special.svg";
-import TestImage from "@/public/register.svg";
+import TestImage from "@/public/productTest.jpeg";
 import TooltipIcon from "@/public/tooltip.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShopAndLocation from "./ShopAndLocation";
@@ -25,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ProductDetailShopProps } from "@/types/shop";
+import isValidImage from "@/hooks/useValidImage";
 
 // const images = [TestImage, Image1, Image3, Image2, Image5];
 
@@ -58,7 +59,7 @@ const ProductDescription = ({
                 <CarouselItem key={index} className="relative w-full  h-[300px]">
                   <Image
                     key={index}
-                    src={src || TestImage.src}
+                    src={isValidImage(src) ? src : TestImage.src}
                     alt={`Image ${index + 1}`}
                     width={406}
                     height={406}
@@ -70,7 +71,7 @@ const ProductDescription = ({
         </Carousel>
         <div className="hidden w-full xl:max-w-[406px] md:flex md:flex-col">
           <Image
-            src={productDetail.images[selectedIndex] || TestImage.src}
+            src={isValidImage(productDetail.images[selectedIndex]) ? productDetail.images[selectedIndex] : TestImage.src}
             alt={`product-image-${selectedIndex}`}
             width={406}
             height={403}
@@ -83,7 +84,7 @@ const ProductDescription = ({
               productDetail.images.map((src, index) => (
                 <Image
                   key={index}
-                  src={src || TestImage.src}
+                  src={isValidImage(src) ? src : TestImage.src}
                   alt={`thumbnail-${index}`}
                   width={406}
                   height={406}

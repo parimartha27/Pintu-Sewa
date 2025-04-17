@@ -63,6 +63,10 @@ const DashboardBody = () => {
     ProductCardProps[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [recommendedProductsLoading, setRecommendedProductsLoading] =
+    useState(true);
+  const [nearCustomerProductsLoading, setNearCustomerProductsLoading] =
+    useState(true);
   const [error, setError] = useState<string>("");
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -74,21 +78,34 @@ const DashboardBody = () => {
     const fetchData = async () => {
       setError("");
       try {
-        const [mostRented, recommended, nearCustomer] = await Promise.all([
-          fetchMostRentedProducts(),
-          fetchRecommendedProducts(),
-          fetchNearCustomerProducts(customerId || ""),
-        ]);
+        // Fetch Most Rented
 
-        setMostRentedProducts(mostRented.output_schema);
-        setRecommendedProducts(recommended.output_schema);
-        setNearCustomerProducts(nearCustomer.output_schema);
-
-        console.log(mostRented.output_schema);
-      } catch (err) {
-        setError("Failed to fetch data" + err);
-      } finally {
+        const mostRented = await fetchMostRentedProducts();
+        if (mostRented.error_schema.error_message === "SUCCESS") {
+          setMostRentedProducts(mostRented.output_schema);
+        }
         setLoading(false);
+
+        const recommended = await fetchRecommendedProducts();
+        if (recommended.error_schema.error_message === "SUCCESS") {
+          setRecommendedProducts(recommended.output_schema);
+        }
+        setRecommendedProductsLoading(false);
+
+        const nearCustomer = await fetchNearCustomerProducts(customerId || "");
+        if (nearCustomer.error_schema.error_message === "SUCCESS") {
+          setNearCustomerProducts(nearCustomer.output_schema);
+        }
+
+        setTimeout(() => {
+          setNearCustomerProductsLoading(false);
+        }, 4000);
+        
+      } catch (err) {
+        setError("Failed to fetch data: " + err);
+        setLoading(false);
+        setRecommendedProductsLoading(false);
+        setNearCustomerProductsLoading(false);
       }
     };
 
@@ -118,7 +135,10 @@ const DashboardBody = () => {
             </h4>
             {error && <div>{error}</div>}
             {nearCustomerProducts != null && (
-              <ProductList products={nearCustomerProducts} loading={loading} />
+              <ProductList
+                products={nearCustomerProducts}
+                loading={nearCustomerProductsLoading}
+              />
             )}
           </>
         ) : (
@@ -128,7 +148,10 @@ const DashboardBody = () => {
             </h4>
             {error && <div>{error}</div>}
             {recommendedProducts != null && (
-              <ProductList products={recommendedProducts} loading={loading} />
+              <ProductList
+                products={recommendedProducts}
+                loading={recommendedProductsLoading}
+              />
             )}
           </>
         )}

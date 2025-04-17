@@ -18,15 +18,18 @@ import Tag from "../Elements/Tag";
 import Rnb from "../Elements/Rnb";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
 import { ProductCardProps } from "@/types/productCard";
+import isValidImage from "@/hooks/useValidImage";
 
 const ProductCard = ({ product }: { product: ProductCardProps }) => {
+
+
   return (
     <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={`/product/${product.id}`}>
         <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
           <CardHeader className="relative h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg">
             <Image
-              src={ProductTest}
+              src={isValidImage(product.image) ? product.image : ProductTest}
               alt="register"
               layout="fill"
               objectFit="cover"

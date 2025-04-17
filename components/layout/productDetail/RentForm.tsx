@@ -13,24 +13,39 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ProductDetailProps } from "@/types/productDetail";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
+import { AddToCartRequestProps, AddToCartResponse } from "@/types/addToCart";
+import axios from "axios";
+import { cartBaseUrl } from "@/types/globalVar";
+
+function formatDate(date: Date | undefined) {
+  
+  return date?.toISOString().split("T")[0];
+}
 
 const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const cartIconRef = useRef<HTMLDivElement>(null);
+
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset jam biar hanya bandingin tanggal
+  today.setHours(0, 0, 0, 0);
 
   const [startDate, setStartDate] = useState<Date | undefined>(
     () => new Date()
   );
+
   const [endDate, setEndDate] = useState<Date | undefined>(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow;
   });
+
   const [qty, setQty] = useState<number>(1);
   const max = productDetail.stock;
+
+  const customerId = localStorage.getItem("customerId");
 
   function handleDecreaseQty() {
     if (qty > 1) setQty(qty - 1);
@@ -42,31 +57,30 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
   function calculateTotal() {
     if (!startDate || !endDate) return 0;
-  
+
     const diffInTime = endDate.getTime() - startDate.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
     const days = diffInDays < 1 ? 1 : diffInDays;
-  
+
     let total = 0;
     let remainingDays = days;
-  
+
     const monthlyPrice = productDetail.monthly_price || 0;
     const weeklyPrice = productDetail.weekly_price || 0;
     const dailyPrice = productDetail.daily_price || 0;
-  
+
     const months = Math.floor(remainingDays / 30);
     total += months * monthlyPrice;
     remainingDays %= 30;
-  
+
     const weeks = Math.floor(remainingDays / 7);
     total += weeks * weeklyPrice;
     remainingDays %= 7;
-  
+
     total += remainingDays * dailyPrice;
-  
+
     return formatToRupiah(total * qty);
   }
-  
 
   const handleSelectStartDate = (date: Date | undefined) => {
     if (!date) return;
@@ -111,7 +125,33 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
     setEndDate(selected);
   };
-  
+
+  const addToCartReq: AddToCartRequestProps = {
+    customer_id: customerId || "",
+    product_id: productDetail.id,
+    quantity: qty,
+    start_rent_date: formatDate(startDate) ||  "",
+    end_rent_date: formatDate(endDate) ||  "",
+    shipping_address: "TEST ADDRESS",
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      console.log("add to cart req: ", addToCartReq);
+      const res = await axios.post<AddToCartResponse>(
+        `${cartBaseUrl}/add`,
+        addToCartReq
+      );
+      if (res.data.error_schema.error_message === "Success") {
+        alert("Produk berhasil ditambahkan ke keranjang");
+        localStorage.setItem("cartId", res.data.output_schema.cart_id);
+      }
+      console.log("add to cart res: ",res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex flex-col mt-[15px] md:mt-[60px] xl:max-w-[400px] xl:w-full pt-3 lg:pt-7 pb-4 xl:pb-[35px] px-3 xl:px-7 shadow-md outline-none bg-white">
       <h2 className="text-[14px] xl:text-[18px] text-color-primary font-medium">
@@ -231,22 +271,36 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       </div>
 
       {/* BUTTONS */}
-      <div className="flex flex-col mt-[14px] space-y-3">
-        <Button className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]">
-          <Image
-            src={NextSymbol}
-            alt="next-symbol"
-            className="w-3 h-[14px] xl:w-5 xl:h-5"
+      {productDetail.stock > 0 && (
+        <div className="flex flex-col mt-[14px] space-y-3">
+          <Button className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]">
+            <Image
+              src={NextSymbol}
+              alt="next-symbol"
+              className="w-3 h-[14px] xl:w-5 xl:h-5"
+            />
+            <h4 className="text-[12px] xl:text-lg font-medium ">Selanjutnya</h4>
+          </Button>
+          <Button
+            ref={buttonRef}
+            onClick={handleAddToCart}
+            className="w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px]"
+          >
+            <Image
+              src={Cart}
+              alt="cart"
+              className="w-3 h-[14px] xl:w-5 xl:h-5"
+            />
+            <h4 className="text-[12px] xl:text-lg font-medium text-color-primaryDark">
+              Keranjang
+            </h4>
+          </Button>
+          <div
+            ref={cartIconRef}
+            className="fixed top-4 right-4 z-50 invisible" 
           />
-          <h4 className="text-[12px] xl:text-lg font-medium ">Selanjutnya</h4>
-        </Button>
-        <Button className="w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px]">
-          <Image src={Cart} alt="cart" className="w-3 h-[14px] xl:w-5 xl:h-5" />
-          <h4 className="text-[12px] xl:text-lg font-medium text-color-primaryDark">
-            Keranjang
-          </h4>
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
