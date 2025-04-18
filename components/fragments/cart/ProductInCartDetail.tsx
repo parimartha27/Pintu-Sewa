@@ -3,22 +3,197 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import Delete from "@/public/delete.svg";
 import ProductImage from "@/public/productTest.jpeg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CartItemProps } from "@/types/cart";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
+import axios from "axios";
+import { cartBaseUrl } from "@/types/globalVar";
+import Edit from "@/public/edit.svg";
 
-const ProductInCartDetail = ({ cartItem }: { cartItem: CartItemProps }) => {
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+
+interface ProductInCartDetailProps {
+  cartItem: CartItemProps;
+  onDelete: (cartId: string) => void;
+}
+
+const ProductInCartDetail = ({
+  cartItem,
+  onDelete,
+}: ProductInCartDetailProps) => {
   const [qty, setQty] = useState<number>(cartItem.quantity);
   const [max] = useState<number>(cartItem.stock);
   const isAvailable = cartItem.available_to_rent;
+  const customerId = localStorage.getItem("customerId");
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    cartItem.start_rent_date ? new Date(cartItem.start_rent_date) : undefined
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    cartItem.end_rent_date ? new Date(cartItem.end_rent_date) : undefined
+  );
+  const [isChecked, setIsChecked] = useState(false);
 
-  function handleDecreaseQty() {
-    if (qty > 1) setQty(qty - 1);
-  }
+  useEffect(() => {
+    const selectedIds = getSelectedCartIds();
+    if (selectedIds.includes(cartItem.cart_id)) {
+      setIsChecked(true);
+    }
+  }, [cartItem.cart_id]);
 
-  function handleIncreaseQty() {
-    if (qty < max) setQty(qty + 1);
-  }
+  const today = new Date().toISOString().split("T")[0];
+  const temp = new Date();
+  temp.setDate(temp.getDate() + 1);
+  const tomorrow = temp.toISOString().split("T")[0];
+
+  console.log(today);
+
+  const handleDeleteClick = async () => {
+    try {
+      const res = await axios.delete(`${cartBaseUrl}/delete`, {
+        data: {
+          cart_id: cartItem.cart_id,
+          customer_id: customerId,
+        },
+      });
+
+      const data = res.data;
+      if (data.error_schema.error_message === "SUCCESS") {
+        onDelete(cartItem.cart_id);
+      } else {
+        alert("Gagal menghapus item");
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
+
+  const handleSelectStartDate = (date: Date | undefined) => {
+    setStartDate(date);
+    if (date && endDate && date > endDate) {
+      setEndDate(undefined);
+    }
+  };
+
+  const handleSelectEndDate = (date: Date | undefined) => {
+    if (startDate && date && date >= startDate) {
+      setEndDate(date);
+    }
+  };
+
+  const handleDecreaseQty = async () => {
+    try {
+      const res = await axios.put(`${cartBaseUrl}/edit`, {
+        data: {
+          cart_id: cartItem.cart_id,
+          quantity: qty - 1,
+          // start_rent_date: cartItem.start_rent_date,
+          // end_rent_date: cartItem.end_rent_date,
+          start_rent_date: today,
+          end_rent_date: tomorrow,
+          // valid_rental_period: cartItem.available_to_rent,
+          valid_rental_period:
+            new Date(today).getTime() < new Date(tomorrow).getTime(),
+        },
+      });
+
+      const data = res.data;
+      if (data.error_schema.error_message === "SUCCESS") {
+        if (qty > 1) setQty(qty - 1);
+      } else {
+        alert("Gagal mengurangi jumlah item");
+      }
+    } catch (err) {
+      console.error("decrease qty failed:", err);
+    }
+  };
+
+  const handleIncreaseQty = async () => {
+    try {
+      const res = await axios.put(`${cartBaseUrl}/edit`, {
+        data: {
+          cart_id: cartItem.cart_id,
+          quantity: qty + 1,
+          // start_rent_date: cartItem.start_rent_date,
+          // end_rent_date: cartItem.end_rent_date,
+          start_rent_date: today,
+          end_rent_date: tomorrow,
+          // valid_rental_period: cartItem.available_to_rent,
+          valid_rental_period:
+            new Date(today).getTime() < new Date(tomorrow).getTime(),
+        },
+      });
+
+      const data = res.data;
+      if (data.error_schema.error_message === "SUCCESS") {
+        if (qty < max) setQty(qty + 1);
+      } else {
+        alert("Gagal menambah jumlah item");
+      }
+    } catch (err) {
+      console.error("increase qty failed:", err);
+    }
+  };
+
+  const handleApplyDate = async () => {
+    if (!startDate || !endDate) return;
+
+    try {
+      const res = await axios.put(`${cartBaseUrl}/edit`, {
+        data: {
+          cart_id: cartItem.cart_id,
+          quantity: qty,
+          start_rent_date: format(startDate, "yyyy-MM-dd"),
+          end_rent_date: format(endDate, "yyyy-MM-dd"),
+          valid_rental_period: startDate < endDate,
+        },
+      });
+
+      if (res.data.error_schema.error_message === "SUCCESS") {
+        alert("Tanggal berhasil diubah");
+      }
+    } catch (err) {
+      console.error("Gagal update tanggal:", err);
+    }
+  };
+
+  const getSelectedCartIds = (): string[] => {
+    if (typeof window === "undefined") return [];
+    const data = localStorage.getItem("selectedCartIds");
+    return data ? JSON.parse(data) : [];
+  };
+
+  const addCartIdToStorage = (cartId: string) => {
+    const existing = getSelectedCartIds();
+    if (!existing.includes(cartId)) {
+      const updated = [...existing, cartId];
+      localStorage.setItem("selectedCartIds", JSON.stringify(updated));
+    }
+  };
+
+  const removeCartIdFromStorage = (cartId: string) => {
+    const existing = getSelectedCartIds();
+    const updated = existing.filter((id) => id !== cartId);
+    localStorage.setItem("selectedCartIds", JSON.stringify(updated));
+  };
+
+  const handleCheckChange = () => {
+    
+    const newCheckedState = !isChecked;
+    setIsChecked(newCheckedState);
+
+    if (newCheckedState) {
+      addCartIdToStorage(cartItem.cart_id);
+    } else {
+      removeCartIdFromStorage(cartItem.cart_id);
+    }
+  };
 
   return (
     <div
@@ -28,7 +203,12 @@ const ProductInCartDetail = ({ cartItem }: { cartItem: CartItemProps }) => {
     >
       <div className="flex space-x-8 w-[300px]">
         <div className="flex space-x-4">
-          <Checkbox disabled={!isAvailable} />
+          <Checkbox
+            disabled={!isAvailable}
+            checked={isChecked}
+            onCheckedChange={handleCheckChange}
+            
+          />
           <Image
             width={88}
             height={88}
@@ -59,9 +239,68 @@ const ProductInCartDetail = ({ cartItem }: { cartItem: CartItemProps }) => {
 
       <div className="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-16 mt-10 lg:mt-0">
         <div className="flex flex-col space-y-1 md:space-y-3 w-[300px]">
-          <h2 className="text-color-primary text-[14px] font-semibold">
-            Periode Sewa
-          </h2>
+          <div className="flex space-x-1">
+            <h2 className="text-color-primary text-[14px] font-semibold">
+              Periode Sewa
+            </h2>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 px-2 hover:bg-transparent"
+                >
+                  <Image
+                    src={Edit}
+                    alt="edit"
+                    width={15}
+                    height={15}
+                    className="hover:cursor-pointer hover:opacity-70"
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-4 space-y-4 flex flex-col">
+                <div className="flex">
+                  <div className="flex flex-col space-y-2">
+                    <h4 className="text-sm font-medium text-color-secondary text-center">
+                      Mulai
+                    </h4>
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={handleSelectStartDate}
+                      disabled={{ before: new Date() }}
+                      initialFocus
+                    />
+                  </div>
+
+                  <div className="flex flex-col space-y-2">
+                    <h4 className="text-sm font-medium text-color-secondary text-center">
+                      Selesai
+                    </h4>
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={handleSelectEndDate}
+                      disabled={{
+                        before: startDate || new Date(),
+                        from: startDate ? undefined : new Date(),
+                      }}
+                      initialFocus
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleApplyDate}
+                  className="w-full self-end mb-6 mr-4 max-w-[100px] mt-4 bg-color-secondary hover:bg-blue-700 "
+                >
+                  Terapkan
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </div>
+
           <h2 className="text-color-primary text-[14px] md:space-y-3">
             {cartItem.start_rent_date && cartItem.end_rent_date
               ? `${cartItem.start_rent_date} - ${cartItem.end_rent_date}`
@@ -78,7 +317,10 @@ const ProductInCartDetail = ({ cartItem }: { cartItem: CartItemProps }) => {
         </div>
         <div className="flex flex-col space-y-1 md:space-y-3">
           <h2 className="text-color-primary text-[14px] font-semibold">
-            Quantity <span className="text-xs text-color-grayPrimary text-opacity-80 font-normal">(maks:{cartItem.stock})</span>
+            Quantity{" "}
+            <span className="text-xs text-color-grayPrimary text-opacity-80 font-normal">
+              (maks:{cartItem.stock})
+            </span>
           </h2>
           <div
             className={`flex space-x-[7px] xl:space-x-3 px-2.5 py-3 items-center border-[1px] border-[#73787B] bg-transparent w-full max-w-[60px] xl:max-w-[72px] h-[20px] rounded-sm ${
@@ -100,6 +342,7 @@ const ProductInCartDetail = ({ cartItem }: { cartItem: CartItemProps }) => {
       </div>
 
       <div
+        onClick={handleDeleteClick}
         className={`flex self-end lg:self-start space-x-2 mt-6 lg:mt-1 hover:font-semibold hover:cursor-pointer max-w-[70px] ${
           !isAvailable ? "pointer-events-none" : ""
         }`}

@@ -6,7 +6,22 @@ import { useState } from "react";
 
 const CartProductForm = ({shopCart}: {shopCart: ShopCartProps}) => {
 
+
   const [carts, setCarts] = useState<CartItemProps[]>(shopCart.carts);
+  const [isMainChecked, setIsMainChecked] = useState<boolean>(false);
+
+  // Fungsi untuk menangani perubahan checkbox utama
+  const handleMainCheckboxChange = (checked: boolean) => {
+    setIsMainChecked(checked);
+
+    // Mengupdate status checkbox individu berdasarkan status checkbox utama
+    setCarts((prevCarts) =>
+      prevCarts.map((cart) => ({
+        ...cart,
+        isChecked: checked, // set status checked untuk semua item
+      }))
+    );
+  };
 
 const handleDelete = (cartId: string) => {
   setCarts((prevCarts) => prevCarts.filter((item) => item.cart_id !== cartId));
@@ -15,7 +30,8 @@ const handleDelete = (cartId: string) => {
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6 bg-white">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">
-        <Checkbox />
+        <Checkbox  checked={isMainChecked}
+          onCheckedChange={handleMainCheckboxChange} />
         <h2 className="text-[16px] font-semibold text-color-primary pb-1">
          {shopCart.shop_name}
         </h2>

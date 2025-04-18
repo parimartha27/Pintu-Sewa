@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
-
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -16,20 +14,15 @@ const OrderHistoryContentHeader = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Initialize dateRange from query params
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: searchParams.get("startDate")
-      ? new Date(searchParams.get("startDate")!)
-      : undefined,
-    to: searchParams.get("endDate")
-      ? new Date(searchParams.get("endDate")!)
-      : undefined,
-  });
+  const [startDateLocal, setStartDateLocal] = useState<Date | undefined>();
+  const [endDateLocal, setEndDateLocal] = useState<Date | undefined>();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  // Search state
+  const startDateParam = searchParams.get("startDate");
+  const endDateParam = searchParams.get("endDate");
+
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
 
-  // Update query parameters dynamically
   const updateQueryParams = ({
     search,
     startDate,
@@ -59,24 +52,16 @@ const OrderHistoryContentHeader = () => {
     router.push(`?${params.toString()}`);
   };
 
-  // Handle date range selection
-  const handleDateChange = (range: DateRange | undefined) => {
-    setDateRange(range);
-    const startDateValue = range?.from ? format(range.from, "yyyy-MM-dd") : "";
-    const endDateValue = range?.to ? format(range.to, "yyyy-MM-dd") : "";
-    updateQueryParams({ startDate: startDateValue, endDate: endDateValue });
+  const handleApply = () => {
+    const start = startDateLocal ? format(startDateLocal, "yyyy-MM-dd") : "";
+    const end = endDateLocal ? format(endDateLocal, "yyyy-MM-dd") : "";
+    updateQueryParams({ startDate: start, endDate: end });
+    setIsPopoverOpen(false);
   };
 
-  // Format button label based on selection
   const formatLabel = () => {
-    if (dateRange?.from && dateRange?.to) {
-      return `${format(dateRange.from, "dd-MM-yyyy")} - ${format(
-        dateRange.to,
-        "dd-MM-yyyy"
-      )}`;
-    }
-    if (dateRange?.from) {
-      return format(dateRange.from, "dd-MM-yyyy");
+    if (startDateParam && endDateParam) {
+      return `${format(startDateParam, "dd-MM-yyyy")} - ${format(endDateParam, "dd-MM-yyyy")}`;
     }
     return "Pilih Tanggal Transaksi";
   };
@@ -123,13 +108,17 @@ const OrderHistoryContentHeader = () => {
           </div>
         </form>
 
-        <Popover>
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger asChild>
             <Button
               className={cn(
                 "w-auto md:w-[230px] h-[43px] flex justify-center space-x-1 text-left font-normal text-[12px] text-color-grayPrimary border-[1px] border-[#D9D9D9] bg-transparent hover:bg-slate-200",
-                !(dateRange?.from || dateRange?.to) && "text-muted-foreground"
+                !(startDateParam || endDateParam) && "text-muted-foreground"
               )}
+              onClick={() => {
+                setStartDateLocal(startDateParam ? new Date(startDateParam) : undefined);
+                setEndDateLocal(endDateParam ? new Date(endDateParam) : undefined);
+              }}
             >
               <Image
                 src={CalendarIcon}
@@ -141,14 +130,58 @@ const OrderHistoryContentHeader = () => {
               </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="center">
-            <h2 className="text-center mx-auto w-full mt-3 text-color-secondary font-semibold text-wrap max-w-[300px]">Pilih Rentang Tanggal <span className="text-color-primary">(klik 2 kali di tanggal untuk reset tanggal mulai)</span> </h2>
-            <Calendar
-              mode="range"
-              selected={dateRange}
-              onSelect={handleDateChange}
-              numberOfMonths={2}
-            />
+          
+          <PopoverContent className="w-auto p-4" align="center">
+            <div className="flex gap-4">
+              {/* Kalender Mulai */}
+              <div className="flex flex-col space-y-2">
+                <h4 className="text-sm font-medium text-color-secondary text-center">
+                  Mulai
+                </h4>
+                <Calendar
+                  mode="single"
+                  selected={startDateLocal}
+                  onSelect={(date) => {
+                    setStartDateLocal(date);
+                    if (date && endDateLocal && date > endDateLocal) {
+                      setEndDateLocal(undefined);
+                    }
+                  }}
+                  initialFocus
+                />
+              </div>
+
+              {/* Kalender Selesai */}
+              <div className="flex flex-col space-y-2">
+                <h4 className="text-sm font-medium text-color-secondary text-center">
+                  Selesai
+                </h4>
+                <Calendar
+                  mode="single"
+                  selected={endDateLocal}
+                  onSelect={(date) => {
+                    if (startDateLocal && date && date >= startDateLocal) {
+                      setEndDateLocal(date);
+                    }
+                  }}
+                  disabled={{ 
+                    before: startDateLocal || new Date(),
+                    from: startDateLocal ? undefined : new Date()
+                  }}
+                  initialFocus
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                onClick={handleApply}
+                disabled={!startDateLocal || !endDateLocal}
+                className="bg-color-primaryDark hover:bg-color-secondary hover:opacity-80"
+              >
+                Terapkan
+              </Button>
+            </div>
           </PopoverContent>
         </Popover>
       </div>

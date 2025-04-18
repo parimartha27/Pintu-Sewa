@@ -13,8 +13,10 @@ import { CartResponseProps, ShopCartProps } from "@/types/cart";
 import { cartBaseUrl } from "@/types/globalVar";
 import NoCart from "@/public/noCart.svg";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 const CartBody = () => {
+  const router = useRouter();
   const [shopCartItems, setShopCartItems] = useState<ShopCartProps[]>([]);
   const [loading, setLoading] = useState(true);
   const customerId = localStorage.getItem("customerId");
@@ -74,7 +76,7 @@ const CartBody = () => {
               <CartProductForm key={item.shop_id} shopCart={item} />
             ))}
           </div>
-          <Button onClick={() => alert("checkoutnya nanti ya. . . .")}
+          <Button onClick={() => router.push("/cart/checkout")}
            className="flex self-center md:self-end space-x-[10px] w-full max-w-[200px] h-[48px] mt-8 mb-[210px] rounded-xl hover:opacity-80 bg-custom-gradient-tr">
             <Image src={Next} alt="next" className="w-5 h-5" />
             <h4 className="text-lg font-medium ">Checkout</h4>
@@ -86,3 +88,4 @@ const CartBody = () => {
 };
 
 export default CartBody;
+
