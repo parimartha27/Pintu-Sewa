@@ -18,6 +18,7 @@ const CartBody = () => {
   const [shopCartItems, setShopCartItems] = useState<ShopCartProps[]>([]);
   const [loading, setLoading] = useState(true);
   const customerId = localStorage.getItem("customerId");
+  const [totalProductInCart, setTotalProductInCart] = useState<number>(0);
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -26,7 +27,8 @@ const CartBody = () => {
           `${cartBaseUrl}/${customerId}`
         );
         console.log("cart response:", cartRes.data.output_schema);
-        setShopCartItems(cartRes.data.output_schema);
+        setShopCartItems(cartRes.data.output_schema.shops);
+        setTotalProductInCart(cartRes.data.output_schema.total_product_cart);
       } catch (error) {
         console.error("Failed to fetch cart data:", error);
       } finally {
@@ -63,7 +65,7 @@ const CartBody = () => {
             <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-[29px] pt-0 py-[14px]">
               <Checkbox />
               <h2 className="text-[16px] font-semibold text-color-primary pb-1">
-                Pilih Semua <span className="font-light">(5)</span>
+                Pilih Semua <span className="font-light">({totalProductInCart || "NaN"})</span>
               </h2>
             </CardHeader>
           </Card>

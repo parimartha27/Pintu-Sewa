@@ -24,7 +24,7 @@ const ProductOrderHistoryContent = ({orderHistoryProduct}: {orderHistoryProduct:
     </div>
   </div>
   <div className="flex flex-col items-end self-end text-end space-y-1 sm:space-y-2">
-    <h2 className="text-xs sm:text-sm text-color-primary font-medium">Sub Total</h2>
+    <h2 className="text-xs sm:text-sm text-color-primary font-medium">Subtotal</h2>
     <h2 className="text-sm text-color-primary font-semibold">{formatToRupiah(orderHistoryProduct.subtotal) || "gratis"}</h2>
   </div>
 </CardContent>

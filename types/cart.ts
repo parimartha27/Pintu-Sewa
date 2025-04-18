@@ -3,7 +3,10 @@ import { ErrorSchema } from "./errorSchema";
   
 export interface CartResponseProps {
     error_schema: ErrorSchema;
-    output_schema: ShopCartProps[];
+    output_schema:{
+      shops: ShopCartProps[];
+      total_product_cart: number;
+    } 
   }
 
 export interface CartItemProps {

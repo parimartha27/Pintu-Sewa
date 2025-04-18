@@ -100,7 +100,7 @@ const OrderHistoryContentBody = () => {
                 ) : (
                   <div className="flex items-center justify-center h-[300px]">
                     <p className="text-2xl font-semibold text-color-secondary">
-                      History Pesanan Tidak Ditemukan
+                      History Pesanan Tidak Ada
                     </p>
                   </div>
                 )}

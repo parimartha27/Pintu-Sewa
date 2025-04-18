@@ -2,7 +2,7 @@ import { ErrorSchema } from "./errorSchema";
 
 export interface OrderHistoryResponseProps {
   error_schema: ErrorSchema;
-  output_schema: OrderHistoryProps[] ;
+  output_schema: OrderHistoryProps[];
 }
 
 export interface OrderHistoryProps {
@@ -13,6 +13,9 @@ export interface OrderHistoryProps {
   shop: Shop;
   products: Product[];
   total_price: number;
+  total_deposit: number;
+  shipping_partner: string;
+  shipping_price: number;
 }
 
 export interface Shop {

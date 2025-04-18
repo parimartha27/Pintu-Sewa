@@ -56,7 +56,7 @@ const Navbar = ({ type }: NavbarProps) => {
         .catch((error) => {
           console.error("Search error:", error);
         });
-    }, 250)
+    }, 100)
   ).current;
 
   useEffect(() => {
@@ -222,7 +222,7 @@ const Navbar = ({ type }: NavbarProps) => {
           ) : session || token ? (
             /* ================== Sudah login ======================= */
             <>
-              <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-3 pr-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
+              <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-3 lg:space-x-1 pr-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">
                 <Link href="/cart" className="hover:opacity-75 lg:ml-2">
                   <Image
                     src={Cart}
