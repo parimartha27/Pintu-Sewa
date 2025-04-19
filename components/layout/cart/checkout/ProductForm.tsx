@@ -5,16 +5,20 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { Checkbox } from "@/components/ui/checkbox";
 import ProductInCheckoutDetail from "@/components/fragments/checkout/ProductInCheckoutDetail";
-import Tootlip from "@/public/tooltip.svg";
+import TooltipIcon from "@/public/tooltip.svg";
 import Edit from "@/public/edit.svg";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CheckoutProductForm = () => {
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">
-        <Checkbox />
         <h2 className="text-[16px] font-semibold text-color-primary pb-1">
           Nama Toko
         </h2>
@@ -27,8 +31,25 @@ const CheckoutProductForm = () => {
         <div className="flex-col max-w-[500px] w-full space-y-[14px]">
           <div className="flex justify-between">
             <div className="flex space-x-2">
-              <h3 className="text-color-primary text-[12px] md:text-sm">Deposit</h3>
-              <Image src={Tootlip} alt="tooltip" className="hover:opacity-80" />
+              <TooltipProvider>
+                <h3 className="text-color-primary text-[12px] md:text-sm">
+                  Deposit
+                </h3>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Image
+                      src={TooltipIcon}
+                      alt="tooltip"
+                      className="hover:opacity-70 cursor-pointer"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white border-[1px] border-color-primary rounded-sm">
+                    <p className="text-[12px] text-color-secondary">
+                      Deposit Biar Kalo Ditilep Ga Rugi Rugi Amat Lu
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
               Rp. 400.000
@@ -37,15 +58,23 @@ const CheckoutProductForm = () => {
 
           <div className="flex justify-between">
             <div className="flex space-x-2">
-              <h3 className="text-color-primary text-[12px] md:text-sm">Opsi Pengiriman</h3>
-              <Image src={Edit} alt="edit" className="hover:opacity-70 hover:cursor-pointer" />
+              <h3 className="text-color-primary text-[12px] md:text-sm">
+                Opsi Pengiriman
+              </h3>
+              <Image
+                src={Edit}
+                alt="edit"
+                className="hover:opacity-70 hover:cursor-pointer"
+              />
             </div>
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
               JNT Express
             </h3>
           </div>
           <div className="flex justify-between">
-            <h3 className="text-color-primary text-[12px] md:text-sm">Ongkos Kirim</h3>
+            <h3 className="text-color-primary text-[12px] md:text-sm">
+              Ongkos Kirim
+            </h3>
 
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
               Rp. 30.000

@@ -1,9 +1,11 @@
+"use client"
 import AddressForm from "./AddressForm";
-import CheckoutSkeleton from "./CheckoutSkeleton";//
 import MetodePembayaranLayout from "./MetodePembayaran";
 import CheckoutProductForm from "./ProductForm";
 
+
 const CheckOutBody = () => {
+
   return (
     <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-color-layout p-2">
       <div className="flex flex-col">
@@ -14,7 +16,7 @@ const CheckOutBody = () => {
           {/* <CheckoutSkeleton/> */}
           <AddressForm />
         </div>
-        <div className="flex flex-col max-h-[1100px] pb-3 pt-0 overflow-y-scroll mt-8">
+        <div className="flex flex-col pb-3 pt-0 mt-8">
           <CheckoutProductForm />
           <CheckoutProductForm />
           <CheckoutProductForm />

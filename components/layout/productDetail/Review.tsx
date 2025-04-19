@@ -17,7 +17,7 @@ import { ReviewProps } from "@/types/review";
 const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
   return (
     <div className="px-2 pt-8 flex">
-      <div className="lg:flex flex-col hidden w-full">
+      <div className="lg:flex flex-col hidden">
         <h2 className=" ml-4 text-lg xl:text-2xl text-color-primary font-semibold mr-[220px] text-nowrap">
           Filter Ulasan
         </h2>
@@ -25,6 +25,7 @@ const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
           <CommentFilterBody />
         </div>
       </div>
+
       <div className="flex flex-col space-y-[19px] xl:max-w-[600px] w-full">
         <div className="flex justify-between ">
           <h2 className="text-lg xl:text-2xl text-color-primary font-medium hidden lg:block">

@@ -4,42 +4,49 @@ import ProductInCartDetail from "@/components/fragments/cart/ProductInCartDetail
 import { CartItemProps, ShopCartProps } from "@/types/cart";
 import { useState } from "react";
 
+interface CartProductFormProps {
+  shopCart: ShopCartProps;
+  isSelected: boolean;
+  selectedCartIds: string[];
+  onShopSelect: (shopId: string, checked: boolean) => void;
+  onProductSelect: (cartId: string, checked: boolean) => void;
+  onDelete: (cartId: string) => void;
+}
+
 const CartProductForm = ({
   shopCart,
   isSelected,
   selectedCartIds,
   onShopSelect,
   onProductSelect,
-}: {
-  shopCart: ShopCartProps;
-  isSelected: boolean;
-  selectedCartIds: string[];
-  onShopSelect: (shopId: string, checked: boolean) => void;
-  onProductSelect: (cartId: string, checked: boolean) => void;
-}) => {
+  onDelete
+}: CartProductFormProps) => {
   const [carts, setCarts] = useState<CartItemProps[]>(shopCart.carts);
   const handleShopCheckboxChange = (checked: boolean) => {
     onShopSelect(shopCart.shop_id, checked);
   };
 
   const handleDelete = (cartId: string) => {
-    const updated = carts.filter((c) => c.cart_id !== cartId);
-    setCarts(updated);
-
-    // Update localStorage juga
-    const storedCartIds = JSON.parse(localStorage.getItem("selectedCartIds") || "[]");
-    const updatedCartIds = storedCartIds.filter((id: string) => id !== cartId);
-    localStorage.setItem("selectedCartIds", JSON.stringify(updatedCartIds));
+    const updatedCarts = carts.filter(cart => cart.cart_id !== cartId);
+    setCarts(updatedCarts);
+    onDelete(cartId);
+    
+    // Jika semua produk di toko sudah dihapus, komponen akan otomatis
+    // di-unmount karena parent component akan menghapus toko kosong
   };
 
- 
+  // Jika carts kosong, return null (fallback safety)
+  if (carts.length === 0) {
+    return null;
+  }
+
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6 bg-white">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">
-      <Checkbox
-      checked={isSelected}
-      onCheckedChange={(checked) => handleShopCheckboxChange(!!checked)}
-    />
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={(checked) => handleShopCheckboxChange(!!checked)}
+        />
         <h2 className="text-[16px] font-semibold text-color-primary pb-1">
           {shopCart.shop_name}
         </h2>
@@ -47,7 +54,7 @@ const CartProductForm = ({
 
       <CardContent className="mt-3 flex-col p-0">
         {carts.map((cart: CartItemProps) => (
-            <ProductInCartDetail
+          <ProductInCartDetail
             key={cart.cart_id}
             cartItem={cart}
             isChecked={selectedCartIds.includes(cart.cart_id)}
@@ -59,6 +66,5 @@ const CartProductForm = ({
     </Card>
   );
 };
-
 
 export default CartProductForm;

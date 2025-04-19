@@ -21,21 +21,50 @@ const CartBody = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCartIds, setSelectedCartIds] = useState<string[]>([]);
   const [totalProductInCart, setTotalProductInCart] = useState<number>(0);
-  const customerId =
-    typeof window !== "undefined" ? localStorage.getItem("customerId") : null;
-
-  // Load selected cart IDs from localStorage on initial load
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // Tambahkan state untuk initial load
+  const customerId = typeof window !== "undefined" ? localStorage.getItem("customerId") : null;
+  const hasSelectedItems = selectedCartIds.length > 0;
+  // Load initial data
   useEffect(() => {
-    const storedCartIds = JSON.parse(
-      localStorage.getItem("selectedCartIds") || "[]"
-    );
-    setSelectedCartIds(storedCartIds);
-  }, []);
+    const fetchCartData = async () => {
+      try {
+        const cartRes = await axios.get<CartResponseProps>(
+          `${cartBaseUrl}/${customerId}`
+        );
+        const shops = cartRes.data.output_schema.shops;
+        console.log("SHOPS:"  , shops);
+        setShopCartItems(shops);
+        setTotalProductInCart(cartRes.data.output_schema.total_product_cart);
+        
+        // Load selectedCartIds dari localStorage setelah data dimuat
+        const storedCartIds = JSON.parse(
+          localStorage.getItem("selectedCartIds") || "[]"
+        );
+        
+        // Validasi storedCartIds terhadap data yang baru di-load
+        const allIds = shops.flatMap(shop => shop.carts.map(cart => cart.cart_id));
+        const validCartIds = storedCartIds.filter((id: string) => allIds.includes(id));
+        
+        setSelectedCartIds(validCartIds);
+      } catch (error) {
+        console.error("Failed to fetch cart data:", error);
+      } finally {
+        setLoading(false);
+        setIsInitialLoad(false); // Tandai bahwa initial load selesai
+      }
+    };
 
-  // Sync selectedCartIds to localStorage
+    if (customerId) {
+      fetchCartData();
+    }
+  }, [customerId]);
+
+  // Sync selectedCartIds ke localStorage (kecuali saat initial load)
   useEffect(() => {
-    localStorage.setItem("selectedCartIds", JSON.stringify(selectedCartIds));
-  }, [selectedCartIds]);
+    if (!isInitialLoad && typeof window !== "undefined") {
+      localStorage.setItem("selectedCartIds", JSON.stringify(selectedCartIds));
+    }
+  }, [selectedCartIds, isInitialLoad]);
 
   // Calculate derived states
   const allCartIds = shopCartItems.flatMap((shop) =>
@@ -72,23 +101,17 @@ const CartBody = () => {
     );
   };
 
-  useEffect(() => {
-    const fetchCartData = async () => {
-      try {
-        const cartRes = await axios.get<CartResponseProps>(
-          `${cartBaseUrl}/${customerId}`
-        );
-        setShopCartItems(cartRes.data.output_schema.shops);
-        setTotalProductInCart(cartRes.data.output_schema.total_product_cart);
-      } catch (error) {
-        console.error("Failed to fetch cart data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCartData();
-  }, []);
+  const handleDeleteCartItem = (deletedCartId: string) => {
+    setSelectedCartIds(prev => prev.filter(id => id !== deletedCartId));
+    setShopCartItems(prev => 
+      prev
+        .map(shop => ({
+          ...shop,
+          carts: shop.carts.filter(cart => cart.cart_id !== deletedCartId)
+        }))
+        .filter(shop => shop.carts.length > 0)
+    );
+  };
 
   return (
     <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto p-2 pt-12 bg-color-layout">
@@ -134,13 +157,21 @@ const CartBody = () => {
                 selectedCartIds={selectedCartIds}
                 onShopSelect={handleShopSelect}
                 onProductSelect={handleProductSelect}
+                onDelete={handleDeleteCartItem}
               />
             ))}
           </div>
 
           <Button
-            onClick={() => router.push("/cart/checkout")}
-            className="flex self-center md:self-end space-x-[10px] w-full max-w-[200px] h-[48px] mt-8 mb-[210px] rounded-xl hover:opacity-80 bg-custom-gradient-tr"
+          disabled={!hasSelectedItems}
+            onClick={() => {
+              localStorage.setItem("checkoutFrom", "cart");
+              router.push("/cart/checkout")
+            
+            }}
+            className={`flex self-center md:self-end space-x-[10px] w-full max-w-[200px] h-[48px] mt-8 mb-[210px] rounded-xl hover:opacity-80 bg-custom-gradient-tr ${
+              !hasSelectedItems ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             <Image src={Next} alt="next" className="w-5 h-5" />
             <h4 className="text-lg font-medium">Checkout</h4>

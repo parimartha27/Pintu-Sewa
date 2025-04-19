@@ -18,12 +18,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { parseIndoDateToISO } from "@/hooks/useIndoDate";
 
 interface ProductInCartDetailProps {
   cartItem: CartItemProps;
   onDelete: (cartId: string) => void;
   isChecked: boolean;
   onCheckChange: (cartId: string, checked: boolean) => void;
+}
+
+interface CartRequestHandleProps{
+  cart_id: string;
+  quantity: number;
+  start_rent_date: string;
+  end_rent_date: string;
 }
 
 const ProductInCartDetail = ({
@@ -43,14 +51,6 @@ const ProductInCartDetail = ({
     cartItem.end_rent_date ? new Date(cartItem.end_rent_date) : undefined
   );
 
-
-  const today = new Date().toISOString().split("T")[0];
-  const temp = new Date();
-  temp.setDate(temp.getDate() + 1);
-  const tomorrow = temp.toISOString().split("T")[0];
-
-  console.log(today);
-
   const handleDeleteClick = async () => {
     try {
       const res = await axios.delete(`${cartBaseUrl}/delete`, {
@@ -59,7 +59,7 @@ const ProductInCartDetail = ({
           customer_id: customerId,
         },
       });
-  
+
       const data = res.data;
       if (data.error_schema.error_message === "SUCCESS") {
         const currentSelected = JSON.parse(
@@ -68,7 +68,10 @@ const ProductInCartDetail = ({
         const updatedSelected = currentSelected.filter(
           (id: string) => id !== cartItem.cart_id
         );
-        localStorage.setItem("selectedCartIds", JSON.stringify(updatedSelected));
+        localStorage.setItem(
+          "selectedCartIds",
+          JSON.stringify(updatedSelected)
+        );
         onDelete(cartItem.cart_id);
       } else {
         alert("Gagal menghapus item");
@@ -92,20 +95,14 @@ const ProductInCartDetail = ({
   };
 
   const handleDecreaseQty = async () => {
-    try {
-      const res = await axios.put(`${cartBaseUrl}/edit`, {
-        data: {
-          cart_id: cartItem.cart_id,
-          quantity: qty - 1,
-          // start_rent_date: cartItem.start_rent_date,
-          // end_rent_date: cartItem.end_rent_date,
-          start_rent_date: today,
-          end_rent_date: tomorrow,
-          // valid_rental_period: cartItem.available_to_rent,
-          valid_rental_period:
-            new Date(today).getTime() < new Date(tomorrow).getTime(),
-        },
-      });
+    if(qty <= 1) return
+    try { 
+      const payload: CartRequestHandleProps = {cart_id: cartItem.cart_id,
+        quantity: qty - 1,
+        start_rent_date: format(new Date(parseIndoDateToISO(cartItem.start_rent_date)), "yyyy-MM-dd"),
+        end_rent_date: format(new Date(parseIndoDateToISO(cartItem.end_rent_date)), "yyyy-MM-dd")};
+     
+        const res = await axios.put(`${cartBaseUrl}/edit`, payload);
 
       const data = res.data;
       if (data.error_schema.error_message === "SUCCESS") {
@@ -119,20 +116,15 @@ const ProductInCartDetail = ({
   };
 
   const handleIncreaseQty = async () => {
+    if(qty >= max) return
     try {
-      const res = await axios.put(`${cartBaseUrl}/edit`, {
-        data: {
-          cart_id: cartItem.cart_id,
-          quantity: qty + 1,
-          // start_rent_date: cartItem.start_rent_date,
-          // end_rent_date: cartItem.end_rent_date,
-          start_rent_date: today,
-          end_rent_date: tomorrow,
-          // valid_rental_period: cartItem.available_to_rent,
-          valid_rental_period:
-            new Date(today).getTime() < new Date(tomorrow).getTime(),
-        },
-      });
+      const payload: CartRequestHandleProps = {cart_id: cartItem.cart_id,
+        quantity: qty + 1,
+        start_rent_date: format(new Date(parseIndoDateToISO(cartItem.start_rent_date)), "yyyy-MM-dd"),
+        end_rent_date: format(new Date(parseIndoDateToISO(cartItem.end_rent_date)), "yyyy-MM-dd")};
+     
+      const res = await axios.put(`${cartBaseUrl}/edit`, payload)
+      console.log("payload ubah tanggal: ", payload);
 
       const data = res.data;
       if (data.error_schema.error_message === "SUCCESS") {
@@ -149,15 +141,13 @@ const ProductInCartDetail = ({
     if (!startDate || !endDate) return;
 
     try {
-      const res = await axios.put(`${cartBaseUrl}/edit`, {
-        data: {
-          cart_id: cartItem.cart_id,
-          quantity: qty,
-          start_rent_date: format(startDate, "yyyy-MM-dd"),
-          end_rent_date: format(endDate, "yyyy-MM-dd"),
-          valid_rental_period: startDate < endDate,
-        },
-      });
+      const payload: CartRequestHandleProps = {
+        cart_id: cartItem.cart_id,
+        quantity: qty,
+        start_rent_date: format(startDate, "yyyy-MM-dd"),
+        end_rent_date: format(endDate, "yyyy-MM-dd")};
+     
+      const res = await axios.put(`${cartBaseUrl}/edit`, payload);
 
       if (res.data.error_schema.error_message === "SUCCESS") {
         alert("Tanggal berhasil diubah");
@@ -236,7 +226,7 @@ const ProductInCartDetail = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-4 space-y-4 flex flex-col">
-                <div className="flex">
+                <div className="flex flex-col md:flex-row">
                   <div className="flex flex-col space-y-2">
                     <h4 className="text-sm font-medium text-color-secondary text-center">
                       Mulai

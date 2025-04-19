@@ -19,6 +19,7 @@ import { formatToRupiah } from "@/hooks/useConvertRupiah";
 import { AddToCartRequestProps, AddToCartResponse } from "@/types/addToCart";
 import axios from "axios";
 import { cartBaseUrl } from "@/types/globalVar";
+import { useRouter } from "next/navigation";
 
 function formatDate(date: Date | undefined) {
   
@@ -26,6 +27,7 @@ function formatDate(date: Date | undefined) {
 }
 
 const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
+  const router = useRouter();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const cartIconRef = useRef<HTMLDivElement>(null);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
@@ -43,13 +45,13 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
     return tomorrow;
   });
 
-  const [qty, setQty] = useState<number>(1);
+  const [qty, setQty] = useState<number>(productDetail.min_rented);
   const max = productDetail.stock;
 
   const customerId = localStorage.getItem("customerId");
 
   function handleDecreaseQty() {
-    if (qty > 1) setQty(qty - 1);
+    if (qty > productDetail.min_rented) setQty(qty - 1);
   }
 
   function handleIncreaseQty() {
@@ -154,7 +156,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   };
 
   return (
-    <div className="flex flex-col mt-[15px] md:mt-[60px] xl:max-w-[400px] xl:w-full pt-3 lg:pt-7 pb-4 xl:pb-[35px] px-3 xl:px-7 shadow-md outline-none bg-white">
+    <div className="flex flex-col mt-[15px] md:max-h-[425px] lg:max-h-[450px] xl:max-h-[500px] md:mt-[60px] xl:max-w-[400px] xl:w-full pt-3 lg:pt-7 pb-4 xl:pb-[35px] px-3 xl:px-7 shadow-md outline-none bg-white">
       <h2 className="text-[14px] xl:text-[18px] text-color-primary font-medium">
         Formulir Penyewaan
       </h2>
@@ -274,7 +276,12 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       {/* BUTTONS */}
       {productDetail.stock > 0 && (
         <div className="flex flex-col mt-[14px] space-y-3">
-          <Button className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]">
+          <Button 
+          onClick={() => {
+            localStorage.setItem("checkoutFrom", "productDetail")
+            router.push("/cart/checkout")
+          }}
+          className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]">
             <Image
               src={NextSymbol}
               alt="next-symbol"

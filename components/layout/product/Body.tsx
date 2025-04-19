@@ -35,14 +35,14 @@ const ProductBody = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const category = searchParams.get("category") || "";
+  const category = searchParams.get("categories") || "";
   const name = searchParams.get("name") || "";
   const page = parseInt(searchParams.get("page") || "1");
   const size = 8;
   // const sort = "name,asc";
 
   const filters = {
-    category: searchParams.get("category") || "",
+    category: searchParams.get("categories") || "",
     rentDuration: searchParams.get("rentDuration") || "",
     location: searchParams.get("location") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -64,7 +64,7 @@ const ProductBody = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = `${filteredProductBaseUrl}?category=${category}&name=${name}&rentDuration=${filters.rentDuration}&location=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}&page=${page}&size=${size}`;
+        const url = `${filteredProductBaseUrl}?categories=${category}&name=${name}&rentDuration=${filters.rentDuration}&location=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}&page=${page}&size=${size}`;
         console.log(url);
         const response = await axios.get<ProductResponse>(url);
         console.log(response);

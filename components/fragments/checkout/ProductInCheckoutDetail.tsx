@@ -1,4 +1,4 @@
-import { Checkbox } from "@/components/ui/checkbox";
+
 import Image from "next/image";
 import ProductImage from "@/public/productTest.jpeg";
 
@@ -7,7 +7,6 @@ const ProductInCheckoutDetail = () => {
     <div className="flex flex-col md:flex-row md:flex-wrap md:justify-between mb-6 lg:mb-3 pt-6 lg:pt-3 border-t-[1px] border-t-[#D9D9D9] ">
       <div className="flex space-x-8">
         <div className="flex space-x-4 ">
-          <Checkbox />
           <Image
             src={ProductImage}
             alt="product"

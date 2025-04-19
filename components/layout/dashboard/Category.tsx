@@ -52,7 +52,7 @@ const Category = () => {
   const router = useRouter();
 
   const handleClick = (kategori: string) => {
-    router.push(`/product?category=${encodeURIComponent(
+    router.push(`/product?categories=${encodeURIComponent(
           kategori
         )}&page=1&size=16&sort="name,desc"`);
   };
