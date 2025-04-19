@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import Delete from "@/public/delete.svg";
 import ProductImage from "@/public/productTest.jpeg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CartItemProps } from "@/types/cart";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
 import axios from "axios";
@@ -22,11 +22,15 @@ import { format } from "date-fns";
 interface ProductInCartDetailProps {
   cartItem: CartItemProps;
   onDelete: (cartId: string) => void;
+  isChecked: boolean;
+  onCheckChange: (cartId: string, checked: boolean) => void;
 }
 
 const ProductInCartDetail = ({
   cartItem,
   onDelete,
+  isChecked,
+  onCheckChange,
 }: ProductInCartDetailProps) => {
   const [qty, setQty] = useState<number>(cartItem.quantity);
   const [max] = useState<number>(cartItem.stock);
@@ -38,14 +42,7 @@ const ProductInCartDetail = ({
   const [endDate, setEndDate] = useState<Date | undefined>(
     cartItem.end_rent_date ? new Date(cartItem.end_rent_date) : undefined
   );
-  const [isChecked, setIsChecked] = useState(false);
 
-  useEffect(() => {
-    const selectedIds = getSelectedCartIds();
-    if (selectedIds.includes(cartItem.cart_id)) {
-      setIsChecked(true);
-    }
-  }, [cartItem.cart_id]);
 
   const today = new Date().toISOString().split("T")[0];
   const temp = new Date();
@@ -62,9 +59,16 @@ const ProductInCartDetail = ({
           customer_id: customerId,
         },
       });
-
+  
       const data = res.data;
       if (data.error_schema.error_message === "SUCCESS") {
+        const currentSelected = JSON.parse(
+          localStorage.getItem("selectedCartIds") || "[]"
+        );
+        const updatedSelected = currentSelected.filter(
+          (id: string) => id !== cartItem.cart_id
+        );
+        localStorage.setItem("selectedCartIds", JSON.stringify(updatedSelected));
         onDelete(cartItem.cart_id);
       } else {
         alert("Gagal menghapus item");
@@ -163,36 +167,9 @@ const ProductInCartDetail = ({
     }
   };
 
-  const getSelectedCartIds = (): string[] => {
-    if (typeof window === "undefined") return [];
-    const data = localStorage.getItem("selectedCartIds");
-    return data ? JSON.parse(data) : [];
-  };
-
-  const addCartIdToStorage = (cartId: string) => {
-    const existing = getSelectedCartIds();
-    if (!existing.includes(cartId)) {
-      const updated = [...existing, cartId];
-      localStorage.setItem("selectedCartIds", JSON.stringify(updated));
-    }
-  };
-
-  const removeCartIdFromStorage = (cartId: string) => {
-    const existing = getSelectedCartIds();
-    const updated = existing.filter((id) => id !== cartId);
-    localStorage.setItem("selectedCartIds", JSON.stringify(updated));
-  };
-
   const handleCheckChange = () => {
-    
     const newCheckedState = !isChecked;
-    setIsChecked(newCheckedState);
-
-    if (newCheckedState) {
-      addCartIdToStorage(cartItem.cart_id);
-    } else {
-      removeCartIdFromStorage(cartItem.cart_id);
-    }
+    onCheckChange(cartItem.cart_id, newCheckedState);
   };
 
   return (
@@ -207,7 +184,6 @@ const ProductInCartDetail = ({
             disabled={!isAvailable}
             checked={isChecked}
             onCheckedChange={handleCheckChange}
-            
           />
           <Image
             width={88}
