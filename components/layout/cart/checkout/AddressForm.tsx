@@ -47,6 +47,9 @@ const AddressForm = () => {
             Jalan Raya Foresta, Cluster Naturale N2/12, Kecamatan Pagedangan,
             Kabupaten Tangerang, Provinsi Banten 15539 - 081529518909
           </h4>
+          <h4 className="text-[10px] md:text-sm font-normal text-color-primary">
+            <span className="font-semibold">Notes:</span>{" "}ini adalah notes untuk para kurir coy Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci praesentium possimus nobis impedit eos blanditiis ab rem quos expedita eaque nisi pariatur iste eum, nam nemo, maxime fuga ipsa veniam?
+          </h4>
         </div>
       </CardContent>
     </Card>

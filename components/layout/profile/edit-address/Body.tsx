@@ -6,6 +6,10 @@ import LabelledDropdown from "@/components/fragments/editProfile/LabelledDropdow
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { AddressProps, AddressResponseProps } from "@/types/address";
+import { customerBaseUrl } from "@/types/globalVar";
+import AddressFormSkeleton from "./AddressFormSkeleton";
 
 interface dataAlamatProps {
   id: string;
@@ -14,6 +18,8 @@ interface dataAlamatProps {
 
 const EditAddressBody = () => {
   const router = useRouter();
+  const [addressData, setAddressData] = useState<AddressProps>();
+  const customerId = localStorage.getItem("customerId");
   const [provinsi, setProvinsi] = useState<dataAlamatProps[]>([]);
   const [kabupaten, setKabupaten] = useState<dataAlamatProps[]>([]);
   const [kecamatan, setKecamatan] = useState<dataAlamatProps[]>([]);
@@ -37,6 +43,29 @@ const EditAddressBody = () => {
     kecamatan: "",
   });
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const addressRes = await axios.get<AddressResponseProps>(
+          `${customerBaseUrl}/address/${customerId}`
+        );
+        const resOutputSchema = addressRes.data.output_schema;
+        console.log("address schema: ", resOutputSchema);
+        setAddressData(resOutputSchema);
+        setJalan(resOutputSchema.street);
+        setCatatan(resOutputSchema.notes || "");
+      } catch {
+        console.log("error fetching alamat di edit alamat");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const getTextById = (id: string | number, data: dataAlamatProps[]) => {
     const item = data.find((item) => item.id === id.toString());
     return item ? item.text : "";
@@ -50,14 +79,7 @@ const EditAddressBody = () => {
     return item ? item.id : "";
   };
 
-  useEffect(() => {
-    setJalan(localStorage.getItem("jalan") || "");
-    // setSelectedProvinsi(localStorage.getItem("provinsi") || "");
-    // setSelectedKabupaten(localStorage.getItem("kabupaten") || "");
-    // setSelectedKecamatan(localStorage.getItem("kecamatan") || "");
-    // setSelectedKodePos(localStorage.getItem("kodepos") || "");
-    setCatatan(localStorage.getItem("catatan") || "");
-  }, []);
+  useEffect(() => {}, []);
 
   const validateForm = () => {
     const newErrors = {
@@ -95,16 +117,17 @@ const EditAddressBody = () => {
   };
 
   useEffect(() => {
+    if (!addressData) return;
     const fetchProvinsi = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           "https://alamat.thecloudalert.com/api/provinsi/get/"
         );
-        const data = await response.json();
+        const data = response.data;
         if (data.status === 200) {
           setProvinsi(data.result);
           setSelectedProvinsi(
-            getIdByText(localStorage.getItem("provinsi") || "1", data.result) ||
+            getIdByText(addressData?.province || "", data.result) ||
               data.result[0].id
           );
         }
@@ -113,10 +136,11 @@ const EditAddressBody = () => {
       }
     };
     fetchProvinsi();
-  }, []);
+  }, [addressData]);
 
   useEffect(() => {
     const fetchKabupaten = async () => {
+      if (!selectedProvinsi || !addressData) return;
       if (selectedProvinsi) {
         try {
           const response = await fetch(
@@ -126,10 +150,8 @@ const EditAddressBody = () => {
           if (data.status === 200) {
             setKabupaten(data.result);
             setSelectedKabupaten(
-              getIdByText(
-                localStorage.getItem("kabupaten") || "1",
-                data.result
-              ) || data.result[0].id
+              getIdByText(addressData?.regency || "", data.result) ||
+                data.result[0].id
             );
           }
         } catch (error) {
@@ -138,10 +160,11 @@ const EditAddressBody = () => {
       }
     };
     fetchKabupaten();
-  }, [selectedProvinsi]);
+  }, [selectedProvinsi, addressData]);
 
   useEffect(() => {
     const fetchKecamatan = async () => {
+      if (!selectedKabupaten || !addressData) return;
       if (selectedKabupaten) {
         try {
           const response = await fetch(
@@ -151,10 +174,8 @@ const EditAddressBody = () => {
           if (data.status === 200) {
             setKecamatan(data.result);
             setSelectedKecamatan(
-              getIdByText(
-                localStorage.getItem("kecamatan") || "1",
-                data.result
-              ) || data.result[0].id
+              getIdByText(addressData?.district || "", data.result) ||
+                data.result[0].id
             );
           }
         } catch (error) {
@@ -163,9 +184,10 @@ const EditAddressBody = () => {
       }
     };
     fetchKecamatan();
-  }, [selectedKabupaten]);
+  }, [selectedKabupaten, addressData]);
 
   useEffect(() => {
+    if (!selectedKabupaten || !selectedKecamatan || !addressData) return;
     const fetchKodePos = async () => {
       if (selectedKabupaten && selectedKecamatan) {
         try {
@@ -177,10 +199,8 @@ const EditAddressBody = () => {
           if (data.status === 200) {
             setKodePos(data.result);
             setSelectedKodePos(
-              getIdByText(
-                localStorage.getItem("kodepos") || "1",
-                data.result
-              ) || data.result[0].id
+              getIdByText(addressData?.post_code || "", data.result) ||
+                data.result[0].id
             );
           } else {
             setKodePos([]);
@@ -192,124 +212,144 @@ const EditAddressBody = () => {
       }
     };
     fetchKodePos();
-  }, [selectedKabupaten, selectedKecamatan]);
+  }, [selectedKabupaten, selectedKecamatan, addressData]);
+
   return (
     <div className="flex w-full h-auto pb-12 md:pb-[462px]">
-      <EditProfileForm title="Edit Alamat">
-        <form
-          onSubmit={() => alert("Perubahan Disimpan")}
-          className="flex flex-col lg:flex-row mt-5 space-y-5 lg:space-y-0 lg:space-x-10 w-full"
-        >
-          <div className="flex flex-col space-y-5 lg:w-1/2">
-            <div className="flex flex-col">
-              {errors.jalan && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.jalan}
-                </p>
-              )}
-              <LabelledInput
-                label="Jalan"
-                htmlFor="jalan"
-                id="jalan"
-                type="text"
-                value={jalan}
-                onChange={(e) => setJalan(e.target.value)}
-              />
+    <EditProfileForm title="Edit Alamat">
+      <form
+        onSubmit={() => alert("Perubahan Disimpan")}
+        className="flex flex-col lg:flex-row mt-5 space-y-5 lg:space-y-0 lg:space-x-10 w-full"
+      >
+        {loading ? (
+          <AddressFormSkeleton />
+        ) : (
+          <>
+            {/* KIRI */}
+            <div className="flex flex-col space-y-5 lg:w-1/2">
+              <div className="flex flex-col">
+                {errors.jalan && (
+                  <p className="text-red-500 text-xs md:text-md">
+                    {errors.jalan}
+                  </p>
+                )}
+                <LabelledInput
+                  label="Jalan"
+                  htmlFor="jalan"
+                  id="jalan"
+                  type="text"
+                  value={jalan}
+                  onChange={(e) => setJalan(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col">
+                {errors.provinsi && (
+                  <p className="text-red-500 text-xs md:text-md">
+                    {errors.provinsi}
+                  </p>
+                )}
+                <LabelledDropdown
+                  label="Provinsi"
+                  htmlFor="provinsi"
+                  id="provinsi"
+                  options={provinsi.map((k) => ({
+                    value: k.id,
+                    label: k.text,
+                  }))}
+                  value={selectedProvinsi}
+                  onValueChange={setSelectedProvinsi}
+                />
+              </div>
+              <div className="flex flex-col">
+                {errors.kabupaten && (
+                  <p className="text-red-500 text-xs md:text-md">
+                    {errors.kabupaten}
+                  </p>
+                )}
+                <LabelledDropdown
+                  label="Kabupaten"
+                  htmlFor="kabupaten"
+                  id="kabupaten"
+                  options={kabupaten.map((k) => ({
+                    value: k.id,
+                    label: k.text,
+                  }))}
+                  value={selectedKabupaten}
+                  onValueChange={setSelectedKabupaten}
+                  disabled={!selectedProvinsi}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="hidden lg:block w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
+              >
+                Simpan Perubahan
+              </Button>
             </div>
-            <div className="flex flex-col">
-              {errors.provinsi && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.provinsi}
-                </p>
-              )}
-              <LabelledDropdown
-                label="Provinsi"
-                htmlFor="provinsi"
-                id="provinsi"
-                options={provinsi.map((k) => ({ value: k.id, label: k.text }))}
-                value={selectedProvinsi}
-                onValueChange={setSelectedProvinsi}
-              />
+  
+            {/* KANAN */}
+            <div className="flex flex-col space-y-5 lg:w-1/2">
+              <div className="flex flex-col">
+                {errors.kecamatan && (
+                  <p className="text-red-500 text-xs md:text-md">
+                    {errors.kecamatan}
+                  </p>
+                )}
+                <LabelledDropdown
+                  label="Kecamatan"
+                  htmlFor="kecamatan"
+                  id="kecamatan"
+                  options={kecamatan.map((k) => ({
+                    value: k.id,
+                    label: k.text,
+                  }))}
+                  value={selectedKecamatan}
+                  onValueChange={setSelectedKecamatan}
+                  disabled={!selectedKabupaten}
+                />
+              </div>
+              <div className="flex flex-col">
+                <LabelledDropdown
+                  label="Kode Pos"
+                  htmlFor="kodepos"
+                  id="kodepos"
+                  options={kodePos.map((k) => ({
+                    value: k.id,
+                    label: k.text,
+                  }))}
+                  value={selectedKodePos}
+                  onValueChange={setSelectedKodePos}
+                  disabled={!selectedKecamatan}
+                />
+              </div>
+              <div className="flex flex-col">
+                {errors.catatan && (
+                  <p className="text-red-500 text-xs md:text-md">
+                    {errors.catatan}
+                  </p>
+                )}
+                <LabelledInput
+                  label="Catatan"
+                  htmlFor="catatan"
+                  id="catatan"
+                  type="text"
+                  value={catatan}
+                  onChange={(e) => setCatatan(e.target.value)}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="lg:hidden self-center lg:self-start w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
+              >
+                Simpan Perubahan
+              </Button>
             </div>
-            <div className="flex flex-col">
-              {errors.kabupaten && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.kabupaten}
-                </p>
-              )}
-              <LabelledDropdown
-                label="Kabupaten"
-                htmlFor="kabupaten"
-                id="kabupaten"
-                options={kabupaten.map((k) => ({ value: k.id, label: k.text }))}
-                value={selectedKabupaten}
-                onValueChange={setSelectedKabupaten}
-                disabled={!selectedProvinsi}
-              />
-            </div>
-            <Button
-              type="submit"
-              className="hidden lg:block w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
-            >
-              Simpan Perubahan
-            </Button>
-          </div>
-          <div className="flex flex-col space-y-5 lg:w-1/2">
-            <div className="flex flex-col">
-              {errors.kecamatan && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.kecamatan}
-                </p>
-              )}
-              <LabelledDropdown
-                label="Kecamatan"
-                htmlFor="kecamatan"
-                id="kecamatan"
-                options={kecamatan.map((k) => ({ value: k.id, label: k.text }))}
-                value={selectedKecamatan}
-                onValueChange={setSelectedKecamatan}
-                disabled={!selectedKabupaten}
-              />
-            </div>
-            <div className="flex flex-col">
-              {/* {errors.kodepos && (
-            <p className="text-red-500 text-xs md:text-md">{errors.kodepos}</p>
-          )} */}
-              <LabelledDropdown
-                label="Kode Pos"
-                htmlFor="kodepos"
-                id="kodepos"
-                options={kodePos.map((k) => ({ value: k.id, label: k.text }))}
-                value={selectedKodePos}
-                onValueChange={setSelectedKodePos}
-                disabled={!selectedKecamatan}
-              />
-            </div>
-            <div className="flex flex-col">
-              {errors.catatan && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.catatan}
-                </p>
-              )}
-              <LabelledInput
-                label="Catatan"
-                htmlFor="catatan"
-                id="catatan"
-                type="text"
-                value={catatan}
-                onChange={(e) => setCatatan(e.target.value)}
-              />
-            </div>
-            <Button
-              type="submit"
-              className="lg:hidden self-center lg:self-start w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
-            >
-              Simpan Perubahan
-            </Button>
-          </div>
-        </form>
-      </EditProfileForm>
-    </div>
+          </>
+        )}
+      </form>
+    </EditProfileForm>
+  </div>
+  
   );
 };
 

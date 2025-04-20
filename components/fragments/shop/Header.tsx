@@ -33,14 +33,14 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           </div>
           <Button
             onClick={() => router.push("/chat")}
-            className="w-full max-w-[180px] sm:w-[180px] h-8 py-2 bg-transparent text-color-primaryDark border-[1px] text-sm sm:text-[16px] border-color-primaryDark hover:bg-slate-200"
+            className="w-full max-w-[200px] sm:w-[200px] h-8 py-2 px-1 bg-transparent text-color-primaryDark border-[1px] text-sm sm:text-[16px] border-color-primaryDark hover:bg-slate-200"
           >
             <Image
-              className="w-5 h-5 sm:w-6 sm:h-6 mr-1"
+              className="w-5 h-5 sm:w-6 sm:h-6"
               src={Chat}
               alt="chat"
             />
-            <h3>Chat Penyewa</h3>
+            <h3>Chat Penyedia Jasa</h3>
           </Button>
         </div>
       </div>

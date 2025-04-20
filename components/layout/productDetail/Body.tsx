@@ -16,10 +16,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorSchema } from "@/types/errorSchema";
 import { ProductCardProps } from "@/types/productCard";
 import { ProductDetailShopProps } from "@/types/shop";
-import { ReviewProps } from "@/types/review";
 import {
   productBaseUrl,
-  productReviewBaseUrl,
   shopProductBaseUrl,
 } from "@/types/globalVar";
 import NoProduct from "@/components/fragments/NoProduct";
@@ -34,21 +32,12 @@ interface ShopDetailResProps {
   output_schema: ProductDetailShopProps;
 }
 
-interface ProductReviewResponse {
-  error_schema: ErrorSchema;
-  output_schema: {
-    content: ReviewProps[];
-  };
-}
-
 const ProductDetailBody = () => {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<ProductDetailProps>();
   const [loading, setLoading] = useState(true);
   const [shopProducts, setShopProducts] = useState<ProductCardProps[]>([]);
   const [shopDetail, setShopDetail] = useState<ProductDetailShopProps>();
-  const [productReview, setProductReview] = useState<ReviewProps[]>();
-  const [productReviewError, setProductReviewError] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,18 +51,6 @@ const ProductDetailBody = () => {
           `${shopProductBaseUrl}/${id}`
         );
         setShopDetail(shopDetailRes.data.output_schema);
-
-        try {
-          const reviewDetailRes = await axios.get<ProductReviewResponse>(
-            `${productReviewBaseUrl}/${id}`
-          );
-
-          setProductReview(reviewDetailRes.data.output_schema.content);
-          console.log("review Detail:", reviewDetailRes.data.output_schema);
-        } catch {
-          console.error("Tidak ada review untuk produk")
-          setProductReviewError("Tidak Ada Ulasan Untuk Produk Ini");
-        }
 
         const res2 = await axios.get<ProductDitokoProps>(
           `${productBaseUrl}/top?shopId=${shopDetailRes?.data?.output_schema?.id}`
@@ -109,11 +86,10 @@ const ProductDetailBody = () => {
         <div className="lg:hidden">
           {shopDetail && <ShopAndLocation shopDetail={shopDetail} />}
         </div>
-        {productReviewError && <p className="text-color-secondary text-2xl font-semibold text-center pt-8">{productReviewError}</p>}
-        {productReview && <Review reviewDetail={productReview} />}
+        <Review/>
 
         <div className="flex flex-col pl-2 pt-8 xl:pt-[72px]">
-          <h2 className="text-lg xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
+          <h2 className="text-lg md:text-xl xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
             Barang lainnya di toko ini
           </h2>
           {shopProducts != null ? (

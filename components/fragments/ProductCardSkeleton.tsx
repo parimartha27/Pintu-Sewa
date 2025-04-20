@@ -35,7 +35,7 @@ const ProductCardSkeleton = () => {
           </div>
         </CardContent>
 
-        <div className="h-[0.1px] mx-2 md:mx-3 bg-gray-400" />
+        <Skeleton className="h-[0.1px] mx-2 md:mx-3" />
 
         <CardFooter className="flex justify-between items-center pt-2 md:pt-3 px-2 md:px-3">
           <div className="flex items-center space-x-1">

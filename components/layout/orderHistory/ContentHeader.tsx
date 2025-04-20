@@ -132,7 +132,7 @@ const OrderHistoryContentHeader = () => {
           </PopoverTrigger>
           
           <PopoverContent className="w-auto p-4" align="center">
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
               {/* Kalender Mulai */}
               <div className="flex flex-col space-y-2">
                 <h4 className="text-sm font-medium text-color-secondary text-center">

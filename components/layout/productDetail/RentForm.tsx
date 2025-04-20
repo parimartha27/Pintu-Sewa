@@ -20,6 +20,7 @@ import { AddToCartRequestProps, AddToCartResponse } from "@/types/addToCart";
 import axios from "axios";
 import { cartBaseUrl } from "@/types/globalVar";
 import { useRouter } from "next/navigation";
+import { getMinDuration } from "@/hooks/useMinRentDuration";
 
 function formatDate(date: Date | undefined) {
   
@@ -40,9 +41,15 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   );
 
   const [endDate, setEndDate] = useState<Date | undefined>(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow;
+    const baseDate = new Date();
+    const duration = getMinDuration(productDetail);
+  
+    let daysToAdd = 1;
+    if (duration === "1 Minggu") daysToAdd = 7;
+    else if (duration === "1 Bulan") daysToAdd = 30;
+  
+    baseDate.setDate(baseDate.getDate() + daysToAdd);
+    return baseDate;
   });
 
   const [qty, setQty] = useState<number>(productDetail.min_rented);
@@ -107,27 +114,38 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
     setStartDate(selected);
   };
 
-  const handleSelectEndDate = (date: Date | undefined) => {
-    if (!date) return;
+ 
+const handleSelectEndDate = (date: Date | undefined) => {
+  if (!date || !startDate || !productDetail) return;
 
-    const selected = new Date(date);
-    selected.setHours(0, 0, 0, 0);
+  const selected = new Date(date);
+  selected.setHours(0, 0, 0, 0);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
 
-    if (selected < today) {
-      alert("Tanggal selesai tidak boleh sebelum hari ini");
-      return;
-    }
+  if (selected < start) {
+    alert("Tanggal selesai tidak boleh sebelum tanggal mulai");
+    return;
+  }
 
-    if (startDate && selected < startDate) {
-      alert("Tanggal selesai tidak boleh sebelum tanggal mulai");
-      return;
-    }
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const dayDiff = Math.round((selected.getTime() - start.getTime()) / msPerDay);
 
-    setEndDate(selected);
-  };
+  const duration = getMinDuration(productDetail);
+
+  const isValidDuration =
+    (duration === "1 Hari" && dayDiff === 1) ||
+    (duration === "1 Minggu" && dayDiff === 7) ||
+    (duration === "1 Bulan" && dayDiff === 30);
+
+  if (!isValidDuration) {
+    alert(`Durasi sewa harus sesuai: ${duration}`);
+    return;
+  }
+
+  setEndDate(selected);
+};
 
   const addToCartReq: AddToCartRequestProps = {
     customer_id: customerId || "",
@@ -278,7 +296,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
         <div className="flex flex-col mt-[14px] space-y-3">
           <Button 
           onClick={() => {
-            localStorage.setItem("checkoutFrom", "productDetail")
+           
             router.push("/cart/checkout")
           }}
           className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]">

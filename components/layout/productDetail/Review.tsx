@@ -13,8 +13,46 @@ import CommentFilterBody from "@/components/fragments/productDetail/CommentFilte
 // import FotoVideoPenyewa from "./FotoVideoPenyewa";
 import UserReview from "@/components/fragments/productDetail/UserReview";
 import { ReviewProps } from "@/types/review";
+import { useEffect, useState } from "react";
+import { productReviewBaseUrl } from "@/types/globalVar";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import { ErrorSchema } from "@/types/errorSchema";
+import ReviewSkeleton from "./ReviewSkeleton";
 
-const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
+interface ProductReviewResponse {
+  error_schema: ErrorSchema;
+  output_schema: {
+    content: ReviewProps[];
+  };
+}
+
+const Review = () => {
+  const { id } = useParams();
+  const [productReview, setProductReview] = useState<ReviewProps[]>();
+  const [productReviewError, setProductReviewError] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const reviewDetailRes = await axios.get<ProductReviewResponse>(
+          `${productReviewBaseUrl}/${id}`
+        );
+
+        setProductReview(reviewDetailRes.data.output_schema.content);
+        console.log("review Detail:", reviewDetailRes.data.output_schema);
+      } catch (error) {
+        console.error("Tidak ada review untuk produk: " + error);
+        setProductReviewError("Tidak Ada Ulasan Untuk Produk Ini");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchData();
+  }, [id]);
+
   return (
     <div className="px-2 pt-8 flex">
       <div className="lg:flex flex-col hidden">
@@ -52,9 +90,11 @@ const Review = ({ reviewDetail }: { reviewDetail: ReviewProps[] }) => {
         </div>
 
         {/*User Comment Section*/}
-        <div className="w-full flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[450px] overflow-y-auto">
-          {reviewDetail!=null &&
-            reviewDetail.map((item, index) => (
+        <div className="w-full flex flex-col space-y-3 md:space-y-5 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[450px] overflow-y-auto">
+          {loading && <ReviewSkeleton />}
+          {productReviewError && !loading && <p className="text-color-secondary text-2xl font-semibold text-center pt-8">{productReviewError}</p>}
+          {productReview != null &&
+            productReview.map((item, index) => (
               <UserReview key={index} reviewDetail={item} />
             ))}
         </div>

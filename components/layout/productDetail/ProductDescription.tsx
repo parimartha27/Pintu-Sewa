@@ -34,7 +34,7 @@ interface ProductDescriptionProps {
   shopDetail: ProductDetailShopProps;
 }
 
-const getMinDuration = (product: ProductDetailProps) => {
+export const getMinDuration = (product: ProductDetailProps) => {
   if (product.daily_price) return "1 Hari";
   if (product.weekly_price) return "1 Minggu";
   if (product.monthly_price) return "1 Bulan";

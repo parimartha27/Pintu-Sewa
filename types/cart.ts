@@ -21,6 +21,11 @@ export interface CartItemProps {
     available_to_rent: boolean;
     image: string;
     stock: number;
+    min_rented: number;
+    min_duration: string;
+    daily_price: number;
+    weekly_price: number;
+    monthly_price: number;
   }
   
   export interface ShopCartProps {

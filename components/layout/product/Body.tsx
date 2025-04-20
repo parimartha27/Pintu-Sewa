@@ -64,6 +64,7 @@ const ProductBody = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const url = `${filteredProductBaseUrl}?categories=${category}&name=${name}&rentDuration=${filters.rentDuration}&location=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}&page=${page}&size=${size}`;
         console.log(url);
         const response = await axios.get<ProductResponse>(url);
@@ -130,7 +131,7 @@ const ProductBody = () => {
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              {error && <NoProduct />}
+              {error && <><NoProduct />   <div className="hidden md:block lg:hidden bg-color-layout h-[50px]"></div></>}
               {products ? (
                 <ProductList
                   products={products}
@@ -138,7 +139,11 @@ const ProductBody = () => {
                   numberCard={16}
                 />
               ) : (
+                <>
                 <NoProduct />
+                <div className="hidden md:block lg:hidden bg-black h-[800px]">sss</div>
+                </>
+                
               )}
             </div>
 

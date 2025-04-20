@@ -17,28 +17,41 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import {
+  differenceInDays,
+  differenceInWeeks,
+  differenceInMonths,
+  format,
+} from "date-fns";
 import { parseIndoDateToISO } from "@/hooks/useIndoDate";
+import { id } from "date-fns/locale";
 
 interface ProductInCartDetailProps {
   cartItem: CartItemProps;
   onDelete: (cartId: string) => void;
   isChecked: boolean;
   onCheckChange: (cartId: string, checked: boolean) => void;
+  onUpdate: (cartItem: CartItemProps) => void;
 }
 
-interface CartRequestHandleProps{
+interface CartRequestHandleProps {
   cart_id: string;
   quantity: number;
   start_rent_date: string;
   end_rent_date: string;
 }
 
+const formatDateIndo = (dateString: string) => {
+  const date = new Date(dateString);
+  return format(date, "dd MMMM yyyy", { locale: id });
+};
+
 const ProductInCartDetail = ({
   cartItem,
   onDelete,
   isChecked,
   onCheckChange,
+  onUpdate,
 }: ProductInCartDetailProps) => {
   const [qty, setQty] = useState<number>(cartItem.quantity);
   const [max] = useState<number>(cartItem.stock);
@@ -50,6 +63,30 @@ const ProductInCartDetail = ({
   const [endDate, setEndDate] = useState<Date | undefined>(
     cartItem.end_rent_date ? new Date(cartItem.end_rent_date) : undefined
   );
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const getMinDurationAndUnit = (
+    product: CartItemProps
+  ): { value: number; unit: "day" | "week" | "month" } => {
+    if (product.daily_price) return { value: 1, unit: "day" };
+    if (product.weekly_price) return { value: 1, unit: "week" };
+    if (product.monthly_price) return { value: 1, unit: "month" };
+    return { value: 0, unit: "day" };
+  };
+
+  function getRentDuration(start: Date, end: Date): string {
+    const days = differenceInDays(end, start) + 1;
+
+    if (days < 7) {
+      return `${days} Hari`;
+    } else if (days < 30) {
+      const weeks = Math.ceil(days / 7);
+      return `${weeks} Minggu`;
+    } else {
+      const months = Math.ceil(days / 30);
+      return `${months} Bulan`;
+    }
+  }
 
   const handleDeleteClick = async () => {
     try {
@@ -89,20 +126,51 @@ const ProductInCartDetail = ({
   };
 
   const handleSelectEndDate = (date: Date | undefined) => {
-    if (startDate && date && date >= startDate) {
+    if (!startDate || !date) return;
+
+    const { value, unit } = getMinDurationAndUnit(cartItem);
+    let isValid = false;
+
+    switch (unit) {
+      case "day":
+        isValid = differenceInDays(date, startDate) >= value;
+        break;
+      case "week":
+        isValid = differenceInWeeks(date, startDate) >= value;
+        break;
+      case "month":
+        isValid = differenceInMonths(date, startDate) >= value;
+        break;
+    }
+
+    if (isValid) {
       setEndDate(date);
+    } else {
+      alert(
+        `Tanggal selesai harus minimal ${value} ${
+          unit === "day" ? "hari" : unit === "week" ? "minggu" : "bulan"
+        } setelah tanggal mulai.`
+      );
     }
   };
 
   const handleDecreaseQty = async () => {
-    if(qty <= 1) return
-    try { 
-      const payload: CartRequestHandleProps = {cart_id: cartItem.cart_id,
+    if (qty <= 1) return;
+    try {
+      const payload: CartRequestHandleProps = {
+        cart_id: cartItem.cart_id,
         quantity: qty - 1,
-        start_rent_date: format(new Date(parseIndoDateToISO(cartItem.start_rent_date)), "yyyy-MM-dd"),
-        end_rent_date: format(new Date(parseIndoDateToISO(cartItem.end_rent_date)), "yyyy-MM-dd")};
-     
-        const res = await axios.put(`${cartBaseUrl}/edit`, payload);
+        start_rent_date: format(
+          new Date(parseIndoDateToISO(cartItem.start_rent_date)),
+          "yyyy-MM-dd"
+        ),
+        end_rent_date: format(
+          new Date(parseIndoDateToISO(cartItem.end_rent_date)),
+          "yyyy-MM-dd"
+        ),
+      };
+
+      const res = await axios.put(`${cartBaseUrl}/edit`, payload);
 
       const data = res.data;
       if (data.error_schema.error_message === "SUCCESS") {
@@ -116,14 +184,22 @@ const ProductInCartDetail = ({
   };
 
   const handleIncreaseQty = async () => {
-    if(qty >= max) return
+    if (qty >= max) return;
     try {
-      const payload: CartRequestHandleProps = {cart_id: cartItem.cart_id,
+      const payload: CartRequestHandleProps = {
+        cart_id: cartItem.cart_id,
         quantity: qty + 1,
-        start_rent_date: format(new Date(parseIndoDateToISO(cartItem.start_rent_date)), "yyyy-MM-dd"),
-        end_rent_date: format(new Date(parseIndoDateToISO(cartItem.end_rent_date)), "yyyy-MM-dd")};
-     
-      const res = await axios.put(`${cartBaseUrl}/edit`, payload)
+        start_rent_date: format(
+          new Date(parseIndoDateToISO(cartItem.start_rent_date)),
+          "yyyy-MM-dd"
+        ),
+        end_rent_date: format(
+          new Date(parseIndoDateToISO(cartItem.end_rent_date)),
+          "yyyy-MM-dd"
+        ),
+      };
+
+      const res = await axios.put(`${cartBaseUrl}/edit`, payload);
       console.log("payload ubah tanggal: ", payload);
 
       const data = res.data;
@@ -139,18 +215,34 @@ const ProductInCartDetail = ({
 
   const handleApplyDate = async () => {
     if (!startDate || !endDate) return;
-
+    console.log("startDate: ", startDate, "endDate: ", endDate);
     try {
       const payload: CartRequestHandleProps = {
         cart_id: cartItem.cart_id,
         quantity: qty,
         start_rent_date: format(startDate, "yyyy-MM-dd"),
-        end_rent_date: format(endDate, "yyyy-MM-dd")};
-     
+        end_rent_date: format(endDate, "yyyy-MM-dd"),
+      };
+
+      console.log("payload ubah tanggal: ", payload);
+
       const res = await axios.put(`${cartBaseUrl}/edit`, payload);
+      console.log("res ubah tanggal: ", res);
 
       if (res.data.error_schema.error_message === "SUCCESS") {
+        const formattedStartDate = format(startDate, "yyyy-MM-dd");
+        const formattedEndDate = format(endDate, "yyyy-MM-dd");
+
+        const updatedCart = {
+          ...cartItem,
+          start_rent_date: formatDateIndo(formattedStartDate),
+          end_rent_date: formatDateIndo(formattedEndDate),
+          rent_duration: getRentDuration(startDate, endDate),
+        };
+
+        onUpdate(updatedCart);
         alert("Tanggal berhasil diubah");
+        setIsPopoverOpen(false);
       }
     } catch (err) {
       console.error("Gagal update tanggal:", err);
@@ -209,7 +301,7 @@ const ProductInCartDetail = ({
             <h2 className="text-color-primary text-[14px] font-semibold">
               Periode Sewa
             </h2>
-            <Popover>
+            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="ghost"

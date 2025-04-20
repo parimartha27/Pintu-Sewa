@@ -8,6 +8,8 @@ import Image from "next/image";
 import { useState } from "react";
 
 const FilterBody = () => {
+
+  
   const categories = [
     { name: "Mobil" },
     { name: "Pakaian Pria" },

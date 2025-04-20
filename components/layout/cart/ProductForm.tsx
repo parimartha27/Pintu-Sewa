@@ -30,15 +30,19 @@ const CartProductForm = ({
     const updatedCarts = carts.filter(cart => cart.cart_id !== cartId);
     setCarts(updatedCarts);
     onDelete(cartId);
-    
-    // Jika semua produk di toko sudah dihapus, komponen akan otomatis
-    // di-unmount karena parent component akan menghapus toko kosong
   };
 
-  // Jika carts kosong, return null (fallback safety)
   if (carts.length === 0) {
     return null;
   }
+
+  const handleCartUpdate = (updatedCart: CartItemProps) => {
+    const updatedCarts = carts.map((cart) =>
+      cart.cart_id === updatedCart.cart_id ? updatedCart : cart
+    );
+    setCarts(updatedCarts);
+  };
+  
 
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6 bg-white">
@@ -60,6 +64,7 @@ const CartProductForm = ({
             isChecked={selectedCartIds.includes(cart.cart_id)}
             onCheckChange={onProductSelect}
             onDelete={handleDelete}
+            onUpdate={handleCartUpdate}
           />
         ))}
       </CardContent>

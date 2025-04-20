@@ -10,22 +10,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { customerBaseUrl } from "@/types/globalVar";
-
-interface ProfileResponse {
-  id: string;
-  username: string;
-  name: string;
-  street: string;
-  phone_number: string;
-  email: string;
-  district: string;
-  regency: string;
-  province: string;
-  gender: string;
-  birth_date: string;
-  post_code: string;
-  note?: string;
-}
+import { ProfileResponse } from "@/types/profile";
 
 const ProfileBody = () => {
   const customerId = localStorage.getItem("customerId");
