@@ -213,6 +213,7 @@ const InputBiodataContent = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                maxLength={15}
               />
             </div>
             <div className="flex flex-col">
@@ -228,6 +229,7 @@ const InputBiodataContent = () => {
                 type="text"
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
+                maxLength={25}
               />
             </div>
             <div className="flex flex-col">

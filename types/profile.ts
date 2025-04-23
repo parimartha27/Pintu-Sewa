@@ -11,5 +11,6 @@ export interface ProfileResponse {
   gender: string;
   birth_date: string;
   post_code: string;
-  note?: string;
+  notes?: string;
+  image: string;
 }

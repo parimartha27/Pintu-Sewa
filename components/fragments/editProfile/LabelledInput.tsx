@@ -14,6 +14,7 @@ interface LabelledInputProps {
   value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;  
   readonly?: boolean;
+  maxLength?:number;
 }
 
 const LabelledInput = (props: LabelledInputProps) => {
@@ -36,6 +37,7 @@ const LabelledInput = (props: LabelledInputProps) => {
         value={props.value}
         onChange={props.onChange}
         readOnly={props.readonly ? props.readonly : false}
+        maxLength={props.maxLength}
       />
     </div>
   );

@@ -78,8 +78,6 @@ const DashboardBody = () => {
     const fetchData = async () => {
       setError("");
       try {
-        // Fetch Most Rented
-
         const mostRented = await fetchMostRentedProducts();
         if (mostRented.error_schema.error_message === "SUCCESS") {
           setMostRentedProducts(mostRented.output_schema);
@@ -97,10 +95,11 @@ const DashboardBody = () => {
           setNearCustomerProducts(nearCustomer.output_schema);
         }
 
+        console.log("near customer: ", nearCustomer);
+
         setTimeout(() => {
           setNearCustomerProductsLoading(false);
         }, 4000);
-        
       } catch (err) {
         setError("Failed to fetch data: " + err);
         setLoading(false);
@@ -119,9 +118,16 @@ const DashboardBody = () => {
         <h4 className="font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 mb-4">
           Banyak Orang Menyewa Ini
         </h4>
+
         {error && <div>{error}</div>}
-        {mostRentedProducts != null ? (
-          <ProductList products={mostRentedProducts} loading={loading} />
+        {loading ? (
+          <ProductList products={[]} loading={true} numberCard={10} />
+        ) : mostRentedProducts && mostRentedProducts.length > 0 ? (
+          <ProductList
+            products={mostRentedProducts}
+            loading={false}
+            numberCard={10}
+          />
         ) : (
           <NoProduct />
         )}
@@ -134,11 +140,16 @@ const DashboardBody = () => {
               Dekat Lokasi Kamu
             </h4>
             {error && <div>{error}</div>}
-            {nearCustomerProducts != null && (
+            {nearCustomerProductsLoading ? (
+              <ProductList products={[]} loading={true} numberCard={10} />
+            ) : nearCustomerProducts && nearCustomerProducts.length > 0 ? (
               <ProductList
                 products={nearCustomerProducts}
-                loading={nearCustomerProductsLoading}
+                loading={false}
+                numberCard={10}
               />
+            ) : (
+              <NoProduct />
             )}
           </>
         ) : (
@@ -147,11 +158,16 @@ const DashboardBody = () => {
               Rekomendasi Untuk Kamu
             </h4>
             {error && <div>{error}</div>}
-            {recommendedProducts != null && (
+            {recommendedProductsLoading ? (
+              <ProductList products={[]} loading={true} numberCard={10} />
+            ) : recommendedProducts && recommendedProducts.length > 0 ? (
               <ProductList
                 products={recommendedProducts}
-                loading={recommendedProductsLoading}
+                loading={false}
+                numberCard={10}
               />
+            ) : (
+              <NoProduct />
             )}
           </>
         )}

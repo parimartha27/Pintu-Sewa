@@ -24,7 +24,7 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
 
 
   return (
-    <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
+    <div className="p-1 w-full min-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={`/product/${product.id}`}>
         <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
           <CardHeader className="relative h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg">

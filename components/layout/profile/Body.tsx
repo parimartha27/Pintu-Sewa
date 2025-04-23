@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import Guest from "@/public/guest.svg";
 import EditProfileForm from "@/components/layout/profile/Form";
 import Section from "@/components/fragments/editProfile/Section";
@@ -72,7 +71,10 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
         <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 xl:pb-0">
           <div className="flex flex-col md:flex-row items-center mt-6 w-full md:w-2/3 md:space-x-16 lg:space-x-30">
             <div className="flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12">
-              <Section title="Username" className="text-center lg:text-start self-center md:self-start">
+              <Section
+                title="Username"
+                className="text-center lg:text-start self-center md:self-start"
+              >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -158,10 +160,17 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
           </div>
 
           {/* Image */}
-          <div className="flex flex-col w-1/3 items-center max-w-[300px] mt-4 lg:mt-0">
-            <Link href={""}>
-              <Image className="w-[110px] h-[110px]" src={Guest} alt="" />
-            </Link>
+          <div className="flex flex-col w-1/3 items-center max-w-[300px] mt-6 lg:mt-0">
+            {loading ? (
+              <Skeleton className="w-[110px] h-[110px] rounded-full" />
+            ) : (
+              <Image
+                className="w-[110px] h-[110px]"
+                src={customerData?.image || Guest}
+                alt=""
+              />
+            )}
+
             <h4 className="hidden lg:block ml-20 w-full text-[12px] text-color-primary mt-4">
               Ukuran Gambar: <span className="font-bold">Max. 1Mb</span>
             </h4>
@@ -181,7 +190,10 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
         <div className="w-full flex flex-col-reverse lg:flex-row justify-center items-center pb-3 lg:pb-0">
           <div className="flex flex-col md:flex-row w-full md:space-x-5 mb-6">
             <div className="flex flex-col mx-auto md:mx-0 w-1/2 lg:mr-12">
-              <Section title="Jalan" className="text-center lg:text-start self-center md:self-start">
+              <Section
+                title="Jalan"
+                className="text-center lg:text-start self-center md:self-start"
+              >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -202,7 +214,10 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   </h4>
                 )}
               </Section>
-              <Section title="Kode Pos" className="text-center lg:text-start self-center md:self-start">
+              <Section
+                title="Kode Pos"
+                className="text-center lg:text-start self-center md:self-start"
+              >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -214,7 +229,10 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
             </div>
 
             <div className="flex flex-col mx-auto md:mx-0 w-1/2 lg:mr-12">
-              <Section title="Kecamatan" className="text-center lg:text-start self-center md:self-start">
+              <Section
+                title="Kecamatan"
+                className="text-center lg:text-start self-center md:self-start"
+              >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -223,7 +241,10 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   </h4>
                 )}
               </Section>
-              <Section title="Provinsi" className="text-center lg:text-start self-center md:self-start">
+              <Section
+                title="Provinsi"
+                className="text-center lg:text-start self-center md:self-start"
+              >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
@@ -232,12 +253,15 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   </h4>
                 )}
               </Section>
-              <Section title="Catatan" className="text-center lg:text-start self-center md:self-start">
+              <Section
+                title="Catatan"
+                className="text-center lg:text-start self-center md:self-start"
+              >
                 {loading ? (
                   <Skeleton className="h-4 w-36" />
                 ) : (
                   <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
-                    {customerData?.note || "-"}
+                    {customerData?.notes || "-"}
                   </h4>
                 )}
               </Section>

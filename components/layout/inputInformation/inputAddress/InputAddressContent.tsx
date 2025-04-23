@@ -31,7 +31,6 @@ const InputAddressContentLayout = () => {
 
   const [errors, setErrors] = useState({
     jalan: "",
-    catatan: "",
     provinsi: "",
     kabupaten: "",
     kecamatan: "",
@@ -60,7 +59,6 @@ const InputAddressContentLayout = () => {
   const validateForm = () => {
     const newErrors = {
       jalan: jalan.trim() ? "" : "Jalan tidak boleh kosong",
-      catatan: catatan.trim() ? "" : "Catatan tidak boleh kosong",
       provinsi: selectedProvinsi ? "" : "Provinsi harus dipilih",
       kabupaten: selectedKabupaten ? "" : "Kabupaten harus dipilih",
       kecamatan: selectedKecamatan ? "" : "Kecamatan harus dipilih",
@@ -261,9 +259,6 @@ const InputAddressContentLayout = () => {
           />
         </div>
         <div className="flex flex-col">
-          {errors.catatan && (
-            <p className="text-red-500 text-xs md:text-md">{errors.catatan}</p>
-          )}
           <LabelledInput
             label="Catatan"
             htmlFor="catatan"
