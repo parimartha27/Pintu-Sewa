@@ -14,6 +14,7 @@ import Pesanan from "@/public/pesanan.svg";
 import Logout from "@/public/logout.svg";
 import Dots from "@/public/dots.png";
 import Chat from "@/public/chat.svg";
+import Wallet from "@/public/wallet.svg"
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import Cookies from "js-cookie";
@@ -123,6 +124,20 @@ const ProfileSidebarLayout = () => {
                       <Image src={Chat} alt="profile" width={30} height={30} />
                       <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
                         Chat
+                      </h4>
+                    </div>
+                  </div>
+                </Link>
+                <Link
+                    href={"/wallet"}
+                    className="group"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="pl-3.5 pr-2 pb-3">
+                    <div className="flex items-center space-x-1">
+                      <Image src={Wallet} alt="profile" width={26} height={26} />
+                      <h4 className="text-[#2C3941] text-xs lg:text-sm font-medium group-hover:underline">
+                        Wallet
                       </h4>
                     </div>
                   </div>
