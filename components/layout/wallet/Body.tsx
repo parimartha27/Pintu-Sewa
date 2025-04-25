@@ -3,40 +3,28 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import ProfileSidebarLayout from "../ProfileSidebar"
 import { FaPlus } from "react-icons/fa6"
+import axios from "axios"
+import { walletBaseUrl } from "@/types/globalVar"
 
-// Types for our data
-type Transaction = {
-  id: string
-  type: string
-  amount: number
-  date: string
-  isCredit: boolean
-}
-
-type WalletData = {
+type WalletAmountResponse = {
   balance: number
-  transactions: Transaction[]
 }
 
-const WalletService = {
-  async getWalletData(): Promise<WalletData> {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+type HistoryReport = {
+  id: string
+  description: string
+  tanggal_transaksi: string
+  amount: number
+  waktu_transaksi: string
+  debit: boolean
+}
 
-    return {
-      balance: 300000000,
-      transactions: [
-        { id: "1", type: "Topup", amount: 900000, date: "21 April 2023 - Q&A1 WB", isCredit: true },
-        { id: "2", type: "Pembayaran Barang X", amount: 900000, date: "21 April 2023 - Q&A1 WB", isCredit: false },
-        { id: "3", type: "Topup", amount: 900000, date: "21 April 2023 - Q&A1 WB", isCredit: true },
-        { id: "4", type: "Pembayaran Barang X", amount: 900000, date: "21 April 2023 - Q&A1 WB", isCredit: false },
-      ],
-    }
-  },
+type WalletReportResponse = {
+  wallet_history: HistoryReport[]
 }
 
 const WalletBody = () => {
@@ -44,7 +32,7 @@ const WalletBody = () => {
     <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout'>
       <ProfileSidebarLayout />
       <div className='w-full p-2 md:p-0 max-h-auto'>
-        <DefaultLayout></DefaultLayout>
+        <DefaultLayout />
       </div>
     </div>
   )
@@ -54,30 +42,62 @@ export default WalletBody
 
 function DefaultLayout() {
   const router = useRouter()
-  const [walletData, setWalletData] = useState<WalletData | null>(null)
+  const [walletReport, setWalletReport] = useState<WalletReportResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [walletAmount, setWalletAmount] = useState<WalletAmountResponse | null>(null)
+  const customerId = localStorage.getItem("customerId")
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const data = await WalletService.getWalletData()
-        setWalletData(data)
-      } catch (err) {
-        setError("Failed to load wallet data")
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+    if (!customerId) {
+      setError("User ID tidak ditemukan di localStorage.")
+      setLoading(false)
+      return
     }
 
-    fetchData()
+    axios
+      .get(`${walletBaseUrl}/amount?customerId=${customerId}`)
+      .then((res) => {
+        if (res.data.error_schema?.error_code === "PS-00-000") {
+          setWalletAmount(res.data.output_schema)
+          console.log("AMOUNT", res.data.output_schema)
+        } else {
+          setError("Gagal fetch customer balance.")
+        }
+      })
+      .catch((err) => {
+        console.error(err)
+        setError("Terjadi kesalahan saat fetching.")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
+
+  // get wallet report
+  useEffect(() => {
+    axios
+      .get(`${walletBaseUrl}/history?customerId=${customerId}`)
+      .then((res) => {
+        if (res.data.error_schema?.error_code === "PS-00-000") {
+          setWalletReport(res.data.output_schema)
+          console.log("HISTORY", res.data.output_schema)
+        } else {
+          setError("Gagal fetch customer wallet report.")
+        }
+      })
+      .catch((err) => {
+        console.error(err)
+        setError("Terjadi kesalahan saat fetching.")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [])
 
   if (loading) return <div className='min-h-screen flex items-center justify-center'>Loading...</div>
   if (error) return <div className='min-h-screen flex items-center justify-center text-red-500'>{error}</div>
-  if (!walletData) return <div className='min-h-screen flex items-center justify-center'>No data available</div>
+  if (!walletAmount) return <div className='min-h-screen flex items-center justify-center'>No data available</div>
 
   return (
     <main className='w-full py-8 px-4 md:px-6'>
@@ -98,7 +118,7 @@ function DefaultLayout() {
             </CardHeader>
 
             <CardContent>
-              <p className='text-3xl font-bold text-color-secondary'>Rp {walletData.balance.toLocaleString("id-ID")}</p>
+              <p className='text-3xl font-bold text-color-secondary'>Rp {walletAmount?.balance.toLocaleString("id-ID")}</p>
             </CardContent>
           </Card>
         </div>
@@ -116,16 +136,18 @@ function DefaultLayout() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {walletData.transactions.map((transaction) => (
+                  {walletReport?.wallet_history.map((transaction) => (
                     <TableRow key={transaction.id}>
                       <TableCell>
                         <div className='flex flex-col'>
-                          <span>{transaction.type}</span>
-                          <span className='text-sm text-gray-500'>{transaction.date}</span>
+                          <span>{transaction.description}</span>
+                          <span className='text-sm text-gray-500'>
+                            {transaction.tanggal_transaksi} - {transaction.waktu_transaksi}{" "}
+                          </span>
                         </div>
                       </TableCell>
-                      <TableCell className={`text-right font-medium ${transaction.isCredit ? "text-color-secondary" : "text-red-700"}`}>
-                        {transaction.isCredit ? "+" : "-"} Rp {transaction.amount.toLocaleString("id-ID")}
+                      <TableCell className={`text-right font-medium ${transaction.debit ? "text-color-secondary" : "text-red-700"}`}>
+                        {transaction.debit ? "+" : "-"} Rp {transaction.amount.toLocaleString("id-ID")}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -134,8 +156,6 @@ function DefaultLayout() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Right column - Transaction history */}
       </div>
     </main>
   )
