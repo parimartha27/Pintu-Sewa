@@ -1,8 +1,11 @@
+import ErrorPage from "../not-found";
 
 const ShopPage = () => {
-    return(<>
- shop
-    </>);
-}
+  return (
+    <>
+      <ErrorPage />
+    </>
+  );
+};
 
-export default ShopPage
+export default ShopPage;

@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductCardSkeleton = () => {
   return (
-    <div className="p-1 w-full max-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
+    <div className="p-1 w-full min-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Card className="rounded-lg h-full w-auto shadow-md">
         <CardHeader className="p-0">
           <Skeleton className="h-[120px] md:h-[140px] lg:h-[170px] w-full rounded-t-lg" />

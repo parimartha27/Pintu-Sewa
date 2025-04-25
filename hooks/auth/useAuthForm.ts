@@ -24,6 +24,35 @@ export const useAuthForm = (type?: string) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  const [username, setUsername] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [handphone, setHandphone] = useState("");
+  const [gender, setGender] = useState("Laki-Laki");
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
+  const validateEmail = (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value.trim()) return "Email tidak boleh kosong";
+    if (!emailRegex.test(value)) return "Format email tidak valid";
+    return "";
+  };
+
+  const validateHandphone = (value: string) => {
+    if (!value.trim()) return "Handphone tidak boleh kosong";
+    if (!/^08\d{8,12}$/.test(value))
+      return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit";
+    return "";
+  };
+
+  const validatePassword = (value: string) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,20}$/;
+    if (!value.trim()) return "Password tidak boleh kosong";
+    if (!passwordRegex.test(value))
+      return "Password harus 12-20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
+    return "";
+  };
+
   const validateEmailOrPhone = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^08\d+/;
@@ -46,15 +75,6 @@ export const useAuthForm = (type?: string) => {
     return "Email harus dalam format “example@email.com”";
   };
 
-  const validatePassword = (value: string) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/;
-
-    if (!value.trim()) return "Field ini tidak boleh kosong";
-    else if (!passwordRegex.test(value) || value.length > 20)
-      return "Password harus minimal 12 karakter dan maksimal 20 karakter, mengandung huruf besar, huruf kecil, dan angka.";
-
-    return "";
-  };
 
   const handleEmailOrPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -214,5 +234,19 @@ export const useAuthForm = (type?: string) => {
     handleCheckboxChange,
     handleSubmit,
     loginGoogleHandler,
+    username,
+    fullname,
+    handphone,
+    gender,
+    date,
+    validateHandphone,
+    validateEmail,
+    profileImage,
+    setUsername,
+    setFullname,
+    setHandphone,
+    setGender,
+    setDate,
+    setProfileImage,
   };
 };

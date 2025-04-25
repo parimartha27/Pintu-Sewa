@@ -10,6 +10,7 @@ import axios from "axios";
 import { AddressProps, AddressResponseProps } from "@/types/address";
 import { customerBaseUrl } from "@/types/globalVar";
 import AddressFormSkeleton from "./AddressFormSkeleton";
+import { EditAddressRequestProps, EditAddressResponseProps } from "@/types/editAddress";
 
 interface dataAlamatProps {
   id: string;
@@ -19,7 +20,7 @@ interface dataAlamatProps {
 const EditAddressBody = () => {
   const router = useRouter();
   const [addressData, setAddressData] = useState<AddressProps>();
-  const customerId = localStorage.getItem("customerId");
+  const customerId = localStorage.getItem("customerId") || "";
   const [provinsi, setProvinsi] = useState<dataAlamatProps[]>([]);
   const [kabupaten, setKabupaten] = useState<dataAlamatProps[]>([]);
   const [kecamatan, setKecamatan] = useState<dataAlamatProps[]>([]);
@@ -35,15 +36,15 @@ const EditAddressBody = () => {
   );
   const [selectedKodePos, setSelectedKodePos] = useState<string | number>("");
 
-  const [errors, setErrors] = useState({
+  const [, setErrors] = useState({
     jalan: "",
-    catatan: "",
     provinsi: "",
     kabupaten: "",
     kecamatan: "",
   });
 
   const [loading, setLoading] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,41 +80,54 @@ const EditAddressBody = () => {
     return item ? item.id : "";
   };
 
-  useEffect(() => {}, []);
 
   const validateForm = () => {
     const newErrors = {
       jalan: jalan.trim() ? "" : "Jalan tidak boleh kosong",
-      catatan: catatan.trim() ? "" : "Catatan tidak boleh kosong",
       provinsi: selectedProvinsi ? "" : "Provinsi harus dipilih",
       kabupaten: selectedKabupaten ? "" : "Kabupaten harus dipilih",
       kecamatan: selectedKecamatan ? "" : "Kecamatan harus dipilih",
     };
+  
     setErrors(newErrors);
-    return Object.values(newErrors).every((error) => error === "");
+  
+    const firstError = Object.values(newErrors).find((msg) => msg !== "");
+    if (firstError) {
+      alert(firstError);
+      return false;
+    }
+  
+    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    localStorage.setItem("jalan", jalan);
-    localStorage.setItem("catatan", catatan);
-    localStorage.setItem("provinsi", getTextById(selectedProvinsi, provinsi));
-    localStorage.setItem(
-      "kabupaten",
-      getTextById(selectedKabupaten, kabupaten)
-    );
-    localStorage.setItem(
-      "kecamatan",
-      getTextById(selectedKecamatan, kecamatan)
-    );
-    localStorage.setItem(
-      "kodepos",
-      getTextById(selectedKodePos, kodePos) || ""
-    );
+  setLoadingSubmit(true);
+    const payload: EditAddressRequestProps={
+      id : customerId,
+      street: jalan,
+      district: getTextById(selectedKecamatan, kecamatan),
+      regency: getTextById(selectedKabupaten, kabupaten),
+      province: getTextById(selectedProvinsi, provinsi),
+      post_code: getTextById(selectedKodePos, kodePos),
+      notes: catatan
+    }
 
-    router.push("/input-confirmation");
+    try{
+      const response = await axios.put<EditAddressResponseProps>(`${customerBaseUrl}/edit-address`, payload);
+      if(response.data.error_schema.error_message === "SUCCESS"){
+        setLoadingSubmit(false);
+        alert("Berhasil mengedit alamat");
+        router.push("/profile");
+      }else{
+        alert("Gagal mengedit alamat");
+      }
+    }catch(e){
+      alert("Gagal: " + e);
+      setLoadingSubmit(false);
+    }
   };
 
   useEffect(() => {
@@ -228,11 +242,6 @@ const EditAddressBody = () => {
             {/* KIRI */}
             <div className="flex flex-col space-y-5 lg:w-1/2">
               <div className="flex flex-col">
-                {errors.jalan && (
-                  <p className="text-red-500 text-xs md:text-md">
-                    {errors.jalan}
-                  </p>
-                )}
                 <LabelledInput
                   label="Jalan"
                   htmlFor="jalan"
@@ -243,11 +252,6 @@ const EditAddressBody = () => {
                 />
               </div>
               <div className="flex flex-col">
-                {errors.provinsi && (
-                  <p className="text-red-500 text-xs md:text-md">
-                    {errors.provinsi}
-                  </p>
-                )}
                 <LabelledDropdown
                   label="Provinsi"
                   htmlFor="provinsi"
@@ -261,11 +265,6 @@ const EditAddressBody = () => {
                 />
               </div>
               <div className="flex flex-col">
-                {errors.kabupaten && (
-                  <p className="text-red-500 text-xs md:text-md">
-                    {errors.kabupaten}
-                  </p>
-                )}
                 <LabelledDropdown
                   label="Kabupaten"
                   htmlFor="kabupaten"
@@ -279,7 +278,9 @@ const EditAddressBody = () => {
                   disabled={!selectedProvinsi}
                 />
               </div>
+              {loadingSubmit && <div className="hidden lg:block h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>}
               <Button
+                onClick={handleSubmit}
                 type="submit"
                 className="hidden lg:block w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
               >
@@ -290,11 +291,6 @@ const EditAddressBody = () => {
             {/* KANAN */}
             <div className="flex flex-col space-y-5 lg:w-1/2">
               <div className="flex flex-col">
-                {errors.kecamatan && (
-                  <p className="text-red-500 text-xs md:text-md">
-                    {errors.kecamatan}
-                  </p>
-                )}
                 <LabelledDropdown
                   label="Kecamatan"
                   htmlFor="kecamatan"
@@ -323,11 +319,6 @@ const EditAddressBody = () => {
                 />
               </div>
               <div className="flex flex-col">
-                {errors.catatan && (
-                  <p className="text-red-500 text-xs md:text-md">
-                    {errors.catatan}
-                  </p>
-                )}
                 <LabelledInput
                   label="Catatan"
                   htmlFor="catatan"
@@ -337,7 +328,9 @@ const EditAddressBody = () => {
                   onChange={(e) => setCatatan(e.target.value)}
                 />
               </div>
+             {loadingSubmit && <div className="lg:hidden self-center h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>}
               <Button
+                onClick={handleSubmit}
                 type="submit"
                 className="lg:hidden self-center lg:self-start w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
               >
