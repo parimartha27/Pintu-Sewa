@@ -6,8 +6,11 @@ import TextedCheckbox from "../TextedCheckbox";
 import FilterSection from "./Section";
 import Image from "next/image";
 import { useState } from "react";
+import useFilter from "@/hooks/filter/useFilter";
 
 const FilterBody = () => {
+
+  const {handleMultiButtonFilter, isValueInMultiParam} = useFilter();
 
   
   const categories = [
@@ -41,10 +44,10 @@ const FilterBody = () => {
           {categories.map((category, index) => (
             <button
               key={index}
-              onClick={() => setSelectedCategory(category.name)}
+              onClick={() => handleMultiButtonFilter("categories", category.name, !isValueInMultiParam("categories", category.name))}
               className={`bg-white py-1 pl-2 text-[14px] text-start hover:bg-color-third 
                 ${
-                  selectedCategory === category.name
+                  isValueInMultiParam("categories", category.name) 
                     ? "text-color-primaryDark font-bold scale-y-105"
                     : "text-color-primary font-normal"
                 }`}

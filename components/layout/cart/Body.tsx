@@ -113,6 +113,11 @@ const CartBody = () => {
     );
   };
 
+  const handleCheckout = () => {
+    const payload = selectedCartIds.map((id) => ({ cart_id: id }));
+    router.push("/cart/checkout");
+  };
+
   return (
     <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto p-2 pt-12 bg-color-layout">
       <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">

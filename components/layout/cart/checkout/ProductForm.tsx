@@ -15,6 +15,40 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+
+// {
+//   "error_schema": {
+//       "error_code": "PS-00-000",
+//       "error_message": "SUCCESS"
+//   },
+//   "output_schema": [
+//       {
+//           "id": "1",
+//           "name": "JNE"
+//       },
+//       {
+//           "id": "2",
+//           "name": "TIKI"
+//       },
+//       {
+//           "id": "3",
+//           "name": "SiCepat"
+//       },
+//       {
+//           "id": "4",
+//           "name": "J&T"
+//       },
+//       {
+//           "id": "5",
+//           "name": "GoSend"
+//       },
+//       {
+//           "id": "6",
+//           "name": "GrabExpress"
+//        }
+//     ]
+// }
+
 const CheckoutProductForm = () => {
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6">

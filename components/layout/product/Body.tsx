@@ -83,7 +83,7 @@ const ProductBody = () => {
     };
 
     fetchProducts();
-  }, [category, page, name]);
+  }, [category, page, name, searchParams]);
 
   const goToPage = (newPage: number) => {
     const query = new URLSearchParams(searchParams.toString());
