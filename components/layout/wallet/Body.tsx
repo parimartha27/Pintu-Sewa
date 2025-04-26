@@ -46,14 +46,24 @@ function DefaultLayout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [walletAmount, setWalletAmount] = useState<WalletAmountResponse | null>(null)
-  const customerId = localStorage.getItem("customerId")
+  const [customerId, setCustomerId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!customerId) {
+    const storedCustomerId = localStorage.getItem("customerId")
+    if (!storedCustomerId) {
       setError("User ID tidak ditemukan di localStorage.")
       setLoading(false)
       return
     }
+    setCustomerId(storedCustomerId)
+  }, [])
+
+  useEffect(() => {
+    // if (!customerId) {
+    //   setError("User ID tidak ditemukan di localStorage.")
+    //   setLoading(false)
+    //   return
+    // }
 
     axios
       .get(`${walletBaseUrl}/amount?customerId=${customerId}`)
