@@ -77,7 +77,7 @@ function DefaultLayout() {
   // get wallet report
   useEffect(() => {
     axios
-      .get(`${walletBaseUrl}/history?customerId=${customerId}`)
+      .get(`${walletBaseUrl}/history?id=${customerId}&role=customer`)
       .then((res) => {
         if (res.data.error_schema?.error_code === "PS-00-000") {
           setWalletReport(res.data.output_schema)
