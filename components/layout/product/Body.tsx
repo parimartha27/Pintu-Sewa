@@ -38,7 +38,7 @@ const ProductBody = () => {
   const category = searchParams.get("categories") || "";
   const name = searchParams.get("name") || "";
   const page = parseInt(searchParams.get("page") || "1");
-  const size = 8;
+  const size = 16;
   // const sort = "name,asc";
 
   const filters = {
@@ -73,7 +73,6 @@ const ProductBody = () => {
         setProducts(response.data.output_schema.content);
 
         setTotalPages(response.data.output_schema.total_pages || 1);
-     
       } catch (error) {
         setError("Tidak ada produk");
         console.log(error);
@@ -125,25 +124,28 @@ const ProductBody = () => {
           Filter
         </h2>
         <div className="flex w-full">
-          <div className="mt-0 shadow-lg rounded-md w-2/5 max-w-[280px] max-h-[1730px] hidden lg:flex flex-col pb-5">
+          <div className="mt-0 shadow-lg rounded-md w-2/5 max-w-[280px] max-h-[1400px] hidden lg:flex flex-col pb-5">
             <FilterBody />
           </div>
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              {error && <><NoProduct />   <div className="hidden md:block lg:hidden bg-color-layout h-[50px]"></div></>}
-              {products ? (
+              {error && (
+                <>
+                  <NoProduct />{" "}
+                  <div className="hidden md:block lg:hidden bg-color-layout h-[50px]"></div>
+                </>
+              )}
+              {loading ? (
+                <ProductList products={[]} loading={true} numberCard={16} />
+              ) : products && products.length > 0 ? (
                 <ProductList
                   products={products}
-                  loading={loading}
+                  loading={false}
                   numberCard={16}
                 />
               ) : (
-                <>
                 <NoProduct />
-                <div className="hidden md:block lg:hidden bg-black h-[800px]">sss</div>
-                </>
-                
               )}
             </div>
 

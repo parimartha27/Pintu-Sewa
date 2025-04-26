@@ -11,8 +11,8 @@ import { shopBaseUrl, shopReviewBaseUrl } from "@/types/globalVar";
 
 const ShopLayout = () => {
   const { id } = useParams();
-  const[shopHeaderData, setShopHeaderData] = useState<ShopHeaderProps>();
-  const[loading, setLoading] = useState(true);
+  const [shopHeaderData, setShopHeaderData] = useState<ShopHeaderProps>();
+  const [loading, setLoading] = useState(true);
   const [shopReview, setShopReview] = useState<ShopReviewProps[]>([]);
   const [reviewLoading, setReviewLoading] = useState(true);
 
@@ -30,17 +30,32 @@ const ShopLayout = () => {
         console.error("Failed to fetch shop data:", error);
       } finally {
         setLoading(false);
-        setReviewLoading(false)
+        setReviewLoading(false);
       }
     };
-    if(id) fetchShopData();
-  },[id])
-  
+    if (id) fetchShopData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-self-center max-w-[1370px] w-full p-2 md:p-0 md:px-6 md:pt-12 bg-color-layout mb-32">
+        <ShopHeaderSkeleton />
+      </div>
+    );
+  }
+
+  if (!shopHeaderData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center text-color-primary">
+        <p className="text-3xl font-semibold text-color-secondary">Toko Tidak Ada</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-self-center max-w-[1370px] max-h-auto space-y-8 w-full mb-32 p-2 md:p-0 md:px-6 md:pt-12 bg-color-layout">
-      {loading ? <ShopHeaderSkeleton /> : <ShopHeader data={shopHeaderData as ShopHeaderProps} />}
-      <ShopContentLayout shopReview={shopReview} loading={reviewLoading}/>
-      
+      <ShopHeader data={shopHeaderData} />
+      <ShopContentLayout shopReview={shopReview} loading={reviewLoading} />
     </div>
   );
 };
