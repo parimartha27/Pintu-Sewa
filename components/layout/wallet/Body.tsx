@@ -102,6 +102,7 @@ function DefaultLayout() {
   return (
     <main className='w-full py-8 px-4 md:px-6'>
       <div className='flex flex-col gap-8 w-full h-full'>
+        <h1 className='font-semibold text-color-primary text-[28px]'>My Wallet</h1>
         <div className='space-y-2 w-full'>
           <Card className='w-full'>
             <CardHeader className='items-center justify-between'>
