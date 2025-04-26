@@ -15,7 +15,7 @@ import UserReview from "@/components/fragments/productDetail/UserReview";
 import { ReviewProps } from "@/types/review";
 import { useEffect, useState } from "react";
 import { productReviewBaseUrl } from "@/types/globalVar";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { ErrorSchema } from "@/types/errorSchema";
 import ReviewSkeleton from "./ReviewSkeleton";
@@ -28,6 +28,7 @@ interface ProductReviewResponse {
 }
 
 const Review = () => {
+  const searchParams = useSearchParams();
   const { id } = useParams();
   const [productReview, setProductReview] = useState<ReviewProps[]>();
   const [productReviewError, setProductReviewError] = useState<string>("");
@@ -35,13 +36,21 @@ const Review = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
+        const filter = {
+          hasMedia: searchParams.get("hasMedia") || "",
+          rating: searchParams.get("rating") || "",
+          reviewTopics: searchParams.get("reviewTopics") || "",
+        };
+  
         const reviewDetailRes = await axios.get<ProductReviewResponse>(
-          `${productReviewBaseUrl}/${id}`
+          `${productReviewBaseUrl}/${id}?hasMedia=${filter.hasMedia}&rating=${filter.rating}&reviewTopics=${filter.reviewTopics}`
         );
-
+  
         setProductReview(reviewDetailRes.data.output_schema.content);
         console.log("review Detail:", reviewDetailRes.data.output_schema);
+        setProductReviewError("");
       } catch (error) {
         console.error("Tidak ada review untuk produk: " + error);
         setProductReviewError("Tidak Ada Ulasan Untuk Produk Ini");
@@ -49,9 +58,9 @@ const Review = () => {
         setLoading(false);
       }
     };
-
+  
     if (id) fetchData();
-  }, [id]);
+  }, [searchParams, id]); 
 
   return (
     <div className="px-2 pt-8 flex">
@@ -91,12 +100,21 @@ const Review = () => {
 
         {/*User Comment Section*/}
         <div className="w-full flex flex-col space-y-3 md:space-y-5 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[450px] overflow-y-auto">
-          {loading && <ReviewSkeleton />}
-          {productReviewError && !loading && <p className="text-color-secondary text-2xl font-semibold text-center pt-8">{productReviewError}</p>}
-          {productReview != null &&
+          {loading ? (
+            <ReviewSkeleton />
+          ) : productReviewError ? (
+            <p className="text-color-secondary text-2xl font-semibold text-center pt-8">
+              {productReviewError}
+            </p>
+          ) : productReview && productReview.length > 0 ? (
             productReview.map((item, index) => (
               <UserReview key={index} reviewDetail={item} />
-            ))}
+            ))
+          ) : (
+            <p className="text-color-secondary text-lg font-semibold text-center pt-8">
+              Belum ada ulasan untuk produk ini.
+            </p>
+          )}
         </div>
         {/*User Comment Section*/}
       </div>

@@ -8,9 +8,20 @@ import Image from "next/image";
 import Star from "@/public/star.svg";
 import { useState } from "react";
 import { FiFilter, FiX } from "react-icons/fi";
+import useFilter from "@/hooks/filter/useFilter";
 
 const ShopProductFilter = () => {
+  const {
+    handleMultiButtonFilter,
+    isValueInMultiParam,
+    isCheckboxSelected,
+    handleCheckboxFilter,
+    handleInputFilter,
+    getInputValue,
+  } = useFilter();
   const [isOpen, setIsOpen] = useState(false);
+  const [minPrice, setMinPrice] = useState(getInputValue("minPrice") || "");
+  const [maxPrice, setMaxPrice] = useState(getInputValue("maxPrice") || "");
 
   return (
     <>
@@ -41,63 +52,157 @@ const ShopProductFilter = () => {
       >
         <Card className="flex flex-col h-full px-5 py-8 lg:py-5 space-y-6 border-none overflow-y-auto bg-white lg:max-h-[calc(100vh-120px)]">
           <FilterSection Header="Durasi Sewa">
-            <Button className="w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200">
+            <Button
+              onClick={() =>
+                handleMultiButtonFilter(
+                  "rentDurations",
+                  "1",
+                  !isValueInMultiParam("rentDurations", "1")
+                )
+              }
+              className={`w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200  ${
+                isValueInMultiParam("rentDurations", "1")
+                  ? "bg-color-third"
+                  : "bg-transparent"
+              }`}
+            >
               Harian
             </Button>
-            <Button className="w-auto max-w-[76px] px-2 text-[12px] font-light text-white bg-color-primaryDark hover:bg-blue-900">
+            <Button
+              onClick={() =>
+                handleMultiButtonFilter(
+                  "rentDurations",
+                  "7",
+                  !isValueInMultiParam("rentDurations", "7")
+                )
+              }
+              className={`w-auto max-w-[76px] px-2 text-[12px] text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
+                isValueInMultiParam("rentDurations", "7")
+                  ? "bg-color-third"
+                  : "bg-transparent"
+              }`}
+            >
               Mingguan
             </Button>
-            <Button className="w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200">
+            <Button
+              onClick={() =>
+                handleMultiButtonFilter(
+                  "rentDurations",
+                  "30",
+                  !isValueInMultiParam("rentDurations", "30")
+                )
+              }
+              className={`w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
+                isValueInMultiParam("rentDurations", "30")
+                  ? "bg-color-third"
+                  : "bg-transparent"
+              }`}
+            >
               Bulanan
             </Button>
           </FilterSection>
 
           <FilterSection Header="Harga">
-            <div className="space-y-3">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleInputFilter("minPrice", minPrice);
+              }}
+              className="max-w-[220px] w-auto"
+            >
               <div className="relative h-[40px]">
                 <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
-                  <span className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 h-[90%] flex items-center">
+                  <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
                     Rp
-                  </span>
+                  </p>
                 </div>
                 <input
-                  type="number"
-                  className="w-full pl-16 pr-3 h-full text-[12px] border border-color-primaryDark rounded-lg placeholder:text-color-primary focus:ring-1 focus:ring-color-primaryDark"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  type="text"
+                  className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
+                  placeholder:text-color-primary text-[12px] rounded-lg 
+                  focus:ring-1 focus:ring-color-primaryDark  focus:outline-none
+                  focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
                   placeholder="Harga Minimum"
                 />
               </div>
+            </form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleInputFilter("maxPrice", maxPrice);
+              }}
+              className="max-w-[220px] w-auto"
+            >
               <div className="relative h-[40px]">
                 <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
-                  <span className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 h-[90%] flex items-center">
+                  <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
                     Rp
-                  </span>
+                  </p>
                 </div>
                 <input
-                  type="number"
-                  className="w-full pl-16 pr-3 h-full text-[12px] border border-color-primaryDark rounded-lg placeholder:text-color-primary focus:ring-1 focus:ring-color-primaryDark"
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  value={maxPrice}
+                  type="text"
+                  className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
+                  placeholder:text-color-primary text-[12px] rounded-lg 
+                  focus:ring-1 focus:ring-color-primaryDark  focus:outline-none
+                  focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
                   placeholder="Harga Maksimum"
                 />
               </div>
-            </div>
+            </form>
           </FilterSection>
 
           <FilterSection Header="Rent to Buy">
-            <TextedCheckbox>Ya</TextedCheckbox>
-            <TextedCheckbox>Tidak</TextedCheckbox>
+            <TextedCheckbox
+              checked={isCheckboxSelected("isRnbOptions", "true")}
+              onCheckedChange={() =>
+                handleCheckboxFilter(
+                  "isRnbOptions",
+                  "true",
+                  !isCheckboxSelected("isRnbOptions", "true")
+                )
+              }
+            >
+              Ya
+            </TextedCheckbox>
+            <TextedCheckbox
+              checked={isCheckboxSelected("isRnbOptions", "false")}
+              onCheckedChange={() =>
+                handleCheckboxFilter(
+                  "isRnbOptions",
+                  "false",
+                  !isCheckboxSelected("isRnbOptions", "false")
+                )
+              }
+            >
+              Tidak
+            </TextedCheckbox>
           </FilterSection>
 
           <FilterSection Header="Rating">
             {[5, 4, 3, 2, 1].map((rating) => (
-              <TextedCheckbox key={rating}>
-                <div className="flex items-center gap-2">
+              <TextedCheckbox
+                key={rating}
+                checked={isCheckboxSelected("minRatings", rating.toString())}
+                onCheckedChange={() =>
+                  handleCheckboxFilter(
+                    "minRatings",
+                    rating.toString(),
+                    !isCheckboxSelected("minRatings", rating.toString())
+                  )
+                }
+              >
+                <div className="flex space-x-3 items-center">
                   <Image
                     width={14}
                     height={12}
                     src={Star}
-                    alt={`Bintang ${rating}`}
-                    className="inline-block"
+                    alt={`Star ${rating}`}
                   />
-                  <span className="text-[12px] text-color-primary">{rating}</span>
+                  <p className="text-[12px] text-color-primary">{rating}</p>
                 </div>
               </TextedCheckbox>
             ))}

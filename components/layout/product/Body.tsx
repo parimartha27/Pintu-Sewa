@@ -41,21 +41,6 @@ const ProductBody = () => {
   const size = 16;
   // const sort = "name,asc";
 
-  const filters = {
-    category: searchParams.get("categories") || "",
-    rentDuration: searchParams.get("rentDuration") || "",
-    location: searchParams.get("location") || "",
-    minPrice: searchParams.get("minPrice") || "",
-    maxPrice: searchParams.get("maxPrice") || "",
-    isRnb: searchParams.get("isRnb") || "",
-    minRating: searchParams.get("minRating") || "",
-    sortBy: searchParams.get("sortBy") || "",
-    sortDirection: searchParams.get("sortDirection") || "",
-    page: searchParams.get("page") || "",
-    size: searchParams.get("size") || "",
-    name: searchParams.get("name") || "",
-  };
-
   const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -63,6 +48,20 @@ const ProductBody = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      const filters = {
+        category: searchParams.get("categories") || "",
+        rentDuration: searchParams.get("rentDuration") || "",
+        location: searchParams.get("location") || "",
+        minPrice: searchParams.get("minPrice") || "",
+        maxPrice: searchParams.get("maxPrice") || "",
+        isRnb: searchParams.get("isRnb") || "",
+        minRating: searchParams.get("minRating") || "",
+        sortBy: searchParams.get("sortBy") || "",
+        sortDirection: searchParams.get("sortDirection") || "",
+        page: searchParams.get("page") || "",
+        size: searchParams.get("size") || "",
+        name: searchParams.get("name") || "",
+      };
       try {
         setLoading(true);
         const url = `${filteredProductBaseUrl}?categories=${category}&name=${name}&rentDuration=${filters.rentDuration}&location=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}&page=${page}&size=${size}`;
