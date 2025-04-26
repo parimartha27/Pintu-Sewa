@@ -33,7 +33,6 @@ interface ShopDetailResProps {
 }
 
 const ProductDetailBody = () => {
-  
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<ProductDetailProps>();
   const [loading, setLoading] = useState(true);
@@ -70,9 +69,19 @@ const ProductDetailBody = () => {
     if (id) fetchData();
   }, [id]);
 
-  return loading ? (
-    <ProductDetailSkeleton />
-  ) : (
+  if (loading) {
+    return <ProductDetailSkeleton />;
+  }
+
+  if (!productDetail) {
+    return (
+      <div className="w-full flex items-center justify-center h-[50vh]">
+        <NoProduct/>
+      </div>
+    );
+  }
+
+  return (
     <div className="w-full flex flex-col px-0 py-0 md:px-6 max-w-[1300px] min-h-screen mx-auto bg-color-layout pb-12 md:pb-[273px]">
       <div className="flex flex-col md:flex-row">
         {productDetail && shopDetail && (
@@ -81,20 +90,22 @@ const ProductDetailBody = () => {
             shopDetail={shopDetail}
           />
         )}
-        <RentForm productDetail={productDetail as ProductDetailProps} />
+        <RentForm productDetail={productDetail} />
       </div>
+
       <div className="flex flex-col space-y-3 w-full">
         <div className="lg:hidden">
           {shopDetail && <ShopAndLocation shopDetail={shopDetail} />}
         </div>
-        <Review/>
+
+        <Review />
 
         <div className="flex flex-col pl-2 pt-8 xl:pt-[72px]">
           <h2 className="text-lg md:text-xl xl:text-2xl sm:text-center xl:text-start pl-1 pb-3 font-medium xl:font-semibold text-color-primary">
             Barang lainnya di toko ini
           </h2>
-          {shopProducts != null ? (
-            shopProducts && <ProductList products={shopProducts} />
+          {shopProducts && shopProducts.length > 0 ? (
+            <ProductList products={shopProducts} />
           ) : (
             <NoProduct />
           )}
@@ -105,5 +116,3 @@ const ProductDetailBody = () => {
 };
 
 export default ProductDetailBody;
-
-
