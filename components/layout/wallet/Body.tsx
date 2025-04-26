@@ -107,7 +107,7 @@ function DefaultLayout() {
             <CardHeader className='items-center justify-between'>
               <CardTitle className='text-xl font-bold text-color-primary'>Saldo Anda</CardTitle>
               <Button
-                onClick={() => router.push("/topup")}
+                onClick={() => router.push("/wallet/topup")}
                 className='w-28 bg-custom-gradient-tr '
               >
                 <div className='flex justify-center items-center gap-4'>

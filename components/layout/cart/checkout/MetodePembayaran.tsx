@@ -16,7 +16,7 @@ const MetodePembayaranLayout = () => {
   return (
     <Card className="px-2 md:px-6 mb-[224px]">
       <CardHeader className="flex flex-col items-center md:flex-row md:justify-between px-0">
-        <h2 className="text-[16px] font-semibold text-color-primary">
+        <h2 className="text-md font-semibold text-color-primary">
           Metode Pembayaran
         </h2>
         <h3 className="text-sm font-medium text-color-secondary hover:opacity-70 hover:cursor-pointer">
