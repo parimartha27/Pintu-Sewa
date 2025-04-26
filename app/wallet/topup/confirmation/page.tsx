@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ProfileSidebarLayout from "@/components/layout/ProfileSidebar"
 import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
@@ -16,9 +16,16 @@ const TopupConfirmationPage = () => {
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Ambil data dari localStorage
-  const amount = localStorage.getItem("topupAmount") || "0"
-  const method = localStorage.getItem("paymentMethod") || "Unknown Method"
+  const [amount, setAmount] = useState("0")
+  const [method, setMethod] = useState("Unknown Method")
+
+  useEffect(() => {
+    const storedAmount = localStorage.getItem("topupAmount") || "0"
+    const storedMethod = localStorage.getItem("paymentMethod") || "Unknown Method"
+
+    setAmount(storedAmount)
+    setMethod(storedMethod)
+  }, [])
 
   // Format data
   const paymentData = {
