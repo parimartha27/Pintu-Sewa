@@ -1,6 +1,8 @@
-import Footer from "@/components/layout/Footer";
-import Navbar from "@/components/layout/Navbar";
-import OrderHistoryBody from "@/components/layout/orderHistory/Body";
+"use client"
+
+import Footer from "@/components/layout/Footer"
+import Navbar from "@/components/layout/Navbar"
+import OrderHistoryBody from "@/components/layout/orderHistory/Body"
 
 const OrderHistoryPage = () => {
   return (
@@ -9,7 +11,7 @@ const OrderHistoryPage = () => {
       <OrderHistoryBody />
       <Footer />
     </>
-  );
-};
+  )
+}
 
-export default OrderHistoryPage;
+export default OrderHistoryPage
