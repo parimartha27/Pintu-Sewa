@@ -23,7 +23,7 @@ interface CustomerRequest {
   birth_date: string
   post_code: string
   password: string
-  notes?: string
+  note?: string
 }
 
 interface CustomerResponse {
@@ -79,7 +79,7 @@ const InputConfirmationContentLayout = () => {
         birth_date: formData.date,
         post_code: formData.kodepos,
         password: formData.password,
-        notes: formData.catatan,
+        note: formData.catatan,
       }
 
       console.log(payload)
