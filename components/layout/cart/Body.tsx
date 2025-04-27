@@ -119,10 +119,11 @@ const CartBody = () => {
   const handleCheckout = async () => {
     const payload = {
       customer_id: customerId,
-      cart_ids: selectedCartIds.map((id) => ({ cart_id: id })),
-      shipping_partner_id: "Golden Tigers",
+      cart_ids: selectedCartIds || "[]",
+      shipping_partner_id: "JNE",
     };
 
+    console.log(payload);
     setSubmitLoading(true);
     try {
       const res = await axios.post<checkoutFromCartResponseProps>(

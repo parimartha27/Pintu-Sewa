@@ -170,24 +170,30 @@ const FilterBody = () => {
         <FilterSection Header="Durasi Sewa">
           <Button
             onClick={() => handleRentDurationClick("harian")}
-            className={`w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isHarianActive ? "bg-color-third" : "bg-transparent"
+            className={`w-auto max-w-[57px] text-[12px] px-2 ${
+              isHarianActive
+                ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
             }`}
           >
             Harian
           </Button>
           <Button
             onClick={() => handleRentDurationClick("mingguan")}
-            className={`w-auto max-w-[76px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isMingguanActive ? "bg-color-third" : "bg-transparent"
+            className={`w-auto max-w-[76px] text-[12px] px-2 ${
+              isMingguanActive
+                ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
             }`}
           >
             Mingguan
           </Button>
           <Button
             onClick={() => handleRentDurationClick("bulanan")}
-            className={`w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isBulananActive ? "bg-color-third" : "bg-transparent"
+            className={`w-auto max-w-[66px] text-[12px] px-2 ${
+              isBulananActive
+                ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
             }`}
           >
             Bulanan

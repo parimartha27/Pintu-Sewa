@@ -11,12 +11,12 @@ import { FiFilter, FiX } from "react-icons/fi";
 import useFilter from "@/hooks/filter/useFilter";
 
 const ShopProductFilter = () => {
-  const { 
+  const {
     isCheckboxSelected,
     handleCheckboxFilter,
     handleInputFilter,
     getInputValue,
-    updateSearchParam
+    updateSearchParam,
   } = useFilter();
   const [isOpen, setIsOpen] = useState(false);
   const [minPrice, setMinPrice] = useState(getInputValue("minPrice") || "");
@@ -92,30 +92,36 @@ const ShopProductFilter = () => {
       >
         <Card className="flex flex-col h-full px-5 py-8 lg:py-5 space-y-6 border-none overflow-y-auto bg-white lg:max-h-[calc(100vh-120px)]">
           <FilterSection Header="Durasi Sewa">
-          <Button
-            onClick={() => handleRentDurationClick("harian")}
-            className={`w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isHarianActive ? "bg-color-third" : "bg-transparent"
-            }`}
-          >
-            Harian
-          </Button>
-          <Button
-            onClick={() => handleRentDurationClick("mingguan")}
-            className={`w-auto max-w-[76px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isMingguanActive ? "bg-color-third" : "bg-transparent"
-            }`}
-          >
-            Mingguan
-          </Button>
-          <Button
-            onClick={() => handleRentDurationClick("bulanan")}
-            className={`w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isBulananActive ? "bg-color-third" : "bg-transparent"
-            }`}
-          >
-            Bulanan
-          </Button>
+            <Button
+              onClick={() => handleRentDurationClick("harian")}
+              className={`w-auto max-w-[57px] text-[12px] px-2 ${
+                isHarianActive
+                  ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                  : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
+              }`}
+            >
+              Harian
+            </Button>
+            <Button
+              onClick={() => handleRentDurationClick("mingguan")}
+              className={`w-auto max-w-[76px] text-[12px] px-2 ${
+                isMingguanActive
+                  ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                  : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
+              }`}
+            >
+              Mingguan
+            </Button>
+            <Button
+              onClick={() => handleRentDurationClick("bulanan")}
+              className={`w-auto max-w-[66px] text-[12px] px-2 ${
+                isBulananActive
+                  ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                  : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
+              }`}
+            >
+              Bulanan
+            </Button>
           </FilterSection>
 
           <FilterSection Header="Harga">

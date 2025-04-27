@@ -15,7 +15,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TransactionProps } from "@/types/checkout";
-
+import { useState } from "react";
+import { formatToRupiah } from "@/hooks/useConvertRupiah";
 
 // {
 //   "error_schema": {
@@ -50,22 +51,27 @@ import { TransactionProps } from "@/types/checkout";
 //     ]
 // }
 
-interface CheckoutProductFormProps{
-  checkoutDetail: TransactionProps
+interface CheckoutProductFormProps {
+  checkoutDetail?: TransactionProps;
 }
 
-const CheckoutProductForm = ({checkoutDetail}: CheckoutProductFormProps) => {
-  const [courier ,setCourier] = useState<string>();
+const CheckoutProductForm = ({ checkoutDetail }: CheckoutProductFormProps) => {
+  const [courier,] = useState<string>(
+    checkoutDetail?.shipping_partner || "Tidak Ada"
+  );
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">
         <h2 className="text-[16px] font-semibold text-color-primary pb-1">
-          Nama Toko
+          {checkoutDetail?.shop_name || "Nama Toko"}
         </h2>
       </CardHeader>
       <CardContent className="mt-3 flex-col p-0 ">
-        <ProductInCheckoutDetail />
-        <ProductInCheckoutDetail />
+        {checkoutDetail?.rented_items.map((item, index) => (
+          <ProductInCheckoutDetail key={index} rentedItemDetail={item} />
+        ))}
+        {/* <ProductInCheckoutDetail />
+        <ProductInCheckoutDetail /> */}
       </CardContent>
       <CardFooter className="p-0 pt-3 pb-7 border-t-[1px] border-t-[#D9D9D9] justify-center sm:justify-end">
         <div className="flex-col max-w-[500px] w-full space-y-[14px]">
@@ -92,7 +98,7 @@ const CheckoutProductForm = ({checkoutDetail}: CheckoutProductFormProps) => {
               </TooltipProvider>
             </div>
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              Rp. 400.000
+              {formatToRupiah(checkoutDetail?.deposit) || "gratis"}
             </h3>
           </div>
 
@@ -108,7 +114,7 @@ const CheckoutProductForm = ({checkoutDetail}: CheckoutProductFormProps) => {
               />
             </div>
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              JNT Express
+              {courier}
             </h3>
           </div>
           <div className="flex justify-between">
@@ -117,17 +123,19 @@ const CheckoutProductForm = ({checkoutDetail}: CheckoutProductFormProps) => {
             </h3>
 
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              Rp. 30.000
+              {formatToRupiah(checkoutDetail?.shipping_price) || "gratis"}
             </h3>
           </div>
 
           <div className="flex justify-between">
             <h3 className="text-color-primary text-[12px] md:text-sm max-w-[110px] sm:max-w-full">
-              Total Produk Disewa (2 produk)
+              Total Produk Disewa ({" "}
+              {`${checkoutDetail?.total_rented_product} Produk` || `tidak ada`}{" "}
+              )
             </h3>
 
             <h3 className="text-color-secondary text-[14px] sm:text-[16px] lg:text-lg font-bold">
-              Rp. 400.000.000
+              {formatToRupiah(checkoutDetail?.total_price) || "gratis"}
             </h3>
           </div>
         </div>
