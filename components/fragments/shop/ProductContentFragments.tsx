@@ -26,6 +26,11 @@ const ProductContent = () => {
   const page = parseInt(searchParams.get("page") || "1");
   const size = 12;
 
+
+  const [data, setData] = useState<ProductCardProps[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+
   const filters = {
     rentDuration: searchParams.get("rentDuration") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -36,12 +41,10 @@ const ProductContent = () => {
     sortDirection: searchParams.get("sortDirection") || "",
   };
 
-  const [data, setData] = useState<ProductCardProps[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
-
   const fetchShopData = async () => {
+  
     try {
+      setLoading(true);
       const response = await axios.get<ShopDetailPagedProductProps>(
         ` ${anotherShopProductBaseUrl}/${id}?page=${page}&size=${size}&rentDuration=${filters.rentDuration}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}`
       );
@@ -58,7 +61,7 @@ const ProductContent = () => {
     if (id) {
       fetchShopData();
     }
-  }, [id, page]);
+  }, [id, page, searchParams]);
 
   const goToPage = (newPage: number) => {
     const query = new URLSearchParams(searchParams.toString());

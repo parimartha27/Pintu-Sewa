@@ -4,37 +4,54 @@ import ShopContentLayout from "@/components/layout/shop/Content";
 import ShopHeader from "@/components/fragments/shop/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import ShopHeaderSkeleton from "@/components/layout/shop/ShopHeaderSkeleton";
 import { ShopDetailHeaderProps, ShopDetailReviewProps, ShopHeaderProps, ShopReviewProps } from "@/types/shopDetail";
 import { shopBaseUrl, shopReviewBaseUrl } from "@/types/globalVar";
 
 const ShopLayout = () => {
+  const searcParams = useSearchParams();
   const { id } = useParams();
   const [shopHeaderData, setShopHeaderData] = useState<ShopHeaderProps>();
   const [loading, setLoading] = useState(true);
   const [shopReview, setShopReview] = useState<ShopReviewProps[]>([]);
   const [reviewLoading, setReviewLoading] = useState(true);
 
+  const reviewFilter={
+    hasMedia: searcParams.get("hasMedia"),
+    rating: searcParams.get("rating"),
+    reviewTopics: searcParams.get("reviewTopics"),
+  }
+
   useEffect(() => {
     const fetchShopData = async () => {
       try {
+        setLoading(true);
         const shopHeaderRes = await axios.get<ShopDetailHeaderProps>(`${shopBaseUrl}/${id}`);
         setShopHeaderData(shopHeaderRes.data.output_schema);
-
-        const shopReviewRes = await axios.get<ShopDetailReviewProps>(
-          `${shopReviewBaseUrl}/${id}?rating=4&hasMedia=true`
-        );
-        setShopReview(shopReviewRes.data.output_schema.content);
       } catch (error) {
         console.error("Failed to fetch shop data:", error);
       } finally {
         setLoading(false);
-        setReviewLoading(false);
       }
     };
     if (id) fetchShopData();
   }, [id]);
+
+  useEffect(() => {
+    const fetchShopReview = async () => {
+      setReviewLoading(true);
+      try {
+        const response = await axios.get<ShopDetailReviewProps>(`${shopReviewBaseUrl}/${id}?rating=${reviewFilter.rating}&reviewTopics=${reviewFilter.reviewTopics}&hasMedia=${reviewFilter.hasMedia}`);
+        setShopReview(response.data.output_schema.content);
+      } catch (error) {
+        console.error("Failed to fetch shop data:", error);
+      } finally {
+        setReviewLoading(false);
+      }
+    };
+    if (id) fetchShopReview();
+  }, [id, reviewFilter.hasMedia, reviewFilter.rating, reviewFilter.reviewTopics, searcParams]);
 
   if (loading) {
     return (
