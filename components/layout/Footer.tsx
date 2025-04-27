@@ -20,7 +20,7 @@ const Footer = () => {
           <div className="h-3/5 flex flex-wrap justify-between">
             <div className="flex flex-col justify-between space-y-7 md:space-y-0 mb-10">
               <h4 className="text-[14px] lg:text-[18px] text-white font-light">
-                Tentang Siap Sewa
+                Tentang Pintu Sewa
               </h4>
               <h4 className="text-[14px] lg:text-[18px] text-white font-light">
                 Syarat dan Ketentuan Pengguna
@@ -51,7 +51,7 @@ const Footer = () => {
                   className="mr-2 w-[28px] h-[28px]"
                 />
                 <h4 className="text-[14px] text-white font-light ml-2">
-                  @siap-sewa
+                  @pintu-sewa
                 </h4>
               </div>
               <div className="flex items-center">
@@ -61,7 +61,7 @@ const Footer = () => {
                   className="mr-2 w-[28px] h-[28px]"
                 />
                 <h4 className="text-[14px] text-white font-light ml-2">
-                  admin@siapsewa.co.id
+                  admin@pintusewa.co.id
                 </h4>
               </div>
             </div>
