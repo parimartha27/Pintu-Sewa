@@ -21,13 +21,55 @@ const FilterBody = () => {
     isCheckboxSelected,
     handleCheckboxFilter,
     handleInputFilter,
-    getInputValue
+    getInputValue,
+    updateSearchParam,
   } = useFilter();
   const [province, setProvince] = useState<dataAlamatProps[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [minPrice, setMinPrice] = useState(getInputValue("minPrice") || "");
   const [maxPrice, setMaxPrice] = useState(getInputValue("maxPrice") || "");
+
+  const rentDuration = getInputValue("rentDurations");
+
+  const isHarianActive =
+    rentDuration === "1" ||
+    rentDuration === "4" ||
+    rentDuration === "5" ||
+    rentDuration === "7";
+  const isMingguanActive =
+    rentDuration === "2" ||
+    rentDuration === "4" ||
+    rentDuration === "6" ||
+    rentDuration === "7";
+  const isBulananActive =
+    rentDuration === "3" ||
+    rentDuration === "5" ||
+    rentDuration === "6" ||
+    rentDuration === "7";
+
+  const handleRentDurationClick = (type: "harian" | "mingguan" | "bulanan") => {
+    let newHarian = isHarianActive;
+    let newMingguan = isMingguanActive;
+    let newBulanan = isBulananActive;
+
+    if (type === "harian") newHarian = !newHarian;
+    if (type === "mingguan") newMingguan = !newMingguan;
+    if (type === "bulanan") newBulanan = !newBulanan;
+
+    let newRentDuration = "";
+
+    if (newHarian && !newMingguan && !newBulanan) newRentDuration = "1";
+    else if (!newHarian && newMingguan && !newBulanan) newRentDuration = "2";
+    else if (!newHarian && !newMingguan && newBulanan) newRentDuration = "3";
+    else if (newHarian && newMingguan && !newBulanan) newRentDuration = "4";
+    else if (newHarian && !newMingguan && newBulanan) newRentDuration = "5";
+    else if (!newHarian && newMingguan && newBulanan) newRentDuration = "6";
+    else if (newHarian && newMingguan && newBulanan) newRentDuration = "7";
+    else newRentDuration = "";
+
+    updateSearchParam("rentDurations", newRentDuration || null);
+  };
 
   useEffect(() => {
     if (!showModal) return;
@@ -70,34 +112,34 @@ const FilterBody = () => {
     { name: "Pakaian Wanita" },
   ];
 
-  const locations = ["Jakarta", "Jawa Barat", "Bali", "Bandung"];
+  const locations = ["DKI Jakarta", "Jawa Barat", "Bali", "Bandung"];
 
   return (
     <>
-        <CustomModal isOpen={showModal} onClose={() => setShowModal(false)}>
-            <h2 className="text-lg font-semibold mb-4">Daftar Lokasi</h2>
-            {loading ? (
-              <p className="text-sm text-gray-500">. . .</p>
-            ) : (
-              <ul className="space-y-3 max-h-[300px] overflow-y-auto">
-                {province.map((location, index) => (
-                  <TextedCheckbox
-                    key={index}
-                    checked={isCheckboxSelected("locations", location.text)}
-                    onCheckedChange={() =>
-                      handleCheckboxFilter(
-                        "locations",
-                        location.text,
-                        !isCheckboxSelected("locations", location.text)
-                      )
-                    }
-                  >
-                    {location.text}
-                  </TextedCheckbox>
-                ))}
-              </ul>
-            )}
-          </CustomModal>
+      <CustomModal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <h2 className="text-lg font-semibold mb-4">Daftar Lokasi</h2>
+        {loading ? (
+          <p className="text-sm text-gray-500">. . .</p>
+        ) : (
+          <ul className="space-y-3 max-h-[300px] overflow-y-auto">
+            {province.map((location, index) => (
+              <TextedCheckbox
+                key={index}
+                checked={isCheckboxSelected("locations", location.text)}
+                onCheckedChange={() =>
+                  handleCheckboxFilter(
+                    "locations",
+                    location.text,
+                    !isCheckboxSelected("locations", location.text)
+                  )
+                }
+              >
+                {location.text}
+              </TextedCheckbox>
+            ))}
+          </ul>
+        )}
+      </CustomModal>
       <div className="flex flex-col mb-4 shadow-sm p-2">
         <h2 className="mb-3 text-[16px] font-medium pl-2">Kategori</h2>
         <div className="flex flex-col w-full">
@@ -127,49 +169,31 @@ const FilterBody = () => {
       <div className=" flex-col pl-4 space-y-4">
         <FilterSection Header="Durasi Sewa">
           <Button
-            onClick={() =>
-              handleMultiButtonFilter(
-                "rentDurations",
-                "1",
-                !isValueInMultiParam("rentDurations", "1")
-              )
-            }
-            className={`w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200  ${
-              isValueInMultiParam("rentDurations", "1")
-                ? "bg-color-third"
-                : "bg-transparent"
+            onClick={() => handleRentDurationClick("harian")}
+            className={`w-auto max-w-[57px] text-[12px] px-2 ${
+              isHarianActive
+                ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
             }`}
           >
             Harian
           </Button>
           <Button
-            onClick={() =>
-              handleMultiButtonFilter(
-                "rentDurations",
-                "7",
-                !isValueInMultiParam("rentDurations", "7")
-              )
-            }
-            className={`w-auto max-w-[76px] px-2 text-[12px] text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isValueInMultiParam("rentDurations", "7")
-                ? "bg-color-third"
-                : "bg-transparent"
+            onClick={() => handleRentDurationClick("mingguan")}
+            className={`w-auto max-w-[76px] text-[12px] px-2 ${
+              isMingguanActive
+                ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
             }`}
           >
             Mingguan
           </Button>
           <Button
-            onClick={() =>
-              handleMultiButtonFilter(
-                "rentDurations",
-                "30",
-                !isValueInMultiParam("rentDurations", "30")
-              )
-            }
-            className={`w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-              isValueInMultiParam("rentDurations", "30")
-                ? "bg-color-third"
-                : "bg-transparent"
+            onClick={() => handleRentDurationClick("bulanan")}
+            className={`w-auto max-w-[66px] text-[12px] px-2 ${
+              isBulananActive
+                ? "bg-color-primaryDark text-white hover:bg-blue-900 hover:opacity-80"
+                : "bg-transparent outline-none  border-[1px] text-color-primary border-color-primary hover:bg-slate-200"
             }`}
           >
             Bulanan
@@ -202,8 +226,13 @@ const FilterBody = () => {
           </button>
         </FilterSection>
         <FilterSection Header="Harga">
-          <form onSubmit={(e) => {e.preventDefault(); handleInputFilter('minPrice', minPrice)}}
-           className="max-w-[220px] w-auto">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleInputFilter("minPrice", minPrice);
+            }}
+            className="max-w-[220px] w-auto"
+          >
             <div className="relative h-[40px]">
               <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
                 <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
@@ -211,8 +240,8 @@ const FilterBody = () => {
                 </p>
               </div>
               <input
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
                 type="text"
                 className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
                   placeholder:text-color-primary text-[12px] rounded-lg 
@@ -222,9 +251,13 @@ const FilterBody = () => {
               />
             </div>
           </form>
-          <form 
-          onSubmit={(e) => {e.preventDefault(); handleInputFilter('maxPrice', maxPrice)}}
-          className="max-w-[220px] w-auto">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleInputFilter("maxPrice", maxPrice);
+            }}
+            className="max-w-[220px] w-auto"
+          >
             <div className="relative h-[40px]">
               <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
                 <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
@@ -232,8 +265,8 @@ const FilterBody = () => {
                 </p>
               </div>
               <input
-              onChange={(e) => setMaxPrice(e.target.value)}
-              value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                value={maxPrice}
                 type="text"
                 className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
                   placeholder:text-color-primary text-[12px] rounded-lg 
@@ -246,39 +279,42 @@ const FilterBody = () => {
         </FilterSection>
         <FilterSection Header="Rent to Buy">
           <TextedCheckbox
-           checked={isCheckboxSelected("isRnbOptions", "true")}
-           onCheckedChange={() =>
-             handleCheckboxFilter(
-               "isRnbOptions",
-               "true",
-               !isCheckboxSelected("isRnbOptions", "true")
-             )
-           }
-          
-          >Ya</TextedCheckbox>
+            checked={isCheckboxSelected("isRnbOptions", "true")}
+            onCheckedChange={() =>
+              handleCheckboxFilter(
+                "isRnbOptions",
+                "true",
+                !isCheckboxSelected("isRnbOptions", "true")
+              )
+            }
+          >
+            Ya
+          </TextedCheckbox>
           <TextedCheckbox
-           checked={isCheckboxSelected("isRnbOptions", "false")}
-           onCheckedChange={() =>
-             handleCheckboxFilter(
-               "isRnbOptions",
-               "false",
-               !isCheckboxSelected("isRnbOptions", "false")
-             )
-           }
-          
-          >Tidak</TextedCheckbox>
+            checked={isCheckboxSelected("isRnbOptions", "false")}
+            onCheckedChange={() =>
+              handleCheckboxFilter(
+                "isRnbOptions",
+                "false",
+                !isCheckboxSelected("isRnbOptions", "false")
+              )
+            }
+          >
+            Tidak
+          </TextedCheckbox>
         </FilterSection>
         <FilterSection Header="Rating">
           {[5, 4, 3, 2, 1].map((rating) => (
-            <TextedCheckbox key={rating}
-            checked={isCheckboxSelected("minRatings", rating.toString())}
-            onCheckedChange={() =>
-              handleCheckboxFilter(
-                "minRatings",
-                rating.toString(),
-                !isCheckboxSelected("minRatings", rating.toString())
-              )
-            }
+            <TextedCheckbox
+              key={rating}
+              checked={isCheckboxSelected("minRatings", rating.toString())}
+              onCheckedChange={() =>
+                handleCheckboxFilter(
+                  "minRatings",
+                  rating.toString(),
+                  !isCheckboxSelected("minRatings", rating.toString())
+                )
+              }
             >
               <div className="flex space-x-3 items-center">
                 <Image

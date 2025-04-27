@@ -39,13 +39,13 @@ const Review = () => {
       setLoading(true);
       try {
         const filter = {
-          hasMedia: searchParams.get("hasMedia") || "",
-          rating: searchParams.get("rating") || "",
-          reviewTopics: searchParams.get("reviewTopics") || "",
+          hasMedia: searchParams.get("hasMedia") || "true",
+          rating: searchParams.get("rating") || "4",
+          // reviewTopics: searchParams.get("reviewTopics") || "kondisi barang",
         };
   
         const reviewDetailRes = await axios.get<ProductReviewResponse>(
-          `${productReviewBaseUrl}/${id}?hasMedia=${filter.hasMedia}&rating=${filter.rating}&reviewTopics=${filter.reviewTopics}`
+          `${productReviewBaseUrl}/${id}?hasMedia=${filter.hasMedia}&rating=${filter.rating}`
         );
   
         setProductReview(reviewDetailRes.data.output_schema.content);

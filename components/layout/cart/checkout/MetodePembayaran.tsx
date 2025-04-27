@@ -11,17 +11,19 @@ import Money from "@/public/money.svg";
 import MetodePembayaranFragments from "@/components/fragments/checkout/MetodePembayaran";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { TransactionResponseProps } from "@/types/checkout";
+import { formatToRupiah } from "@/hooks/useConvertRupiah";
 
-const MetodePembayaranLayout = () => {
+const MetodePembayaranLayout = ({checkoutDetail}: {checkoutDetail?: TransactionResponseProps}) => {
   return (
     <Card className="px-2 md:px-6 mb-[224px]">
       <CardHeader className="flex flex-col items-center md:flex-row md:justify-between px-0">
         <h2 className="text-md font-semibold text-color-primary">
           Metode Pembayaran
         </h2>
-        <h3 className="text-sm font-medium text-color-secondary hover:opacity-70 hover:cursor-pointer">
+        {/* <h3 className="text-sm font-medium text-color-secondary hover:opacity-70 hover:cursor-pointer">
           Lihat Semua
-        </h3>
+        </h3> */}
       </CardHeader>
       <CardContent className="flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0 border-t-[1px] border-t-[#D9D9D9]">
         <div className="flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3">
@@ -45,7 +47,7 @@ const MetodePembayaranLayout = () => {
               </h3>
             </div>
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              Rp. 40.000.000
+              {formatToRupiah(checkoutDetail?.sub_total_product_price) || "gratis"}
             </h3>
           </div>
 
@@ -56,7 +58,7 @@ const MetodePembayaranLayout = () => {
               </h3>
             </div>
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              Rp. 40.000
+              {formatToRupiah(checkoutDetail?.sub_total_shipping_cost) || "gratis"}
             </h3>
           </div>
           <div className="flex justify-between">
@@ -65,7 +67,7 @@ const MetodePembayaranLayout = () => {
             </h3>
 
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              Rp. 600.000
+              {formatToRupiah(checkoutDetail?.sub_total_deposit) || "gratis"}
             </h3>
           </div>
           <div className="flex justify-between">
@@ -74,7 +76,7 @@ const MetodePembayaranLayout = () => {
             </h3>
 
             <h3 className="text-color-primary text-[12px] md:text-sm font-semibold">
-              Rp. 30.000
+              {formatToRupiah(checkoutDetail?.service_fee) || "gratis"}
             </h3>
           </div>
 
@@ -84,7 +86,7 @@ const MetodePembayaranLayout = () => {
             </h3>
 
             <h3 className="text-color-secondary text-[14px] lg:text-lg font-bold">
-              Rp. 400.000.000
+              {formatToRupiah(checkoutDetail?.grand_total_payment) || "gratis"}
             </h3>
           </div>
           <Button className="flex justify-self-center md:justify-self-end w-full max-w-[320px] xl:h-[54px] rounded-xl hover:opacity-80 bg-custom-gradient-tr">

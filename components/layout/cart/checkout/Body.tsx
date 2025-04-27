@@ -4,8 +4,7 @@ import MetodePembayaranLayout from "./MetodePembayaran"
 import CheckoutProductForm from "./ProductForm"
 import { useEffect, useState } from "react"
 import axios from "axios"
-// import { customerBaseUrl } from "@/types/globalVar"
-import { customerBaseUrl } from "@/types/globalVar"
+import { customerBaseUrl, checkoutBaseUrl } from "@/types/globalVar"
 import { AddressProps, AddressResponseProps } from "@/types/address"
 import { CheckoutAddressSkeleton, CheckoutPaymentDetailSkeleton, CheckoutShopAndItemsSkeleton } from "./CheckoutSkeleton"
 import { CheckoutResponseProps, TransactionResponseProps } from "@/types/checkout"
@@ -15,14 +14,35 @@ import Link from "next/link"
 import NoCart from "@/public/noCart.svg"
 
 const CheckOutBody = () => {
-  const customerId = typeof window !== "undefined" && localStorage.getItem("customerId")
-  const transactionIds = typeof window !== "undefined" && JSON.parse(localStorage.getItem("transactionIds") || "[]")
   const [address, setAddress] = useState<AddressProps>()
   const [checkoutDetail, setCheckoutDetail] = useState<TransactionResponseProps>()
   const [addressLoading, setAddressLoading] = useState(true)
   const [itemLoading, setItemLoading] = useState(true)
+  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? "" : localStorage.getItem("customerId"));
+  const [transactionIds, setTransactionIds] = useState<string[]>(typeof window !== "undefined" ? "[]" : JSON.parse(localStorage.getItem("transactionIds") || ""));
 
   useEffect(() => {
+    const customerIdFromLocalStorage = localStorage.getItem("customerId");
+    const transactionIdsFromLocalStorage = localStorage.getItem("transactionIds");
+    
+    if (customerIdFromLocalStorage) {
+      setCustomerId(customerIdFromLocalStorage);
+    }
+
+    if (transactionIdsFromLocalStorage) {
+      try {
+        setTransactionIds(JSON.parse(transactionIdsFromLocalStorage));
+      } catch (e) {
+        console.error("Error parsing transaction IDs from localStorage", e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!customerId || !transactionIds.length) {
+      return;
+    }
+
     const fetchAddress = async () => {
       try {
         setAddressLoading(true)
@@ -33,47 +53,53 @@ const CheckOutBody = () => {
       } finally {
         setAddressLoading(false)
       }
+    };
+
+    fetchAddress();
+  }, [customerId, transactionIds.length]);
+
+  useEffect(() => {
+    if (!customerId || !transactionIds.length) {
+      return;
     }
-    fetchAddress()
-  }, [customerId])
 
-  // useEffect(() => {
-  //   const fetchCheckoutItemsAndPaymentDetail = async () => {
-  //     try {
-  //       setItemLoading(true);
-  //       const payload = {
-  //         tracsaction_ids: transactionIds,
-  //         customer_id: customerId,
-  //       };
-  //       const res = await axios.post<CheckoutResponseProps>(
-  //         `${checkoutBaseUrl}/details`,
-  //         payload
-  //       );
-  //       console.log(res);
-  //       setCheckoutDetail(res.data.output_schema);
-  //     } catch(e) {
+    const fetchCheckoutItemsAndPaymentDetail = async () => {
+      try {
+        setItemLoading(true);
+        const payload = {
+          transaction_ids: transactionIds,
+          customer_id: customerId,
+        };
+        console.log(payload);
+        const res = await axios.post<CheckoutResponseProps>(
+          `${checkoutBaseUrl}/details`,
+          payload
+        );
+        console.log(res);
+        setCheckoutDetail(res.data.output_schema);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setItemLoading(false);
+      }
+    };
 
-  //      console.log(e);
-  //     } finally {
-  //       setItemLoading(false);
-  //     }
-  //   };
-  //   fetchCheckoutItemsAndPaymentDetail();
-  // }, [customerId, transactionIds]);
+    fetchCheckoutItemsAndPaymentDetail();
+  }, [customerId, transactionIds]);
 
-  // if(!transactionIds || transactionIds.length == 0){
-  //   return (
-  //     <div className="flex flex-col space-y-6 w-full justify-center items-center py-20">
-  //     <Image className="w-[500px] h-[372px]" src={NoCart} alt="noCart" />
-  //     <h2 className="text-color-primary text-xl text-center font-medium">
-  //       Kamu Belum Checkout Apapun. Yuk Pilih Barang Untuk Di Checkout Terlebih Dahulu.
-  //     </h2>
-  //     <Button className="w-[200px] lg:w-[300px] mt-7 h-[50px] font-medium rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80">
-  //       <Link href={"/cart"}>Kembali Ke Cart</Link>
-  //     </Button>
-  //   </div>
-  //   )
-  // }
+  if (!transactionIds.length) {
+    return (
+      <div className="flex flex-col space-y-6 w-full justify-center items-center py-20">
+        <Image className="w-[500px] h-[372px]" src={NoCart} alt="noCart" />
+        <h2 className="text-color-primary text-xl text-center font-medium">
+          Kamu Belum Checkout Apapun. Yuk Pilih Barang Untuk Di Checkout Terlebih Dahulu.
+        </h2>
+        <Button className="w-[200px] lg:w-[300px] mt-7 h-[50px] font-medium rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80">
+          <Link href={"/cart"}>Kembali Ke Cart</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-color-layout p-2'>
@@ -82,23 +108,25 @@ const CheckOutBody = () => {
           <h2 className='w-full text-xl md:text-2xl font-semibold text-color-primary'>Pembayaran</h2>
           {addressLoading ? <CheckoutAddressSkeleton /> : <AddressForm address={address as AddressProps} />}
         </div>
-
-        {!itemLoading ? (
+        
+        {itemLoading ? (
           <CheckoutShopAndItemsSkeleton />
         ) : (
-          <div className='flex flex-col pb-3 pt-0 mt-8'>
-            <CheckoutProductForm />
-            <CheckoutProductForm />
-            <CheckoutProductForm />
-            <CheckoutProductForm />
+          <div className="flex flex-col pb-3 pt-0 mt-8">
+            {checkoutDetail?.transactions.map((transaction) => (
+              <CheckoutProductForm
+                key={transaction.shop_id}
+                checkoutDetail={transaction}
+              />
+            ))}
           </div>
         )}
       </div>
-      {!itemLoading ? (
+      {itemLoading ? (
         <CheckoutPaymentDetailSkeleton />
       ) : (
-        <div className='mt-8'>
-          <MetodePembayaranLayout />
+        <div className="mt-8">
+          <MetodePembayaranLayout checkoutDetail={checkoutDetail} />
         </div>
       )}
     </div>
