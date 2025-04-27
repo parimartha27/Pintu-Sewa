@@ -12,7 +12,7 @@ import { customerBaseUrl } from "@/types/globalVar"
 import { ProfileResponse } from "@/types/profile"
 
 const ProfileBody = () => {
-  const [customerId, setCustomerId] = useState<string | null>(null)
+  const [customerId, setCustomerId] = useState<string>("")
 
   useEffect(() => {
     const storedCustomerId = localStorage.getItem("customerId")
@@ -29,12 +29,6 @@ const ProfileBody = () => {
   const [, setError] = useState("")
 
   useEffect(() => {
-    if (!customerId) {
-      setError("User ID tidak ditemukan di localStorage.")
-      setLoading(false)
-      return
-    }
-
     axios
       .get(`${customerBaseUrl}/${customerId}`)
       .then((res) => {
@@ -52,7 +46,7 @@ const ProfileBody = () => {
       .finally(() => {
         setLoading(false)
       })
-  }, [])
+  }, [customerId])
 
   return (
     <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout'>
