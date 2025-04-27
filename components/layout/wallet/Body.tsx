@@ -46,63 +46,47 @@ function DefaultLayout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [walletAmount, setWalletAmount] = useState<WalletAmountResponse | null>(null)
-  const [customerId, setCustomerId] = useState<string | null>(null)
+  const [customerId, setCustomerId] = useState<string>(typeof window === "undefined" ? "" : localStorage.getItem("customerId"))
 
-  useEffect(() => {
-    const storedCustomerId = localStorage.getItem("customerId")
-    if (!storedCustomerId) {
-      setError("User ID tidak ditemukan di localStorage.")
+  const fetchWalletAmount = async () => {
+    try {
+      const res = await axios.get(`${walletBaseUrl}/amount?id=${customerId}&role=customer`)
+      if (res.data.error_schema?.error_code === "PS-00-000") {
+        setWalletAmount(res.data.output_schema)
+        console.log("AMOUNT", res.data.output_schema)
+      } else {
+        setError("Gagal fetch customer balance.")
+      }
+    } catch (err) {
+      console.error(err)
+      setError("Terjadi kesalahan saat fetching.")
+    } finally {
       setLoading(false)
-      return
     }
-    setCustomerId(storedCustomerId)
-  }, [])
-
-  useEffect(() => {
-    // if (!customerId) {
-    //   setError("User ID tidak ditemukan di localStorage.")
-    //   setLoading(false)
-    //   return
-    // }
-
-    axios
-      .get(`${walletBaseUrl}/amount?customerId=${customerId}`)
-      .then((res) => {
-        if (res.data.error_schema?.error_code === "PS-00-000") {
-          setWalletAmount(res.data.output_schema)
-          console.log("AMOUNT", res.data.output_schema)
-        } else {
-          setError("Gagal fetch customer balance.")
-        }
-      })
-      .catch((err) => {
-        console.error(err)
-        setError("Terjadi kesalahan saat fetching.")
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+  }
 
   // get wallet report
   useEffect(() => {
-    axios
-      .get(`${walletBaseUrl}/history?id=${customerId}&role=customer`)
-      .then((res) => {
+    fetchWalletAmount()
+    const fetchWalletReport = async () => {
+      console.log("before hit endpoint", customerId)
+      try {
+        const res = await axios.get(`${walletBaseUrl}/history?id=${customerId}&role=customer`)
         if (res.data.error_schema?.error_code === "PS-00-000") {
           setWalletReport(res.data.output_schema)
           console.log("HISTORY", res.data.output_schema)
         } else {
           setError("Gagal fetch customer wallet report.")
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err)
         setError("Terjadi kesalahan saat fetching.")
-      })
-      .finally(() => {
+      } finally {
         setLoading(false)
-      })
+      }
+    }
+
+    fetchWalletReport()
   }, [])
 
   if (loading) return <div className='min-h-screen flex items-center justify-center'>Loading...</div>
