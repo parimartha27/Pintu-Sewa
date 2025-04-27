@@ -57,7 +57,7 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
     {
       name: "Chat",
       icon: <MessageSquare className='h-4 w-4' />,
-      href: "/chat",
+      href: "/dashboard-seller/chat",
     },
     {
       name: "Histori Pesanan",
@@ -91,7 +91,7 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
   return (
     <>
       {overlay}
-      <div className={cn("fixed inset-y-0 left-0 z-40 w-64 transform bg-white transition-transform duration-300 md:static  h-1/3 rounded-lg shadow-lg", isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0", className)}>
+      <div className={cn("fixed inset-y-0 left-0 z-40 w-64 transform bg-white transition-transform duration-300 md:static  h-1/3 rounded-lg shadow-md", isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0", className)}>
         <MobileMenuToggle
           isOpen={isMobileOpen}
           toggle={() => setIsMobileOpen(!isMobileOpen)}

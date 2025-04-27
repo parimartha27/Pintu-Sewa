@@ -47,14 +47,16 @@ const ContactList = () => {
       </button>
       <div
         ref={sidebarRef}
-        className={`lg:w-2/5 flex flex-col justify-center space-y-3  bg-white fixed lg:static top-10 left-0 h-full z-40 lg:z-auto transform transition-transform duration-300 ${
+        className={`lg:w-2/5 flex flex-col justify-center space-y-3  bg-white fixed lg:static top-10 left-1
+          
+          1h-full z-40 lg:z-auto transform transition-transform duration-300 ${
           showContacts
             ? "translate-x-0 "
             : " -translate-x-full lg:translate-x-0"
         }`}
         style={{ width: "80%", maxWidth: "400px" }}
       >
-        <h2 className="text-2xl lg:text-[28px] text-color-primary font-semibold pl-4 lg:pl-6">
+        <h2 className="text-2xl lg:text-[28px] text-color-primary font-semibold pl-4 lg:pl-6 pt-6">
           Chat Penyedia Jasa
         </h2>
 

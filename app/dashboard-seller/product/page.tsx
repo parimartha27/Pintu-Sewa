@@ -1,13 +1,7 @@
-import Footer from "@/components/layout/Footer"
-import NavbarSeller from "@/components/layout/NavbarSeller"
+import SellerLayout from "@/components/layout/dashboard-seller/Layout"
+
 const ListProduct = () => {
-  return (
-    <>
-      <NavbarSeller />
-      <div>Ini Halaman List Product</div>
-      <Footer />
-    </>
-  )
+  return <SellerLayout><div>test</div></SellerLayout>
 }
 
 export default ListProduct
