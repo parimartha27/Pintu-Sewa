@@ -1,44 +1,101 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { Bell, Search, User } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { User } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import PintuSewaSeller from "@/public/pintuSewaSeler.png"
+import { SearchResponseProps } from "@/types/searchResponse"
+import SearchIcon from "@/public/search.svg"
+import Suggestion from "@/components/fragments/navbar/Suggestion"
 
 const NavigationBarSeller = () => {
   const router = useRouter()
+  const formRef = useRef<HTMLFormElement>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<SearchResponseProps>()
   const [username, setUsername] = useState("Parimartha Studio")
+  const [suggestionOpen, setSuggestionOpen] = useState(false)
 
   return (
     <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>
-      <div className='flex h-16 items-center justify-between px-4 md:px-6'>
+      <div className='h-[24px] bg-color-primaryDark w-full'></div>
+      <div className='flex h-24 items-center justify-between px-4 md:px-6'>
         {/* Logo */}
         <div className='flex items-center'>
-          <div className='mr-4 flex items-center text-lg font-semibold'>
-            <span className='text-navy-900'>PINTÜ</span>
-            <span className='text-blue-600'>SEWA</span>
-            <span className='ml-2 text-xs bg-gray-100 px-2 py-0.5 rounded-md'>Seller</span>
-          </div>
+          <Link href='/dashboard-seller'>
+            <Image
+              src={PintuSewaSeller}
+              alt='siap-sewa'
+              width={150}
+              height={50}
+              className='ml-8 lg:ml-8 md:w-[200px] h-[50px] object-contain'
+            />
+          </Link>
         </div>
 
         {/* Search Field */}
-        <div className='hidden md:flex flex-1 items-center justify-center px-6'>
-          <div className='relative w-full max-w-md'>
-            <Search className='absolute left-3 top-2.5 h-4 w-4 text-gray-400' />
-            <Input
-              placeholder='Cari barang pengen disewa'
-              className='pl-9 h-10 w-full rounded-md border border-gray-300'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+        <div className='flex w-11/12 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0 relative'>
+          <form
+            className='lg:w-11/12 lg:ml-10 w-full h-12'
+            ref={formRef}
+            onClick={() => setSuggestionOpen(!suggestionOpen)}
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (searchQuery.trim() !== "") {
+                router.push(`/product?name=${encodeURIComponent(searchQuery)}&page=1&size=16`)
+              }
+            }}
+          >
+            <div className='relative h-full'>
+              <div className='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
+                <Image
+                  src={SearchIcon}
+                  alt='search'
+                />
+              </div>
+              <input
+                type='search'
+                className='w-full h-full pl-10 pr-4 py-5 text-[12px] lg:text-sm border-2 border-[#D9D9D9] border-opacity-75 rounded-sm font-jakartaSans text-color-primary focus:ring-0 focus:ring-color-secondary focus:border-color-secondary outline-none'
+                placeholder='Cari barang pengen disewa'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+
+              {suggestionOpen && searchResults && (
+                <div className='absolute top-full left-0 right-0 bg-white shadow-lg rounded-md mt-1 z-50 max-h-[400px] overflow-y-auto'>
+                  {searchResults.output_schema.products.map((product) => (
+                    <Suggestion
+                      key={product.id}
+                      type='search'
+                      title={product.name}
+                      category={product.category}
+                    />
+                  ))}
+
+                  {searchResults.output_schema.shops.map((shop) => (
+                    <Suggestion
+                      key={shop.id}
+                      type='shop'
+                      title={shop.name}
+                      id={shop.id}
+                      image={shop.image}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </form>
           <Button
-            variant='default'
-            size='sm'
-            className='ml-2 bg-navy-900 hover:bg-navy-800'
+            onClick={(e) => {
+              e.preventDefault()
+              if (searchQuery.trim() !== "") {
+                router.push(`/product?name=${encodeURIComponent(searchQuery)}&page=1&size=16`)
+              }
+            }}
+            className='hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:bg-blue-900'
           >
             Cari
           </Button>

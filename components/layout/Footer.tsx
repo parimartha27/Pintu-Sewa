@@ -70,7 +70,7 @@ const Footer = () => {
         <div className="flex flex-col bg-orange-50"></div>
       </div>
       <div className="mx-auto text-[10px] lg:text-[14px] w-full text-center h-1/5 border-t-2 border-t-white pt-6 font-light text-white mb-6">
-        @2024 Pintu Sewa - Developed by Ahay-Ahay Lulus Duluan
+        @2025 Pintu Sewa - Developed by Ahay-Ahay Lulus Duluan
       </div>
     </div>
   );
