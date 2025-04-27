@@ -74,10 +74,7 @@ const EditAddressBody = () => {
         setLoading(false)
       }
     }
-
-    if (customerId) {
-      fetchData()
-    }
+    fetchData()
   }, [customerId])
 
   const getTextById = (id: string | number, data: dataAlamatProps[]) => {

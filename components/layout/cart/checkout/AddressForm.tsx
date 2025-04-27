@@ -5,8 +5,13 @@ import Image from "next/image";
 import Edit from "@/public/edit.svg";
 import Location from "@/public/location.svg";
 import { useRouter } from "next/navigation";
+import { AddressProps } from "@/types/address";
 
-const AddressForm = () => {
+interface AddressFormProps {
+  address: AddressProps;
+}
+
+const AddressForm = ({address}: AddressFormProps) => {
   const router = useRouter();
   return (
     <Card className="w-full  max-h-auto p-1 pt-4 shadow-lg border-0 outline-none">
@@ -40,15 +45,15 @@ const AddressForm = () => {
               className="mt-1 md:mt-1.5"
             />
             <h2 className="text-color-secondary font-medium text-sm md:text-lg">
-              Kos Naturale N2/12 - Putu Agus Parimartha
+              !@#$#@#$!#@!#@!@$!#@
             </h2>
           </div>
           <h4 className="text-[10px] md:text-sm font-normal text-color-primary">
-            Jalan Raya Foresta, Cluster Naturale N2/12, Kecamatan Pagedangan,
-            Kabupaten Tangerang, Provinsi Banten 15539 - 081529518909
+            {`${address.street}, Kecamatan ${address.district}, Kabupaten ${address.district}, Provinsi ${address.province}, ${address.post_code}` ||
+            "Jalan Raya Foresta, Cluster Naturale N2/12, Kecamatan Pagedangan, Kabupaten Tangerang, Provinsi Banten 15539 - 081529518909"} 
           </h4>
           <h4 className="text-[10px] md:text-sm font-normal text-color-primary">
-            <span className="font-semibold">Notes:</span>{" "}ini adalah notes untuk para kurir coy Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci praesentium possimus nobis impedit eos blanditiis ab rem quos expedita eaque nisi pariatur iste eum, nam nemo, maxime fuga ipsa veniam?
+            <span className="font-semibold">Notes:</span>{" "} {address.notes || "ini adalah notes untuk para kurir coy Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci praesentium possimus nobis impedit eos blanditiis ab rem quos expedita eaque nisi pariatur iste eum, nam nemo, maxime fuga ipsa veniam?"} 
           </h4>
         </div>
       </CardContent>

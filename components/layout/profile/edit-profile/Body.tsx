@@ -133,14 +133,16 @@ const EditProfileBody = () => {
       image: profileImage || biodataData?.image || "",
     }
 
-    try {
-      const response = await axios.put<EditProfileResponseProps>(`${customerBaseUrl}/edit-biodata`, payload)
-      if (response.data.error_schema.error_message === "SUCCESS") {
-        setLoadingSubmit(false)
-        alert("Berhasil mengedit profile")
-        router.push("/profile")
-      } else {
-        alert("Gagal mengedit profile")
+    try{
+      const response = await axios.put<EditProfileResponseProps>(`${customerBaseUrl}/edit-biodata`, payload);
+      if(response.data.error_schema.error_message === "SUCCESS"){
+        setLoadingSubmit(false);
+        alert("Berhasil mengedit profile");
+        localStorage.setItem("profileImage", profileImage || "");
+        localStorage.setItem("username", username || "");
+        router.push("/profile");
+      }else{
+        alert("Gagal mengedit profile");
       }
     } catch (e) {
       alert("Gagal: " + e)
