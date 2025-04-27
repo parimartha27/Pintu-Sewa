@@ -77,7 +77,7 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
     {
       name: "Pengaturan Toko",
       icon: <Settings className='h-4 w-4' />,
-      href: "/pengaturan-toko",
+      href: "/dashboard-seller/setting",
     },
   ]
 

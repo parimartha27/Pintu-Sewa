@@ -11,7 +11,7 @@ import { WalletTransactionsList } from "@/components/fragments/dashboard-seller/
 import { formatCurrency } from "@/lib/utils"
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
 
-const DashboardSeller = () => {
+const WalletSeller = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([])
@@ -135,4 +135,4 @@ const DashboardSeller = () => {
   )
 }
 
-export default DashboardSeller
+export default WalletSeller
