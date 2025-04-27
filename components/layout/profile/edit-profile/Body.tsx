@@ -150,6 +150,8 @@ const EditProfileBody = () => {
       if(response.data.error_schema.error_message === "SUCCESS"){
         setLoadingSubmit(false);
         alert("Berhasil mengedit profile");
+        localStorage.setItem("profileImage", profileImage || "");
+        localStorage.setItem("username", username || "");
         router.push("/profile");
       }else{
         alert("Gagal mengedit profile");

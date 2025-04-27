@@ -7,7 +7,6 @@ const CartPage = () => {
     <>
       <Navbar />
       <CartBody />
-     
       <Footer />
     </>
   );

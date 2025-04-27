@@ -65,7 +65,7 @@ const EditAddressBody = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [customerId]);
 
   const getTextById = (id: string | number, data: dataAlamatProps[]) => {
     const item = data.find((item) => item.id === id.toString());
