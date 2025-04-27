@@ -21,22 +21,22 @@ const CheckOutBody = () => {
   const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? "" : localStorage.getItem("customerId"));
   const [transactionIds, setTransactionIds] = useState<string[]>(typeof window !== "undefined" ? "[]" : JSON.parse(localStorage.getItem("transactionIds") || ""));
 
-  useEffect(() => {
-    const customerIdFromLocalStorage = localStorage.getItem("customerId");
-    const transactionIdsFromLocalStorage = localStorage.getItem("transactionIds");
+  // useEffect(() => {
+  //   const customerIdFromLocalStorage = localStorage.getItem("customerId");
+  //   const transactionIdsFromLocalStorage = localStorage.getItem("transactionIds");
     
-    if (customerIdFromLocalStorage) {
-      setCustomerId(customerIdFromLocalStorage);
-    }
+  //   if (customerIdFromLocalStorage) {
+  //     setCustomerId(customerIdFromLocalStorage);
+  //   }
 
-    if (transactionIdsFromLocalStorage) {
-      try {
-        setTransactionIds(JSON.parse(transactionIdsFromLocalStorage));
-      } catch (e) {
-        console.error("Error parsing transaction IDs from localStorage", e);
-      }
-    }
-  }, []);
+  //   if (transactionIdsFromLocalStorage) {
+  //     try {
+  //       setTransactionIds(JSON.parse(transactionIdsFromLocalStorage));
+  //     } catch (e) {
+  //       console.error("Error parsing transaction IDs from localStorage", e);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (!customerId || !transactionIds.length) {
