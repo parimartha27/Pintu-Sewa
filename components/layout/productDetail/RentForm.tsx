@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import CalendarImage from "@/public/calendar.svg";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import NextSymbol from "@/public/next.svg";
 import Cart from "@/public/cart.svg";
 import { cn } from "@/lib/utils";
@@ -34,6 +34,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const cartIconRef = useRef<HTMLDivElement>(null);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const duration = getMinDuration(productDetail);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -44,7 +45,6 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
   const [endDate, setEndDate] = useState<Date | undefined>(() => {
     const baseDate = new Date();
-    const duration = getMinDuration(productDetail);
 
     let daysToAdd = 1;
     if (duration === "1 Minggu") daysToAdd = 7;
@@ -117,38 +117,27 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   };
 
   const handleSelectEndDate = (date: Date | undefined) => {
-    if (!date || !startDate || !productDetail) return;
+  if (!date) return;
 
-    const selected = new Date(date);
-    selected.setHours(0, 0, 0, 0);
+  const dayDiff = differenceInDays(date, startDate || "");
 
-    const start = new Date(startDate);
-    start.setHours(0, 0, 0, 0);
+  let minDays = 1;
 
-    if (selected < start) {
-      alert("Tanggal selesai tidak boleh sebelum tanggal mulai");
-      return;
-    }
+  if (productDetail.daily_price) {
+    minDays = 1;
+  } else if (productDetail.weekly_price) {
+    minDays = 7;
+  } else if (productDetail.monthly_price) {
+    minDays = 30;
+  }
 
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const dayDiff = Math.round(
-      (selected.getTime() - start.getTime()) / msPerDay
-    );
+  if (dayDiff < minDays) {
+    alert(`Durasi sewa minimal ${minDays} hari`);
+    return;
+  }
 
-    const duration = getMinDuration(productDetail);
-
-    const isValidDuration =
-      (duration === "1 Hari" && dayDiff === 1) ||
-      (duration === "1 Minggu" && dayDiff === 7) ||
-      (duration === "1 Bulan" && dayDiff === 30);
-
-    if (!isValidDuration) {
-      alert(`Durasi sewa harus sesuai: ${duration}`);
-      return;
-    }
-
-    setEndDate(selected);
-  };
+  setEndDate(date);
+};
 
   const addToCartReq: AddToCartRequestProps = {
     customer_id: customerId || "",
