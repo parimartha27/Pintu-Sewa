@@ -11,7 +11,7 @@ import { customerBaseUrl } from "@/types/globalVar"
 import { ProfileResponse } from "@/types/profile"
 
 const SellerProfileBody = () => {
-  const customerId = localStorage.getItem("customerId")
+  const customerId = typeof window !== "undefined" ? localStorage.getItem("customerId") : null
   const [customerData, setCustomerData] = useState<ProfileResponse>()
   const [loading, setLoading] = useState(true)
   const [, setError] = useState("")
