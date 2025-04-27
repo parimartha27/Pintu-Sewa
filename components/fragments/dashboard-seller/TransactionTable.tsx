@@ -22,11 +22,11 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
   }
 
   return (
-    <div className='overflow-x-auto'>
+    <div className='overflow-x-auto w-full h-full'>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>No Referensi</TableHead>
+            <TableHead className='pl-8 py-4'>No Referensi</TableHead>
             <TableHead>Tgl Transaksi</TableHead>
             <TableHead>Customer</TableHead>
             <TableHead>Tgl Mulai</TableHead>
@@ -40,7 +40,7 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
           {transactions.length > 0 ? (
             transactions.map((transaction, index) => (
               <TableRow key={transaction.id || index}>
-                <TableCell className='font-medium'>{transaction.reference}</TableCell>
+                <TableCell className='font-medium pl-8'>{transaction.reference}</TableCell>
                 <TableCell>{transaction.transactionDate}</TableCell>
                 <TableCell>{transaction.customer}</TableCell>
                 <TableCell>{transaction.startDate}</TableCell>
@@ -49,7 +49,7 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
                 <TableCell>
                   <StatusBadge status={transaction.status} />
                 </TableCell>
-                <TableCell>{formatCurrency(transaction.deposit)}</TableCell>
+                <TableCell>{transaction.deposit}</TableCell>
               </TableRow>
             ))
           ) : (

@@ -62,7 +62,7 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
     {
       name: "Histori Pesanan",
       icon: <History className='h-4 w-4' />,
-      href: "/histori-pesanan",
+      href: "/dashboard-seller/transaction-history",
     },
     {
       name: "Wallet",
