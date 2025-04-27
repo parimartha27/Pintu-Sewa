@@ -6,7 +6,7 @@ import SelfChatBox from "@/components/fragments/chat/SelfChatBox";
 
 const ChatRoomLayout = () => {
   return (
-    <div className="w-full lg:w-3/5 flex flex-col border-l-[1px] border-[#D9D9D9] border-opacity-70">
+    <div className="w-full lg:w-full flex flex-col border-l-[1px] border-[#D9D9D9] border-opacity-70">
       <ChatHeader />
       <div className="flex flex-col pt-7 px-6 space-y-6 max-h-[450px] overflow-y-auto hide-scrollbar">
         <ChatDate />
