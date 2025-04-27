@@ -67,7 +67,7 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
     {
       name: "Wallet",
       icon: <Wallet className='h-4 w-4' />,
-      href: "/wallet",
+      href: "/dashboard-seller/wallet",
     },
     {
       name: "Customer Report",
