@@ -75,7 +75,7 @@ function TopupInput({ amount, setAmount }: TopupInputProps) {
         <div className='space-y-2 w-full'>
           <Card className='w-full'>
             <CardHeader className='items-center justify-between px-4 md:px-6'>
-              <CardTitle className='text-md w-full font-semibold text-color-primary pb-6 border-b-[1px] border-b-[#D9D9D9]'>Topup Saldo Wallet</CardTitle>
+              <CardTitle className='text-md w-full font-semibold  border-b-[#D9D9D9]'>Topup Saldo Wallet</CardTitle>
             </CardHeader>
 
             <CardContent>
