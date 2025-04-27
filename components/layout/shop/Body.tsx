@@ -17,14 +17,9 @@ const ShopLayout = () => {
   const [shopReview, setShopReview] = useState<ShopReviewProps[]>([]);
   const [reviewLoading, setReviewLoading] = useState(true);
 
-  const reviewFilter={
-    hasMedia: searcParams.get("hasMedia"),
-    rating: searcParams.get("rating"),
-    reviewTopics: searcParams.get("reviewTopics"),
-  }
-
   useEffect(() => {
     const fetchShopData = async () => {
+    
       try {
         setLoading(true);
         const shopHeaderRes = await axios.get<ShopDetailHeaderProps>(`${shopBaseUrl}/${id}`);
@@ -41,8 +36,13 @@ const ShopLayout = () => {
   useEffect(() => {
     const fetchShopReview = async () => {
       setReviewLoading(true);
+      const reviewFilter={
+        hasMedia: searcParams.get("hasMedia") || "true",
+        rating: searcParams.get("rating") || "4",
+        // reviewTopics: searcParams.get("reviewTopics"),
+      }
       try {
-        const response = await axios.get<ShopDetailReviewProps>(`${shopReviewBaseUrl}/${id}?rating=${reviewFilter.rating}&reviewTopics=${reviewFilter.reviewTopics}&hasMedia=${reviewFilter.hasMedia}`);
+        const response = await axios.get<ShopDetailReviewProps>(`${shopReviewBaseUrl}/${id}?rating=${reviewFilter.rating}&hasMedia=${reviewFilter.hasMedia}`);
         setShopReview(response.data.output_schema.content);
       } catch (error) {
         console.error("Failed to fetch shop data:", error);
@@ -51,7 +51,7 @@ const ShopLayout = () => {
       }
     };
     if (id) fetchShopReview();
-  }, [id, reviewFilter.hasMedia, reviewFilter.rating, reviewFilter.reviewTopics, searcParams]);
+  }, [id, searcParams]);
 
   if (loading) {
     return (

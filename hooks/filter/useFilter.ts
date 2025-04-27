@@ -105,6 +105,7 @@ const useFilter = () => {
     getInputValue,
     getActiveFilters,
     resetAllFilters,
+    updateSearchParam
   };
 };
 

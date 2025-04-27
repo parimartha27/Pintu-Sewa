@@ -44,27 +44,25 @@ const ProductBody = () => {
   const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  // const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchProducts = async () => {
       const filters = {
         category: searchParams.get("categories") || "",
-        rentDuration: searchParams.get("rentDuration") || "",
-        location: searchParams.get("location") || "",
+        rentDuration: searchParams.get("rentDurations") || "",
+        location: searchParams.get("locations") || "",
         minPrice: searchParams.get("minPrice") || "",
         maxPrice: searchParams.get("maxPrice") || "",
-        isRnb: searchParams.get("isRnb") || "",
-        minRating: searchParams.get("minRating") || "",
-        sortBy: searchParams.get("sortBy") || "",
-        sortDirection: searchParams.get("sortDirection") || "",
+        isRnb: searchParams.get("isRnbOptions") || "",
+        minRating: searchParams.get("minRatings") || "",
         page: searchParams.get("page") || "",
         size: searchParams.get("size") || "",
         name: searchParams.get("name") || "",
       };
       try {
         setLoading(true);
-        const url = `${filteredProductBaseUrl}?categories=${category}&name=${name}&rentDuration=${filters.rentDuration}&location=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnb=${filters.isRnb}&minRating=${filters.minRating}&sortBy=${filters.sortBy}&sortDirection=${filters.sortDirection}&page=${page}&size=${size}`;
+        const url = `${filteredProductBaseUrl}?categories=${category}&name=${name}&rentDurations=${filters.rentDuration}&locations=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnbOptions=${filters.isRnb}&minRatings=${filters.minRating}&page=${page}&size=${size}`;
         console.log(url);
         const response = await axios.get<ProductResponse>(url);
         console.log(response);
@@ -73,7 +71,6 @@ const ProductBody = () => {
 
         setTotalPages(response.data.output_schema.total_pages || 1);
       } catch (error) {
-        setError("Tidak ada produk");
         console.log(error);
       } finally {
         setLoading(false);
@@ -129,12 +126,12 @@ const ProductBody = () => {
 
           <div className="flex flex-col items-center w-full h-auto space-y-3 md:space-y-16">
             <div className="w-full xl:pl-20 flex flex-col">
-              {error && (
+              {/* {error && (
                 <>
                   <NoProduct />{" "}
                   <div className="hidden md:block lg:hidden bg-color-layout h-[50px]"></div>
                 </>
-              )}
+              )} */}
               {loading ? (
                 <ProductList products={[]} loading={true} numberCard={16} />
               ) : products && products.length > 0 ? (

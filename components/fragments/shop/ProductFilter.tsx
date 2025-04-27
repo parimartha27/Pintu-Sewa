@@ -11,17 +11,57 @@ import { FiFilter, FiX } from "react-icons/fi";
 import useFilter from "@/hooks/filter/useFilter";
 
 const ShopProductFilter = () => {
-  const {
-    handleMultiButtonFilter,
-    isValueInMultiParam,
+  const { 
     isCheckboxSelected,
     handleCheckboxFilter,
     handleInputFilter,
     getInputValue,
+    updateSearchParam
   } = useFilter();
   const [isOpen, setIsOpen] = useState(false);
   const [minPrice, setMinPrice] = useState(getInputValue("minPrice") || "");
   const [maxPrice, setMaxPrice] = useState(getInputValue("maxPrice") || "");
+
+  const rentDuration = getInputValue("rentDurations");
+
+  const isHarianActive =
+    rentDuration === "1" ||
+    rentDuration === "4" ||
+    rentDuration === "5" ||
+    rentDuration === "7";
+  const isMingguanActive =
+    rentDuration === "2" ||
+    rentDuration === "4" ||
+    rentDuration === "6" ||
+    rentDuration === "7";
+  const isBulananActive =
+    rentDuration === "3" ||
+    rentDuration === "5" ||
+    rentDuration === "6" ||
+    rentDuration === "7";
+
+  const handleRentDurationClick = (type: "harian" | "mingguan" | "bulanan") => {
+    let newHarian = isHarianActive;
+    let newMingguan = isMingguanActive;
+    let newBulanan = isBulananActive;
+
+    if (type === "harian") newHarian = !newHarian;
+    if (type === "mingguan") newMingguan = !newMingguan;
+    if (type === "bulanan") newBulanan = !newBulanan;
+
+    let newRentDuration = "";
+
+    if (newHarian && !newMingguan && !newBulanan) newRentDuration = "1";
+    else if (!newHarian && newMingguan && !newBulanan) newRentDuration = "2";
+    else if (!newHarian && !newMingguan && newBulanan) newRentDuration = "3";
+    else if (newHarian && newMingguan && !newBulanan) newRentDuration = "4";
+    else if (newHarian && !newMingguan && newBulanan) newRentDuration = "5";
+    else if (!newHarian && newMingguan && newBulanan) newRentDuration = "6";
+    else if (newHarian && newMingguan && newBulanan) newRentDuration = "7";
+    else newRentDuration = "";
+
+    updateSearchParam("rentDurations", newRentDuration || null);
+  };
 
   return (
     <>
@@ -52,54 +92,30 @@ const ShopProductFilter = () => {
       >
         <Card className="flex flex-col h-full px-5 py-8 lg:py-5 space-y-6 border-none overflow-y-auto bg-white lg:max-h-[calc(100vh-120px)]">
           <FilterSection Header="Durasi Sewa">
-            <Button
-              onClick={() =>
-                handleMultiButtonFilter(
-                  "rentDurations",
-                  "1",
-                  !isValueInMultiParam("rentDurations", "1")
-                )
-              }
-              className={`w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200  ${
-                isValueInMultiParam("rentDurations", "1")
-                  ? "bg-color-third"
-                  : "bg-transparent"
-              }`}
-            >
-              Harian
-            </Button>
-            <Button
-              onClick={() =>
-                handleMultiButtonFilter(
-                  "rentDurations",
-                  "7",
-                  !isValueInMultiParam("rentDurations", "7")
-                )
-              }
-              className={`w-auto max-w-[76px] px-2 text-[12px] text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-                isValueInMultiParam("rentDurations", "7")
-                  ? "bg-color-third"
-                  : "bg-transparent"
-              }`}
-            >
-              Mingguan
-            </Button>
-            <Button
-              onClick={() =>
-                handleMultiButtonFilter(
-                  "rentDurations",
-                  "30",
-                  !isValueInMultiParam("rentDurations", "30")
-                )
-              }
-              className={`w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
-                isValueInMultiParam("rentDurations", "30")
-                  ? "bg-color-third"
-                  : "bg-transparent"
-              }`}
-            >
-              Bulanan
-            </Button>
+          <Button
+            onClick={() => handleRentDurationClick("harian")}
+            className={`w-auto max-w-[57px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
+              isHarianActive ? "bg-color-third" : "bg-transparent"
+            }`}
+          >
+            Harian
+          </Button>
+          <Button
+            onClick={() => handleRentDurationClick("mingguan")}
+            className={`w-auto max-w-[76px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
+              isMingguanActive ? "bg-color-third" : "bg-transparent"
+            }`}
+          >
+            Mingguan
+          </Button>
+          <Button
+            onClick={() => handleRentDurationClick("bulanan")}
+            className={`w-auto max-w-[66px] text-[12px] px-2 text-color-primary bg-transparent outline-none border-[1px] border-color-primary hover:bg-slate-200 ${
+              isBulananActive ? "bg-color-third" : "bg-transparent"
+            }`}
+          >
+            Bulanan
+          </Button>
           </FilterSection>
 
           <FilterSection Header="Harga">

@@ -55,8 +55,8 @@ const ReviewContent = ({ shopReview, loading }: ShopReviewContentProps) => {
       <div className="flex flex-col space-y-3 lg:space-y-6 mt-[19px] lg:pt-6 max-h-[1158px] overflow-y-auto">
         {loading ? (
           <ReviewContentSkeleton />
-        ) : shopReview == null ? (
-          <p className="text-3xl">Tidak ada ulasan</p>
+        ) : shopReview.length === 0 ? (
+          <p className="text-3xl font-semibold text-color-secondary text-center w-full">Tidak Ada Ulasan</p>
         ) : (
           <>
             {shopReview.map((review, index) => (

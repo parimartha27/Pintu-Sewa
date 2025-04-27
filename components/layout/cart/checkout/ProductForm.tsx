@@ -14,6 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { TransactionProps } from "@/types/checkout";
 
 
 // {
@@ -49,7 +50,12 @@ import {
 //     ]
 // }
 
-const CheckoutProductForm = () => {
+interface CheckoutProductFormProps{
+  checkoutDetail: TransactionProps
+}
+
+const CheckoutProductForm = ({checkoutDetail}: CheckoutProductFormProps) => {
+  const [courier ,setCourier] = useState<string>();
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">

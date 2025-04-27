@@ -105,6 +105,12 @@ const CheckOutBody = () => {
           <CheckoutShopAndItemsSkeleton />
         ) : (
           <div className="flex flex-col pb-3 pt-0 mt-8">
+            {/* {checkoutDetail?.transactions.map((transaction) => (
+              <CheckoutProductForm
+                key={transaction.transaction_id}
+                transaction={transaction}
+              />
+            ))} */}
             <CheckoutProductForm />
             <CheckoutProductForm />
             <CheckoutProductForm />
