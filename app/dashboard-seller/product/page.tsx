@@ -1,7 +1,15 @@
-import SellerLayout from "@/components/layout/dashboard-seller/Layout"
+// app/seller/products/page.tsx
+"use client"
 
-const ListProduct = () => {
-  return <SellerLayout><div>test</div></SellerLayout>
+import SellerLayout from "@/components/layout/dashboard-seller/Layout"
+import ProductListBody from "@/components/fragments/dashboard-seller/product/ProductList"
+
+const ListProductPage = () => {
+  return (
+    <SellerLayout>
+      <ProductListBody />
+    </SellerLayout>
+  )
 }
 
-export default ListProduct
+export default ListProductPage

@@ -160,7 +160,7 @@ export default function AddProductForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Informasi Produk */}
         <Card className='p-6 mb-6'>
-          <h2 className='text-lg font-semibold mb-4'>Informasi Produk</h2>
+          <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Informasi Produk</h2>
 
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
@@ -219,7 +219,7 @@ export default function AddProductForm() {
 
         {/* Detail Produk */}
         <Card className='p-6 mb-6'>
-          <h2 className='text-lg font-semibold mb-4'>Detail Produk</h2>
+          <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Detail Produk</h2>
 
           {/* Foto Produk */}
           <div className='mb-6'>
@@ -428,9 +428,9 @@ export default function AddProductForm() {
 
         {/* Layanan Pengiriman */}
         <Card className='p-6 mb-6'>
-          <div className='flex justify-between items-center mb-1'>
+          <div className='flex justify-between items-center mb-4 text-color-primary pb-4 border-b-[1px]'>
             <Label className='font-medium'>
-              Layanan Pengiriman <span className='text-red-500'>*</span>
+              Layanan Pengiriman <span className='text-red-500 '>*</span>
             </Label>
           </div>
           <div className='text-sm text-gray-500 mb-2'>Pilih jasa pengiriman yang sesuai dengan jenis produkmu</div>
@@ -460,7 +460,7 @@ export default function AddProductForm() {
 
         {/* Penyewaan */}
         <Card className='p-6 mb-6'>
-          <h2 className='text-lg font-semibold mb-4'>Penyewaan</h2>
+          <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Penyewaan</h2>
 
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
@@ -624,7 +624,7 @@ export default function AddProductForm() {
 
         {/* Fitur Spesial */}
         <Card className='p-6 mb-6'>
-          <h2 className='text-lg font-semibold mb-4'>Fitur Spesial</h2>
+          <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Fitur Spesial</h2>
 
           <div>
             <div className='flex justify-between items-center mb-1'>
