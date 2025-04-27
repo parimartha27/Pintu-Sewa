@@ -18,29 +18,37 @@ const CheckOutBody = () => {
   const [checkoutDetail, setCheckoutDetail] = useState<TransactionResponseProps>()
   const [addressLoading, setAddressLoading] = useState(true)
   const [itemLoading, setItemLoading] = useState(true)
-  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? "" : localStorage.getItem("customerId"));
-  const [transactionIds, setTransactionIds] = useState<string[]>(typeof window !== "undefined" ? "[]" : JSON.parse(localStorage.getItem("transactionIds") || ""));
+  const [customerId, setCustomerId] = useState<string | null>(null)
+  const [transactionIds, setTransactionIds] = useState<string[]>([])
 
-  // useEffect(() => {
-  //   const customerIdFromLocalStorage = localStorage.getItem("customerId");
-  //   const transactionIdsFromLocalStorage = localStorage.getItem("transactionIds");
-    
-  //   if (customerIdFromLocalStorage) {
-  //     setCustomerId(customerIdFromLocalStorage);
-  //   }
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const customerIdFromLocalStorage = localStorage.getItem("customerId")
+      const transactionIdsFromLocalStorage = localStorage.getItem("transactionIds")
 
-  //   if (transactionIdsFromLocalStorage) {
-  //     try {
-  //       setTransactionIds(JSON.parse(transactionIdsFromLocalStorage));
-  //     } catch (e) {
-  //       console.error("Error parsing transaction IDs from localStorage", e);
-  //     }
-  //   }
-  // }, []);
+      if (customerIdFromLocalStorage) {
+        setCustomerId(customerIdFromLocalStorage)
+      }
+
+      if (transactionIdsFromLocalStorage) {
+        try {
+          const parsedIds = JSON.parse(transactionIdsFromLocalStorage)
+          if (Array.isArray(parsedIds)) {
+            setTransactionIds(parsedIds)
+          }
+        } catch (e) {
+          console.error("Error parsing transaction IDs from localStorage", e)
+          setTransactionIds([])
+        }
+      } else {
+        setTransactionIds([])
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!customerId || !transactionIds.length) {
-      return;
+      return
     }
 
     const fetchAddress = async () => {
@@ -53,52 +61,51 @@ const CheckOutBody = () => {
       } finally {
         setAddressLoading(false)
       }
-    };
+    }
 
-    fetchAddress();
-  }, [customerId, transactionIds.length]);
+    fetchAddress()
+  }, [customerId, transactionIds.length])
 
   useEffect(() => {
     if (!customerId || !transactionIds.length) {
-      return;
+      return
     }
 
     const fetchCheckoutItemsAndPaymentDetail = async () => {
       try {
-        setItemLoading(true);
+        setItemLoading(true)
         const payload = {
           transaction_ids: transactionIds,
           customer_id: customerId,
-        };
-        console.log(payload);
-        const res = await axios.post<CheckoutResponseProps>(
-          `${checkoutBaseUrl}/details`,
-          payload
-        );
-        console.log(res);
-        setCheckoutDetail(res.data.output_schema);
+        }
+        console.log(payload)
+        const res = await axios.post<CheckoutResponseProps>(`${checkoutBaseUrl}/details`, payload)
+        console.log(res)
+        setCheckoutDetail(res.data.output_schema)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       } finally {
-        setItemLoading(false);
+        setItemLoading(false)
       }
-    };
+    }
 
-    fetchCheckoutItemsAndPaymentDetail();
-  }, [customerId, transactionIds]);
+    fetchCheckoutItemsAndPaymentDetail()
+  }, [customerId, transactionIds])
 
   if (!transactionIds.length) {
     return (
-      <div className="flex flex-col space-y-6 w-full justify-center items-center py-20">
-        <Image className="w-[500px] h-[372px]" src={NoCart} alt="noCart" />
-        <h2 className="text-color-primary text-xl text-center font-medium">
-          Kamu Belum Checkout Apapun. Yuk Pilih Barang Untuk Di Checkout Terlebih Dahulu.
-        </h2>
-        <Button className="w-[200px] lg:w-[300px] mt-7 h-[50px] font-medium rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80">
+      <div className='flex flex-col space-y-6 w-full justify-center items-center py-20'>
+        <Image
+          className='w-[500px] h-[372px]'
+          src={NoCart}
+          alt='noCart'
+        />
+        <h2 className='text-color-primary text-xl text-center font-medium'>Kamu Belum Checkout Apapun. Yuk Pilih Barang Untuk Di Checkout Terlebih Dahulu.</h2>
+        <Button className='w-[200px] lg:w-[300px] mt-7 h-[50px] font-medium rounded-xl text-[12px] lg:text-[16px] xl:text[18px] bg-custom-gradient-tr hover:opacity-80'>
           <Link href={"/cart"}>Kembali Ke Cart</Link>
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -108,11 +115,11 @@ const CheckOutBody = () => {
           <h2 className='w-full text-xl md:text-2xl font-semibold text-color-primary'>Pembayaran</h2>
           {addressLoading ? <CheckoutAddressSkeleton /> : <AddressForm address={address as AddressProps} />}
         </div>
-        
+
         {itemLoading ? (
           <CheckoutShopAndItemsSkeleton />
         ) : (
-          <div className="flex flex-col pb-3 pt-0 mt-8">
+          <div className='flex flex-col pb-3 pt-0 mt-8'>
             {checkoutDetail?.transactions.map((transaction) => (
               <CheckoutProductForm
                 key={transaction.shop_id}
@@ -125,7 +132,7 @@ const CheckOutBody = () => {
       {itemLoading ? (
         <CheckoutPaymentDetailSkeleton />
       ) : (
-        <div className="mt-8">
+        <div className='mt-8'>
           <MetodePembayaranLayout checkoutDetail={checkoutDetail} />
         </div>
       )}
