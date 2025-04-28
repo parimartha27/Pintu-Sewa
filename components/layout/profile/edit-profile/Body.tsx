@@ -256,7 +256,7 @@ const EditProfileBody = () => {
                     label="Nomor Telepon"
                     htmlFor="handphone"
                     id="handphone"
-                    type="text"
+                    type="phone"
                     value={handphone}
                     onChange={(e) => setHandphone(e.target.value)}
                   />

@@ -206,7 +206,7 @@ const Navbar = ({ type }: NavbarProps) => {
           {status === "loading" ? (
             <div className="flex items-center gap-4 pr-4">
               <div className="hidden md:flex items-center gap-4">
-                <Skeleton className="h-[30px] w-[60px] rounded-full ml-5" />
+                <Skeleton className="hidden xl:block h-[30px] w-[60px] rounded-full ml-5" />
 
                 <div className="hidden lg:flex items-center gap-2 ml-2">
                   <Skeleton className="h-[40px] w-[5px] rounded-full mr-2" />

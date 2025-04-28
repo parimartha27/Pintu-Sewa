@@ -266,7 +266,7 @@ const EditAddressBody = () => {
               </div>
               <div className="flex flex-col">
                 <LabelledDropdown
-                  label="Kabupaten"
+                  label="Kabupaten / Kota"
                   htmlFor="kabupaten"
                   id="kabupaten"
                   options={kabupaten.map((k) => ({

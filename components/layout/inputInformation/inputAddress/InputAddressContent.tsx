@@ -201,7 +201,7 @@ const InputAddressContentLayout = () => {
             </p>
           )}
           <LabelledDropdown
-            label="Kabupaten"
+            label="Kabupaten / Kota"
             htmlFor="kabupaten"
             id="kabupaten"
             options={kabupaten.map((k) => ({ value: k.id, label: k.text }))}

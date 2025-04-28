@@ -41,7 +41,7 @@ export const useAuthForm = (type?: string) => {
   const validateHandphone = (value: string) => {
     if (!value.trim()) return "Handphone tidak boleh kosong";
     if (!/^08\d{8,12}$/.test(value))
-      return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit";
+      return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit angka";
     return "";
   };
 

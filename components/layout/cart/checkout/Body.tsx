@@ -20,6 +20,8 @@ import Image from "next/image";
 import Link from "next/link";
 import NoCart from "@/public/noCart.svg";
 
+
+
 const CheckOutBody = () => {
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [transactionIds, setTransactionIds] = useState<string[]>([]);
@@ -28,6 +30,26 @@ const CheckOutBody = () => {
   const [checkoutDetail, setCheckoutDetail] = useState<TransactionResponseProps>();
   const [addressLoading, setAddressLoading] = useState(true);
   const [itemLoading, setItemLoading] = useState(true);
+
+  const fetchCheckoutItemsAndPaymentDetail = async () => {
+    try {
+      const payload = {
+        transaction_ids: transactionIds,
+        customer_id: customerId,
+      };
+      console.log(payload);
+      const res = await axios.post<CheckoutResponseProps>(
+        `${checkoutBaseUrl}/details`,
+        payload
+      );
+      console.log(res);
+      setCheckoutDetail(res.data.output_schema);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setItemLoading(false);
+    }
+  };
 
   useEffect(() => {
     const customerIdFromLocalStorage = localStorage.getItem("customerId");
@@ -73,29 +95,12 @@ const CheckOutBody = () => {
       return;
     }
 
-    const fetchCheckoutItemsAndPaymentDetail = async () => {
-      try {
-        setItemLoading(true);
-        const payload = {
-          transaction_ids: transactionIds,
-          customer_id: customerId,
-        };
-        console.log(payload);
-        const res = await axios.post<CheckoutResponseProps>(
-          `${checkoutBaseUrl}/details`,
-          payload
-        );
-        console.log(res);
-        setCheckoutDetail(res.data.output_schema);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setItemLoading(false);
-      }
-    };
-
     fetchCheckoutItemsAndPaymentDetail();
   }, [customerId, transactionIds]);
+
+  const onRefresh = () => {
+    fetchCheckoutItemsAndPaymentDetail()
+  }
 
   if (!transactionIds.length) {
     return (
@@ -133,6 +138,7 @@ const CheckOutBody = () => {
               <CheckoutProductForm
                 key={transaction.shop_id}
                 checkoutDetail={transaction}
+                onRefresh={onRefresh}
               />
             ))}
           </div>
