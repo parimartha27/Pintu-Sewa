@@ -137,7 +137,7 @@ const CartBody = () => {
           JSON.stringify(res.data.output_schema.transaction_ids)
         );
         localStorage.removeItem("selectedCartIds");
-        router.push("/cart/checkout");
+        router.push("/checkout");
       }
     } catch (err) {
       alert(err);

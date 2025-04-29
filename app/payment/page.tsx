@@ -1,17 +1,17 @@
 "use client"
 
-import CheckOutBody from "@/components/layout/cart/checkout/Body"
 import Footer from "@/components/layout/Footer"
 import Navbar from "@/components/layout/Navbar"
+import PaymentBody from "@/components/layout/payment/PaymentBody"
 
-const CheckoutPage = () => {
+const PaymentPage = () => {
   return (
     <>
       <Navbar />
-      <CheckOutBody />
+      <PaymentBody />
       <Footer />
     </>
   )
 }
 
-export default CheckoutPage
+export default PaymentPage
