@@ -1,11 +1,19 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Loader2 } from "lucide-react"
-import { Transaction } from "@/types/mockApi"
 import { StatusBadge } from "./StatusBadge"
 import { formatCurrency } from "@/lib/utils"
 
 type TransactionsTableProps = {
-  transactions: Transaction[]
+  transactions: Array<{
+    refference_no: string
+    create_at: string
+    customer_name: string
+    start_date: string
+    end_date: string
+    duration: number
+    status: string
+    deposit_status: boolean
+  }>
   loading: boolean
 }
 
@@ -39,17 +47,17 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
         <TableBody>
           {transactions.length > 0 ? (
             transactions.map((transaction, index) => (
-              <TableRow key={transaction.id || index}>
-                <TableCell className='font-medium pl-8'>{transaction.reference}</TableCell>
-                <TableCell>{transaction.transactionDate}</TableCell>
-                <TableCell>{transaction.customer}</TableCell>
-                <TableCell>{transaction.startDate}</TableCell>
-                <TableCell>{transaction.endDate}</TableCell>
-                <TableCell>{transaction.duration}</TableCell>
+              <TableRow key={transaction.refference_no || index}>
+                <TableCell className='font-medium pl-8'>{transaction.refference_no}</TableCell>
+                <TableCell>{new Date(transaction.create_at).toLocaleDateString()}</TableCell>
+                <TableCell>{transaction.customer_name}</TableCell>
+                <TableCell>{transaction.start_date}</TableCell>
+                <TableCell>{transaction.end_date}</TableCell>
+                <TableCell>{transaction.duration} hari</TableCell>
                 <TableCell>
                   <StatusBadge status={transaction.status} />
                 </TableCell>
-                <TableCell>{transaction.deposit}</TableCell>
+                <TableCell>{transaction.deposit_status ? "Sudah" : "Belum"}</TableCell>
               </TableRow>
             ))
           ) : (

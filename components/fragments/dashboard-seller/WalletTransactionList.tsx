@@ -1,9 +1,15 @@
 import { Loader2 } from "lucide-react"
-import { WalletTransaction } from "@/types/mockApi"
 import { formatCurrency } from "@/lib/utils"
 
 type WalletTransactionsListProps = {
-  transactions: WalletTransaction[]
+  transactions: Array<{
+    id: string
+    description: string
+    tanggal_transaksi: string
+    waktu_transaksi: string
+    amount: number
+    debit: boolean
+  }>
   loading: boolean
 }
 
@@ -22,19 +28,19 @@ export const WalletTransactionsList = ({ transactions, loading }: WalletTransact
   return (
     <div className='space-y-0'>
       {transactions.length > 0 ? (
-        transactions.map((transaction, index) => (
+        transactions.map((transaction) => (
           <div
-            key={transaction.id || index}
+            key={transaction.id}
             className='p-4 border-b last:border-0 flex justify-between items-center hover:bg-gray-50'
           >
             <div>
-              <p className='font-medium'>{transaction.type}</p>
+              <p className='font-medium'>{transaction.description}</p>
               <p className='text-sm text-gray-500'>
-                {transaction.date} - {transaction.time}
+                {transaction.tanggal_transaksi} - {transaction.waktu_transaksi}
               </p>
             </div>
-            <div className={`font-medium ${transaction.amount > 0 ? "text-green-600" : "text-red-600"}`}>
-              {transaction.amount > 0 ? "+ " : "- "}
+            <div className={`font-medium ${transaction.debit ? "text-green-600" : "text-red-600"}`}>
+              {transaction.debit ? "+ " : "- "}
               {formatCurrency(Math.abs(transaction.amount))}
             </div>
           </div>

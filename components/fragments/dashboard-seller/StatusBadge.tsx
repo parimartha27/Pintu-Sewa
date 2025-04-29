@@ -6,26 +6,23 @@ type StatusBadgeProps = {
 }
 
 export const StatusBadge = ({ status, className }: StatusBadgeProps) => {
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case "Belum Dibayar":
-        return "bg-gray-200 text-gray-700"
-      case "Diproses":
-        return "bg-yellow-200 text-yellow-800"
-      case "Dikirim":
-        return "bg-blue-200 text-blue-800"
-      case "Sedang Disewa":
-        return "bg-color-primaryDark text-white"
-      case "Dikembalikan":
-        return "bg-green-200 text-green-800"
-      case "Dibatalkan":
-        return "bg-red-200 text-red-800"
-      case "Selesai":
-        return "bg-custom-gradient-tr text-white"
+  // Determine color based on status
+  const getStatusStyle = () => {
+    switch (status.toLowerCase()) {
+      case "belum dibayar":
+        return "bg-yellow-100 text-yellow-800"
+      case "sudah dibayar":
+      case "active":
+        return "bg-green-100 text-green-800"
+      case "dibatalkan":
+      case "inactive":
+        return "bg-red-100 text-red-800"
+      case "pending":
+        return "bg-blue-100 text-blue-800"
       default:
-        return "bg-gray-200 text-gray-700"
+        return "bg-gray-100 text-gray-800"
     }
   }
 
-  return <span className={cn("px-2 py-1 rounded-md text-xs", getStatusBadgeClass(status), className)}>{status}</span>
+  return <span className={cn("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium", getStatusStyle(), className)}>{status}</span>
 }
