@@ -58,10 +58,11 @@ const InputBiodataContent = () => {
   }
 
   const validateHandphone = (value: string) => {
-    if (!value.trim()) return "Handphone tidak boleh kosong"
-    if (!/^08\d{8,12}$/.test(value)) return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit"
-    return ""
-  }
+    if (!value.trim()) return "Handphone tidak boleh kosong";
+    if (!/^08\d{8,12}$/.test(value))
+      return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit angka";
+    return "";
+  };
 
   const validatePassword = (value: string) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,20}$/

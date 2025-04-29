@@ -1,0 +1,15 @@
+List Defect:
+
+- Kabupaten jadi -> Kabupaten/Kota (done)
+- nomor hp masih bisa input karakter (ini sudah diatasi pakai validasi)
+- calender tidak auto close dan tidak bisa pilih spesifik tahun
+
+
+List feature not done:
+
+- image uploading
+- middleware
+- validation for not having customerId
+- undo delete from cart
+- select courier (done)
+

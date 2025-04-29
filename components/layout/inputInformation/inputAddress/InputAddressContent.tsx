@@ -196,9 +196,9 @@ const InputAddressContentLayout = () => {
         <div className='flex flex-col'>
           {errors.kabupaten && <p className='text-red-500 text-xs md:text-md'>{errors.kabupaten}</p>}
           <LabelledDropdown
-            label='Kabupaten'
-            htmlFor='kabupaten'
-            id='kabupaten'
+            label="Kabupaten / Kota"
+            htmlFor="kabupaten"
+            id="kabupaten"
             options={kabupaten.map((k) => ({ value: k.id, label: k.text }))}
             value={selectedKabupaten}
             onValueChange={setSelectedKabupaten}

@@ -238,10 +238,10 @@ const EditProfileBody = () => {
                     onChange={(e) => setFullname(e.target.value)}
                   />
                   <LabelledInput
-                    label='Nomor Telepon'
-                    htmlFor='handphone'
-                    id='handphone'
-                    type='text'
+                    label="Nomor Telepon"
+                    htmlFor="handphone"
+                    id="handphone"
+                    type="phone"
                     value={handphone}
                     onChange={(e) => setHandphone(e.target.value)}
                   />

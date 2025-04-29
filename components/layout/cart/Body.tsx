@@ -155,7 +155,7 @@ const CartBody = () => {
 
       {loading && <CartSkeleton />}
 
-      {!loading && shopCartItems == null ? (
+      {!loading && shopCartItems.length === 0 ? (
         <div className="flex flex-col space-y-6 w-full justify-center items-center py-20">
           <Image className="w-[500px] h-[372px]" src={NoCart} alt="noCart" />
           <h2 className="text-color-primary text-xl text-center font-medium">
@@ -165,7 +165,7 @@ const CartBody = () => {
             <Link href={"/"}>Kembali ke Dashboard</Link>
           </Button>
         </div>
-      ) : ( !loading && shopCartItems !== null && (
+      ) : ( !loading && shopCartItems.length > 0 && (
         <>
           <Card className="p-0 mt-4">
             <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-[29px] pt-0 py-[14px]">

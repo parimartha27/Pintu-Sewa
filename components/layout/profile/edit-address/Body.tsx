@@ -227,26 +227,63 @@ const EditAddressBody = () => {
   }
 
   return (
-    <div className='flex w-full h-auto pb-12 md:pb-[462px]'>
-      <EditProfileForm title='Edit Alamat'>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleSubmit(e)
-          }}
-          className='flex flex-col lg:flex-row mt-5 space-y-5 lg:space-y-0 lg:space-x-10 w-full'
-        >
-          {/* KIRI */}
-          <div className='flex flex-col space-y-5 lg:w-1/2'>
-            <div className='flex flex-col'>
-              <LabelledInput
-                label='Jalan'
-                htmlFor='jalan'
-                id='jalan'
-                type='text'
-                value={jalan}
-                onChange={(e) => setJalan(e.target.value)}
-              />
+    <div className="flex w-full h-auto pb-12 md:pb-[462px]">
+    <EditProfileForm title="Edit Alamat">
+      <form
+        onSubmit={() => alert("Perubahan Disimpan")}
+        className="flex flex-col lg:flex-row mt-5 space-y-5 lg:space-y-0 lg:space-x-10 w-full"
+      >
+        {loading ? (
+          <AddressFormSkeleton />
+        ) : (
+          <>
+            {/* KIRI */}
+            <div className="flex flex-col space-y-5 lg:w-1/2">
+              <div className="flex flex-col">
+                <LabelledInput
+                  label="Jalan"
+                  htmlFor="jalan"
+                  id="jalan"
+                  type="text"
+                  value={jalan}
+                  onChange={(e) => setJalan(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col">
+                <LabelledDropdown
+                  label="Provinsi"
+                  htmlFor="provinsi"
+                  id="provinsi"
+                  options={provinsi.map((k) => ({
+                    value: k.id,
+                    label: k.text,
+                  }))}
+                  value={selectedProvinsi}
+                  onValueChange={setSelectedProvinsi}
+                />
+              </div>
+              <div className="flex flex-col">
+                <LabelledDropdown
+                  label="Kabupaten / Kota"
+                  htmlFor="kabupaten"
+                  id="kabupaten"
+                  options={kabupaten.map((k) => ({
+                    value: k.id,
+                    label: k.text,
+                  }))}
+                  value={selectedKabupaten}
+                  onValueChange={setSelectedKabupaten}
+                  disabled={!selectedProvinsi}
+                />
+              </div>
+              {loadingSubmit && <div className="hidden lg:block h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>}
+              <Button
+                onClick={handleSubmit}
+                type="submit"
+                className="hidden lg:block w-[200px] h-[48px] mt-3 text-white text-[14px] font-medium bg-custom-gradient-tr hover:opacity-90"
+              >
+                Simpan Perubahan
+              </Button>
             </div>
             <div className='flex flex-col'>
               <LabelledDropdown
