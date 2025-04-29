@@ -3,7 +3,6 @@
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
 import { StatsCard } from "@/components/fragments/dashboard-seller/StatsCard"
 import { WalletTransactionsList } from "@/components/fragments/dashboard-seller/WalletTransactionList"
-import { WalletTransaction } from "@/types/mockApi"
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,26 +13,70 @@ import BNI from "@/public/BNI.svg"
 import Money from "@/public/money.svg"
 import MetodePembayaranFragments from "@/components/fragments/checkout/MetodePembayaran"
 import Image from "next/image"
+import { fetchWalletBalance, fetchWalletHistory } from "@/services/walletService"
+import { formatCurrency } from "@/lib/utils"
 
 const TransactionHistorySeller = () => {
-  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+  const [walletData, setWalletData] = useState({
+    balance: 0,
+    history: [] as Array<{
+      id: string
+      description: string
+      tanggal_transaksi: string
+      waktu_transaksi: string
+      amount: number
+      debit: boolean
+    }>,
+    totalIncome: 0,
+    totalDepositReturns: 0,
+  })
+  const [loading, setLoading] = useState({
+    balance: true,
+    history: true,
+  })
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const walletData = fetchWalletTransactions()
+        const shopId = typeof window !== "undefined" ? localStorage.getItem("shopId") : null
 
-        setWalletTransactions(walletData)
-        setLoading(false)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-        setLoading(false)
+        if (!shopId) {
+          throw new Error("Shop ID not found")
+        }
+
+        const [balance, history] = await Promise.all([fetchWalletBalance(shopId), fetchWalletHistory(shopId)])
+
+        const income = history.filter((t) => t.debit).reduce((sum, t) => sum + t.amount, 0)
+
+        const depositReturns = history.filter((t) => !t.debit && t.description.includes("Deposit")).reduce((sum, t) => sum + t.amount, 0)
+
+        setWalletData({
+          balance,
+          history,
+          totalIncome: income,
+          totalDepositReturns: Math.abs(depositReturns),
+        })
+
+        setLoading({ balance: false, history: false })
+      } catch (err) {
+        console.error("Error fetching data:", err)
+        setError(err instanceof Error ? err.message : "Failed to fetch data")
+        setLoading({ balance: false, history: false })
+        alert(err instanceof Error ? err.message : "Failed to fetch data")
       }
     }
 
     loadData()
   }, [])
+
+  if (error) {
+    return (
+      <SellerLayout>
+        <div className='p-4 text-red-500'>{error}</div>
+      </SellerLayout>
+    )
+  }
 
   return (
     <SellerLayout>
@@ -41,24 +84,26 @@ const TransactionHistorySeller = () => {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6'>
           <StatsCard
             title='Saldo Wallet'
-            value={"Rp 0"}
+            value={formatCurrency(walletData.balance)}
+            loading={loading.balance}
           />
           <StatsCard
             title='Total Pemasukkan'
-            value={"Rp 0"}
+            value={formatCurrency(walletData.totalIncome)}
+            loading={loading.history}
           />
-
           <StatsCard
             title='Pengembalian Deposit'
-            value={"Rp 0"}
+            value={formatCurrency(walletData.totalDepositReturns)}
+            loading={loading.history}
           />
         </div>
-        <div className="space-y-4">
-          <p className='font-semibold text-color-primary text-xl'>Transaksi Berlangsung</p>
+        <div className='space-y-4'>
+          <p className='font-semibold text-color-primary text-xl'>Riwayat Transaksi</p>
           <div className='bg-white rounded-md shadow overflow-hidden'>
             <WalletTransactionsList
-              transactions={walletTransactions}
-              loading={false}
+              transactions={walletData.history}
+              loading={loading.history}
             />
           </div>
         </div>
@@ -69,59 +114,6 @@ const TransactionHistorySeller = () => {
 }
 
 export default TransactionHistorySeller
-
-const fetchWalletTransactions = (): WalletTransaction[] => {
-  return [
-    {
-      id: "w1",
-      type: "Topup",
-      date: "21 April 2025",
-      time: "09:41 WIB",
-      amount: 900000,
-      description: "Topup via Bank Transfer",
-    },
-    {
-      id: "w2",
-      type: "Pembayaran Barang X",
-      date: "21 April 2025",
-      time: "09:41 WIB",
-      amount: -900000,
-      description: "Pembayaran untuk produk X",
-    },
-    {
-      id: "w3",
-      type: "Topup",
-      date: "21 April 2025",
-      time: "09:41 WIB",
-      amount: 900000,
-      description: "Topup via Bank Transfer",
-    },
-    {
-      id: "w4",
-      type: "Pembayaran Barang X",
-      date: "21 April 2025",
-      time: "09:41 WIB",
-      amount: -900000,
-      description: "Pembayaran untuk produk X",
-    },
-    {
-      id: "w5",
-      type: "Topup",
-      date: "21 April 2025",
-      time: "09:41 WIB",
-      amount: 900000,
-      description: "Topup via Bank Transfer",
-    },
-    {
-      id: "w6",
-      type: "Pembayaran Barang X",
-      date: "21 April 2025",
-      time: "09:41 WIB",
-      amount: -900000,
-      description: "Pembayaran untuk produk X",
-    },
-  ]
-}
 
 function PaymentMethod() {
   const router = useRouter()
@@ -135,12 +127,12 @@ function PaymentMethod() {
   const handlePayment = () => {
     if (!selectedMethod) return
 
-    router.push("/wallet/topup/confirmation")
+    router.push("/payment")
   }
   return (
     <Card className='px-2 md:px-6 mb-[224px]'>
       <CardHeader className='flex flex-col items-center md:flex-row md:justify-between px-0'>
-        <h2 className='text-md font-semibold text-color-primary'>Metode Topup</h2>
+        <h2 className='text-md font-semibold text-color-primary'>Metode Penarikan Saldo</h2>
         <h3 className='text-sm font-medium text-color-secondary hover:opacity-70 hover:cursor-pointer'>Lihat Semua</h3>
       </CardHeader>
       <CardContent className='flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0 border-t-[1px] border-t-[#D9D9D9]'>

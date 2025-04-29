@@ -107,8 +107,7 @@ const WalletSeller = () => {
           title='Status Toko'
           value={
             <div className='flex items-center gap-1'>
-              <span>{dashboardData?.shop_status || "Inactive"}</span>
-              <span className={`text-xs px-2 py-0.5 rounded ${dashboardData?.shop_status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{dashboardData?.shop_status || "Inactive"}</span>
+              <span className={`text-xs px-4 py-2 rounded ${dashboardData?.shop_status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{dashboardData?.shop_status || "Inactive"}</span>
             </div>
           }
           loading={loading.dashboard}
