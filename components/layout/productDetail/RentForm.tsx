@@ -317,13 +317,14 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
         </div>
 
         {/* BUTTONS */}
-        {productDetail.stock > 0 && (
+
           <div className="flex flex-col mt-[14px] space-y-3">
             <Button
               onClick={() => {
                 handleCheckout();
               }}
-              className="w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px]"
+              disabled={productDetail.stock <= 0}
+              className={`w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px] ${productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <Image
                 src={NextSymbol}
@@ -337,8 +338,8 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Button
               ref={buttonRef}
               onClick={handleAddToCart}
-              disabled={addToCartLoading}
-              className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${
+              disabled={addToCartLoading || productDetail.stock <= 0}
+              className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""} ${
                 addToCartLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -356,7 +357,6 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
               className="fixed top-4 right-4 z-50 invisible"
             />
           </div>
-        )}
       </div>
     </>
   );

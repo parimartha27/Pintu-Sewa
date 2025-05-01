@@ -141,10 +141,6 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
         document.cookie = "status=otp_verify; path=/; Secure; SameSite=Lax"
 
-        Object.entries(response.data.output_schema).forEach(([key, value]) => {
-          localStorage.setItem(key, String(value))
-        })
-
         router.push("/input-biodata")
       } else {
         setError("OTP yang diinput tidak sesuai")
