@@ -17,6 +17,7 @@ import {
 import { fetchKabupaten, fetchKecamatan, fetchKodePos, fetchProvinsi } from "@/services/addressService";
 import { dataAlamatProps } from "@/types/dataAlamat";
 import { getIdByText, getTextById } from "@/hooks/useGetWilayahByTextOrId";
+import LoadingPopup from "../../LoadingPopUp";
 
 const EditAddressBody = () => {
   const router = useRouter();
@@ -274,7 +275,7 @@ const EditAddressBody = () => {
                   disabled={!selectedProvinsi}
                 />
                 {loadingSubmit && (
-                  <div className="hidden lg:block h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark" />
+                 <LoadingPopup/>
                 )}
                 <Button
                   onClick={handleSubmit}
@@ -319,9 +320,6 @@ const EditAddressBody = () => {
                   value={catatan}
                   onChange={(e) => setCatatan(e.target.value)}
                 />
-                {loadingSubmit && (
-                  <div className="lg:hidden self-center h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark" />
-                )}
                 <Button
                   onClick={handleSubmit}
                   type="submit"

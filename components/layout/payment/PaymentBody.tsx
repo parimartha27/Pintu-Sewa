@@ -22,6 +22,8 @@ const PaymentBody = () => {
   });
   const [isPaymentStepOpen, setIsPaymentStepOpen] = useState(false);
   const [isSuccessPaymentOpen, setIsSuccessPaymentOpen] = useState(false);
+  // const [referenceNumber] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("referenceNo") : null);
+  // const [customerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
 
   const generateAccountNumber = (method: string) => {
     const prefixes: Record<string, string> = {
@@ -79,21 +81,25 @@ const PaymentBody = () => {
     setIsLoading(true);
     try {
       const customerId = localStorage.getItem("customerId");
+      const stored = localStorage.getItem("referenceNo");
+      const referenceNumbers: string[] = stored ? JSON.parse(stored) : [];
       const totalAmount = paymentData.totalAmount.replace(/\./g, "");
-      const transactionIds: string[] = JSON.parse(localStorage.getItem("transactionIds") || "[]");
-      const referenceNo = localStorage.getItem("referenceNo");
-  
+      const payload = {
+        reference_numbers: referenceNumbers,
+        next_status: "Diproses"
+      }
+      console.log(payload);
       const updateStatusResponse = await axios.patch(
-        `${transactionDetailBaseUrl}/set-status?transactionId=${transactionIds}&status="DIPROSES"`
+        `${transactionDetailBaseUrl}/set-status`, payload
       );
   
-      if (updateStatusResponse.data.output_shcema === "Success") {
+      if (updateStatusResponse.data.error_schema.error_code === "PS-00-000") {
 
         const paymentResponse = await axios.patch(
-          `${walletBaseUrl}/payment?customerId=${customerId}&amount=${totalAmount}&refference_no=${referenceNo}`
+          `${walletBaseUrl}/payment?customerId=${customerId}&amount=${totalAmount}&refference_no=${referenceNumbers}`
         );
   
-        if (paymentResponse.data.output_shcema === "Payment Success") {
+        if (paymentResponse.data.error_schema.error_code === "PS-00-000") {
           localStorage.removeItem("grandTotalPayment");
           localStorage.removeItem("paymentMethod");
           localStorage.removeItem("paymentData");
@@ -128,12 +134,9 @@ const PaymentBody = () => {
     return logos[method] || "/BCA.svg";
   };
 
-  if(isSuccessPaymentOpen){
-    return <SuccessPaymentModals/>
-  }
-
   return (
     <>
+    {isSuccessPaymentOpen && <SuccessPaymentModals/>}
     {isLoading && <LoadingPopup/>}
     <PaymentStepModals isOpen={isPaymentStepOpen} onClose={() => setIsPaymentStepOpen(false)}/>
       <div className="flex flex-col md:flex-row w-full m-1 justify-self-center md:p-3 md:px-6 md:pt-12 max-w-[1400px] space-y-4 md:space-y-0 md:space-x-8 bg-color-layout">

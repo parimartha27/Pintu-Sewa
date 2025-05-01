@@ -56,7 +56,12 @@ export async function middleware(request: NextRequest) {
   const publicRoutes = [
     "/login",
     "/register",
-    "/forgot-password"
+    "/forgot-password",
+    "/otp",
+    "/input-biodata",
+    "/input-email-otp",
+    "/input-address",
+    "/input-confirmation"
   ];
 
   const startsWithRoutes = [
