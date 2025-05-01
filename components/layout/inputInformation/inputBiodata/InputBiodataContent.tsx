@@ -20,7 +20,7 @@ import { BirthdayCalendar } from "@/components/ui/birthday-calendar"
 
 const InputBiodataContent = () => {
   const router = useRouter()
-  const {validateEmail, validateHandphone, validatePassword} = useAuthForm()
+  const { validateEmail, validateHandphone, validatePassword } = useAuthForm()
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [username, setUsername] = useState("")
   const [fullname, setFullname] = useState("")
@@ -177,7 +177,6 @@ const InputBiodataContent = () => {
             className='flex flex-col space-y-5'
           >
             <div className='flex flex-col'>
-              {errors.username && <p className='text-red-500 text-xs md:text-md'>{errors.username}</p>}
               <LabelledInput
                 label='Username'
                 htmlFor='username'
@@ -187,9 +186,9 @@ const InputBiodataContent = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 maxLength={15}
               />
+              {errors.username && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.username}</p>}
             </div>
             <div className='flex flex-col'>
-              {errors.fullname && <p className='text-red-500 text-xs md:text-md'>{errors.fullname}</p>}
               <LabelledInput
                 label='Nama Lengkap'
                 htmlFor='fullname'
@@ -199,9 +198,9 @@ const InputBiodataContent = () => {
                 onChange={(e) => setFullname(e.target.value)}
                 maxLength={25}
               />
+              {errors.fullname && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.fullname}</p>}
             </div>
             <div className='flex flex-col'>
-              {errors.email && <p className='text-red-500 text-xs md:text-md'>{errors.email}</p>}
               <LabelledInput
                 label='Email'
                 htmlFor='email'
@@ -210,9 +209,9 @@ const InputBiodataContent = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.email}</p>}
             </div>
             <div className='flex flex-col'>
-              {errors.handphone && <p className='text-red-500 text-xs md:text-md'>{errors.handphone}</p>}
               <LabelledInput
                 label='Nomor Telepon'
                 htmlFor='handphone'
@@ -221,9 +220,9 @@ const InputBiodataContent = () => {
                 value={handphone}
                 onChange={(e) => setHandphone(e.target.value)}
               />
+              {errors.handphone && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.handphone}</p>}
             </div>
             <div className='flex flex-col'>
-              {errors.password && <p className='text-red-500 text-xs md:text-md'>{errors.password}</p>}
               <LabelledInput
                 label='Password'
                 htmlFor='password'
@@ -232,6 +231,7 @@ const InputBiodataContent = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {errors.password && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.password}</p>}
             </div>
 
             <Section Header='Jenis Kelamin'>
@@ -271,7 +271,6 @@ const InputBiodataContent = () => {
               <Popover>
                 <PopoverTrigger asChild>
                   <div className='flex flex-col'>
-                    {errors.date && <p className='text-red-500 text-xs md:text-md'>{errors.date}</p>}
                     <div>
                       <LabelledInput
                         label='Tanggal Lahir'
@@ -284,6 +283,7 @@ const InputBiodataContent = () => {
                       />
                       <ChevronDown className='h-4 w-4 absolute right-3 top-14 -translate-y-1/2 text-[#73787B] pointer-events-none' />
                     </div>
+                    {errors.date && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.date}</p>}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className='w-auto p-0'>

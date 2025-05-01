@@ -14,7 +14,7 @@ function CustomCaption({ displayMonth }: CaptionProps) {
   const year = displayMonth.getFullYear()
   const monthIndex = displayMonth.getMonth()
 
-  const fromYear = 2000
+  const fromYear = 1970
   const toYear = 2035
   const months = Array.from({ length: 12 }, (_, i) =>
     new Date(0, i).toLocaleString("default", { month: "long" })

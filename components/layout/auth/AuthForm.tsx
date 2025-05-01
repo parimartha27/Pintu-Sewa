@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuthForm } from "@/hooks/auth/useAuthForm";
+import LoadingPopup from "../LoadingPopUp";
 
 interface AuthFormProps {
   type: "login" | "register";
@@ -161,9 +162,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                   </div>
                 )}
                 {isLoading && (
-                  <div className="flex justify-center items-center space-x-6 mt-3">
-                    <div className="h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark"></div>
-                  </div>
+                  <LoadingPopup message="Sedang Memproses Data Anda!"/>
                 )}
                 {authError && (
                   <p className="text-red-500 text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] mt-1">
