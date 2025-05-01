@@ -29,7 +29,8 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
         <Card className="hover:bg-slate-100 rounded-lg h-full w-auto shadow-md">
           <CardHeader className="relative h-[120px] md:h-[140px] lg:h-[170px] bg-slate-400 rounded-t-lg">
             <Image
-              src={isValidImage(product.image) ? product.image : ProductTest}
+              // src={isValidImage(product.image) ? product.image : ProductTest}
+              src={ProductTest}
               alt={product.name}
               layout="fill"
               objectFit="cover"

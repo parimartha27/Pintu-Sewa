@@ -18,7 +18,8 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           className="w-16 h-16 sm:w-[100px] sm:h-[100px] self-center rounded-full object-cover"
           width={100}
           height={100}
-          src={data.image ?? Product}
+          src={Product}
+          // src={data.image ?? Product}
           alt="guest"
         />
         <div className="flex flex-col items-center sm:items-start">

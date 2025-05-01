@@ -270,7 +270,8 @@ const ProductInCartDetail = ({
           <Image
             width={88}
             height={88}
-            src={cartItem.image || ProductImage}
+            // src={cartItem.image || ProductImage}
+            src={ProductImage}
             alt="product"
             className={`w-[60px] h-[60px] xl:w-[88px] xl:h-[88px] min-w-[60px] min-h-[60px] xl:min-w-[88px] xl:min-h-[88px] object-fit rounded-md ${
               !isAvailable ? "grayscale" : ""

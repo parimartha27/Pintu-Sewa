@@ -58,7 +58,8 @@ const InputConfirmationContentLayout = () => {
     })
 
     setFormData(data)
-    setImageSrc(data.image || Guest)
+    // setImageSrc(data.image || Guest)
+    setImageSrc(Guest)
   }, [])
 
   const handleSubmit = async (event: React.FormEvent) => {

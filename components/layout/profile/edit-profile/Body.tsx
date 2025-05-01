@@ -130,19 +130,20 @@ const EditProfileBody = () => {
       phone_number: handphone || "",
       gender: gender || "",
       birth_date: date?.toISOString().split("T")[0] || "",
-      image: profileImage || biodataData?.image || "",
+      // image: profileImage || biodataData?.image || "",
+      image: profileImage,
     }
 
-    try{
-      const response = await axios.put<EditProfileResponseProps>(`${customerBaseUrl}/edit-biodata`, payload);
-      if(response.data.error_schema.error_message === "SUCCESS"){
-        setLoadingSubmit(false);
-        alert("Berhasil mengedit profile");
-        localStorage.setItem("profileImage", profileImage || "");
-        localStorage.setItem("username", username || "");
-        router.push("/profile");
-      }else{
-        alert("Gagal mengedit profile");
+    try {
+      const response = await axios.put<EditProfileResponseProps>(`${customerBaseUrl}/edit-biodata`, payload)
+      if (response.data.error_schema.error_message === "SUCCESS") {
+        setLoadingSubmit(false)
+        alert("Berhasil mengedit profile")
+        localStorage.setItem("profileImage", profileImage || "")
+        localStorage.setItem("username", username || "")
+        router.push("/profile")
+      } else {
+        alert("Gagal mengedit profile")
       }
     } catch (e) {
       alert("Gagal: " + e)
@@ -163,7 +164,8 @@ const EditProfileBody = () => {
             </button>
 
             <Image
-              src={profileImage || biodataData?.image || Guest}
+              // src={profileImage || biodataData?.image || Guest}
+              src={Guest}
               alt='Profile Full Size'
               width={300}
               height={300}
@@ -181,7 +183,8 @@ const EditProfileBody = () => {
               <div className='flex flex-col items-center w-full space-y-6 mt-5'>
                 <Image
                   className='cursor-pointer w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] xl:w-[200px] xl:h-[200px] rounded-full border object-cover'
-                  src={profileImage || biodataData?.image || Guest}
+                  src={Guest}
+                  // src={profileImage || biodataData?.image || Guest}
                   alt='Profile'
                   width={200}
                   height={200}
@@ -238,10 +241,10 @@ const EditProfileBody = () => {
                     onChange={(e) => setFullname(e.target.value)}
                   />
                   <LabelledInput
-                    label="Nomor Telepon"
-                    htmlFor="handphone"
-                    id="handphone"
-                    type="phone"
+                    label='Nomor Telepon'
+                    htmlFor='handphone'
+                    id='handphone'
+                    type='phone'
                     value={handphone}
                     onChange={(e) => setHandphone(e.target.value)}
                   />

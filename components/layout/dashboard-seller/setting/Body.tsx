@@ -133,7 +133,8 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
             ) : (
               <Image
                 className='w-[110px] h-[110px]'
-                src={customerData?.image || Guest}
+                // src={customerData?.image || Guest}
+                src={Guest}
                 alt=''
               />
             )}
