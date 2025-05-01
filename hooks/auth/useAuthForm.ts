@@ -162,7 +162,7 @@ export const useAuthForm = (type?: string) => {
       if (err.status === 401) {
         setAuthError("Username atau Password Tidak Sesuai")
       } else {
-        setAuthError("Terjadi kesalahan saat login")
+        setAuthError(`Terjadi kesalahan saat login`)
       }
     } finally {
       localStorage.setItem("otpType", "register")

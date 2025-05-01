@@ -10,9 +10,38 @@ import Location from "@/public/location.svg";
 import { Button } from "@/components/ui/button";
 import { ProductDetailShopProps} from "@/types/shop";
 import { useRouter } from "next/navigation";
+import { useState,useEffect, use } from "react";
+import { chatBaseUrl } from "@/types/globalVar";
+import axios from "axios";
 
 const ShopAndLocation = ({shopDetail}: {shopDetail: ProductDetailShopProps}) => {
+  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
+  const [shopId, setShopId] = useState<string | null>("");
   const router = useRouter();
+
+  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.currentTarget;
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        `${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`
+      )
+      router.push('/chat')
+    } catch (err: any) {
+        if(err.response.data.error_schema.error_code == "PS-10-001"){
+          router.push('/chat')
+        }else{
+          console.log(err);
+        }
+    }
+  };
+
+  useEffect(() => {
+    setShopId(shopDetail.id)
+    setCustomerId(localStorage.getItem("customerId"))
+  },[])
+
   return (
     <div className="w-full mt-7 flex flex-col px-2">
       <div className="flex justify-between border-y-[1px] border-[#D9D9D9]">
@@ -43,8 +72,11 @@ const ShopAndLocation = ({shopDetail}: {shopDetail: ProductDetailShopProps}) => 
             </div>
           </div>
         </div>
-        <Link href={`/chat`}>
-          <Button className="flex max-w-[72px] max-h-[28px] lg:max-h-8 h-full gap-x-1 mt-3 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark">
+          <Button 
+            className="flex max-w-[72px] max-h-[28px] lg:max-h-8 h-full gap-x-1 mt-3 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark"
+            data-shopId={shopDetail.id}
+            onClick={createRoomChat}
+          >
             <Image
               src={Chat}
               alt="edit"
@@ -54,7 +86,6 @@ const ShopAndLocation = ({shopDetail}: {shopDetail: ProductDetailShopProps}) => 
               Chat
             </h4>
           </Button>
-        </Link>
       </div>
       <div className="flex flex-col pt-3 pl-5 space-y-2">
         <h2 className="text-[12px] lg:text-[16px] font-semibold text-color-primary">
