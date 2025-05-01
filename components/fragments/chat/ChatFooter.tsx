@@ -18,7 +18,7 @@ const ChatFooter = () => {
   
   return (
     <div className="w-full flex items-center justify-center min-h-[75px] px-6">
-      <div className="flex items-center border rounded-md px-4 py-2 w-full shadow-md">
+      <div className="flex items-center border rounded-md px-4 py-2 w-full">
         {/* Icon Smiley */}
         <button className="text-gray-500 hover:text-gray-700">
           <Image className="min-w-3 min-h-3 w-5 h-5" src={Emoji} alt="emoji" />

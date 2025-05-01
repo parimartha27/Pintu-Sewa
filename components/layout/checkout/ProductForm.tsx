@@ -17,7 +17,7 @@ import {
 import { TransactionProps } from "@/types/checkout";
 import { useEffect, useState } from "react";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
-import CustomModal from "../../modalsTemplate";
+import CustomModal from "../modalsTemplate";
 import axios from "axios";
 import { checkoutBaseUrl } from "@/types/globalVar";
 

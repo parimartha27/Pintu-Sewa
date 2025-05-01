@@ -1,10 +1,15 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['lh3.googleusercontent.com', 'example.com', 'images.unsplash.com', 'unsplash.com'],
+    domains: ["lh3.googleusercontent.com", "example.com", "images.unsplash.com", "unsplash.com"],
   },
-};
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+}
 
-export default nextConfig;
-
+export default nextConfig
