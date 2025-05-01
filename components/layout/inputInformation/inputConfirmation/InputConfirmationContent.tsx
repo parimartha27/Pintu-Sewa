@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { createCustomerBaseUrl } from "@/types/globalVar"
+import LoadingPopup from "../../LoadingPopUp"
 
 interface CustomerRequest {
   id: string
@@ -49,7 +50,6 @@ const InputConfirmationContentLayout = () => {
   const [imageSrc, setImageSrc] = useState(Guest)
 
   useEffect(() => {
-    // This runs only on client side
     const data: Record<string, string> = {}
     const keys = ["customerId", "username", "fullname", "jalan", "handphone", "email", "kecamatan", "kabupaten", "provinsi", "gender", "date", "kodepos", "password", "catatan", "image"]
 
@@ -199,7 +199,7 @@ const InputConfirmationContentLayout = () => {
               label='Catatan'
               input={formData.catatan || "-"}
             />
-            {loading && <div className='w-5 h-5 mb-3 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark'></div>}
+            {loading && <LoadingPopup message={"Memproses Data Anda"} />}
             {!loading && (
               <div className='flex flex-col pt-2 lg:flex-row self-center lg:self-start space-y-3 lg:space-y-0 lg:space-x-6 lg:mt-[60px] w-full max-w-[250px] lg:max-w-none px-4 sm:px-0'>
                 <Button

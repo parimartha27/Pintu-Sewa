@@ -12,19 +12,19 @@ const DashboardBody = () => {
   const { data: session } = useSession()
   const [isClient, setIsClient] = useState(false)
   const [isLocalStorageLoaded, setIsLocalStorageLoaded] = useState(false)
-  
+
   const [mostRentedProducts, setMostRentedProducts] = useState<ProductCardProps[]>([])
   const [nearCustomerProducts, setNearCustomerProducts] = useState<ProductCardProps[]>([])
   const [recommendedProducts, setRecommendedProducts] = useState<ProductCardProps[]>([])
-  
+
   const [mostRentedLoading, setMostRentedLoading] = useState(true)
   const [recommendedLoading, setRecommendedLoading] = useState(true)
   const [nearCustomerLoading, setNearCustomerLoading] = useState(true)
   const [error, setError] = useState("")
-  
+
   const [customerId, setCustomerId] = useState<string | null>(null)
   const [token, setToken] = useState<string | null>(null)
-  
+
   const isLoggedIn = isClient && (!!session || !!token)
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const DashboardBody = () => {
         setMostRentedLoading(false)
       }
     }
-    
+
     fetchMostRented()
   }, [])
 
@@ -72,7 +72,7 @@ const DashboardBody = () => {
 
   useEffect(() => {
     if (!isLocalStorageLoaded || !token || !customerId) return
-  
+
     const fetchNearby = async () => {
       try {
         const data = await fetchNearCustomerProducts(customerId)
@@ -85,54 +85,72 @@ const DashboardBody = () => {
         setNearCustomerLoading(false)
       }
     }
-  
+
     fetchNearby()
   }, [isLocalStorageLoaded, token, customerId])
 
   return (
     <div className='flex flex-col px-1 py-2 md:px-6 max-w-[1280px] mx-auto bg-color-layout pb-12 md:pb-[273px]'>
       <Category />
-      
-      <div>
-        <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 mb-4'>
-          Banyak Orang Menyewa Ini
-        </h4>
 
-        {error && <div className="text-red-500">{error}</div>}
+      <div>
+        <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 mb-4'>Banyak Orang Menyewa Ini</h4>
+
+        {error && <div className='text-red-500'>{error}</div>}
         {mostRentedLoading ? (
-          <ProductList products={[]} loading={true} numberCard={10} />
+          <ProductList
+            products={[]}
+            loading={true}
+            numberCard={10}
+          />
         ) : mostRentedProducts.length > 0 ? (
-          <ProductList products={mostRentedProducts} loading={false} numberCard={10} />
+          <ProductList
+            products={mostRentedProducts}
+            loading={false}
+            numberCard={10}
+          />
         ) : (
-          <NoProduct />
+          <NoProduct message={"Tidak Ada Produk"} />
         )}
       </div>
 
       <div className='mt-5 md:mt-20 lg:mt-32'>
         {isLoggedIn ? (
           <>
-            <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 lg:-mt-4 mb-4'>
-              Dekat Lokasi Kamu
-            </h4>
+            <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 lg:-mt-4 mb-4'>Dekat Lokasi Kamu</h4>
             {nearCustomerLoading ? (
-              <ProductList products={[]} loading={true} numberCard={10} />
+              <ProductList
+                products={[]}
+                loading={true}
+                numberCard={10}
+              />
             ) : nearCustomerProducts.length > 0 ? (
-              <ProductList products={nearCustomerProducts} loading={false} numberCard={10} />
+              <ProductList
+                products={nearCustomerProducts}
+                loading={false}
+                numberCard={10}
+              />
             ) : (
-              <NoProduct />
+              <NoProduct message={"Tidak ada produk dekat lokasi kamu"} />
             )}
           </>
         ) : (
           <>
-            <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 lg:-mt-4 mb-4'>
-              Rekomendasi Untuk Kamu
-            </h4>
+            <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 lg:-mt-4 mb-4'>Rekomendasi Untuk Kamu</h4>
             {recommendedLoading ? (
-              <ProductList products={[]} loading={true} numberCard={10} />
+              <ProductList
+                products={[]}
+                loading={true}
+                numberCard={10}
+              />
             ) : recommendedProducts.length > 0 ? (
-              <ProductList products={recommendedProducts} loading={false} numberCard={10} />
+              <ProductList
+                products={recommendedProducts}
+                loading={false}
+                numberCard={10}
+              />
             ) : (
-              <NoProduct />
+              <NoProduct message={"Tidak ada Produk"} />
             )}
           </>
         )}

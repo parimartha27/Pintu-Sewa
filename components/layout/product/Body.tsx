@@ -130,7 +130,7 @@ const ProductBodyContent = () => {
                   numberCard={16}
                 />
               ) : (
-                <NoProduct />
+                <NoProduct message={"Tidak ada produk"} />
               )}
             </div>
 
