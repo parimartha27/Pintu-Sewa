@@ -45,12 +45,10 @@ const OrderHistoryContentBodyInner = () => {
     router.push(`?${params.toString()}`)
   }
 
-  // First, safely detect client-side rendering
   useEffect(() => {
     setIsClient(true)
   }, [])
 
-  // Then access localStorage only when on the client
   useEffect(() => {
     if (isClient) {
       setCustomerId(localStorage.getItem("customerId"))
@@ -59,7 +57,7 @@ const OrderHistoryContentBodyInner = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!customerId) return // Don't fetch if customerId isn't set yet
+      if (!customerId) return
 
       setLoading(true)
       try {
