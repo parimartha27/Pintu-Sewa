@@ -69,7 +69,7 @@ interface Payload {
   customer_id: string
 }
 
-export default function TransactionDetail({ referenceNumber }: { referenceNumber?: string }) {
+export default function TransactionDetail() {
   const [transactionData, setTransactionData] = useState<TransactionResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -82,7 +82,7 @@ export default function TransactionDetail({ referenceNumber }: { referenceNumber
     const fetchTransactionDetail = async () => {
       try {
         setLoading(true)
-        const refNumber = referenceNumber || localStorage.getItem("reference_number") || ""
+        const refNumber = localStorage.getItem("reference_number") || ""
         const customerId = localStorage.getItem("customerId") || ""
 
         if (!refNumber || !customerId) {
