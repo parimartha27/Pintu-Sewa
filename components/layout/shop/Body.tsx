@@ -23,6 +23,7 @@ const ShopLayout = () => {
       try {
         setLoading(true);
         const shopHeaderRes = await axios.get<ShopDetailHeaderProps>(`${shopBaseUrl}/${id}`);
+        console.log("Shop Header:", shopHeaderRes.data.output_schema);
         setShopHeaderData(shopHeaderRes.data.output_schema);
       } catch (error) {
         console.error("Failed to fetch shop data:", error);
@@ -36,20 +37,32 @@ const ShopLayout = () => {
   useEffect(() => {
     const fetchShopReview = async () => {
       setReviewLoading(true);
-      const reviewFilter={
+      const reviewFilter = {
         hasMedia: searcParams.get("hasMedia") || "true",
         rating: searcParams.get("rating") || "4",
         // reviewTopics: searcParams.get("reviewTopics"),
-      }
+      };
+  
       try {
-        const response = await axios.get<ShopDetailReviewProps>(`${shopReviewBaseUrl}/${id}?rating=${reviewFilter.rating}&hasMedia=${reviewFilter.hasMedia}`);
+        const response = await axios.get<ShopDetailReviewProps>(
+          `${shopReviewBaseUrl}/${id}?rating=${reviewFilter.rating}&hasMedia=${reviewFilter.hasMedia}`
+        );
         setShopReview(response.data.output_schema.content);
       } catch (error) {
-        console.error("Failed to fetch shop data:", error);
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 404) {
+            console.warn("Tidak Ada Review Untuk Toko Ini");
+          } else {
+            console.error("Axios error:", error.response?.data || error.message);
+          }
+        } else {
+          console.error("Unexpected error:", error);
+        }
       } finally {
         setReviewLoading(false);
       }
     };
+  
     if (id) fetchShopReview();
   }, [id, searcParams]);
 
@@ -57,6 +70,7 @@ const ShopLayout = () => {
     return (
       <div className="flex flex-col justify-self-center max-w-[1370px] w-full p-2 md:p-0 md:px-6 md:pt-12 bg-color-layout mb-32">
         <ShopHeaderSkeleton />
+        <div className="min-h-[300px]"></div>
       </div>
     );
   }

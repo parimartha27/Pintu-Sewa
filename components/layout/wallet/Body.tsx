@@ -9,6 +9,7 @@ import ProfileSidebarLayout from "../ProfileSidebar"
 import { FaPlus } from "react-icons/fa6"
 import axios from "axios"
 import { walletBaseUrl } from "@/types/globalVar"
+import WalletSkeleton from "./WalletSkeleton"
 
 type WalletAmountResponse = {
   balance: number
@@ -46,7 +47,7 @@ function DefaultLayout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [walletAmount, setWalletAmount] = useState<WalletAmountResponse | null>(null)
-  const [customerId, setCustomerId] = useState<string>(typeof window === "undefined" ? "" : localStorage.getItem("customerId"))
+  const [customerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : "")
 
   const fetchWalletAmount = async () => {
     try {
@@ -65,7 +66,6 @@ function DefaultLayout() {
     }
   }
 
-  // get wallet report
   useEffect(() => {
     fetchWalletAmount()
     const fetchWalletReport = async () => {
@@ -89,17 +89,17 @@ function DefaultLayout() {
     fetchWalletReport()
   }, [])
 
-  if (loading) return <div className='min-h-screen flex items-center justify-center'>Loading...</div>
-  if (error) return <div className='min-h-screen flex items-center justify-center text-red-500'>{error}</div>
-  if (!walletAmount) return <div className='min-h-screen flex items-center justify-center'>No data available</div>
+  if (loading) return <WalletSkeleton/>
+  if (error) return <div className='min-h-screen flex items-center justify-center text-color-secondary font-semibold text-2xl'>{error}</div>
+  if (!walletAmount) return <div className='min-h-screen flex items-center justify-center text-color-secondary font-semibold text-2xl'>No data available</div>
 
   return (
-    <main className='w-full py-8 px-4 md:px-6'>
+    <main className='w-full py-8 px-4 md:px-6 pb-28'>
       <div className='flex flex-col gap-8 w-full h-full'>
         <h1 className='font-semibold text-color-primary text-[28px]'>My Wallet</h1>
         <div className='space-y-2 w-full'>
           <Card className='w-full'>
-            <CardHeader className='items-center justify-between'>
+            <CardHeader className='items-center justify-between flex-col lg:flex-row'>
               <CardTitle className='text-xl font-bold text-color-primary'>Saldo Anda</CardTitle>
               <Button
                 onClick={() => router.push("/wallet/topup")}
@@ -113,7 +113,7 @@ function DefaultLayout() {
             </CardHeader>
 
             <CardContent>
-              <p className='text-3xl font-bold text-color-secondary'>Rp {walletAmount?.balance.toLocaleString("id-ID")}</p>
+              <p className='text-xl md:text-2xl lg:text-3xl text-center lg:text-start font-bold text-color-secondary'>Rp {walletAmount?.balance.toLocaleString("id-ID")}</p>
             </CardContent>
           </Card>
         </div>

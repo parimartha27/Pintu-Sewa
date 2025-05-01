@@ -27,6 +27,7 @@ export interface TransactionProps {
   shipping_price: number;
   total_rented_product: number;
   total_price: number;
+  reference_number: string;
 }
 
 export interface RentedItemProps {

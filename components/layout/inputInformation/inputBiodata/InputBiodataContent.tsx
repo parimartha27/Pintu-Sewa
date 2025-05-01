@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import LabelledInput from "@/components/fragments/editProfile/LabelledInput"
 import Section from "@/components/fragments/filter/Section"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -16,9 +15,12 @@ import Guest from "@/public/guest.svg"
 import Upload from "@/public/upload.svg"
 import Next from "@/public/next.svg"
 import { useRouter } from "next/navigation"
+import { useAuthForm } from "@/hooks/auth/useAuthForm"
+import { BirthdayCalendar } from "@/components/ui/birthday-calendar"
 
 const InputBiodataContent = () => {
   const router = useRouter()
+  const {validateEmail, validateHandphone, validatePassword} = useAuthForm()
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [username, setUsername] = useState("")
   const [fullname, setFullname] = useState("")
@@ -49,27 +51,6 @@ const InputBiodataContent = () => {
     setGender(localStorage.getItem("gender") || "")
     setProfileImage(localStorage.getItem("image") || Guest.src)
   }, [])
-
-  const validateEmail = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!value.trim()) return "Email tidak boleh kosong"
-    if (!emailRegex.test(value)) return "Format email tidak valid"
-    return ""
-  }
-
-  const validateHandphone = (value: string) => {
-    if (!value.trim()) return "Handphone tidak boleh kosong";
-    if (!/^08\d{8,12}$/.test(value))
-      return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit angka";
-    return "";
-  };
-
-  const validatePassword = (value: string) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,20}$/
-    if (!value.trim()) return "Password tidak boleh kosong"
-    if (!passwordRegex.test(value)) return "Password harus 12-20 karakter, mengandung huruf besar, huruf kecil, dan angka."
-    return ""
-  }
 
   const validateForm = () => {
     const newErrors = {
@@ -306,7 +287,7 @@ const InputBiodataContent = () => {
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className='w-auto p-0'>
-                  <Calendar
+                  <BirthdayCalendar
                     mode='single'
                     selected={date}
                     onSelect={setDate}

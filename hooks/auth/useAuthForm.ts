@@ -126,44 +126,63 @@ export const useAuthForm = (type?: string) => {
 
     try {
       setIsLoading(true)
+    
       if (type === "login") {
         await loginService({ ...data, password }, (response) => {
-          if (response.error_schema.error_message === "SUCCESS") {
-            console.log("login token:" + response?.output_schema?.token)
-            console.log("login customerId:" + response?.output_schema?.customer_id)
-            document.cookie = `token=${response?.output_schema?.token}; path=/; Secure; SameSite=Lax`
-            document.cookie = `customerId=${response?.output_schema?.customer_id}; path=/; Secure; SameSite=Lax`
-            localStorage.setItem("username", response?.output_schema?.username)
-            localStorage.setItem("image", response?.output_schema?.image)
-            localStorage.setItem("token", response?.output_schema?.token)
-            localStorage.setItem("customerId", response?.output_schema?.customer_id)
+          const success = response?.error_schema?.error_message === "SUCCESS"
+    
+          if (success) {
+            const { token, customer_id, username, image } = response.output_schema || {}
+    
+            console.log("login token:", token)
+            console.log("login customerId:", customer_id)
+    
+            document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
+            document.cookie = `customerId=${customer_id}; path=/; Secure; SameSite=Lax`
+    
+            localStorage.setItem("username", username || "")
+            localStorage.setItem("image", image || "")
+            localStorage.setItem("token", token || "")
+            localStorage.setItem("customerId", customer_id || "")
+    
             console.log("Valid input, masuk ke Dashboard")
             router.push("/")
           } else {
-            setAuthError(response?.error_schema?.error_message || " ")
+            setAuthError(response?.error_schema?.error_message || "Terjadi kesalahan")
           }
         })
+    
       } else if (type === "register" && isChecked) {
         await registerService(data, (response) => {
-          if (response.error_schema?.error_message === "SUCCESS") {
+          const success = response?.error_schema?.error_message === "SUCCESS"
+    
+          if (success) {
+            const { customer_id, status } = response.output_schema || {}
+            const contactKey = data.email ? "email" : "phone_number"
+            const contactValue = data.email || data.phone_number
+    
             console.log("Valid input, masuk ke OTP...")
-            localStorage.setItem(data.email ? "email" : "phone_number", data.email || data.phone_number)
-            document.cookie = `status=${response?.output_schema?.status}; path=/; Secure; SameSite=Lax`
-            localStorage.setItem("customerId", response?.output_schema?.customer_id || "Tidak ada user id")
+    
+            localStorage.setItem(contactKey, contactValue)
+            localStorage.setItem("customerId", customer_id || "Tidak ada user id")
+            document.cookie = `status=${status}; path=/; Secure; SameSite=Lax`
+    
             router.push("/otp")
           } else {
-            setAuthError(response?.error_schema?.error_message || " ")
+            setAuthError(response?.error_schema?.error_message || "Terjadi kesalahan")
           }
         })
       }
+    
     } catch (error) {
-      const err = error as { status: number }
-
+      const err = error as { status?: number }
+    
       if (err.status === 401) {
         setAuthError("Username atau Password Tidak Sesuai")
       } else {
         setAuthError("Terjadi kesalahan saat login")
       }
+    
     } finally {
       localStorage.setItem("otpType", "register")
       setIsLoading(false)

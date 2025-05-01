@@ -42,3 +42,47 @@
 // //             "/profile/edit-profile", "/profile/edit-address", 
 // //             "/profile/edit-password", "/cart", "/cart/checkout"],
 // // };
+
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export async function middleware(request: NextRequest) {
+  const userId = request.cookies.get("userId")?.value;
+  const token = request.cookies.get("token")?.value;
+
+  const pathname = request.nextUrl.pathname;
+
+  // Routes that don't require authentication
+  const publicRoutes = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/otp",
+    "/input-biodata",
+    "/input-email-otp",
+    "/input-address",
+    "/input-confirmation"
+  ];
+
+  const startsWithRoutes = [
+    "/product",
+    "/shop"
+  ];
+
+  const isAllowed =
+    publicRoutes.includes(pathname) ||
+    startsWithRoutes.some(route => pathname.startsWith(route));
+
+  // If userId or token is missing AND trying to access non-allowed route
+  if ((!userId || !token) && !isAllowed) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
+}
+// export const config = {
+//   matcher: ["/login", "/chat", "/profile", "/order-history", 
+//             "/profile/edit-profile", "/profile/edit-address", 
+//             "/profile/edit-password", "/cart", "/cart/checkout"],
+// };
+

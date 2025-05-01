@@ -11,7 +11,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useEffect, useState } from "react"
 import { format, isValid, parse } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
 import { ChevronDown } from "lucide-react"
 import { id } from "date-fns/locale"
 import { X } from "lucide-react"
@@ -23,6 +22,8 @@ import { ProfileResponse } from "@/types/profile"
 import ProfileFormSkeleton from "./ProfileFormSkeleton"
 import { EditProfileRequestProps, EditProfileResponseProps } from "@/types/editProfile"
 import { useRouter } from "next/navigation"
+import { BirthdayCalendar } from "@/components/ui/birthday-calendar"
+import LoadingPopup from "../../LoadingPopUp"
 
 const EditProfileBody = () => {
   const router = useRouter()
@@ -295,7 +296,7 @@ const EditProfileBody = () => {
                         </div>
                       </PopoverTrigger>
                       <PopoverContent className='w-auto p-0'>
-                        <Calendar
+                        <BirthdayCalendar
                           mode='single'
                           selected={date}
                           onSelect={setDate}
@@ -304,7 +305,7 @@ const EditProfileBody = () => {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  {loadingSubmit && <div className='hidden lg:block h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark'></div>}
+                  {loadingSubmit && <LoadingPopup/>}
                   <Button
                     type='submit'
                     className='w-[200px] h-[48px] mt-3 text-white text-[14px] self-center lg:self-start font-medium bg-custom-gradient-tr hover:opacity-90'

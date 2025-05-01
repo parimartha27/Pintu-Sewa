@@ -43,24 +43,32 @@ const Review = () => {
           rating: searchParams.get("rating") || "4",
           // reviewTopics: searchParams.get("reviewTopics") || "kondisi barang",
         };
-  
+
         const reviewDetailRes = await axios.get<ProductReviewResponse>(
           `${productReviewBaseUrl}/${id}?hasMedia=${filter.hasMedia}&rating=${filter.rating}`
         );
-  
+
         setProductReview(reviewDetailRes.data.output_schema.content);
         console.log("review Detail:", reviewDetailRes.data.output_schema);
         setProductReviewError("");
       } catch (error) {
-        console.error("Tidak ada review untuk produk: " + error);
-        setProductReviewError("Tidak Ada Ulasan Untuk Produk Ini");
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 404) {
+            console.warn("Tidak ada review untuk produk ini.");
+            setProductReviewError("Tidak Ada Ulasan Untuk Produk Ini");
+          } else {
+            console.error("Terjadi kesalahan:", error.message);
+          }
+        } else {
+          console.error("Unexpected error", error);
+        }
       } finally {
         setLoading(false);
       }
     };
-  
+
     if (id) fetchData();
-  }, [searchParams, id]); 
+  }, [searchParams, id]);
 
   return (
     <div className="px-2 pt-8 flex">
