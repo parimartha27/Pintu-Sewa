@@ -79,7 +79,6 @@ const CheckOutBody = () => {
     if (!customerId || !transactionIds.length) {
       return
     }
-
     fetchCheckoutItemsAndPaymentDetail()
   }, [customerId, transactionIds])
 

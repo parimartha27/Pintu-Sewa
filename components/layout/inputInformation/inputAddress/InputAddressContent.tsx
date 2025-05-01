@@ -3,13 +3,11 @@
 import LabelledDropdown from "@/components/fragments/editProfile/LabelledDropdown"
 import LabelledInput from "@/components/fragments/editProfile/LabelledInput"
 import { Button } from "@/components/ui/button"
+import { getIdByText, getTextById } from "@/hooks/useGetWilayahByTextOrId"
+import { fetchKabupaten, fetchKecamatan, fetchKodePos, fetchProvinsi } from "@/services/addressService"
+import { dataAlamatProps } from "@/types/dataAlamat"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-
-interface dataAlamatProps {
-  id: string
-  text: string
-}
 
 const InputAddressContentLayout = () => {
   const router = useRouter()
@@ -32,22 +30,12 @@ const InputAddressContentLayout = () => {
     kecamatan: "",
   })
 
-  const getTextById = (id: string | number, data: dataAlamatProps[]) => {
-    const item = data.find((item) => item.id === id.toString())
-    return item ? item.text : ""
-  }
-
-  const getIdByText = (text: string, data: dataAlamatProps[]): string | number => {
-    const item = data.find((item) => item.text === text)
-    return item ? item.id : ""
-  }
-
   useEffect(() => {
-    setIsClient(true) // Set to true when component mounts on client side
+    setIsClient(true)
   }, [])
 
   useEffect(() => {
-    if (!isClient) return // Don't run on server side
+    if (!isClient) return
 
     setJalan(localStorage.getItem("jalan") || "")
     setCatatan(localStorage.getItem("catatan") || "")
@@ -68,7 +56,7 @@ const InputAddressContentLayout = () => {
     e.preventDefault()
     if (!validateForm()) return
 
-    if (!isClient) return // Don't access localStorage on server side
+    if (!isClient) return 
 
     localStorage.setItem("jalan", jalan)
     localStorage.setItem("catatan", catatan)
@@ -81,84 +69,89 @@ const InputAddressContentLayout = () => {
   }
 
   useEffect(() => {
-    const fetchProvinsi = async () => {
+    const loadProvinsi = async () => {
       try {
-        const response = await fetch("https://alamat.thecloudalert.com/api/provinsi/get/")
-        const data = await response.json()
+        const data = await fetchProvinsi()
         if (data.status === 200) {
           setProvinsi(data.result)
           if (isClient) {
-            setSelectedProvinsi(getIdByText(localStorage.getItem("provinsi") || "1", data.result) || data.result[0]?.id || "")
+            const stored = localStorage.getItem("provinsi") || "1"
+            const matched = getIdByText(stored, data.result)
+            setSelectedProvinsi(matched || data.result[0]?.id || "")
           }
         }
-      } catch (error) {
-        console.error("Gagal mengambil data provinsi:", error)
+      } catch (err) {
+        console.error("Gagal mengambil data provinsi:", err)
       }
     }
-    fetchProvinsi()
+  
+    loadProvinsi()
   }, [isClient])
-
+  
   useEffect(() => {
-    const fetchKabupaten = async () => {
-      if (selectedProvinsi) {
-        try {
-          const response = await fetch(`https://alamat.thecloudalert.com/api/kabkota/get/?d_provinsi_id=${selectedProvinsi}`)
-          const data = await response.json()
-          if (data.status === 200) {
-            setKabupaten(data.result)
-            if (isClient) {
-              setSelectedKabupaten(getIdByText(localStorage.getItem("kabupaten") || "1", data.result) || data.result[0]?.id || "")
-            }
+    const loadKabupaten = async () => {
+      if (!selectedProvinsi) return
+      try {
+        const data = await fetchKabupaten(selectedProvinsi)
+        if (data.status === 200) {
+          setKabupaten(data.result)
+          if (isClient) {
+            const stored = localStorage.getItem("kabupaten") || "1"
+            const matched = getIdByText(stored, data.result)
+            setSelectedKabupaten(matched || data.result[0]?.id || "")
           }
-        } catch (error) {
-          console.error("Gagal mengambil data kabupaten:", error)
         }
+      } catch (err) {
+        console.error("Gagal mengambil data kabupaten:", err)
       }
     }
-    fetchKabupaten()
+  
+    loadKabupaten()
   }, [selectedProvinsi, isClient])
-
+  
   useEffect(() => {
-    const fetchKecamatan = async () => {
-      if (selectedKabupaten) {
-        try {
-          const response = await fetch(`https://alamat.thecloudalert.com/api/kecamatan/get/?d_kabkota_id=${selectedKabupaten}`)
-          const data = await response.json()
-          if (data.status === 200) {
-            setKecamatan(data.result)
-            if (isClient) {
-              setSelectedKecamatan(getIdByText(localStorage.getItem("kecamatan") || "1", data.result) || data.result[0]?.id || "")
-            }
+    const loadKecamatan = async () => {
+      if (!selectedKabupaten) return
+      try {
+        const data = await fetchKecamatan(selectedKabupaten)
+        if (data.status === 200) {
+          setKecamatan(data.result)
+          if (isClient) {
+            const stored = localStorage.getItem("kecamatan") || "1"
+            const matched = getIdByText(stored, data.result)
+            setSelectedKecamatan(matched || data.result[0]?.id || "")
           }
-        } catch (error) {
-          console.error("Gagal mengambil data kecamatan:", error)
         }
+      } catch (err) {
+        console.error("Gagal mengambil data kecamatan:", err)
       }
     }
-    fetchKecamatan()
+  
+    loadKecamatan()
   }, [selectedKabupaten, isClient])
-
+  
   useEffect(() => {
-    const fetchKodePos = async () => {
-      if (selectedKabupaten && selectedKecamatan) {
-        try {
-          const response = await fetch(`https://alamat.thecloudalert.com/api/kodepos/get/?d_kabkota_id=${selectedKabupaten}&d_kecamatan_id=${selectedKecamatan}`)
-          const data = await response.json()
-          if (data.status === 200) {
-            setKodePos(data.result)
-            if (isClient) {
-              setSelectedKodePos(getIdByText(localStorage.getItem("kodepos") || "1", data.result) || data.result[0]?.id || "")
-            }
-          } else {
-            setKodePos([])
-            setSelectedKodePos("")
+    const loadKodePos = async () => {
+      if (!selectedKabupaten || !selectedKecamatan) return
+      try {
+        const data = await fetchKodePos(selectedKabupaten, selectedKecamatan)
+        if (data.status === 200) {
+          setKodePos(data.result)
+          if (isClient) {
+            const stored = localStorage.getItem("kodepos") || "1"
+            const matched = getIdByText(stored, data.result)
+            setSelectedKodePos(matched || data.result[0]?.id || "")
           }
-        } catch (error) {
-          console.log("Gagal mengambil data kode pos:", error)
+        } else {
+          setKodePos([])
+          setSelectedKodePos("")
         }
+      } catch (err) {
+        console.error("Gagal mengambil data kode pos:", err)
       }
     }
-    fetchKodePos()
+  
+    loadKodePos()
   }, [selectedKabupaten, selectedKecamatan, isClient])
 
   if (!isClient) {

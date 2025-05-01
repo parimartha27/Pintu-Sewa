@@ -15,10 +15,7 @@ import axios from "axios";
 import { ErrorSchema } from "@/types/errorSchema";
 import { ProductCardProps } from "@/types/productCard";
 import { ProductDetailShopProps } from "@/types/shop";
-import {
-  productBaseUrl,
-  shopProductBaseUrl,
-} from "@/types/globalVar";
+import { productBaseUrl, shopProductBaseUrl } from "@/types/globalVar";
 import NoProduct from "@/components/fragments/NoProduct";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
 
@@ -70,13 +67,18 @@ const ProductDetailBody = () => {
   }, [id]);
 
   if (loading) {
-    return <ProductDetailSkeleton />;
+    return (
+      <>
+        <ProductDetailSkeleton />
+        <div className="min-h-[1400px]"></div>
+      </>
+    );
   }
 
   if (!productDetail) {
     return (
       <div className="w-full flex items-center justify-center h-[50vh]">
-        <NoProduct/>
+        <NoProduct />
       </div>
     );
   }

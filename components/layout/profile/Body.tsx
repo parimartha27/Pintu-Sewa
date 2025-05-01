@@ -29,23 +29,27 @@ const ProfileBody = () => {
   const [, setError] = useState("")
 
   useEffect(() => {
-    axios
-      .get(`${customerBaseUrl}/${customerId}`)
-      .then((res) => {
-        if (res.data.error_schema?.error_code === "PS-00-000") {
-          setCustomerData(res.data.output_schema)
-          console.log(res.data.output_schema)
+    const fetchCustomerData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${customerBaseUrl}/${customerId}`);
+        
+        if (response.data.error_schema?.error_code === "PS-00-000") {
+          setCustomerData(response.data.output_schema);
+          console.log(response.data.output_schema);
+          setError("");
         } else {
-          setError("Gagal fetch data customer.")
+          setError("Gagal fetch data customer.");
         }
-      })
-      .catch((err) => {
-        console.error(err)
-        setError("Terjadi kesalahan saat fetching.")
-      })
-      .finally(() => {
+      } catch (err) {
+        console.error(err);
+        setError("Terjadi kesalahan saat fetching.");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+  
+    if (customerId) fetchCustomerData();
   }, [customerId]);
 
   return (
