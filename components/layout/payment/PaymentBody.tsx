@@ -130,6 +130,9 @@ const PaymentBody = () => {
       "BCA Virtual Account": "/BCA.svg",
       "BRI Virtual Account": "/BRI.svg",
       "BNI Virtual Account": "/BNI.svg",
+      "Cimb Niaga": "/cimbNiaga.jpg",
+      "Ovo": "/ovo.jpg",
+      "Gopay": "/gopay.jpg",
     };
     return logos[method] || "/BCA.svg";
   };
@@ -181,13 +184,13 @@ const PaymentBody = () => {
                   <CardTitle className="text-lg md:text-xl font-semibold text-color-primary  w-full">
                     {paymentData.method}
                   </CardTitle>
-                  <div className="hidden md:flex items-center justify-center w-[200px] h-[40px]">
+                  <div className="hidden md:flex items-center justify-center w-[200px] h-[40px] ">
                     <Image
                       src={getBankLogo(paymentData.method)}
                       alt={`${paymentData.method} Logo`}
                       width={48}
                       height={24}
-                      className="w-[100px] h-[100px]"
+                      className="w-[100px] h-[100px] py-4"
                     />
                   </div>
                 </CardHeader>

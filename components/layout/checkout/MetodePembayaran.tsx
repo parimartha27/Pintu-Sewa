@@ -2,6 +2,9 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import BCA from "@/public/BCA.svg"
 import BRI from "@/public/BRI.svg"
 import BNI from "@/public/BNI.svg"
+import CimbNiaga from "@/public/cimbNiaga.jpg"
+import Gopay from "@/public/gopay.jpg"
+import Ovo from "@/public/ovo.jpg"
 import Money from "@/public/money.svg"
 import MetodePembayaranFragments from "@/components/fragments/checkout/MetodePembayaran"
 import Image from "next/image"
@@ -45,38 +48,38 @@ const MetodePembayaranLayout = ({ checkoutDetail }: { checkoutDetail?: Transacti
           />
 
           <MetodePembayaranFragments
-            nama='BCA Virtual Account'
+            nama='BRI Virtual Account'
             gambar={BRI}
             isSelected={selectedMethod === "BRI Virtual Account"}
             onSelect={() => setSelectedMethod("BRI Virtual Account")}
           />
 
           <MetodePembayaranFragments
-            nama='BCA Virtual Account'
+            nama='BNI Virtual Account'
             gambar={BNI}
             isSelected={selectedMethod === "BNI Virtual Account"}
             onSelect={() => setSelectedMethod("BNI Virtual Account")}
           />
         </div>
 
-        <div className='hidden md:flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3 lg:ml-[147px]'>
+        <div className='flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3 lg:ml-[147px]'>
           <MetodePembayaranFragments
             nama='CIMB Niaga'
-            gambar={BCA}
+            gambar={CimbNiaga.src}
             isSelected={selectedMethod === "CIMB Niaga"}
             onSelect={() => setSelectedMethod("CIMB Niaga")}
           />
 
           <MetodePembayaranFragments
             nama='Gopay'
-            gambar={BRI}
+            gambar={Gopay.src}
             isSelected={selectedMethod === "Gopay"}
             onSelect={() => setSelectedMethod("Gopay")}
           />
 
           <MetodePembayaranFragments
             nama='Ovo'
-            gambar={BNI}
+            gambar={Ovo.src}
             isSelected={selectedMethod === "Ovo"}
             onSelect={() => setSelectedMethod("Ovo")}
           />
