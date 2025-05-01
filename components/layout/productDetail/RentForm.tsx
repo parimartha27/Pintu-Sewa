@@ -186,7 +186,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           "transactionIds",
           JSON.stringify(res.data.output_schema.transaction_ids)
         );
-        router.push("/cart/checkout");
+        router.push("/checkout");
       }
     } catch (error) {
       console.error(error);
