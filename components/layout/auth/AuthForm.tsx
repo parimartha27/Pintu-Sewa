@@ -115,7 +115,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                       className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] leading-none"
                     >
                       Saya menyetujui <span className="font-bold">syarat</span>{" "}
-                      dan <span className="font-bold">ketentuan</span> Siap Sewa
+                      dan <span className="font-bold">ketentuan</span> Pintu Sewa
                     </label>
                   </div>
                 ) : (

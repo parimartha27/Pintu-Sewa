@@ -90,12 +90,15 @@ const DashboardBody = () => {
         }
         setRecommendedProductsLoading(false);
 
-        const nearCustomer = await fetchNearCustomerProducts(customerId || "");
-        if (nearCustomer.error_schema.error_message === "SUCCESS") {
-          setNearCustomerProducts(nearCustomer.output_schema);
+        if (customerId != null) {
+          const nearCustomer = await fetchNearCustomerProducts(
+            customerId || ""
+          );
+          console.log("near customer: ", nearCustomer);
+          if (nearCustomer.error_schema.error_message === "SUCCESS") {
+            setNearCustomerProducts(nearCustomer.output_schema);
+          }
         }
-
-        console.log("near customer: ", nearCustomer);
 
         setTimeout(() => {
           setNearCustomerProductsLoading(false);
