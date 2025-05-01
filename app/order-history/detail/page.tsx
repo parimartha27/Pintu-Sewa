@@ -8,7 +8,6 @@ import Footer from "@/components/layout/Footer"
 
 export default function TransactionDetailPage() {
   
-
   return (
     <main className='min-h-screen bg-gray-50'>
       <Navbar />

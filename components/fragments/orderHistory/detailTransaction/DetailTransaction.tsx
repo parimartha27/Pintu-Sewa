@@ -103,7 +103,7 @@ export default function TransactionDetail() {
     }
 
     fetchTransactionDetail()
-  }, [referenceNumber])
+  }, [])
 
   const handleReturnProduct = () => {
     setShowReturnForm(true)
