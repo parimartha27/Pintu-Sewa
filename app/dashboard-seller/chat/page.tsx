@@ -8,8 +8,8 @@ const ChatSeller = () => {
   return (
     <SellerLayout>
       <div className='flex w-full min-h-[500px] shadow-sm rounded-xl border'>
-        <ContactList />
-        <ChatRoomLayout />
+        {/* <ContactList />
+        <ChatRoomLayout /> */}
         {/* jika tidak ada history chat */}
         {/* <NoChat/> */}
         {/* jika tidak ada history chat */}
