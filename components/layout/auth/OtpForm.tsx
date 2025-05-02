@@ -138,6 +138,9 @@ const OtpForm = ({ className }: OtpFormProps) => {
       if (response.data.error_schema?.error_message === "SUCCESS") {
         document.cookie = "status=otp_verify; path=/; Secure; SameSite=Lax"
 
+        localStorage.removeItem("username")
+        localStorage.removeItem("password")
+
         router.push("/input-biodata")
       } else {
         setError("OTP yang diinput tidak sesuai")

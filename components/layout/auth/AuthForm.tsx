@@ -166,7 +166,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                   </div>
                 )}
                 {isLoading && (
-                  <LoadingPopup message="Sedang Memproses Data Anda!"/>
+                  <LoadingPopup message="Sedang Memproses Data Anda..."/>
                 )}
                 {authError && (
                   <p className="text-red-500 text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] mt-1">

@@ -9,6 +9,8 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { createCustomerBaseUrl } from "@/types/globalVar"
 import LoadingPopup from "../../LoadingPopUp"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { IoMdAlert } from "react-icons/io";
 
 interface CustomerRequest {
   id: string
@@ -48,6 +50,8 @@ const InputConfirmationContentLayout = () => {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [imageSrc, setImageSrc] = useState(Guest)
+  const [alertOpen, setAlertOpen] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>("")
 
   useEffect(() => {
     const data: Record<string, string> = {}
@@ -82,7 +86,7 @@ const InputConfirmationContentLayout = () => {
         notes: formData.catatan,
       }
 
-      console.log(payload)
+      console.log("Payload: ", payload)
 
       const response = await axios.post<CustomerResponse>(createCustomerBaseUrl, payload)
 
@@ -102,8 +106,14 @@ const InputConfirmationContentLayout = () => {
         router.push("/input-biodata")
       }
     } catch (error) {
-      console.error("Terjadi kesalahan:", error)
-      alert("Gagal menyimpan data. Silakan coba lagi.")
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error_schema?.error_message || error.message || "Gagal menyimpan biodata"
+        setAlertOpen(true)
+        setErrorMessage(errorMessage)
+      } else {
+        setAlertOpen(true)
+        setErrorMessage("Gagal menyimpan biodata")
+      }
     } finally {
       setLoading(false)
     }
@@ -111,6 +121,16 @@ const InputConfirmationContentLayout = () => {
 
   return (
     <>
+      <div>
+        {alertOpen && (
+          <Alert className="border-2 border-red-700 mb-4">
+            <IoMdAlert size={30} color="b91c1c" alignmentBaseline="middle" />
+            <AlertTitle className="text-red-700 ml-4 text-base font-semibold md:text-">Terjadi Kesalahan</AlertTitle>
+            <AlertDescription className="text-red-700 ml-4">{errorMessage}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+      {loading && <LoadingPopup message={"Memproses Data Anda"} />}
       {isModalOpen && (
         <div className='fixed mt-0 inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 '>
           <div className='relative flex justify-center items-center'>
@@ -199,7 +219,7 @@ const InputConfirmationContentLayout = () => {
               label='Catatan'
               input={formData.catatan || "-"}
             />
-            {loading && <LoadingPopup message={"Memproses Data Anda"} />}
+
             {!loading && (
               <div className='flex flex-col pt-2 lg:flex-row self-center lg:self-start space-y-3 lg:space-y-0 lg:space-x-6 lg:mt-[60px] w-full max-w-[250px] lg:max-w-none px-4 sm:px-0'>
                 <Button
