@@ -22,10 +22,11 @@ const SuccessPaymentModals = () => {
               className="w-[100px] h-[100px] lg:w-[200px] lg:h-[200px] self-center"
             />
             <p
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/dev/end-flow")}
               className="text-sm text-color-primaryDark hover:opacity-70 hover:cursor-pointer"
             >
-              Kembali Ke Dashboard
+              {/* Kembali Ke Dashboard */}
+              Selanjutnya
             </p>
           </CardContent>
         </Card>

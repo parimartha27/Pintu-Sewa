@@ -9,7 +9,7 @@ import Google from "../../../public/google.jpg";
 import RegisterImage from "../../../public/register.svg";
 import LoginImage from "../../../public/login.svg";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
 import {
   Card,
   CardContent,
@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
 import { useAuthForm } from "@/hooks/auth/useAuthForm";
 import LoadingPopup from "../LoadingPopUp";
 
@@ -27,6 +28,9 @@ interface AuthFormProps {
 }
 
 const AuthForm  = ({ type, className }: AuthFormProps) => {
+
+  const router = useRouter();
+
   const {
     emailOrPhone,
     password,
@@ -187,9 +191,10 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
             </div>
             <Button
               variant="outline"
-              onClick={() =>
-                signIn("google", { callbackUrl: "/", redirect: false })
-              }
+              // onClick={() =>
+              //   signIn("google", { callbackUrl: "/", redirect: false })
+              // }
+              onClick={()=>router.push("/dev")}
               className="w-full mb-5 h-[50px] xs:h-[54px] md:h-[48px] flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-400 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <Image
