@@ -9,11 +9,14 @@ import axios from "axios";
 import PaymentStepModals from "./PaymentStepModals";
 import LoadingPopup from "../LoadingPopUp";
 import SuccessPaymentModals from "./SuccessPaymentModals";
+import { AlertProps } from "@/types/alert";
+import Alert from "../Alert";
+import { set } from "date-fns";
 
 const PaymentBody = () => {
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [timeLeft,] = useState<string>("");
+  const [timeLeft] = useState<string>("");
   const [paymentData, setPaymentData] = useState({
     deadline: "",
     method: "Unknown Method",
@@ -22,6 +25,11 @@ const PaymentBody = () => {
   });
   const [isPaymentStepOpen, setIsPaymentStepOpen] = useState(false);
   const [isSuccessPaymentOpen, setIsSuccessPaymentOpen] = useState(false);
+  const [alertState, setAlertState] = useState<AlertProps>({
+    isOpen: false,
+    message: "",
+    isWrong: true,
+  });
   // const [referenceNumber] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("referenceNo") : null);
   // const [customerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
 
@@ -86,19 +94,19 @@ const PaymentBody = () => {
       const totalAmount = paymentData.totalAmount.replace(/\./g, "");
       const payload = {
         reference_numbers: referenceNumbers,
-        next_status: "Diproses"
-      }
+        next_status: "Diproses",
+      };
       console.log(payload);
       const updateStatusResponse = await axios.patch(
-        `${transactionDetailBaseUrl}/set-status`, payload
+        `${transactionDetailBaseUrl}/set-status`,
+        payload
       );
-  
-      if (updateStatusResponse.data.error_schema.error_code === "PS-00-000") {
 
+      if (updateStatusResponse.data.error_schema.error_code === "PS-00-000") {
         const paymentResponse = await axios.patch(
           `${walletBaseUrl}/payment?customerId=${customerId}&amount=${totalAmount}&refference_no=${referenceNumbers}`
         );
-  
+
         if (paymentResponse.data.error_schema.error_code === "PS-00-000") {
           localStorage.removeItem("grandTotalPayment");
           localStorage.removeItem("paymentMethod");
@@ -107,14 +115,22 @@ const PaymentBody = () => {
           localStorage.removeItem("referenceNo");
           setIsSuccessPaymentOpen(true);
         } else {
-          alert("Gagal memotong saldo, silakan coba lagi.");
+          setAlertState({
+            isOpen: true,
+            message: "Gagal mMmotong Saldo, Silakan Coba Lagi.",
+          })
         }
       } else {
-        alert("Gagal memperbarui status transaksi.");
+        setAlertState({
+          isOpen: true,
+          message: "Gagal Memperbaharui Status Transaksi",
+        })
       }
     } catch (error) {
-      console.error("Terjadi kesalahan saat memproses pembayaran:", error);
-      alert("Pembayaran gagal, silakan coba lagi.");
+      setAlertState({
+        isOpen: true,
+        message: "Pembayaran Gagal, Silahkan Coba Lagi",
+      })
     } finally {
       setIsLoading(false);
     }
@@ -131,17 +147,31 @@ const PaymentBody = () => {
       "BRI Virtual Account": "/BRI.svg",
       "BNI Virtual Account": "/BNI.svg",
       "Cimb Niaga": "/cimbNiaga.jpg",
-      "Ovo": "/ovo.jpg",
-      "Gopay": "/gopay.jpg",
+      Ovo: "/ovo.jpg",
+      Gopay: "/gopay.jpg",
     };
     return logos[method] || "/BCA.svg";
   };
 
   return (
     <>
-    {isSuccessPaymentOpen && <SuccessPaymentModals/>}
-    {isLoading && <LoadingPopup/>}
-    <PaymentStepModals isOpen={isPaymentStepOpen} onClose={() => setIsPaymentStepOpen(false)}/>
+      {alertState.isOpen && (
+        <Alert
+          message={alertState.message}
+          isOpen={alertState.isOpen}
+          onClose={() =>
+            setAlertState({ isOpen: false, message: "", isWrong: true })
+          }
+          isWrong={alertState.isWrong}
+        />
+      )}
+
+      {isSuccessPaymentOpen && <SuccessPaymentModals />}
+      {isLoading && <LoadingPopup />}
+      <PaymentStepModals
+        isOpen={isPaymentStepOpen}
+        onClose={() => setIsPaymentStepOpen(false)}
+      />
       <div className="flex flex-col md:flex-row w-full m-1 justify-self-center md:p-3 md:px-6 md:pt-12 max-w-[1400px] space-y-4 md:space-y-0 md:space-x-8 bg-color-layout">
         <div className="w-full p-2 md:p-0">
           <h1 className="font-semibold text-color-primary text-[24px] md:text-[28px] text-center md:text-start">
@@ -223,7 +253,10 @@ const PaymentBody = () => {
                   </div>
 
                   <div className="pt-4 text-center border-t">
-                    <p onClick={() => setIsPaymentStepOpen(true)} className="font-medium text-color-secondary hover:underline cursor-pointer text-sm md:text-base">
+                    <p
+                      onClick={() => setIsPaymentStepOpen(true)}
+                      className="font-medium text-color-secondary hover:underline cursor-pointer text-sm md:text-base"
+                    >
                       Lihat Cara Pembayaran
                     </p>
                   </div>

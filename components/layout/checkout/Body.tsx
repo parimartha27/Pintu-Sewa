@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import NoCart from "@/public/noCart.svg";
+import { AlertProps } from "@/types/alert";
+import Alert from "../Alert";
 
 const CheckOutBody = () => {
   const [customerId, setCustomerId] = useState<string | null>(null);
@@ -28,6 +30,12 @@ const CheckOutBody = () => {
     useState<TransactionResponseProps>();
   const [addressLoading, setAddressLoading] = useState(true);
   const [itemLoading, setItemLoading] = useState(true);
+
+  const [alertState, setAlertState] = useState<AlertProps>({
+    isOpen: false,
+    message: "",
+    isWrong: true,
+  });
 
   const fetchCheckoutItemsAndPaymentDetail = async () => {
     try {
@@ -85,7 +93,10 @@ const CheckOutBody = () => {
         );
         setAddress(addressRes.data.output_schema);
       } catch {
-        alert("Gagal mengambil data alamat");
+        setAlertState({
+          isOpen: true,
+          message: "Gagal mengambil data alamat",
+        })
       } finally {
         setAddressLoading(false);
       }
@@ -121,41 +132,53 @@ const CheckOutBody = () => {
   }
 
   return (
-    <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-color-layout p-2">
-      <div className="flex flex-col">
-        <div className="flex flex-col w-full mt-[28px] space-y-4">
-          <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">
-            Pembayaran
-          </h2>
-          {addressLoading ? (
-            <CheckoutAddressSkeleton />
+    <>
+      {alertState.isOpen && (
+        <Alert
+          message={alertState.message}
+          isOpen={alertState.isOpen}
+          onClose={() =>
+            setAlertState({ isOpen: false, message: "", isWrong: true })
+          }
+          isWrong={alertState.isWrong}
+        />
+      )}{" "}
+      <div className="flex flex-col mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-color-layout p-2">
+        <div className="flex flex-col">
+          <div className="flex flex-col w-full mt-[28px] space-y-4">
+            <h2 className="w-full text-xl md:text-2xl font-semibold text-color-primary">
+              Pembayaran
+            </h2>
+            {addressLoading ? (
+              <CheckoutAddressSkeleton />
+            ) : (
+              <AddressForm address={address as AddressProps} />
+            )}
+          </div>
+
+          {itemLoading ? (
+            <CheckoutShopAndItemsSkeleton />
           ) : (
-            <AddressForm address={address as AddressProps} />
+            <div className="flex flex-col pb-3 pt-0 mt-8">
+              {checkoutDetail?.transactions.map((transaction) => (
+                <CheckoutProductForm
+                  key={transaction.shop_id}
+                  checkoutDetail={transaction}
+                  onRefresh={onRefresh}
+                />
+              ))}
+            </div>
           )}
         </div>
-
         {itemLoading ? (
-          <CheckoutShopAndItemsSkeleton />
+          <CheckoutPaymentDetailSkeleton />
         ) : (
-          <div className="flex flex-col pb-3 pt-0 mt-8">
-            {checkoutDetail?.transactions.map((transaction) => (
-              <CheckoutProductForm
-                key={transaction.shop_id}
-                checkoutDetail={transaction}
-                onRefresh={onRefresh}
-              />
-            ))}
+          <div className="mt-8">
+            <MetodePembayaranLayout checkoutDetail={checkoutDetail} />
           </div>
         )}
       </div>
-      {itemLoading ? (
-        <CheckoutPaymentDetailSkeleton />
-      ) : (
-        <div className="mt-8">
-          <MetodePembayaranLayout checkoutDetail={checkoutDetail} />
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

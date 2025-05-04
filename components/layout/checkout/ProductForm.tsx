@@ -20,6 +20,8 @@ import { formatToRupiah } from "@/hooks/useConvertRupiah";
 import CustomModal from "../modalsTemplate";
 import axios from "axios";
 import { checkoutBaseUrl } from "@/types/globalVar";
+import Alert from "../Alert";
+import { is } from "date-fns/locale";
 
 const courierOptions = [
   { id: "1", name: "JNE" },
@@ -48,10 +50,17 @@ const CheckoutProductForm = ({
     string[]
   >([]);
   const [customerId, setCustomerId] = useState<string>("");
+  const [alertState, setAlertState] = useState<AlertProps>({
+    isOpen: false,
+    message: "",
+    isWrong: true,
+  });
 
   useEffect(() => {
     if (checkoutDetail?.rented_items) {
-      const transactionIds = checkoutDetail.rented_items.map((item) => item.transaction_id);
+      const transactionIds = checkoutDetail.rented_items.map(
+        (item) => item.transaction_id
+      );
       setRentedItemsTransactionIds(transactionIds);
     }
   }, [checkoutDetail]);
@@ -68,7 +77,7 @@ const CheckoutProductForm = ({
       customer_id: customerId,
       shipping_partner_id: selectedCourier,
     };
-    console.log("request edit ekspedisi payload:", payload)
+    console.log("request edit ekspedisi payload:", payload);
     try {
       const res = await axios.patch(`${checkoutBaseUrl}/shipping`, payload);
       if (res.data.error_schema.error_message === "SUCCESS") {
@@ -77,13 +86,25 @@ const CheckoutProductForm = ({
         onRefresh();
       }
     } catch (e) {
-      alert("Gagal Mengubah Opsi Pengiriman");
-      console.log("error update shipping: " + e);
+      setAlertState({
+        isOpen: true,
+        message: "Gagal Mengubah Opsi Pengiriman: "+ e,
+      })
     }
   };
 
   return (
     <>
+      {alertState.isOpen && (
+        <Alert
+          message={alertState.message}
+          isOpen={alertState.isOpen}
+          onClose={() =>
+            setAlertState({ isOpen: false, message: "", isWrong: true })
+          }
+          isWrong={alertState.isWrong}
+        />
+      )}
       <CustomModal
         isOpen={isCourierModalOpen}
         onClose={() => setIsCourierModalOpen(false)}

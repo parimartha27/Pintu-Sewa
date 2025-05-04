@@ -111,7 +111,7 @@ const Review = () => {
           {loading ? (
             <ReviewSkeleton />
           ) : productReviewError ? (
-            <p className="text-color-secondary text-2xl font-semibold text-center pt-8">
+            <p className="text-color-secondary md:text-xl xl:text-2xl font-semibold text-center pt-8">
               {productReviewError}
             </p>
           ) : productReview && productReview.length > 0 ? (
@@ -119,7 +119,7 @@ const Review = () => {
               <UserReview key={index} reviewDetail={item} />
             ))
           ) : (
-            <p className="text-color-secondary text-lg font-semibold text-center pt-8">
+            <p className="text-color-secondary lg:text-xl font-semibold text-center pt-8">
               Belum ada ulasan untuk produk ini.
             </p>
           )}
