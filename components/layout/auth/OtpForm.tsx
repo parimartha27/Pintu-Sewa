@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { InputOTP, InputOTPSlot } from "@/components/ui/input-otp"
 import axios from "axios"
 import { otpBaseUrl } from "@/types/globalVar"
+import LoadingPopup from "../LoadingPopUp"
 
 interface OtpFormProps {
   className?: string
@@ -132,14 +133,13 @@ const OtpForm = ({ className }: OtpFormProps) => {
         customer_id: customerId,
       }
 
-      console.log(payload)
-
       const response = await axios.post<OtpRespone>(`${otpBaseUrl}/verify`, payload)
 
       if (response.data.error_schema?.error_message === "SUCCESS") {
-        console.log("OTP valid, menyimpan data dan mengarahkan ke input biodata...")
-
         document.cookie = "status=otp_verify; path=/; Secure; SameSite=Lax"
+
+        localStorage.removeItem("username")
+        localStorage.removeItem("password")
 
         router.push("/input-biodata")
       } else {
@@ -256,21 +256,14 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
               {error && <p className='text-red-600 text-xs md:text-lg mt-3 '>{error}</p>}
 
-              {isLoading && (
-                <div className='flex justify-center items-center mt-5'>
-                  <div className='h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-color-primaryDark'></div>
-                </div>
-              )}
+              {isLoading && <LoadingPopup message={"Memverifikasi kode OTP Anda..."} />}
 
               <Button
                 onClick={async () => {
                   const response = await axios.get<OtpAccessValid>(`${otpBaseUrl}/valid?customerId=${localStorage.getItem("customerId")}`)
                   setVerifyCount(response.data.output_schema.verify_count)
                   setResendOtpCount(response.data.output_schema.resend_otp_count)
-                  console.log("verify count" + verifyCount)
-                  console.log("resend count" + resendOtpCount)
                   if (verifyCount > 10) {
-                    console.log("salah mulu otp lu cuy")
                     router.push("/")
                   }
                 }}

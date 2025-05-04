@@ -203,14 +203,12 @@ const InputBiodataContent = () => {
           </div>
         </div>
 
-        <div className="flex flex-col w-full">
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
-            <div className="flex flex-col">
-              {errors.username && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.username}
-                </p>
-              )}
+        <div className='flex flex-col w-full'>
+          <form
+            onSubmit={handleSubmit}
+            className='flex flex-col space-y-5'
+          >
+            <div className='flex flex-col'>
               <LabelledInput
                 label="Username"
                 htmlFor="username"
@@ -220,13 +218,9 @@ const InputBiodataContent = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 maxLength={15}
               />
+              {errors.username && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.username}</p>}
             </div>
-            <div className="flex flex-col">
-              {errors.fullname && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.fullname}
-                </p>
-              )}
+            <div className='flex flex-col'>
               <LabelledInput
                 label="Nama Lengkap"
                 htmlFor="fullname"
@@ -236,13 +230,9 @@ const InputBiodataContent = () => {
                 onChange={(e) => setFullname(e.target.value)}
                 maxLength={25}
               />
+              {errors.fullname && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.fullname}</p>}
             </div>
-            <div className="flex flex-col">
-              {errors.email && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.email}
-                </p>
-              )}
+            <div className='flex flex-col'>
               <LabelledInput
                 label="Email"
                 htmlFor="email"
@@ -251,13 +241,9 @@ const InputBiodataContent = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.email}</p>}
             </div>
-            <div className="flex flex-col">
-              {errors.handphone && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.handphone}
-                </p>
-              )}
+            <div className='flex flex-col'>
               <LabelledInput
                 label="Nomor Telepon"
                 htmlFor="handphone"
@@ -266,13 +252,9 @@ const InputBiodataContent = () => {
                 value={handphone}
                 onChange={(e) => setHandphone(e.target.value)}
               />
+              {errors.handphone && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.handphone}</p>}
             </div>
-            <div className="flex flex-col">
-              {errors.password && (
-                <p className="text-red-500 text-xs md:text-md">
-                  {errors.password}
-                </p>
-              )}
+            <div className='flex flex-col'>
               <LabelledInput
                 label="Password"
                 htmlFor="password"
@@ -281,6 +263,7 @@ const InputBiodataContent = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {errors.password && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.password}</p>}
             </div>
 
             <Section Header="Jenis Kelamin">
@@ -313,12 +296,7 @@ const InputBiodataContent = () => {
             <div className="relative ">
               <Popover>
                 <PopoverTrigger asChild>
-                  <div className="flex flex-col">
-                    {errors.date && (
-                      <p className="text-red-500 text-xs md:text-md">
-                        {errors.date}
-                      </p>
-                    )}
+                  <div className='flex flex-col'>
                     <div>
                       <LabelledInput
                         label="Tanggal Lahir"
@@ -335,6 +313,7 @@ const InputBiodataContent = () => {
                       />
                       <ChevronDown className="h-4 w-4 absolute right-3 top-14 -translate-y-1/2 text-[#73787B] pointer-events-none" />
                     </div>
+                    {errors.date && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.date}</p>}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">

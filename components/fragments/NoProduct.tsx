@@ -1,9 +1,5 @@
-const NoProduct = () => {
-  return (
-    <p className="text-center text-color-secondary font-semibold text-xl lg:text-2xl w-full">
-      Tidak Ada Produk
-    </p>
-  );
-};
+const NoProduct = ({ message }: { message: string }) => {
+  return <p className='text-center text-color-secondary font-semibold text-3xl w-full'>{message}</p>
+}
 
-export default NoProduct;
+export default NoProduct

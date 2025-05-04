@@ -121,9 +121,7 @@ export async function registerService(
       `${authBaseUrl}/register`,
       data
     );
-    console.log("Register Request:", data);
-    console.log("Register Response:", response.data);
-
+  
     if (response.data.output_schema) {
       document.cookie = `status=${response.data.output_schema?.status || ""}; path=/; Secure; SameSite=Lax`;
       document.cookie = `userId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`;

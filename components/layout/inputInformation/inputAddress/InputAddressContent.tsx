@@ -56,7 +56,7 @@ const InputAddressContentLayout = () => {
     e.preventDefault()
     if (!validateForm()) return
 
-    if (!isClient) return 
+    if (!isClient) return
 
     localStorage.setItem("jalan", jalan)
     localStorage.setItem("catatan", catatan)
@@ -84,10 +84,10 @@ const InputAddressContentLayout = () => {
         console.error("Gagal mengambil data provinsi:", err)
       }
     }
-  
+
     loadProvinsi()
   }, [isClient])
-  
+
   useEffect(() => {
     const loadKabupaten = async () => {
       if (!selectedProvinsi) return
@@ -105,10 +105,10 @@ const InputAddressContentLayout = () => {
         console.error("Gagal mengambil data kabupaten:", err)
       }
     }
-  
+
     loadKabupaten()
   }, [selectedProvinsi, isClient])
-  
+
   useEffect(() => {
     const loadKecamatan = async () => {
       if (!selectedKabupaten) return
@@ -126,10 +126,10 @@ const InputAddressContentLayout = () => {
         console.error("Gagal mengambil data kecamatan:", err)
       }
     }
-  
+
     loadKecamatan()
   }, [selectedKabupaten, isClient])
-  
+
   useEffect(() => {
     const loadKodePos = async () => {
       if (!selectedKabupaten || !selectedKecamatan) return
@@ -150,12 +150,12 @@ const InputAddressContentLayout = () => {
         console.error("Gagal mengambil data kode pos:", err)
       }
     }
-  
+
     loadKodePos()
   }, [selectedKabupaten, selectedKecamatan, isClient])
 
   if (!isClient) {
-    return null // Or return a loading skeleton
+    return null
   }
 
   return (
@@ -165,7 +165,6 @@ const InputAddressContentLayout = () => {
     >
       <div className='flex flex-col space-y-5 lg:w-1/2'>
         <div className='flex flex-col'>
-          {errors.jalan && <p className='text-red-500 text-xs md:text-md'>{errors.jalan}</p>}
           <LabelledInput
             label='Jalan'
             htmlFor='jalan'
@@ -174,31 +173,31 @@ const InputAddressContentLayout = () => {
             value={jalan}
             onChange={(e) => setJalan(e.target.value)}
           />
+          {errors.jalan && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.jalan}</p>}
         </div>
         <div className='flex flex-col'>
-          {errors.provinsi && <p className='text-red-500 text-xs md:text-md'>{errors.provinsi}</p>}
           <LabelledDropdown
-            label='Provinsi'
-            htmlFor='provinsi'
-            id='provinsi'
-            options={provinsi.map((k) => ({ value: k.id, label: k.text }))}
-            value={selectedProvinsi}
-            onValueChange={setSelectedProvinsi}
-          />
-        </div>
-        <div className='flex flex-col'>
-          {errors.kabupaten && <p className='text-red-500 text-xs md:text-md'>{errors.kabupaten}</p>}
-          <LabelledDropdown
-            label="Kabupaten / Kota"
-            htmlFor="kabupaten"
-            id="kabupaten"
+            label='Kabupaten / Kota'
+            htmlFor='kabupaten'
+            id='kabupaten'
             options={kabupaten.map((k) => ({ value: k.id, label: k.text }))}
             value={selectedKabupaten}
             onValueChange={setSelectedKabupaten}
             disabled={!selectedProvinsi}
           />
+          {errors.kabupaten && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.kabupaten}</p>}
         </div>
-
+        <div className='flex flex-col'>
+          <LabelledDropdown
+            label='Kode Pos'
+            htmlFor='kodepos'
+            id='kodepos'
+            options={kodePos.map((k) => ({ value: k.id, label: k.text }))}
+            value={selectedKodePos}
+            onValueChange={setSelectedKodePos}
+            disabled={!selectedKecamatan}
+          />
+        </div>
         <div className='flex space-x-6'>
           <Button
             type='submit'
@@ -217,7 +216,6 @@ const InputAddressContentLayout = () => {
       </div>
       <div className='flex flex-col space-y-5 lg:w-1/2'>
         <div className='flex flex-col'>
-          {errors.kecamatan && <p className='text-red-500 text-xs md:text-md'>{errors.kecamatan}</p>}
           <LabelledDropdown
             label='Kecamatan'
             htmlFor='kecamatan'
@@ -227,17 +225,18 @@ const InputAddressContentLayout = () => {
             onValueChange={setSelectedKecamatan}
             disabled={!selectedKabupaten}
           />
+          {errors.kecamatan && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.kecamatan}</p>}
         </div>
         <div className='flex flex-col'>
           <LabelledDropdown
-            label='Kode Pos'
-            htmlFor='kodepos'
-            id='kodepos'
-            options={kodePos.map((k) => ({ value: k.id, label: k.text }))}
-            value={selectedKodePos}
-            onValueChange={setSelectedKodePos}
-            disabled={!selectedKecamatan}
+            label='Provinsi'
+            htmlFor='provinsi'
+            id='provinsi'
+            options={provinsi.map((k) => ({ value: k.id, label: k.text }))}
+            value={selectedProvinsi}
+            onValueChange={setSelectedProvinsi}
           />
+          {errors.provinsi && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.provinsi}</p>}
         </div>
         <div className='flex flex-col'>
           <LabelledInput

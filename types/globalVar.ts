@@ -17,3 +17,4 @@ export const transactionBaseUrl = `${baseUrl}/transaction`;
 export const walletBaseUrl= `${baseUrl}/wallet`;
 export const checkoutBaseUrl = `${baseUrl}/checkout`;
 export const transactionDetailBaseUrl = `${transactionBaseUrl}/transaction-detail`;
+export const chatBaseUrl = `${baseUrl}/chat`;

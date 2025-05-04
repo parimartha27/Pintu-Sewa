@@ -146,7 +146,7 @@ const Navbar = ({ type }: NavbarProps) => {
           <Link href='/'>
             <Image
               src={PintuSewa}
-              alt='siap-sewa'
+              alt='pintu-sewa'
               width={150}
               height={50}
               className='ml-8 lg:ml-8 md:w-[200px] h-[50px] object-contain'
@@ -175,7 +175,7 @@ const Navbar = ({ type }: NavbarProps) => {
               <input
                 type='search'
                 className='w-full h-full pl-10 pr-4 py-5 text-[12px] lg:text-sm border-2 border-[#D9D9D9] border-opacity-75 rounded-sm font-jakartaSans text-color-primary focus:ring-0 focus:ring-color-secondary focus:border-color-secondary outline-none'
-                placeholder='Cari barang pengen disewa'
+                placeholder='Cari barang yang pengen disewa'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

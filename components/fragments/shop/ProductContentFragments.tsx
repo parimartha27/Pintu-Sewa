@@ -95,7 +95,7 @@ const ProductContent = () => {
   return (
     <div className="flex flex-col w-full h-auto space-y-3 md:space-y-16">
       <div className="w-full xl:pl-6 flex flex-col">
-        {loading == false && data.length == 0 && <NoProduct />}
+        {loading == false && data.length == 0 && <NoProduct message={"Tidak ada Produk"} />}
         {data && (
           <ProductList products={data} numberCard={12} loading={loading} />
         )}
