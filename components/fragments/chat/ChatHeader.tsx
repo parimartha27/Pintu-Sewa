@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { chatBaseUrl } from "@/types/globalVar";
 import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation";
 
 interface ChatItem {
   id: string;
@@ -22,8 +23,11 @@ interface ChatRoomProps {
 }
 
 const ChatHeader = ({ detailHeader }: ChatRoomProps) => {
+  const pathname = usePathname();
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false);
+  const [type,setType] = useState<String>(pathname.startsWith("/dashboard-seller") ? "shop" : "customer");
+
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,6 +50,7 @@ const ChatHeader = ({ detailHeader }: ChatRoomProps) => {
 
 
   return (
+
     <div className="flex w-full px-4 py-2 justify-between border-b-[1px] border-[#D9D9D9] border-opacity-70">
       <div className="w-full flex">
         <Image
@@ -62,6 +67,7 @@ const ChatHeader = ({ detailHeader }: ChatRoomProps) => {
         </div>
       </div>
 
+      {type==="customer" && (
       <div className="relative" ref={menuRef}>
         {/* Button (Dots Icon) */}
         <div className="flex flex-col justify-center py-3 px-5">
@@ -87,6 +93,7 @@ const ChatHeader = ({ detailHeader }: ChatRoomProps) => {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };
