@@ -4,27 +4,51 @@ import Image from "next/image";
 import Emoji from "@/public/emoji.svg";
 import Send from "@/public/sendMessage.svg";
 import { useState } from "react";
+import axios from "axios";
+import { chatBaseUrl } from "@/types/globalVar";
+import { usePathname } from "next/navigation";
 
-const ChatFooter = () => {
-    
-    const [message, setMessage] = useState("");
+interface ChatItem {
+  id: string;
+  name: string;
+  image: string;
+  customer_id: string;
+  shop_id: string;
+}
 
-    const sendMessage = () => {
-      if (message.trim() !== "") {
-        console.log("Mengirim pesan:", message);
-        setMessage("");
-      }
-    };
+interface ChatFooterProps {
+  headerChat: ChatItem;
+}
+
+const ChatFooter = ({ headerChat }: ChatFooterProps) => {
+  const [message, setMessage] = useState("");
+  const [sender,setSender] = useState("customer")
+  const pathname = usePathname();
+
+  const isSellerDashboard = pathname.includes("dashboard-seller");
+  const sendMessage = async () => {
+    if (message.trim() === "") return;
+    if(isSellerDashboard){
+      setSender("shop")
+    }
+    try {
+      const payload = {
+        message: message,
+        sender_type: sender,
+        room_chat_id: headerChat.id,
+      };
+  
+      const response = await axios.post(`${chatBaseUrl}/send-message`, payload);  
+      setMessage(""); 
+    } catch (error) {
+      console.error("Gagal mengirim pesan:", error);
+    }
+  };
   
   return (
     <div className="w-full flex items-center justify-center min-h-[75px] px-6">
       <div className="flex items-center border rounded-md px-4 py-2 w-full">
-        {/* Icon Smiley */}
-        <button className="text-gray-500 hover:text-gray-700">
-          <Image className="min-w-3 min-h-3 w-5 h-5" src={Emoji} alt="emoji" />
-        </button>
 
-        {/* Input */}
         <input
           type="text"
           placeholder="Tulis pesanmu di sini..."
@@ -34,7 +58,6 @@ const ChatFooter = () => {
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
 
-        {/* Send Button */}
         <button
           className="text-blue-500 hover:text-blue-700"
           onClick={sendMessage}

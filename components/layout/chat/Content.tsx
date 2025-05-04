@@ -1,4 +1,4 @@
-import ContactList from "./ContactList";
+import ContactListCustomer from "./ContactListCustomer";
 import NoChat from "@/components/fragments/chat/NoChat";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -13,7 +13,7 @@ const ChatContentLayout = () => {
     shop_id : string;
   }
 
-  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
+  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
   const [chatList, setChatList] = useState<ChatItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,7 +52,7 @@ const ChatContentLayout = () => {
       {chatList.length === 0 ? (
         <NoChat />
       ) : (
-        <ContactList contacts={chatList} />
+        <ContactListCustomer contacts={chatList} />
       )}
     </div>
   );
