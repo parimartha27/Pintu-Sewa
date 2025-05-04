@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Emoji from "@/public/emoji.svg";
 import Send from "@/public/sendMessage.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { chatBaseUrl } from "@/types/globalVar";
 import { usePathname } from "next/navigation";
@@ -21,24 +21,19 @@ interface ChatFooterProps {
 }
 
 const ChatFooter = ({ headerChat }: ChatFooterProps) => {
-  const [message, setMessage] = useState("");
-  const [sender,setSender] = useState("customer")
   const pathname = usePathname();
-
-  const isSellerDashboard = pathname.includes("dashboard-seller");
+  const [message, setMessage] = useState<string>("");
+  const [sender,setSender] = useState<string>(pathname.startsWith("/dashboard-seller") ? "shop" : "customer");
+  
   const sendMessage = async () => {
     if (message.trim() === "") return;
-    if(isSellerDashboard){
-      setSender("shop")
-    }
     try {
       const payload = {
         message: message,
         sender_type: sender,
         room_chat_id: headerChat.id,
       };
-  
-      const response = await axios.post(`${chatBaseUrl}/send-message`, payload);  
+      const response = await axios.post(`${chatBaseUrl}/send-message`, payload);
       setMessage(""); 
     } catch (error) {
       console.error("Gagal mengirim pesan:", error);

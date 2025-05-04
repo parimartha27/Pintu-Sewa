@@ -10,8 +10,8 @@ interface LabelledDropdownProps {
   htmlFor: string;
   id: string;
   options: { value: string | number; label: string }[];
-  value: string | number; // ✅ Tambahkan value agar bisa dikontrol dari parent
-  onValueChange: (value: string | number) => void; // ✅ Tambahkan event handler
+  value: string | number; 
+  onValueChange: (value: string | number) => void;
   disabled?: boolean;
 }
 

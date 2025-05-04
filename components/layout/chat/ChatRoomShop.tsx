@@ -33,22 +33,27 @@ interface ChatRoomProps {
 const ChatRoomLayout = ({ item }: ChatRoomProps) => {
   const [chatGroups, setChatGroups] = useState<GrupChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(
+        `${chatBaseUrl}/view-roomchat/${item.id}`
+      );
+      setChatGroups(Array.isArray(response.data.output_schema) ? response.data.output_schema : []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+    
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get(
-          `${chatBaseUrl}/view-roomchat/${item.id}`
-        );
-        setChatGroups(Array.isArray(response.data.output_schema) ? response.data.output_schema : []);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchMessages();
+    // const interval = setInterval(() => {
+    //   fetchMessages();
+    // }, 500); // polling every 5 seconds
+
+    // return () => clearInterval(interval);
   }, [item.id]);
 
   return (

@@ -11,33 +11,36 @@ import Product from "@/public/productTest.jpeg";
 import { ShopHeaderProps } from "@/types/shopDetail";
 import { chatBaseUrl } from "@/types/globalVar";
 import axios from "axios";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
-    const [customerId, setCustomerId] = useState<string | null>("");
-    const [shopId, setShopId] = useState<string | null>("");
-    const router = useRouter();
-    const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-      const target = e.currentTarget;
-      e.preventDefault();
-  
-      setShopId(target.getAttribute("data-shopId"))
-      setCustomerId(localStorage.getItem("customerId"))
-  
-      try {
-        const response = await axios.post(
-          `${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`
-        );
-        router.push('/chat')
-      } catch (err: any) {
-          if(err.response.data.error_schema.error_code == "PS-10-001"){
-            router.push('/chat')
-          }else{
-            console.log(err);
-          }
-      }
-    };
+  const [customerId, setCustomerId] = useState<string | null>(
+    typeof window !== "undefined" ? localStorage.getItem("customerId") : null
+  );
+  const [shopId, setShopId] = useState<string | null>("");
+  const router = useRouter();
+  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.currentTarget;
+    e.preventDefault();
 
+    try {
+      const response = await axios.post(
+        `${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`
+      );
+      router.push("/chat");
+    } catch (err: any) {
+      if (err.response.data.error_schema.error_code == "PS-10-001") {
+        router.push("/chat");
+      } else {
+        console.log(err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    setShopId(data.id);
+    setCustomerId(localStorage.getItem("customerId"));
+  }, []);
 
   return (
     <Card className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 w-full items-center lg:justify-between py-4 px-4 lg:py-6 lg:px-8 border-none shadow-md">
@@ -64,11 +67,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
             onClick={createRoomChat}
             className="w-full max-w-[200px] sm:w-[200px] h-8 py-2 px-1 bg-transparent text-color-primaryDark border-[1px] text-sm sm:text-[16px] border-color-primaryDark hover:bg-slate-200"
           >
-            <Image
-              className="w-5 h-5 sm:w-6 sm:h-6"
-              src={Chat}
-              alt="chat"
-            />
+            <Image className="w-5 h-5 sm:w-6 sm:h-6" src={Chat} alt="chat" />
             <h3>Chat Penyedia Jasa</h3>
           </Button>
         </div>

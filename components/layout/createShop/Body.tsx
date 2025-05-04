@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import LabelledDropdown from "@/components/fragments/editProfile/LabelledDropdown"
-import axios from "axios"
+import axios, { Axios } from "axios"
 import { shopBaseUrl } from "@/types/globalVar"
 
 interface AddressData {
@@ -29,7 +29,7 @@ interface CreateShopRequest {
   regency: string
   province: string
   post_code: string
-  is_same_address: boolean
+  is_same_address: string
 }
 
 const CreateShopBody = () => {
@@ -44,10 +44,10 @@ const CreateShopBody = () => {
   const [kecamatan, setKecamatan] = useState<AddressData[]>([])
   const [kodePos, setKodePos] = useState<AddressData[]>([])
   const [jalan, setJalan] = useState("")
-  const [selectedProvinsi, setSelectedProvinsi] = useState<string>("")
-  const [selectedKabupaten, setSelectedKabupaten] = useState<string>("")
-  const [selectedKecamatan, setSelectedKecamatan] = useState<string>("")
-  const [selectedKodePos, setSelectedKodePos] = useState<string>("")
+  const [selectedProvinsi, setSelectedProvinsi] = useState<string | number>("")
+  const [selectedKabupaten, setSelectedKabupaten] = useState<string | number>("")
+  const [selectedKecamatan, setSelectedKecamatan] = useState<string | number>("")
+  const [selectedKodePos, setSelectedKodePos] = useState<string | number>("")
 
   const [errors, setErrors] = useState({
     shopName: "",
@@ -60,7 +60,7 @@ const CreateShopBody = () => {
     terms: "",
   })
 
-  const getTextById = (id: string, data: AddressData[]): string => {
+  const getTextById = (id: string | number, data: AddressData[]): string => {
     const item = data.find((item) => item.id === id)
     return item ? item.text : ""
   }
@@ -114,15 +114,15 @@ const CreateShopBody = () => {
         regency: getTextById(selectedKabupaten, kabupaten),
         province: getTextById(selectedProvinsi, provinsi),
         post_code: getTextById(selectedKodePos, kodePos),
-        is_same_address: addressType === "Alamat Saat Ini",
+        is_same_address: addressType === "Alamat Saat Ini" ? "y" : "n",
       }
-
+      console.log(shopData);
       const response = await axios.post(`${shopBaseUrl}/create`, shopData)
-
+      console.log(response);
       if (response.data) {
-        // localStorage.setItem("shopId", response.data.shopId)
+        localStorage.setItem("shopId", response.data.output_schema.id)
         alert("Toko berhasil dibuat!")
-        router.push("/create-shop/confirmation")
+        router.push("/dashboard-seller")
       } else {
         throw new Error("Gagal membuat toko")
       }

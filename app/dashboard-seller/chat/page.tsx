@@ -32,7 +32,11 @@ const ChatSeller = () => {
       const response = await axios.get(
         `${chatBaseUrl}/shop/get-roomchat?id=${shopId}`
       );
-      setChatList(response.data.output_schema);
+      setChatList(
+        Array.isArray(response.data.output_schema)
+          ? response.data.output_schema
+          : []
+      );
     } catch (error) {
       console.error("Error fetching contacts:", error);
       setChatList([]);
@@ -46,13 +50,13 @@ const ChatSeller = () => {
   };
 
   useEffect(() => {
-    const customerId = localStorage.getItem("customerId");
-    setShopId(customerId);
+    const shopId = localStorage.getItem("shopId");
+    setShopId(shopId);
     fetchContacts();
 
     // const interval = setInterval(() => {
     //   fetchContacts();
-    // }, 5000); // polling every 5 seconds
+    // }, 2000);
 
     // return () => clearInterval(interval);
   }, []);
