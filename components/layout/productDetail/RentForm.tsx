@@ -17,12 +17,14 @@ import { useRef, useState } from "react";
 import { ProductDetailProps } from "@/types/productDetail";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
 import { AddToCartRequestProps, AddToCartResponse } from "@/types/addToCart";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { cartBaseUrl, checkoutBaseUrl } from "@/types/globalVar";
 import { useRouter } from "next/navigation";
 import { getMinDuration } from "@/hooks/useMinRentDuration";
 import LoadingPopup from "../LoadingPopUp";
 import { checkoutFromCartResponseProps } from "@/types/checkout";
+import Alert from "../Alert";
+import { AlertProps } from "@/types/alert";
 
 function formatDate(date: Date | undefined) {
   return date?.toISOString().split("T")[0];
@@ -35,6 +37,11 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const [addToCartLoading, setAddToCartLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const duration = getMinDuration(productDetail);
+  const [alertState, setAlertState] = useState<AlertProps>({
+    isOpen: false,
+    message: "",
+    isWrong: true
+  });
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -94,50 +101,54 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
     return formatToRupiah(total * qty);
   }
 
-  const handleSelectStartDate = (date: Date | undefined) => {
-    if (!date) return;
-
-    const selected = new Date(date);
-    selected.setHours(0, 0, 0, 0);
+  const validateDates = (): { valid: boolean; message?: string } => {
+    if (!startDate || !endDate) {
+      return {
+        valid: false,
+        message: "Tanggal mulai dan selesai harus dipilih",
+      };
+    }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (selected < today) {
-      alert("Tanggal mulai tidak boleh sebelum hari ini");
-      return;
+    const selectedStart = new Date(startDate);
+    selectedStart.setHours(0, 0, 0, 0);
+
+    const selectedEnd = new Date(endDate);
+    selectedEnd.setHours(0, 0, 0, 0);
+
+    if (selectedStart < today) {
+      return {
+        valid: false,
+        message: "Tanggal Mulai Tidak Boleh Sebelum Hari Ini",
+      };
     }
 
-    if (endDate && selected > endDate) {
-      alert("Tanggal mulai tidak boleh setelah tanggal selesai");
-      return;
+    if (selectedStart > selectedEnd) {
+      return {
+        valid: false,
+        message: "Tanggal Selesai Tidak Boleh Sebelum Tanggal Mulai",
+      };
     }
 
-    setStartDate(selected);
+    const dayDiff = differenceInDays(selectedEnd, selectedStart);
+    let minDays = 1;
+
+    if (productDetail.daily_price) {
+      minDays = 1;
+    } else if (productDetail.weekly_price) {
+      minDays = 7;
+    } else if (productDetail.monthly_price) {
+      minDays = 30;
+    }
+
+    if (dayDiff < minDays) {
+      return { valid: false, message: `Durasi sewa minimal ${minDays} hari` };
+    }
+
+    return { valid: true };
   };
-
-  const handleSelectEndDate = (date: Date | undefined) => {
-  if (!date) return;
-
-  const dayDiff = differenceInDays(date, startDate || "");
-
-  let minDays = 1;
-
-  if (productDetail.daily_price) {
-    minDays = 1;
-  } else if (productDetail.weekly_price) {
-    minDays = 7;
-  } else if (productDetail.monthly_price) {
-    minDays = 30;
-  }
-
-  if (dayDiff < minDays) {
-    alert(`Durasi sewa minimal ${minDays} hari`);
-    return;
-  }
-
-  setEndDate(date);
-};
 
   const addToCartReq: AddToCartRequestProps = {
     customer_id: customerId || "",
@@ -148,6 +159,15 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   };
 
   const handleAddToCart = async () => {
+    const validation = validateDates();
+    if (!validation.valid) {
+      setAlertState({
+        isOpen: true,
+        message: validation.message || "Tanggal tidak valid",
+      });
+      return;
+    }
+
     try {
       setAddToCartLoading(true);
       console.log("add to cart req: ", addToCartReq);
@@ -157,15 +177,35 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       );
       if (res.data.error_schema.error_message === "SUCCESS") {
         setAddToCartLoading(false);
-        alert("Produk berhasil ditambahkan ke keranjang");
-      }
+        setAlertState({
+          isOpen: true,
+          message: "Produk Berhasil Ditambahkan Ke Keranjang",
+          isWrong:false
+        });
+      } 
       console.log("add to cart res: ", res);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          setAlertState({ isOpen: true, message: "Stok Telah Habis" });
+          return;
+        }
+      }
+    } finally{
+      setAddToCartLoading(false);
     }
   };
 
   const handleCheckout = async () => {
+    const validation = validateDates();
+    if (!validation.valid) {
+      setAlertState({
+        isOpen: true,
+        message: validation.message || "Tanggal tidak valid",
+      });
+      return;
+    }
+
     try {
       const payload = {
         customer_id: customerId,
@@ -190,7 +230,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       }
     } catch (error) {
       console.error(error);
-      alert("Gagal melakukan checkout");
+      setAlertState({ isOpen: true, message: "Checkout Gagal" });
     } finally {
       setCheckoutLoading(false);
     }
@@ -198,6 +238,14 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
   return (
     <>
+      {alertState.isOpen && (
+        <Alert
+          message={alertState.message}
+          isOpen={alertState.isOpen}
+          onClose={() => setAlertState({ isOpen: false, message: "", isWrong: true })}
+          isWrong={alertState.isWrong}
+        />
+      )}
       {checkoutLoading && <LoadingPopup />}
       <div className="flex flex-col mt-[15px] md:max-h-[425px] lg:max-h-[450px] xl:max-h-[500px] md:mt-[60px] xl:max-w-[400px] xl:w-full pt-3 lg:pt-7 pb-4 xl:pb-[35px] px-3 xl:px-7 shadow-md outline-none bg-white">
         <h2 className="text-[14px] xl:text-[18px] text-color-primary font-medium">
@@ -225,6 +273,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
+                  disabled={productDetail.stock <= 0}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !startDate && "text-muted-foreground"
@@ -240,8 +289,8 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
+                  onSelect={setStartDate}
                   selected={startDate}
-                  onSelect={handleSelectStartDate}
                   initialFocus
                 />
               </PopoverContent>
@@ -258,6 +307,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
+                  disabled={productDetail.stock <= 0}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !endDate && "text-muted-foreground"
@@ -273,8 +323,8 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
+                  onSelect={setEndDate}
                   selected={endDate}
-                  onSelect={handleSelectEndDate}
                   initialFocus
                 />
               </PopoverContent>
@@ -318,45 +368,51 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
         {/* BUTTONS */}
 
-          <div className="flex flex-col mt-[14px] space-y-3">
-            <Button
-              onClick={() => {
-                handleCheckout();
-              }}
-              disabled={productDetail.stock <= 0}
-              className={`w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px] ${productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              <Image
-                src={NextSymbol}
-                alt="next-symbol"
-                className="w-3 h-[14px] xl:w-5 xl:h-5"
-              />
-              <h4 className="text-[12px] xl:text-lg font-medium ">
-                Selanjutnya
-              </h4>
-            </Button>
-            <Button
-              ref={buttonRef}
-              onClick={handleAddToCart}
-              disabled={addToCartLoading || productDetail.stock <= 0}
-              className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""} ${
-                addToCartLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              <Image
-                src={Cart}
-                alt="cart"
-                className="w-3 h-[14px] xl:w-5 xl:h-5"
-              />
-              <h4 className="text-[12px] xl:text-lg font-medium text-color-primaryDark">
-                Keranjang
-              </h4>
-            </Button>
-            <div
-              ref={cartIconRef}
-              className="fixed top-4 right-4 z-50 invisible"
+        {productDetail.stock === 0 && (
+          <h2 className="md:text-xl xl:text-xl font-semibold text-color-secondary text-center mt-3">
+            Stok tidak tersedia
+          </h2>
+        )}
+
+        <div className="flex flex-col mt-[14px] space-y-3">
+          <Button
+            onClick={() => {
+              handleCheckout();
+            }}
+            disabled={productDetail.stock <= 0}
+            className={`w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px] ${
+              productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            <Image
+              src={NextSymbol}
+              alt="next-symbol"
+              className="w-3 h-[14px] xl:w-5 xl:h-5"
             />
-          </div>
+            <h4 className="text-[12px] xl:text-lg font-medium ">Selanjutnya</h4>
+          </Button>
+          <Button
+            ref={buttonRef}
+            onClick={handleAddToCart}
+            disabled={addToCartLoading || productDetail.stock <= 0}
+            className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${
+              productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
+            } ${addToCartLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <Image
+              src={Cart}
+              alt="cart"
+              className="w-3 h-[14px] xl:w-5 xl:h-5"
+            />
+            <h4 className="text-[12px] xl:text-lg font-medium text-color-primaryDark">
+              Keranjang
+            </h4>
+          </Button>
+          <div
+            ref={cartIconRef}
+            className="fixed top-4 right-4 z-50 invisible"
+          />
+        </div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image"
 import Guest from "@/public/guest.svg"
@@ -9,9 +9,9 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { createCustomerBaseUrl } from "@/types/globalVar"
 import LoadingPopup from "../../LoadingPopUp"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import Alert from "@/components/layout/Alert";
+import { AlertProps } from "@/types/alert";
 import { IoMdAlert } from "react-icons/io";
-
 interface CustomerRequest {
   id: string
   username: string
@@ -31,43 +31,63 @@ interface CustomerRequest {
 
 interface CustomerResponse {
   error_schema: {
-    error_code: string
-    error_message: string
-  }
+    error_code: string;
+    error_message: string;
+  };
   output_schema: {
-    customer_id: string
-    username: string
-    email: string
-    phone_number: string
-    token: string
-    image: string
-  }
+    customer_id: string;
+    username: string;
+    email: string;
+    phone_number: string;
+    token: string;
+    image: string;
+  };
 }
 
 const InputConfirmationContentLayout = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState<Record<string, string>>({})
-  const [imageSrc, setImageSrc] = useState(Guest)
-  const [alertOpen, setAlertOpen] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>("")
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [imageSrc, setImageSrc] = useState(Guest);
+  const [alertState, setAlertState] = useState<AlertProps>({
+    isOpen: false,
+    message: "",
+    isWrong: true,
+  });
 
   useEffect(() => {
-    const data: Record<string, string> = {}
-    const keys = ["customerId", "username", "fullname", "jalan", "handphone", "email", "kecamatan", "kabupaten", "provinsi", "gender", "date", "kodepos", "password", "catatan", "image"]
+    // This runs only on client side
+    const data: Record<string, string> = {};
+    const keys = [
+      "customerId",
+      "username",
+      "fullname",
+      "jalan",
+      "handphone",
+      "email",
+      "kecamatan",
+      "kabupaten",
+      "provinsi",
+      "gender",
+      "date",
+      "kodepos",
+      "password",
+      "catatan",
+      "image",
+    ];
 
     keys.forEach((key) => {
-      data[key] = localStorage.getItem(key) || ""
-    })
+      data[key] = localStorage.getItem(key) || "";
+    });
 
-    setFormData(data)
-    setImageSrc(data.image || Guest)
-  }, [])
+    setFormData(data);
+    setImageSrc(data.image || Guest);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
     try {
       const payload: CustomerRequest = {
         id: formData.customerId,
@@ -88,107 +108,111 @@ const InputConfirmationContentLayout = () => {
 
       console.log("Payload: ", payload)
 
-      const response = await axios.post<CustomerResponse>(createCustomerBaseUrl, payload)
+      const response = await axios.post<CustomerResponse>(
+        createCustomerBaseUrl,
+        payload
+      );
 
       if (response.data.error_schema.error_code === "PS-00-000") {
-        const username = response.data.output_schema.username
-        localStorage.clear()
-        localStorage.setItem("username", username)
-        localStorage.setItem("image", response.data.output_schema.image)
-        localStorage.setItem("token", response.data.output_schema.token)
-        localStorage.setItem("customerId", response.data.output_schema.customer_id)
+        const username = response.data.output_schema.username;
+        localStorage.clear();
+        localStorage.setItem("username", username);
+        localStorage.setItem("image", response.data.output_schema.image);
+        localStorage.setItem("token", response.data.output_schema.token);
+        localStorage.setItem(
+          "customerId",
+          response.data.output_schema.customer_id
+        );
 
-        document.cookie = `token=${response.data.output_schema?.token || ""}; path=/; Secure; SameSite=Lax`
-        document.cookie = `customerId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`
-        router.push("/")
+        document.cookie = `token=${
+          response.data.output_schema?.token || ""
+        }; path=/; Secure; SameSite=Lax`;
+        document.cookie = `customerId=${
+          response.data.output_schema?.customer_id || ""
+        }; path=/; Secure; SameSite=Lax`;
+        router.push("/");
       } else {
-        alert("Registrasi gagal: " + response.data.error_schema.error_message)
-        router.push("/input-biodata")
+        setAlertState({
+          isOpen: true,
+          message:
+            "Registrasi gagal: " + response.data.error_schema.error_message,
+        });
+        router.push("/input-biodata");
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.error_schema?.error_message || error.message || "Gagal menyimpan biodata"
-        setAlertOpen(true)
-        setErrorMessage(errorMessage)
-      } else {
-        setAlertOpen(true)
-        setErrorMessage("Gagal menyimpan biodata")
-      }
+      setAlertState({
+        isOpen: true,
+        message: "Registrasi gagal: " + error,
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
-      <div>
-        {alertOpen && (
-          <Alert className="border-2 border-red-700 mb-4">
-            <IoMdAlert size={30} color="b91c1c" alignmentBaseline="middle" />
-            <AlertTitle className="text-red-700 ml-4 text-base font-semibold md:text-">Terjadi Kesalahan</AlertTitle>
-            <AlertDescription className="text-red-700 ml-4">{errorMessage}</AlertDescription>
-          </Alert>
-        )}
-      </div>
-      {loading && <LoadingPopup message={"Memproses Data Anda"} />}
+      {alertState.isOpen && (
+        <Alert
+          message={alertState.message}
+          isOpen={alertState.isOpen}
+          onClose={() =>
+            setAlertState({ isOpen: false, message: "", isWrong: true })
+          }
+          isWrong={alertState.isWrong}
+        />
+      )}
       {isModalOpen && (
-        <div className='fixed mt-0 inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 '>
-          <div className='relative flex justify-center items-center'>
+        <div className="fixed mt-0 inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 ">
+          <div className="relative flex justify-center items-center">
             <button
-              className='absolute -top-20 -right-10 text-white text-3xl font-bold hover:bg-slate-800'
+              className="absolute -top-20 -right-10 text-white text-3xl font-bold hover:bg-slate-800"
               onClick={() => setIsModalOpen(false)}
             >
               x
             </button>
             <Image
               src={imageSrc}
-              alt='Profile Full Size'
+              alt="Profile Full Size"
               width={300}
               height={300}
-              className='w-[150px] h-[150px] md:w-[300px] md:h-[300px] rounded-full object-cover aspect-square border-2 border-white'
+              className="w-[150px] h-[150px] md:w-[300px] md:h-[300px] rounded-full object-cover aspect-square border-2 border-white"
             />
           </div>
         </div>
       )}
-      <div className='flex flex-col lg:flex-row-reverse w-full space-y-5'>
-        <div className='flex flex-col items-center w-full space-y-6 mt-5'>
+      <div className="flex flex-col lg:flex-row-reverse w-full space-y-5">
+        <div className="flex flex-col items-center w-full space-y-6 mt-5">
           <Image
-            className='w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] xl:w-[200px] xl:h-[200px] rounded-full object-cover cursor-pointer'
+            className="w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] xl:w-[200px] xl:h-[200px] rounded-full object-cover cursor-pointer"
             src={imageSrc}
             width={200}
             height={200}
-            alt=''
+            alt=""
             onClick={() => setIsModalOpen(true)}
           />
         </div>
 
-        <div className='flex flex-col w-full pt-6 lg:pt-0 '>
+        <div className="flex flex-col w-full pt-6 lg:pt-0 ">
           <form
             onSubmit={handleSubmit}
-            className='flex flex-col items-center lg:items-start space-y-5 pb-12'
+            className="flex flex-col items-center lg:items-start space-y-5 pb-12"
           >
+            <InputtedData label="Username" input={formData.username || "-"} />
             <InputtedData
-              label='Username'
-              input={formData.username || "-"}
-            />
-            <InputtedData
-              label='Nama Lengkap'
+              label="Nama Lengkap"
               input={formData.fullname || "-"}
             />
+            <InputtedData label="Email" input={formData.email || "-"} />
             <InputtedData
-              label='Email'
-              input={formData.email || "-"}
-            />
-            <InputtedData
-              label='Nomor Telepon'
+              label="Nomor Telepon"
               input={formData.handphone || "-"}
             />
             <InputtedData
-              label='Password'
+              label="Password"
               input={"*".repeat(formData.password?.length || 0)}
             />
             <InputtedData
-              label='Jenis Kelamin'
+              label="Jenis Kelamin"
               input={formData.gender || "-"}
             />
             <InputtedData
@@ -221,17 +245,17 @@ const InputConfirmationContentLayout = () => {
             />
 
             {!loading && (
-              <div className='flex flex-col pt-2 lg:flex-row self-center lg:self-start space-y-3 lg:space-y-0 lg:space-x-6 lg:mt-[60px] w-full max-w-[250px] lg:max-w-none px-4 sm:px-0'>
+              <div className="flex flex-col pt-2 lg:flex-row self-center lg:self-start space-y-3 lg:space-y-0 lg:space-x-6 lg:mt-[60px] w-full max-w-[250px] lg:max-w-none px-4 sm:px-0">
                 <Button
-                  type='submit'
-                  className='w-full lg:w-[200px] h-[48px] text-white text-sm sm:text-[14px] font-medium bg-custom-gradient-tr rounded-xl hover:opacity-90'
+                  type="submit"
+                  className="w-full lg:w-[200px] h-[48px] text-white text-sm sm:text-[14px] font-medium bg-custom-gradient-tr rounded-xl hover:opacity-90"
                 >
                   Simpan
                 </Button>
                 <Button
-                  type='button'
+                  type="button"
                   onClick={() => router.push("/input-address")}
-                  className='w-full lg:w-[200px] h-[48px] text-sm sm:text-[14px] font-medium text-color-primaryDark bg-transparent border-[1px] border-color-primaryDark rounded-xl hover:bg-slate-200 hover:opacity-90'
+                  className="w-full lg:w-[200px] h-[48px] text-sm sm:text-[14px] font-medium text-color-primaryDark bg-transparent border-[1px] border-color-primaryDark rounded-xl hover:bg-slate-200 hover:opacity-90"
                 >
                   Kembali
                 </Button>
@@ -241,7 +265,7 @@ const InputConfirmationContentLayout = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default InputConfirmationContentLayout
+export default InputConfirmationContentLayout;
