@@ -277,7 +277,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={productDetail.stock <= 0 || (!token && !customerId)}
+                  disabled={productDetail.stock <= 0 || (!token || !customerId)}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !startDate && "text-muted-foreground"
@@ -311,7 +311,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={productDetail.stock <= 0 || (!token && !customerId)}
+                  disabled={productDetail.stock <= 0 || (!token || !customerId)}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !endDate && "text-muted-foreground"
@@ -370,7 +370,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           </h2>
         </div>
 
-        {!token && !customerId && (
+        {!token || !customerId && (
           <h2 className="text-sm xl:text-lg font-semibold text-color-secondary text-center mt-3">
             Silahkan Login Dulu
           </h2>
@@ -387,7 +387,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             onClick={() => {
               handleCheckout();
             }}
-            disabled={productDetail.stock <= 0 || (!token && !customerId)}
+            disabled={productDetail.stock <= 0 || (!token || !customerId)}
             className={`w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px] ${
               productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
             }`}
@@ -405,7 +405,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             disabled={
               addToCartLoading ||
               productDetail.stock <= 0 ||
-              (!token && !customerId)
+              (!token || !customerId)
             }
             className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${
               productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
