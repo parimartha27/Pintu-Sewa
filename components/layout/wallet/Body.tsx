@@ -10,6 +10,7 @@ import { FaPlus } from "react-icons/fa6"
 import axios from "axios"
 import { walletBaseUrl } from "@/types/globalVar"
 import WalletSkeleton from "./WalletSkeleton"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 type WalletAmountResponse = {
   balance: number
@@ -47,7 +48,7 @@ function DefaultLayout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [walletAmount, setWalletAmount] = useState<WalletAmountResponse | null>(null)
-  const [customerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : "")
+  const {customerId} = useAuth()
 
   const fetchWalletAmount = async () => {
     try {

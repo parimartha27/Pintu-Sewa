@@ -11,7 +11,7 @@ import LoadingPopup from "../LoadingPopUp";
 import SuccessPaymentModals from "./SuccessPaymentModals";
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
-import { set } from "date-fns";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const PaymentBody = () => {
   const [copied, setCopied] = useState(false);
@@ -30,8 +30,8 @@ const PaymentBody = () => {
     message: "",
     isWrong: true,
   });
-  // const [referenceNumber] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("referenceNo") : null);
-  // const [customerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
+
+  const {customerId} = useAuth();
 
   const generateAccountNumber = (method: string) => {
     const prefixes: Record<string, string> = {
@@ -88,7 +88,6 @@ const PaymentBody = () => {
   const handleCheckStatus = async () => {
     setIsLoading(true);
     try {
-      const customerId = localStorage.getItem("customerId");
       const stored = localStorage.getItem("referenceNo");
       const referenceNumbers: string[] = stored ? JSON.parse(stored) : [];
       const totalAmount = paymentData.totalAmount.replace(/\./g, "");

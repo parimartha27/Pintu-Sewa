@@ -23,7 +23,7 @@ import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
 
 const CheckOutBody = () => {
-  const [customerId, setCustomerId] = useState<string | null>(null);
+  const {customerId} = useAuth();
   const [transactionIds, setTransactionIds] = useState<string[]>([]);
   const [address, setAddress] = useState<AddressProps>();
   const [checkoutDetail, setCheckoutDetail] =
@@ -36,6 +36,7 @@ const CheckOutBody = () => {
     message: "",
     isWrong: true,
   });
+
 
   const fetchCheckoutItemsAndPaymentDetail = async () => {
     try {
@@ -63,13 +64,8 @@ const CheckOutBody = () => {
   };
 
   useEffect(() => {
-    const customerIdFromLocalStorage = localStorage.getItem("customerId");
     const transactionIdsFromLocalStorage =
       localStorage.getItem("transactionIds");
-
-    if (customerIdFromLocalStorage) {
-      setCustomerId(customerIdFromLocalStorage);
-    }
 
     if (transactionIdsFromLocalStorage) {
       try {

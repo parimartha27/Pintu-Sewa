@@ -21,6 +21,7 @@ import axios from "axios";
 import { shopBaseUrl } from "@/types/globalVar";
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 interface AddressData {
   id: string;
@@ -28,7 +29,7 @@ interface AddressData {
 }
 
 interface CreateShopRequest {
-  customer_id: string;
+  customer_id: string | null;
   name: string;
   email: string;
   street: string;
@@ -78,6 +79,8 @@ const CreateShopBody = () => {
     kodePos: "",
     terms: "",
   });
+
+  const {customerId} = useAuth();
 
   const getTextById = (id: string | number, data: AddressData[]): string => {
     const item = data.find((item) => item.id === id);
@@ -148,13 +151,7 @@ const CreateShopBody = () => {
     setIsLoading(true);
 
     try {
-      const customerId =
-        typeof window !== "undefined"
-          ? localStorage.getItem("customerId")
-          : null;
-      if (!customerId) {
-        throw new Error("Customer ID tidak ditemukan");
-      }
+
 
       const shopData: CreateShopRequest = {
         customer_id: customerId,

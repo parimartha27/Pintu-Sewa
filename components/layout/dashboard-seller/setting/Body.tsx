@@ -9,13 +9,15 @@ import axios from "axios"
 import { Skeleton } from "@/components/ui/skeleton"
 import { customerBaseUrl } from "@/types/globalVar"
 import { ProfileResponse } from "@/types/profile"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 const SellerProfileBody = () => {
-  const customerId = typeof window !== "undefined" ? localStorage.getItem("customerId") : null
   const [customerData, setCustomerData] = useState<ProfileResponse>()
   const [loading, setLoading] = useState(true)
   const [, setError] = useState("")
 
+  const {customerId} = useAuth();
+  
   useEffect(() => {
     if (!customerId) {
       setError("User ID tidak ditemukan di localStorage.")

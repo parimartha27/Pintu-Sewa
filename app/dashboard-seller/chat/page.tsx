@@ -6,6 +6,7 @@ import ChatRoomLayout from "@/components/layout/chat/ChatRoom"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { chatBaseUrl } from "@/types/globalVar"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 const ChatSeller = () => {
   interface ChatRoomProps {
@@ -19,7 +20,7 @@ const ChatSeller = () => {
     shop_id: string
   }
 
-  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null)
+  const {customerId} = useAuth();
   const [chatList, setChatList] = useState<ChatItem[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedItem, setSelectedItem] = useState<ChatRoomProps | null>(null)
@@ -41,8 +42,6 @@ const ChatSeller = () => {
   }
 
   useEffect(() => {
-    const customerId = localStorage.getItem("customerId")
-    setCustomerId(customerId)
     fetchContacts()
 
     // const interval = setInterval(() => {

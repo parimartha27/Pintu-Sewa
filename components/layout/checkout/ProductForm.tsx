@@ -21,7 +21,8 @@ import CustomModal from "../modalsTemplate";
 import axios from "axios";
 import { checkoutBaseUrl } from "@/types/globalVar";
 import Alert from "../Alert";
-import { is } from "date-fns/locale";
+import { AlertProps } from "@/types/alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const courierOptions = [
   { id: "1", name: "JNE" },
@@ -49,12 +50,13 @@ const CheckoutProductForm = ({
   const [rentedItemsTransactionIds, setRentedItemsTransactionIds] = useState<
     string[]
   >([]);
-  const [customerId, setCustomerId] = useState<string>("");
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
     isWrong: true,
   });
+
+  const {customerId} = useAuth();
 
   useEffect(() => {
     if (checkoutDetail?.rented_items) {
@@ -64,12 +66,6 @@ const CheckoutProductForm = ({
       setRentedItemsTransactionIds(transactionIds);
     }
   }, [checkoutDetail]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCustomerId(localStorage.getItem("customerId") || "");
-    }
-  }, []);
 
   const handleSaveCourier = async () => {
     const payload = {

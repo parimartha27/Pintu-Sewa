@@ -137,7 +137,7 @@ function MetodeTopup({ amount }: { amount: string }) {
   const paymentMethods: PaymentMethod[] = [
     { id: "BCA Virtual Account", name: "BCA Virtual Account", logo: BCA },
     { id: "BRI Virtual Account", name: "BRI Virtual Account", logo: BRI },
-    { id: "BRI Virtual Account", name: "BRI Virtual Account", logo: BNI },
+    { id: "BNI Virtual Account", name: "BNI Virtual Account", logo: BNI },
   ];
 
   const handleMethodSelect = (methodId: string) => {

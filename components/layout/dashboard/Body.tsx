@@ -7,11 +7,13 @@ import { useSession } from "next-auth/react"
 import { ProductCardProps } from "@/types/productCard"
 import NoProduct from "@/components/fragments/NoProduct"
 import { fetchMostRentedProducts, fetchNearCustomerProducts, fetchRecommendedProducts } from "@/services/productService"
-
+import Cookies
+ from "js-cookie"
+import { useAuth } from "@/hooks/auth/useAuth"
 const DashboardBody = () => {
   const { data: session } = useSession()
   const [isClient, setIsClient] = useState(false)
-  const [isLocalStorageLoaded, setIsLocalStorageLoaded] = useState(false)
+  // const [isLocalStorageLoaded, setIsLocalStorageLoaded] = useState(false)
 
   const [mostRentedProducts, setMostRentedProducts] = useState<ProductCardProps[]>([])
   const [nearCustomerProducts, setNearCustomerProducts] = useState<ProductCardProps[]>([])
@@ -22,16 +24,27 @@ const DashboardBody = () => {
   const [nearCustomerLoading, setNearCustomerLoading] = useState(true)
   const [error, setError] = useState("")
 
-  const [customerId, setCustomerId] = useState<string | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const {customerId, token} = useAuth();
+
+  // useEffect(() => {
+  //   const cid = Cookies.get('customerId') || null
+  //   const tid = Cookies.get('token') || null
+  //   setCustomerId(cid)
+  //   setToken(tid)
+
+  //   if (cid && tid) {
+  //     setIsClient(true)
+  //     setIsLocalStorageLoaded(true)
+  //   }
+  // }, [])
 
   const isLoggedIn = isClient && (!!session || !!token)
 
   useEffect(() => {
     setIsClient(true)
-    setCustomerId(localStorage.getItem("customerId"))
-    setToken(localStorage.getItem("token"))
-    setIsLocalStorageLoaded(true)
+    // setCustomerId(localStorage.getItem("customerId"))
+    // setToken(localStorage.getItem("token"))
+    // setIsLocalStorageLoaded(true)
   }, [])
 
   useEffect(() => {
@@ -52,7 +65,7 @@ const DashboardBody = () => {
   }, [])
 
   useEffect(() => {
-    if (isLoggedIn) return
+    // if (isLoggedIn) return
 
     const fetchRecommended = async () => {
       try {
@@ -68,10 +81,10 @@ const DashboardBody = () => {
     }
 
     fetchRecommended()
-  }, [isLoggedIn])
+  }, [])
 
   useEffect(() => {
-    if (!isLocalStorageLoaded || !token || !customerId) return
+    if (!token || !customerId) return
 
     const fetchNearby = async () => {
       try {
@@ -87,7 +100,7 @@ const DashboardBody = () => {
     }
 
     fetchNearby()
-  }, [isLocalStorageLoaded, token, customerId])
+  }, [])
 
   return (
     <div className='flex flex-col px-1 py-2 md:px-6 max-w-[1280px] mx-auto bg-color-layout pb-12 md:pb-[273px]'>

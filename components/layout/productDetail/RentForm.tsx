@@ -25,6 +25,7 @@ import LoadingPopup from "../LoadingPopUp";
 import { checkoutFromCartResponseProps } from "@/types/checkout";
 import Alert from "../Alert";
 import { AlertProps } from "@/types/alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 function formatDate(date: Date | undefined) {
   return date?.toISOString().split("T")[0];
@@ -40,7 +41,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
-    isWrong: true
+    isWrong: true,
   });
 
   const today = new Date();
@@ -64,7 +65,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const [qty, setQty] = useState<number>(productDetail.min_rented);
   const max = productDetail.stock;
 
-  const customerId = localStorage.getItem("customerId");
+  const {customerId, token} = useAuth();
 
   function handleDecreaseQty() {
     if (qty > productDetail.min_rented) setQty(qty - 1);
@@ -180,9 +181,9 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
         setAlertState({
           isOpen: true,
           message: "Produk Berhasil Ditambahkan Ke Keranjang",
-          isWrong:false
+          isWrong: false,
         });
-      } 
+      }
       console.log("add to cart res: ", res);
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -191,7 +192,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           return;
         }
       }
-    } finally{
+    } finally {
       setAddToCartLoading(false);
     }
   };
@@ -242,7 +243,9 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
         <Alert
           message={alertState.message}
           isOpen={alertState.isOpen}
-          onClose={() => setAlertState({ isOpen: false, message: "", isWrong: true })}
+          onClose={() =>
+            setAlertState({ isOpen: false, message: "", isWrong: true })
+          }
           isWrong={alertState.isWrong}
         />
       )}
@@ -273,7 +276,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={productDetail.stock <= 0}
+                  disabled={productDetail.stock <= 0 || (!token && !customerId)}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !startDate && "text-muted-foreground"
@@ -307,7 +310,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={productDetail.stock <= 0}
+                  disabled={productDetail.stock <= 0 || (!token && !customerId)}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !endDate && "text-muted-foreground"
@@ -366,10 +369,14 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           </h2>
         </div>
 
-        {/* BUTTONS */}
+        {!token && !customerId && (
+          <h2 className="text-sm xl:text-lg font-semibold text-color-secondary text-center mt-3">
+            Silahkan Login Dulu
+          </h2>
+        )}
 
-        {productDetail.stock === 0 && (
-          <h2 className="md:text-xl xl:text-xl font-semibold text-color-secondary text-center mt-3">
+        {token && customerId && productDetail.stock === 0 && (
+          <h2 className="text-sm xl:text-lg font-semibold text-color-secondary text-center mt-3">
             Stok tidak tersedia
           </h2>
         )}
@@ -379,7 +386,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             onClick={() => {
               handleCheckout();
             }}
-            disabled={productDetail.stock <= 0}
+            disabled={productDetail.stock <= 0 || (!token && !customerId)}
             className={`w-full xl:h-[54px] hover:opacity-80 bg-custom-gradient-tr flex space-x-[9px] ${
               productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
             }`}
@@ -394,7 +401,11 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           <Button
             ref={buttonRef}
             onClick={handleAddToCart}
-            disabled={addToCartLoading || productDetail.stock <= 0}
+            disabled={
+              addToCartLoading ||
+              productDetail.stock <= 0 ||
+              (!token && !customerId)
+            }
             className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${
               productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
             } ${addToCartLoading ? "opacity-50 cursor-not-allowed" : ""}`}

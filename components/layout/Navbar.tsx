@@ -14,13 +14,13 @@ import { Button } from "../ui/button"
 import FilterSidebar from "./product/FilterSidebar"
 import { Skeleton } from "../ui/skeleton"
 import optionDots from "@/public/optionDots.svg"
-// import useAuth from "@/hooks/auth/useAuth";
 import Search from "@/public/search.svg"
 import Suggestion from "../fragments/navbar/Suggestion"
 import { debounce } from "@/hooks/useDebounce"
 import axios from "axios"
 import { SearchResponseProps } from "@/types/searchResponse"
 import { searchSuggestionBaseUrl } from "@/types/globalVar"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 interface NavbarProps {
   type?: string | null
@@ -43,17 +43,20 @@ const Navbar = ({ type }: NavbarProps) => {
   const formRef = useRef<HTMLFormElement>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<SearchResponseProps>()
-  const [token, setToken] = useState<string>("")
+  // const [token, setToken] = useState<string>("")
   const [username, setUsername] = useState<string>("Guest")
+  const { token, customerId } = useAuth()
+
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token")
+    // const storedToken = token;
+    // const storedCustomerId = customerId;
     const storedUsername = localStorage.getItem("username")
     const storedImage = localStorage.getItem("image")
 
-    if (storedToken) {
-      setToken(storedToken)
-    }
+    // if (storedToken) {
+    //   setToken(storedToken)
+    // }
 
     if (storedUsername) {
       setUsername(storedUsername)
@@ -119,10 +122,11 @@ const Navbar = ({ type }: NavbarProps) => {
       }
 
       console.log("token: " + token)
-      if (token) {
+      if (token && customerId) {
         const image = localStorage.getItem("image")
         console.log("ada token: " + token)
-        console.log("google image: " + image + " guest " + Guest.src)
+        console.log("ada customerId: " + customerId)
+        // console.log("google image: " + image + " guest " + Guest.src)
 
         setUsername(localStorage.getItem("username") || "Guest")
 
@@ -211,7 +215,7 @@ const Navbar = ({ type }: NavbarProps) => {
                 router.push(`/product?name=${encodeURIComponent(searchQuery)}&page=1&size=16`)
               }
             }}
-            className='hidden lg:block ml-3 w-[100px] bg-color-primaryDark hover:bg-blue-900'
+            className='hidden lg:block ml-3 lg:h-[38px] xl:h-[43px] w-[100px] bg-color-primaryDark hover:bg-blue-900 rounded-sm'
           >
             Cari
           </Button>
@@ -234,7 +238,7 @@ const Navbar = ({ type }: NavbarProps) => {
                 </div>
               </div>
             </div>
-          ) : session || token ? (
+          ) : session || (token && customerId) ? (
             /* ================== Sudah login ======================= */
             <>
               <div className='flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-3 lg:space-x-1 pr-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0'>

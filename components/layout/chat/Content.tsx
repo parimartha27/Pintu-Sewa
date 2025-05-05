@@ -3,6 +3,7 @@ import NoChat from "@/components/fragments/chat/NoChat";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { chatBaseUrl } from "@/types/globalVar";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const ChatContentLayout = () => {
   interface ChatItem {
@@ -13,7 +14,7 @@ const ChatContentLayout = () => {
     shop_id : string;
   }
 
-  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
+  const {customerId} = useAuth();
   const [chatList, setChatList] = useState<ChatItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +35,6 @@ const ChatContentLayout = () => {
   }
 
   useEffect(() => {
-    const customerId = localStorage.getItem("customerId");
     setCustomerId(customerId);
     fetchContacts();
   

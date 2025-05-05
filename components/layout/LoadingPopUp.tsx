@@ -1,6 +1,6 @@
 import { Card, CardContent } from "../ui/card"
 
-const LoadingPopup = ({ message }: { message: string }) => {
+const LoadingPopup = ({ message }: { message?: string }) => {
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60'>
       <div className='relative z-10 w-[90%] max-w-lg p-4 rounded-2xl'>
