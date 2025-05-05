@@ -15,6 +15,7 @@ interface LabelledInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;  
   readonly?: boolean;
   maxLength?:number;
+  disabled?:boolean
 }
 
 const LabelledInput = (props: LabelledInputProps) => {

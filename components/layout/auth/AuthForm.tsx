@@ -86,7 +86,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                       emailOrPhoneError ? "text-red-500" : ""
                     } text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4`}
                   >
-                    Nomor Hp atau Email
+                    Email
                   </Label>
                   <Input
                     ref={inputRef}

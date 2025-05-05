@@ -216,6 +216,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
         quantity: qty,
         shipping_partner_id: "JNE",
       };
+      console.log("PAYLOAD CHECKOUT: ", payload);
       setCheckoutLoading(true);
       const res = await axios.post<checkoutFromCartResponseProps>(
         `${checkoutBaseUrl}/product`,
