@@ -21,6 +21,7 @@ import Link from "next/link";
 import NoCart from "@/public/noCart.svg";
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const CheckOutBody = () => {
   const {customerId} = useAuth();
