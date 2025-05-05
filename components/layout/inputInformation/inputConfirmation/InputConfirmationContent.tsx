@@ -118,11 +118,11 @@ const InputConfirmationContentLayout = () => {
         localStorage.clear();
         localStorage.setItem("username", username);
         localStorage.setItem("image", response.data.output_schema.image);
-        localStorage.setItem("token", response.data.output_schema.token);
-        localStorage.setItem(
-          "customerId",
-          response.data.output_schema.customer_id
-        );
+        // localStorage.setItem("token", response.data.output_schema.token);
+        // localStorage.setItem(
+        //   "customerId",
+        //   response.data.output_schema.customer_id
+        // );
 
         document.cookie = `token=${
           response.data.output_schema?.token || ""
