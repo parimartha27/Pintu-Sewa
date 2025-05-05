@@ -122,12 +122,12 @@ export async function registerService(
       data
     );
   
-    if (response.data.output_schema) {
-      document.cookie = `status=${response.data.output_schema?.status || ""}; path=/; Secure; SameSite=Lax`;
-      document.cookie = `userId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`;
-    } else {
-      console.warn("No output_schema in response");
-    }
+    // if (response.data.output_schema) {
+    //   document.cookie = `status=${response.data.output_schema?.status || ""}; path=/; Secure; SameSite=Lax`;
+    //   document.cookie = `userId=${response.data.output_schema?.customer_id || ""}; path=/; Secure; SameSite=Lax`;
+    // } else {
+    //   console.warn("No output_schema in response");
+    // }
     callback(response.data);
     return response.data;
   } catch (error: unknown) {
