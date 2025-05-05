@@ -11,7 +11,7 @@ import Product from "@/public/productTest.jpeg";
 import { ShopHeaderProps } from "@/types/shopDetail";
 import { chatBaseUrl } from "@/types/globalVar";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/auth/useAuth";
 
 const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
@@ -52,11 +52,6 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
       }
     }
   };
-
-  useEffect(() => {
-    setShopId(data.id);
-    setCustomerId(localStorage.getItem("customerId"));
-  }, []);
 
   return (
     <Card className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 w-full items-center lg:justify-between py-4 px-4 lg:py-6 lg:px-8 border-none shadow-md">
