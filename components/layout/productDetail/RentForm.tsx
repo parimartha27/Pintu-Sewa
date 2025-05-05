@@ -370,13 +370,13 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           </h2>
         </div>
 
-        {!token || !customerId && (
+        {(!token || !customerId) && (
           <h2 className="text-sm xl:text-lg font-semibold text-color-secondary text-center mt-3">
             Silahkan Login Dulu
           </h2>
         )}
 
-        {token && customerId && productDetail.stock === 0 && (
+        {(token && customerId) && productDetail.stock === 0 && (
           <h2 className="text-sm xl:text-lg font-semibold text-color-secondary text-center mt-3">
             Stok tidak tersedia
           </h2>
