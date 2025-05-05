@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import ProductInCartDetail from "@/components/fragments/cart/ProductInCartDetail";
 import { CartItemProps, ShopCartProps } from "@/types/cart";
-import { useState } from "react";
 
 interface CartProductFormProps {
   shopCart: ShopCartProps;
@@ -11,6 +10,7 @@ interface CartProductFormProps {
   onShopSelect: (shopId: string, checked: boolean) => void;
   onProductSelect: (cartId: string, checked: boolean) => void;
   onDelete: (cartId: string) => void;
+  onRefresh: () => void;
 }
 
 const CartProductForm = ({
@@ -19,30 +19,21 @@ const CartProductForm = ({
   selectedCartIds,
   onShopSelect,
   onProductSelect,
-  onDelete
+  onDelete,
+  onRefresh
 }: CartProductFormProps) => {
-  const [carts, setCarts] = useState<CartItemProps[]>(shopCart.carts);
+
   const handleShopCheckboxChange = (checked: boolean) => {
     onShopSelect(shopCart.shop_id, checked);
   };
 
   const handleDelete = (cartId: string) => {
-    const updatedCarts = carts.filter(cart => cart.cart_id !== cartId);
-    setCarts(updatedCarts);
     onDelete(cartId);
   };
 
-  if (carts.length === 0) {
+  if (shopCart.carts.length === 0) {
     return null;
   }
-
-  const handleCartUpdate = (updatedCart: CartItemProps) => {
-    const updatedCarts = carts.map((cart) =>
-      cart.cart_id === updatedCart.cart_id ? updatedCart : cart
-    );
-    setCarts(updatedCarts);
-  };
-  
 
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6 bg-white">
@@ -57,14 +48,14 @@ const CartProductForm = ({
       </CardHeader>
 
       <CardContent className="mt-3 flex-col p-0">
-        {carts.map((cart: CartItemProps) => (
+        {shopCart.carts.map((cart: CartItemProps) => (
           <ProductInCartDetail
             key={cart.cart_id}
             cartItem={cart}
             isChecked={selectedCartIds.includes(cart.cart_id)}
             onCheckChange={onProductSelect}
             onDelete={handleDelete}
-            onUpdate={handleCartUpdate}
+            onRefresh={onRefresh}
           />
         ))}
       </CardContent>

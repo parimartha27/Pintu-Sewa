@@ -18,6 +18,7 @@ import { checkoutFromCartResponseProps } from "@/types/checkout";
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
 import LoadingPopup from "../LoadingPopUp";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const CartBody = () => {
   const router = useRouter();
@@ -26,8 +27,6 @@ const CartBody = () => {
   const [selectedCartIds, setSelectedCartIds] = useState<string[]>([]);
   const [totalProductInCart, setTotalProductInCart] = useState<number>(0);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const customerId =
-    typeof window !== "undefined" ? localStorage.getItem("customerId") : null;
   const hasSelectedItems = selectedCartIds.length > 0;
   const [submitLoading, setSubmitLoading] = useState(false);
   const [alertState, setAlertState] = useState<AlertProps>({
@@ -35,42 +34,49 @@ const CartBody = () => {
     message: "",
     isWrong: true,
   });
+  const {customerId} = useAuth();
+
+  const fetchCartData = async (customerId: string) => {
+    try {
+      const cartRes = await axios.get<CartResponseProps>(
+        `${cartBaseUrl}/${customerId}`
+      );
+      const shops = cartRes.data.output_schema.shops;
+      console.log("SHOPS:", shops);
+      setShopCartItems(shops);
+      setTotalProductInCart(cartRes.data.output_schema.total_product_cart);
+  
+      const storedCartIds = JSON.parse(
+        localStorage.getItem("selectedCartIds") || "[]"
+      );
+  
+      const allIds = shops.flatMap((shop) =>
+        shop.carts.map((cart) => cart.cart_id)
+      );
+      const validCartIds = storedCartIds.filter((id: string) =>
+        allIds.includes(id)
+      );
+  
+      setSelectedCartIds(validCartIds);
+    } catch (error) {
+      console.error("Failed to fetch cart data:", error);
+    } finally {
+      setLoading(false);
+      setIsInitialLoad(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCartData = async () => {
-      try {
-        const cartRes = await axios.get<CartResponseProps>(
-          `${cartBaseUrl}/${customerId}`
-        );
-        const shops = cartRes.data.output_schema.shops;
-        console.log("SHOPS:", shops);
-        setShopCartItems(shops);
-        setTotalProductInCart(cartRes.data.output_schema.total_product_cart);
-
-        const storedCartIds = JSON.parse(
-          localStorage.getItem("selectedCartIds") || "[]"
-        );
-
-        const allIds = shops.flatMap((shop) =>
-          shop.carts.map((cart) => cart.cart_id)
-        );
-        const validCartIds = storedCartIds.filter((id: string) =>
-          allIds.includes(id)
-        );
-
-        setSelectedCartIds(validCartIds);
-      } catch (error) {
-        console.error("Failed to fetch cart data:", error);
-      } finally {
-        setLoading(false);
-        setIsInitialLoad(false);
-      }
-    };
-
     if (customerId) {
-      fetchCartData();
+      fetchCartData(customerId);
     }
   }, [customerId]);
+
+  const handleRefresh = () => {
+    if (customerId) {
+      fetchCartData(customerId);
+    }
+  };
 
   useEffect(() => {
     if (!isInitialLoad && typeof window !== "undefined") {
@@ -217,6 +223,7 @@ const CartBody = () => {
                     onShopSelect={handleShopSelect}
                     onProductSelect={handleProductSelect}
                     onDelete={handleDeleteCartItem}
+                    onRefresh={handleRefresh}
                   />
                 ))}
               </div>

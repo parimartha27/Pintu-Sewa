@@ -11,17 +11,33 @@ import Product from "@/public/productTest.jpeg";
 import { ShopHeaderProps } from "@/types/shopDetail";
 import { chatBaseUrl } from "@/types/globalVar";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
-  const [customerId, setCustomerId] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("customerId") : null
-  );
-  const [shopId, setShopId] = useState<string | null>("");
-  const router = useRouter();
-  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const target = e.currentTarget;
-    e.preventDefault();
+    const {customerId} = useAuth();
+    const [shopId, setShopId] = useState<string | null>("");
+    const router = useRouter();
+
+    const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      const target = e.currentTarget;
+      e.preventDefault();
+  
+      setShopId(target.getAttribute("data-shopid"))
+  
+      try {
+        const response = await axios.post(
+          `${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`
+        );
+        router.push('/chat')
+      } catch (err: any) {
+          if(err.response.data.error_schema.error_code == "PS-10-001"){
+            router.push('/chat')
+          }else{
+            console.log(err);
+          }
+      }
+    };
 
     try {
       const response = await axios.post(
@@ -54,16 +70,16 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
         />
         <div className="flex flex-col items-center sm:items-start">
           <h2 className="text-xl sm:text-2xl font-semibold text-color-primary mb-1 text-center sm:text-left">
-            {data.name || "Matt Studio"}
+            {data.name || "No Name"}
           </h2>
           <div className="flex items-center space-x-1 mb-2">
             <Image className="w-3 h-3" src={Location} alt="location" />
             <h3 className="text-xs sm:text-sm text-color-primary">
-              {data.province || "Jakarta"}
+              {data.province || "ALASKA"}
             </h3>
           </div>
           <Button
-            data-shopId={data.id}
+            data-shopid={data.id}
             onClick={createRoomChat}
             className="w-full max-w-[200px] sm:w-[200px] h-8 py-2 px-1 bg-transparent text-color-primaryDark border-[1px] text-sm sm:text-[16px] border-color-primaryDark hover:bg-slate-200"
           >
@@ -78,7 +94,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           <div className="flex items-center space-x-1">
             <Image className="w-4 h-4 sm:w-5 sm:h-5" src={Star} alt="star" />
             <h3 className="text-lg sm:text-xl text-color-primary font-semibold">
-              {data.rating || "4.5"}
+              {data.rating || "x.x"}
             </h3>
           </div>
           <h3 className="text-xs sm:text-sm text-color-primary text-center">
@@ -88,23 +104,23 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
 
         <div className="sm:w-[2px] sm:h-[42px] bg-[#D9D9D9] self-center hidden sm:block"></div>
 
-        <div className="flex flex-col items-center space-y-1">
+        {/* <div className="flex flex-col items-center space-y-1">
           <div className="flex items-center space-x-1">
             <h3 className="text-lg sm:text-xl text-color-primary font-semibold">
-              4 Jam
+              {}
             </h3>
           </div>
           <h3 className="text-xs sm:text-sm text-color-primary text-center">
             Pesanan Diproses
           </h3>
-        </div>
+        </div> */}
 
         <div className="sm:w-[2px] sm:h-[42px] bg-[#D9D9D9] self-center hidden sm:block"></div>
 
         <div className="flex flex-col items-center space-y-1">
           <div className="flex items-center space-x-1">
             <h3 className="text-lg sm:text-xl text-color-primary font-semibold">
-              {data.work_hours || "08:00 - 17:00"}
+              {data.work_hours || "Sampe Bangkrut"}
             </h3>
           </div>
           <h3 className="text-xs sm:text-sm text-color-primary text-center">

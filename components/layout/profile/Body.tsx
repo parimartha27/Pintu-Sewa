@@ -10,19 +10,20 @@ import axios from "axios"
 import { Skeleton } from "@/components/ui/skeleton"
 import { customerBaseUrl } from "@/types/globalVar"
 import { ProfileResponse } from "@/types/profile"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 const ProfileBody = () => {
-  const [customerId, setCustomerId] = useState<string>("")
+  const {customerId} = useAuth();
 
-  useEffect(() => {
-    const storedCustomerId = localStorage.getItem("customerId")
-    if (!storedCustomerId) {
-      setError("User ID tidak ditemukan di localStorage.")
-      setLoading(false)
-      return
-    }
-    setCustomerId(storedCustomerId)
-  }, [])
+  // useEffect(() => {
+  //   const storedCustomerId = localStorage.getItem("customerId")
+  //   if (!storedCustomerId) {
+  //     setError("User ID tidak ditemukan di localStorage.")
+  //     setLoading(false)
+  //     return
+  //   }
+  //   setCustomerId(storedCustomerId)
+  // }, [])
 
   const [customerData, setCustomerData] = useState<ProfileResponse>()
   const [loading, setLoading] = useState(true)

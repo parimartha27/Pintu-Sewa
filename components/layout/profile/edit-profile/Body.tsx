@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
-import { format, isValid, parse, set } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 import { ChevronDown } from "lucide-react";
 import { id } from "date-fns/locale";
 import { X } from "lucide-react";
@@ -33,6 +33,7 @@ import { BirthdayCalendar } from "@/components/ui/birthday-calendar";
 import LoadingPopup from "../../LoadingPopUp";
 import { AlertProps } from "@/types/alert";
 import Alert from "../../Alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const EditProfileBody = () => {
   const router = useRouter();
@@ -52,7 +53,7 @@ const EditProfileBody = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [biodataData, setBiodataData] = useState<ProfileResponse>();
-  const [customerId, setCustomerId] = useState<string | null>(null);
+   const {customerId} = useAuth();
   const [loading, setLoading] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [alertState, setAlertState] = useState<AlertProps>({
@@ -67,10 +68,10 @@ const EditProfileBody = () => {
     phone: "",
   });
 
-  useEffect(() => {
-    // This runs only on client side
-    setCustomerId(localStorage.getItem("customerId"));
-  }, []);
+  // useEffect(() => {
+  //   // This runs only on client side
+  //   setCustomerId(localStorage.getItem("customerId"));
+  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {

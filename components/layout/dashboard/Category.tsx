@@ -28,6 +28,7 @@ import PakaianWanita from "@/public/Kategori/Pakaian Wanita.svg";
 import Banner1 from "@/public/banner1.svg";
 import Banner2 from "@/public/banner2.svg";
 import Banner3 from "@/public/banner3.svg";
+import Banner4 from "@/public/banner4.svg";
 
 const categories = [
   { name: "Mobil", icon: Mobil },
@@ -68,7 +69,7 @@ const Category = () => {
           }}
         >
           <CarouselContent>
-            {[Banner1, Banner2, Banner3].map((banner, index) => (
+            {[Banner1, Banner2, Banner3, Banner4].map((banner, index) => (
               <CarouselItem key={index} className="w-full max-h-[400px]">
                 <div className="relative w-full h-[400px]">
                   <Image

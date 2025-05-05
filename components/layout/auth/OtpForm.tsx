@@ -15,6 +15,7 @@ import { InputOTP, InputOTPSlot } from "@/components/ui/input-otp"
 import axios from "axios"
 import { otpBaseUrl } from "@/types/globalVar"
 import LoadingPopup from "../LoadingPopUp"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 interface OtpFormProps {
   className?: string
@@ -66,6 +67,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
   const [resendOtpCount, setResendOtpCount] = useState(0)
   const [email, setEmail] = useState<string | null>(null)
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null)
+  const {customerId} = useAuth();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email")
@@ -77,7 +79,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
   const fetchOtpValidity = async () => {
     try {
-      const response = await axios.get<OtpAccessValid>(`${otpBaseUrl}/valid?customerId=${localStorage.getItem("customerId")}`)
+      const response = await axios.get<OtpAccessValid>(`${otpBaseUrl}/valid?customerId=${customerId}`)
       setVerifyCount(response.data.output_schema.verify_count)
       setResendOtpCount(response.data.output_schema.resend_otp_count)
 
@@ -119,7 +121,6 @@ const OtpForm = ({ className }: OtpFormProps) => {
     setError("")
 
     try {
-      const customerId = localStorage.getItem("customerId")
       if (!customerId) {
         setError("User ID tidak ditemukan.")
         setIsLoading(false)
@@ -158,7 +159,6 @@ const OtpForm = ({ className }: OtpFormProps) => {
       setIsResendDisabled(true)
       setError("")
 
-      const customerId = localStorage.getItem("customerId")
       if (!customerId) {
         console.error("User ID tidak ditemukan di localStorage.")
         return
@@ -260,7 +260,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
               <Button
                 onClick={async () => {
-                  const response = await axios.get<OtpAccessValid>(`${otpBaseUrl}/valid?customerId=${localStorage.getItem("customerId")}`)
+                  const response = await axios.get<OtpAccessValid>(`${otpBaseUrl}/valid?customerId=${customerId}`)
                   setVerifyCount(response.data.output_schema.verify_count)
                   setResendOtpCount(response.data.output_schema.resend_otp_count)
                   if (verifyCount > 10) {

@@ -12,6 +12,7 @@ import { walletBaseUrl } from "@/types/globalVar";
 import axios from "axios";
 import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const TopupConfirmationPage = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const TopupConfirmationPage = () => {
 
   const [amount, setAmount] = useState("0");
   const [method, setMethod] = useState("Unknown Method");
+  const {customerId} = useAuth();
 
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
@@ -56,7 +58,6 @@ const TopupConfirmationPage = () => {
   const handleCheckStatus = async () => {
     setIsLoading(true);
     try {
-      const customerId = localStorage.getItem("customerId");
       const response = await axios.patch(
         `${walletBaseUrl}/topup?customerId=${customerId}&amount=${amount}`
       );

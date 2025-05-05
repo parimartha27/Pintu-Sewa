@@ -13,6 +13,7 @@ import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
 import { transactionBaseUrl } from "@/types/globalVar"
 import ProfileSidebarLayout from "@/components/layout/ProfileSidebar"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 interface Shop {
   id: string
@@ -77,13 +78,13 @@ export default function TransactionDetail() {
   const [showRentToBuyForm, setShowRentToBuyForm] = useState<boolean>(false)
   const [resiBuying, setResiBuying] = useState<string>("")
   const [nominalAmount, setNominalAmount] = useState<string>("")
+  const {customerId} = useAuth();
 
   useEffect(() => {
     const fetchTransactionDetail = async () => {
       try {
         setLoading(true)
         const refNumber = localStorage.getItem("reference_number") || ""
-        const customerId = localStorage.getItem("customerId") || ""
 
         if (!refNumber || !customerId) {
           throw new Error("Reference number or customer ID not found")

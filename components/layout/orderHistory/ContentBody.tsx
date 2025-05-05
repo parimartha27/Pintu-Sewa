@@ -9,6 +9,7 @@ import { transactionBaseUrl } from "@/types/globalVar"
 import { OrderHistoryProps, OrderHistoryResponseProps } from "@/types/orderHistory"
 import ProductOrderHistoryCardSkeleton from "./ProductOrderHistoryCardSkeleton"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 const OrderCategory = [
   { value: "Semua", label: "Semua" },
@@ -31,9 +32,9 @@ const OrderHistoryContentBodyInner = () => {
   const endDate = searchParams.get("endDate") || ""
 
   const [loading, setLoading] = useState(true)
-  const [customerId, setCustomerId] = useState<string | null>(null)
   const [orderHistoryData, setOrderHistoryData] = useState<OrderHistoryProps[] | null>(null)
   const [isClient, setIsClient] = useState(false)
+   const {customerId} = useAuth();
 
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -49,11 +50,11 @@ const OrderHistoryContentBodyInner = () => {
     setIsClient(true)
   }, [])
 
-  useEffect(() => {
-    if (isClient) {
-      setCustomerId(localStorage.getItem("customerId"))
-    }
-  }, [isClient])
+  // useEffect(() => {
+  //   if (isClient) {
+  //     setCustomerId(localStorage.getItem("customerId"))
+  //   }
+  // }, [isClient])
 
   useEffect(() => {
     const fetchData = async () => {

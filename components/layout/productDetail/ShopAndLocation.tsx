@@ -10,12 +10,13 @@ import Location from "@/public/location.svg";
 import { Button } from "@/components/ui/button";
 import { ProductDetailShopProps} from "@/types/shop";
 import { useRouter } from "next/navigation";
-import { useState,useEffect, use } from "react";
+import { useState,useEffect } from "react";
 import { chatBaseUrl } from "@/types/globalVar";
 import axios from "axios";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const ShopAndLocation = ({shopDetail}: {shopDetail: ProductDetailShopProps}) => {
-  const [customerId, setCustomerId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("customerId") : null);
+   const {customerId} = useAuth();
   const [shopId, setShopId] = useState<string | null>("");
   const router = useRouter();
 
@@ -39,7 +40,7 @@ const ShopAndLocation = ({shopDetail}: {shopDetail: ProductDetailShopProps}) => 
 
   useEffect(() => {
     setShopId(shopDetail.id)
-    setCustomerId(localStorage.getItem("customerId"))
+    // setCustomerId(localStorage.getItem("customerId"))
   },[])
 
   return (

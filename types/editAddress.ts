@@ -1,7 +1,7 @@
 import { ErrorSchema } from "./errorSchema"
 
 export interface EditAddressRequestProps{
-    id: string,
+    id: string | null,
     street: string,
     district: string,
     regency: string,

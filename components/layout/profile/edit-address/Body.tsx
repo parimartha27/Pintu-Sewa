@@ -25,6 +25,7 @@ import { getIdByText, getTextById } from "@/hooks/useGetWilayahByTextOrId";
 import LoadingPopup from "../../LoadingPopUp";
 import { AlertProps } from "@/types/alert";
 import Alert from "../../Alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const EditAddressBody = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const EditAddressBody = () => {
   const [loading, setLoading] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [addressData, setAddressData] = useState<AddressProps>();
-  const [customerId, setCustomerId] = useState("");
+  const {customerId} = useAuth();
 
   const [provinsi, setProvinsi] = useState<dataAlamatProps[]>([]);
   const [kabupaten, setKabupaten] = useState<dataAlamatProps[]>([]);
@@ -67,12 +68,6 @@ const EditAddressBody = () => {
     setIsClient(true);
   }, []);
 
-  useEffect(() => {
-    if (isClient) {
-      const storedCustomerId = localStorage.getItem("customerId") || "";
-      setCustomerId(storedCustomerId);
-    }
-  }, [isClient]);
 
   useEffect(() => {
     if (!customerId) return;

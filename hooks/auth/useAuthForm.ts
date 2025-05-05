@@ -2,6 +2,8 @@ import { useState, useRef } from "react"
 import { loginService, registerService, sendOauthData } from "@/services/authServices"
 import { useRouter } from "next/navigation"
 import { getSession, signIn } from "next-auth/react"
+import { set } from "date-fns"
+import { ErrorSchema } from "@/types/errorSchema"
 
 interface userdataProps {
   email: string
@@ -138,12 +140,12 @@ export const useAuthForm = (type?: string) => {
 
             localStorage.setItem("username", username || "")
             localStorage.setItem("image", image || "")
-            localStorage.setItem("token", token || "")
-            localStorage.setItem("customerId", customer_id || "")
+            // localStorage.setItem("token", token || "")
+            // localStorage.setItem("customerId", customer_id || "")
 
             router.push("/")
-          } else {
-            setAuthError(response?.error_schema?.error_message || "Terjadi kesalahan")
+          } else if(response?.error_schema?.error_code === "PS-00-002"){
+            setAuthError("Email atau Password Tidak Sesuai")
           }
         })
       } else if (type === "register" && isChecked) {
@@ -156,8 +158,10 @@ export const useAuthForm = (type?: string) => {
             const contactValue = data.email || data.phone_number
 
             localStorage.setItem(contactKey, contactValue)
-            localStorage.setItem("customerId", customer_id || "Tidak ada user id")
+            // localStorage.setItem("customerId", customer_id || "Tidak ada user id")
             document.cookie = `status=${status}; path=/; Secure; SameSite=Lax`
+                        // document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
+            document.cookie = `customerId=${customer_id}; path=/; Secure; SameSite=Lax`
 
             router.push("/otp")
           } else {
@@ -166,12 +170,14 @@ export const useAuthForm = (type?: string) => {
         })
       }
     } catch (error) {
-      const err = error as { status?: number }
-
-      if (err.status === 401) {
-        setAuthError("Username atau Password Tidak Sesuai")
-      } else {
-        setAuthError(`Terjadi kesalahan saat login`)
+      const err = error as {error_schema: ErrorSchema}
+      console.log(err)
+      if(err.error_schema.error_code === "PS-01-002"){
+        setAuthError("Email Sudah Terdaftar")
+      }else if(err.error_schema.error_code === "PS-00-002"){
+        setAuthError("Email Atau Password Tidak Sesuai")
+      }else if(err.error_schema.error_code === "PS-99-500"){
+        setAuthError("Email Atau Password Tidak Sesuai")
       }
     } finally {
       localStorage.setItem("otpType", "register")

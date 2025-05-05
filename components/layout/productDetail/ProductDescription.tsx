@@ -129,7 +129,7 @@ const ProductDescription = ({
           </div>
           <h2 className="text-[12px] xl:text-[20px] font-normal text-color-primary">
             <span className="text-[16px] xl:text-[30px] text-color-secondary font-bold">
-              {formatToRupiah(productDetail.daily_price || "100000")}
+              {formatToRupiah(productDetail.daily_price || "Tidak Ada Harga")}
             </span>{" "}
             /hari
           </h2>
@@ -160,7 +160,7 @@ const ProductDescription = ({
                 <h3 className="text-[12px] xl:text-[14px] text-color-primary font-normal">
                   Min. Durasi Sewa:{" "}
                   <span className="font-bold">
-                    {getMinDuration(productDetail)}
+                    {getMinDuration(productDetail) || "NaN"}
                   </span>
                 </h3>
               </div>
@@ -168,7 +168,7 @@ const ProductDescription = ({
                 <Image src={Box} alt="jam" className="w-[16px] h-[16px]" />
                 <h3 className="text-[12px] xl:text-[14px]  text-color-primary font-normal">
                   Min. Jumlah Sewa:{" "}
-                  <span className="font-bold">{productDetail.min_rented}</span>
+                  <span className="font-bold">{productDetail.min_rented  || "NaN"}</span>
                 </h3>
               </div>
               <div className="flex flex-col">
@@ -182,19 +182,19 @@ const ProductDescription = ({
                   <li>
                     Harian:{" "}
                     <span className="font-bold">
-                      {formatToRupiah(productDetail.daily_price || "100000")}
+                      {formatToRupiah(productDetail.daily_price || "NaN")}
                     </span>
                   </li>
                   <li>
                     Mingguan:{" "}
                     <span className="font-bold">
-                      {formatToRupiah(productDetail.weekly_price || "100000")}
+                      {formatToRupiah(productDetail.weekly_price || "NaN")}
                     </span>
                   </li>
                   <li>
                     Bulanan:{" "}
                     <span className="font-bold">
-                      {formatToRupiah(productDetail.monthly_price || "100000")}
+                      {formatToRupiah(productDetail.monthly_price || "NaN")}
                     </span>
                   </li>
                 </ul>

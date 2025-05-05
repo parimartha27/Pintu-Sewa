@@ -24,16 +24,16 @@ import {
   format,
 } from "date-fns";
 import { parseIndoDateToISO } from "@/hooks/useIndoDate";
-import { id } from "date-fns/locale";
 import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 interface ProductInCartDetailProps {
   cartItem: CartItemProps;
   onDelete: (cartId: string) => void;
   isChecked: boolean;
   onCheckChange: (cartId: string, checked: boolean) => void;
-  onUpdate: (cartItem: CartItemProps) => void;
+  onRefresh: () => void;
 }
 
 interface CartRequestHandleProps {
@@ -43,22 +43,16 @@ interface CartRequestHandleProps {
   end_rent_date: string;
 }
 
-const formatDateIndo = (dateString: string) => {
-  const date = new Date(dateString);
-  return format(date, "dd MMMM yyyy", { locale: id });
-};
-
 const ProductInCartDetail = ({
   cartItem,
   onDelete,
   isChecked,
   onCheckChange,
-  onUpdate,
+  onRefresh
 }: ProductInCartDetailProps) => {
   const [qty, setQty] = useState<number>(cartItem.quantity);
   const [max] = useState<number>(cartItem.stock);
   const isAvailable = cartItem.available_to_rent;
-  const customerId = localStorage.getItem("customerId");
   const [startDate, setStartDate] = useState<Date | undefined>(
     cartItem.start_rent_date ? new Date(cartItem.start_rent_date) : undefined
   );
@@ -71,6 +65,7 @@ const ProductInCartDetail = ({
     message: "",
     isWrong: true,
   });
+  const {customerId} = useAuth();
 
   const getMinDurationAndUnit = (
     product: CartItemProps
@@ -80,20 +75,6 @@ const ProductInCartDetail = ({
     if (product.monthly_price) return { value: 1, unit: "month" };
     return { value: 0, unit: "day" };
   };
-
-  function getRentDuration(start: Date, end: Date): string {
-    const days = differenceInDays(end, start) + 1;
-
-    if (days < 7) {
-      return `${days} Hari`;
-    } else if (days < 30) {
-      const weeks = Math.ceil(days / 7);
-      return `${weeks} Minggu`;
-    } else {
-      const months = Math.ceil(days / 30);
-      return `${months} Bulan`;
-    }
-  }
 
   const handleDeleteClick = async () => {
     try {
@@ -117,6 +98,7 @@ const ProductInCartDetail = ({
           JSON.stringify(updatedSelected)
         );
         onDelete(cartItem.cart_id);
+        onRefresh();
       } else {
         setAlertState({
           isOpen: true,
@@ -136,33 +118,7 @@ const ProductInCartDetail = ({
   };
 
   const handleSelectEndDate = (date: Date | undefined) => {
-    if (!startDate || !date) return;
-
-    const { value, unit } = getMinDurationAndUnit(cartItem);
-    let isValid = false;
-
-    switch (unit) {
-      case "day":
-        isValid = differenceInDays(date, startDate) >= value;
-        break;
-      case "week":
-        isValid = differenceInWeeks(date, startDate) >= value;
-        break;
-      case "month":
-        isValid = differenceInMonths(date, startDate) >= value;
-        break;
-    }
-
-    if (isValid) {
-      setEndDate(date);
-    } else {
-      setAlertState({
-        isOpen: true,
-        message: `Tanggal selesai harus minimal ${value} ${
-          unit === "day" ? "hari" : unit === "week" ? "minggu" : "bulan"
-        } setelah tanggal mulai.`,
-      });
-    }
+    setEndDate(date); 
   };
 
   const handleDecreaseQty = async () => {
@@ -232,7 +188,34 @@ const ProductInCartDetail = ({
 
   const handleApplyDate = async () => {
     if (!startDate || !endDate) return;
-    console.log("startDate: ", startDate, "endDate: ", endDate);
+  
+    const { value, unit } = getMinDurationAndUnit(cartItem);
+    let isValid = false;
+  
+    switch (unit) {
+      case "day":
+        isValid = differenceInDays(endDate, startDate) >= value;
+        break;
+      case "week":
+        isValid = differenceInWeeks(endDate, startDate) >= value;
+        break;
+      case "month":
+        isValid = differenceInMonths(endDate, startDate) >= value;
+        break;
+    }
+  
+    if (!isValid) {
+      setAlertState({
+        isOpen: true,
+        message: `Tanggal selesai harus minimal ${value} ${
+          unit === "day" ? "hari" : unit === "week" ? "minggu" : "bulan"
+        } setelah tanggal mulai.`,
+        isWrong: true,
+      });
+      setIsPopoverOpen(false);
+      return;
+    }
+  
     try {
       const payload: CartRequestHandleProps = {
         cart_id: cartItem.cart_id,
@@ -240,24 +223,11 @@ const ProductInCartDetail = ({
         start_rent_date: format(startDate, "yyyy-MM-dd"),
         end_rent_date: format(endDate, "yyyy-MM-dd"),
       };
-
-      console.log("payload ubah tanggal: ", payload);
-
+  
       const res = await axios.put(`${cartBaseUrl}/edit`, payload);
-      console.log("res ubah tanggal: ", res);
-
+  
       if (res.data.error_schema.error_message === "SUCCESS") {
-        const formattedStartDate = format(startDate, "yyyy-MM-dd");
-        const formattedEndDate = format(endDate, "yyyy-MM-dd");
-
-        const updatedCart = {
-          ...cartItem,
-          start_rent_date: formatDateIndo(formattedStartDate),
-          end_rent_date: formatDateIndo(formattedEndDate),
-          rent_duration: getRentDuration(startDate, endDate),
-        };
-
-        onUpdate(updatedCart);
+        onRefresh();
         setAlertState({
           isOpen: true,
           message: "Tanggal Berhasil Diubah",
@@ -269,6 +239,7 @@ const ProductInCartDetail = ({
       setAlertState({
         isOpen: true,
         message: "Gagal mengubah tanggal: " + err,
+        isWrong: true,
       });
     }
   };

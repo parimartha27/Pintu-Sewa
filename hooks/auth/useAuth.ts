@@ -1,21 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react'
+import Cookies from 'js-cookie'
 
-const useAuth = () => {
-  const [token, setToken] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+export interface AuthDataProps {
+  token: string | null
+  customerId: string | null
+}
 
-  useEffect(() => {
-    const getCookie = (name: string) => {
-      if (typeof window === 'undefined') return null;
-      const match = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
-      return match ? decodeURIComponent(match[2]) : null;
-    };
-    
-    setToken(getCookie('token'));
-    setUserId(getCookie('customerId'));
-  }, []);
+export const useAuth = (): AuthDataProps => {
+  const [authData] = useState<AuthDataProps>(() => ({
+    token: Cookies.get('token') || null,
+    customerId: Cookies.get('customerId') || null,
+  }));
 
-  return { token, userId };
-};
-
-export default useAuth;
+  return authData
+}
