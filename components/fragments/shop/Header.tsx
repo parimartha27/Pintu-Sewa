@@ -51,7 +51,10 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
         console.log(err);
       }
     }
-  };
+  
+  useEffect(() => {
+    setShopId(data.id);
+  }, []);
 
   return (
     <Card className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 w-full items-center lg:justify-between py-4 px-4 lg:py-6 lg:px-8 border-none shadow-md">
