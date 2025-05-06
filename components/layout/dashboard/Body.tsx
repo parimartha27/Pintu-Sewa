@@ -7,13 +7,10 @@ import { useSession } from "next-auth/react"
 import { ProductCardProps } from "@/types/productCard"
 import NoProduct from "@/components/fragments/NoProduct"
 import { fetchMostRentedProducts, fetchNearCustomerProducts, fetchRecommendedProducts } from "@/services/productService"
-import Cookies
- from "js-cookie"
 import { useAuth } from "@/hooks/auth/useAuth"
 const DashboardBody = () => {
   const { data: session } = useSession()
   const [isClient, setIsClient] = useState(false)
-  // const [isLocalStorageLoaded, setIsLocalStorageLoaded] = useState(false)
 
   const [mostRentedProducts, setMostRentedProducts] = useState<ProductCardProps[]>([])
   const [nearCustomerProducts, setNearCustomerProducts] = useState<ProductCardProps[]>([])
@@ -26,25 +23,10 @@ const DashboardBody = () => {
 
   const {customerId, token} = useAuth();
 
-  // useEffect(() => {
-  //   const cid = Cookies.get('customerId') || null
-  //   const tid = Cookies.get('token') || null
-  //   setCustomerId(cid)
-  //   setToken(tid)
-
-  //   if (cid && tid) {
-  //     setIsClient(true)
-  //     setIsLocalStorageLoaded(true)
-  //   }
-  // }, [])
-
   const isLoggedIn = isClient && (!!session || !!token)
 
   useEffect(() => {
     setIsClient(true)
-    // setCustomerId(localStorage.getItem("customerId"))
-    // setToken(localStorage.getItem("token"))
-    // setIsLocalStorageLoaded(true)
   }, [])
 
   useEffect(() => {
@@ -65,7 +47,6 @@ const DashboardBody = () => {
   }, [])
 
   useEffect(() => {
-    // if (isLoggedIn) return
 
     const fetchRecommended = async () => {
       try {

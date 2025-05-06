@@ -12,5 +12,21 @@ export interface EditProfileRequestProps {
 
 export interface EditProfileResponseProps {
     error_schema: ErrorSchema;
-    output_schema: string;
-}
+    output_schema: {
+      id: string;
+      username: string;
+      name: string;
+      phone_number: string;
+      gender: string;
+      birth_date: string;
+      image: string;
+      email: string;
+      street: string;
+      district: string;
+      regency: string;
+      province: string;
+      post_code: string;
+      notes: string;
+      status: string | null;
+    };
+  }

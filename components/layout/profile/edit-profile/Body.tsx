@@ -25,7 +25,6 @@ import axios from "axios";
 import { ProfileResponse } from "@/types/profile";
 import ProfileFormSkeleton from "./ProfileFormSkeleton";
 import {
-  EditProfileRequestProps,
   EditProfileResponseProps,
 } from "@/types/editProfile";
 import { useRouter } from "next/navigation";
@@ -34,6 +33,7 @@ import LoadingPopup from "../../LoadingPopUp";
 import { AlertProps } from "@/types/alert";
 import Alert from "../../Alert";
 import { useAuth } from "@/hooks/auth/useAuth";
+import dataUrlToFile from "@/hooks/useConvertStringToFile";
 
 const EditProfileBody = () => {
   const router = useRouter();
@@ -68,14 +68,9 @@ const EditProfileBody = () => {
     phone: "",
   });
 
-  // useEffect(() => {
-  //   // This runs only on client side
-  //   setCustomerId(localStorage.getItem("customerId"));
-  // }, []);
-
   useEffect(() => {
     const fetchData = async () => {
-      if (!customerId) return; // Don't fetch if customerId isn't set yet
+      if (!customerId) return; 
 
       try {
         const biodataRes = await axios.get<BiodataResponseProps>(
@@ -137,7 +132,6 @@ const EditProfileBody = () => {
       reader.onload = () => {
         const imageUrl = reader.result as string;
         setProfileImage(imageUrl);
-        localStorage.setItem("profileImage", imageUrl);
       };
       reader.readAsDataURL(file);
     }
@@ -163,43 +157,51 @@ const EditProfileBody = () => {
 
     return true;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     setLoadingSubmit(true);
-    const payload: EditProfileRequestProps = {
-      id: customerId || "",
-      username: username || "",
-      name: fullname || "",
-      phone_number: handphone || "",
-      gender: gender || "",
-      birth_date: date?.toISOString().split("T")[0] || "",
-      image: profileImage || biodataData?.image || "",
-    };
-
+  
     try {
+      const formData = new FormData();
+  
+      formData.append("id", customerId || "");
+      formData.append("username", username || "");
+      formData.append("name", fullname || "");
+      formData.append("phoneNumber", handphone || "");
+      formData.append("gender", gender || "");
+      formData.append("birthDate", date?.toISOString().split("T")[0] || "");
+      if(profileImage){
+        const imageFile = dataUrlToFile(profileImage || "", Guest);
+        formData.append("image", imageFile);
+      }
+
       const response = await axios.put<EditProfileResponseProps>(
         `${customerBaseUrl}/edit-biodata`,
-        payload
+        formData,
       );
+
+      console.log("res edit profile",response);
+  
       if (response.data.error_schema.error_message === "SUCCESS") {
-        setLoadingSubmit(false);
-        localStorage.setItem("profileImage", profileImage || "");
+        localStorage.setItem("image", response.data.output_schema.image || "");
         localStorage.setItem("username", username || "");
         router.push("/profile");
       } else {
         setAlertState({
           isOpen: true,
-          message: "Gagal Mengedit Profile: " + response.data.error_schema.error_message,
-        })
+          message:
+            "Gagal Mengedit Profile: " +
+            response.data.error_schema.error_message,
+        });
       }
     } catch (e) {
       setAlertState({
         isOpen: true,
         message: "Gagal Mengedit Profile: " + e,
-      })
+      });
+    } finally {
       setLoadingSubmit(false);
     }
   };
@@ -387,3 +389,4 @@ const EditProfileBody = () => {
 };
 
 export default EditProfileBody;
+

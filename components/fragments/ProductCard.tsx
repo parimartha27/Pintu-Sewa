@@ -49,7 +49,7 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
               {product.name.substring(0, 20) + "..." || "nama product"}
             </h1>
 
-            <div className="mt-2 md:mt-3 flex">
+            <div className="mt-2 md:mt-3 flex items-center">
               <Image
                 className="w-4 h-4 md:w-5 md:h-5 mr-1"
                 src={Jam}

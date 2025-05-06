@@ -99,7 +99,7 @@ const Category = () => {
                     width={40}
                     height={40}
                     alt={category.name}
-                    className="object-contain max-w-[30px] max-h-[30px] lg:max-w-[80px] lg:max-h-[80px]"
+                    className="object-contain max-w-[30px] max-h-[30px] md:max-h-[40px] lg:max-w-[80px] lg:max-h-[50px]"
                   />
                 </Button>
 

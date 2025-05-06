@@ -107,7 +107,8 @@ const ProfileSidebarLayout = () => {
                   </div>
                 </Link>
                 <Link
-                  href={"/chat"}
+                  // href={"/chat"}
+                  href={"/dev"}
                   className='group'
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
