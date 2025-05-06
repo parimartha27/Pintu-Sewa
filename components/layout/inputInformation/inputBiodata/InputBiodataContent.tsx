@@ -240,6 +240,7 @@ const InputBiodataContent = () => {
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                
               />
               {errors.email && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.email}</p>}
             </div>

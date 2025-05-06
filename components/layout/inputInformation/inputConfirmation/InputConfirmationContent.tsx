@@ -12,8 +12,9 @@ import LoadingPopup from "../../LoadingPopUp"
 import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
 import { IoMdAlert } from "react-icons/io";
+import { useAuth } from "@/hooks/auth/useAuth";
 interface CustomerRequest {
-  id: string
+  id: string | null
   username: string
   name: string
   street: string
@@ -55,12 +56,13 @@ const InputConfirmationContentLayout = () => {
     message: "",
     isWrong: true,
   });
+  const {customerId} = useAuth();
 
   useEffect(() => {
     // This runs only on client side
     const data: Record<string, string> = {};
     const keys = [
-      "customerId",
+      // "customerId",
       "username",
       "fullname",
       "jalan",
@@ -90,7 +92,7 @@ const InputConfirmationContentLayout = () => {
     setLoading(true);
     try {
       const payload: CustomerRequest = {
-        id: formData.customerId,
+        id: customerId,
         username: formData.username,
         name: formData.fullname,
         street: formData.jalan,
@@ -127,9 +129,9 @@ const InputConfirmationContentLayout = () => {
         document.cookie = `token=${
           response.data.output_schema?.token || ""
         }; path=/; Secure; SameSite=Lax`;
-        document.cookie = `customerId=${
-          response.data.output_schema?.customer_id || ""
-        }; path=/; Secure; SameSite=Lax`;
+        // document.cookie = `customerId=${
+        //   response.data.output_schema?.customer_id || ""
+        // }; path=/; Secure; SameSite=Lax`;
         router.push("/");
       } else {
         setAlertState({
