@@ -44,7 +44,7 @@ export function middleware(request: NextRequest) {
   const publicRoutes = [
     "/login",
     "/register",
-    "/forgot-password",
+    "/reset-password",
     "/otp",
     "/input-biodata",
     "/input-email-otp",

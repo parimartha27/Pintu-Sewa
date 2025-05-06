@@ -1,34 +1,18 @@
 "use client";
 
-import Image from "next/image"
-import Guest from "@/public/guest.svg"
-import InputtedData from "@/components/fragments/input-information/InputtedData"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { createCustomerBaseUrl } from "@/types/globalVar"
-import LoadingPopup from "../../LoadingPopUp"
+import Image from "next/image";
+import Guest from "@/public/guest.svg";
+import InputtedData from "@/components/fragments/input-information/InputtedData";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { createCustomerBaseUrl } from "@/types/globalVar";
+import LoadingPopup from "../../LoadingPopUp";
 import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
-import { IoMdAlert } from "react-icons/io";
 import { useAuth } from "@/hooks/auth/useAuth";
-interface CustomerRequest {
-  id: string | null
-  username: string
-  name: string
-  street: string
-  phone_number: string
-  email: string
-  district: string
-  regency: string
-  province: string
-  gender: string
-  birth_date: string
-  post_code: string
-  password: string
-  notes?: string
-}
+import dataUrlToFile  from "@/hooks/useConvertStringToFile";
 
 interface CustomerResponse {
   error_schema: {
@@ -50,19 +34,20 @@ const InputConfirmationContentLayout = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [imageSrc, setImageSrc] = useState(Guest);
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
     isWrong: true,
   });
-  const {customerId} = useAuth();
+  const { customerId } = useAuth();
+  const [imageSrc, setImageSrc] = useState<string>(() => {
+    return localStorage.getItem("image") || Guest;
+  });
+  const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
-    // This runs only on client side
     const data: Record<string, string> = {};
     const keys = [
-      // "customerId",
       "username",
       "fullname",
       "jalan",
@@ -85,34 +70,48 @@ const InputConfirmationContentLayout = () => {
 
     setFormData(data);
     setImageSrc(data.image || Guest);
+
+    if (data.image) {
+      setImage(dataUrlToFile(data.image, "image"));
+    }
   }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
+    console.log("image:" + image);
     try {
-      const payload: CustomerRequest = {
-        id: customerId,
-        username: formData.username,
-        name: formData.fullname,
-        street: formData.jalan,
-        phone_number: formData.handphone,
-        email: formData.email,
-        district: formData.kecamatan,
-        regency: formData.kabupaten,
-        province: formData.provinsi,
-        gender: formData.gender,
-        birth_date: formData.date,
-        post_code: formData.kodepos,
-        password: formData.password,
-        notes: formData.catatan,
+      if (!image) {
+        setAlertState({
+          isOpen: true,
+          message: "Gambar belum dipilih!",
+        });
+        setLoading(false);
+        return;
       }
 
-      console.log("Payload: ", payload)
+      const formDataToSend = new FormData();
+      formDataToSend.append("image", image);
+      formDataToSend.append("id", customerId ?? "");
+      formDataToSend.append("username", formData.username);
+      formDataToSend.append("name", formData.fullname);
+      formDataToSend.append("street", formData.jalan);
+      formDataToSend.append("phoneNumber", formData.handphone);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("district", formData.kecamatan);
+      formDataToSend.append("regency", formData.kabupaten);
+      formDataToSend.append("province", formData.provinsi);
+      formDataToSend.append("gender", formData.gender);
+      formDataToSend.append("birthDate", formData.date);
+      formDataToSend.append("postCode", formData.kodepos);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("notes", formData.catatan);
+
+      console.log("FORM DATA" + formDataToSend);
 
       const response = await axios.post<CustomerResponse>(
-        createCustomerBaseUrl,
-        payload
+        createCustomerBaseUrl + "/v2",
+        formDataToSend
       );
 
       if (response.data.error_schema.error_code === "PS-00-000") {
@@ -120,18 +119,10 @@ const InputConfirmationContentLayout = () => {
         localStorage.clear();
         localStorage.setItem("username", username);
         localStorage.setItem("image", response.data.output_schema.image);
-        // localStorage.setItem("token", response.data.output_schema.token);
-        // localStorage.setItem(
-        //   "customerId",
-        //   response.data.output_schema.customer_id
-        // );
 
         document.cookie = `token=${
           response.data.output_schema?.token || ""
         }; path=/; Secure; SameSite=Lax`;
-        // document.cookie = `customerId=${
-        //   response.data.output_schema?.customer_id || ""
-        // }; path=/; Secure; SameSite=Lax`;
         router.push("/");
       } else {
         setAlertState({
@@ -153,6 +144,7 @@ const InputConfirmationContentLayout = () => {
 
   return (
     <>
+      {loading && <LoadingPopup />}
       {alertState.isOpen && (
         <Alert
           message={alertState.message}
@@ -217,34 +209,13 @@ const InputConfirmationContentLayout = () => {
               label="Jenis Kelamin"
               input={formData.gender || "-"}
             />
-            <InputtedData
-              label='Tanggal Lahir'
-              input={formData.date || "-"}
-            />
-            <InputtedData
-              label='Jalan'
-              input={formData.jalan || "-"}
-            />
-            <InputtedData
-              label='Provinsi'
-              input={formData.provinsi || "-"}
-            />
-            <InputtedData
-              label='Kabupaten'
-              input={formData.kabupaten || "-"}
-            />
-            <InputtedData
-              label='Kecamatan'
-              input={formData.kecamatan || "-"}
-            />
-            <InputtedData
-              label='Kode Pos'
-              input={formData.kodepos || "-"}
-            />
-            <InputtedData
-              label='Catatan'
-              input={formData.catatan || "-"}
-            />
+            <InputtedData label="Tanggal Lahir" input={formData.date || "-"} />
+            <InputtedData label="Jalan" input={formData.jalan || "-"} />
+            <InputtedData label="Provinsi" input={formData.provinsi || "-"} />
+            <InputtedData label="Kabupaten" input={formData.kabupaten || "-"} />
+            <InputtedData label="Kecamatan" input={formData.kecamatan || "-"} />
+            <InputtedData label="Kode Pos" input={formData.kodepos || "-"} />
+            <InputtedData label="Catatan" input={formData.catatan || "-"} />
 
             {!loading && (
               <div className="flex flex-col pt-2 lg:flex-row self-center lg:self-start space-y-3 lg:space-y-0 lg:space-x-6 lg:mt-[60px] w-full max-w-[250px] lg:max-w-none px-4 sm:px-0">
