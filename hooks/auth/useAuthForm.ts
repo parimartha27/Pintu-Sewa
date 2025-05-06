@@ -2,7 +2,6 @@ import { useState, useRef } from "react"
 import { loginService, registerService, sendOauthData } from "@/services/authServices"
 import { useRouter } from "next/navigation"
 import { getSession, signIn } from "next-auth/react"
-import { set } from "date-fns"
 import { ErrorSchema } from "@/types/errorSchema"
 
 interface userdataProps {
