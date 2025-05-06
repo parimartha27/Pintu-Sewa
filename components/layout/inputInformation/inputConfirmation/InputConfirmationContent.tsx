@@ -40,12 +40,17 @@ const InputConfirmationContentLayout = () => {
     isWrong: true,
   });
   const { customerId } = useAuth();
-  const [imageSrc, setImageSrc] = useState<string>(() => {
-    return localStorage.getItem("image") || Guest;
-  });
+  const [imageSrc, setImageSrc] = useState<string>(Guest); 
   const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return; 
+
+    const storedImage = localStorage.getItem("image");
+    if (storedImage) {
+      setImageSrc(storedImage);
+    }
+  
     const data: Record<string, string> = {};
     const keys = [
       "username",
@@ -63,16 +68,21 @@ const InputConfirmationContentLayout = () => {
       "catatan",
       "image",
     ];
-
+  
     keys.forEach((key) => {
-      data[key] = localStorage.getItem(key) || "";
+      const value = localStorage.getItem(key);
+      data[key] = value || "";
     });
-
+  
     setFormData(data);
     setImageSrc(data.image || Guest);
-
+  
     if (data.image) {
-      setImage(dataUrlToFile(data.image, "image"));
+      try {
+        setImage(dataUrlToFile(data.image, "image"));
+      } catch (err) {
+        console.error("Failed to convert data URL to File:", err);
+      }
     }
   }, []);
 
