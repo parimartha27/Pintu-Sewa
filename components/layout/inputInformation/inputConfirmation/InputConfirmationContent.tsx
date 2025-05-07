@@ -104,6 +104,17 @@ const InputConfirmationContentLayout = () => {
         return;
       }
 
+      let decryptedPass = "";
+      if (formData.password) {
+        try {
+          decryptedPass = CryptoJS.AES.decrypt(formData.password, SECRET_KEY)
+            .toString(CryptoJS.enc.Utf8);
+        } catch (err) {
+          console.warn("Invalid encrypted password:", err);
+          decryptedPass = "";
+        }
+      }
+
       const formDataToSend = new FormData();
       formDataToSend.append("image", image);
       formDataToSend.append("id", customerId ?? "");
@@ -118,9 +129,6 @@ const InputConfirmationContentLayout = () => {
       formDataToSend.append("gender", formData.gender);
       formDataToSend.append("birthDate", formData.date);
       formDataToSend.append("postCode", formData.kodepos);
-      const decryptedPass = formData.password
-      ? CryptoJS.AES.decrypt(formData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)
-      : "";
       formDataToSend.append("password", decryptedPass);
       formDataToSend.append("notes", formData.catatan);
 
@@ -221,7 +229,9 @@ const InputConfirmationContentLayout = () => {
             <InputtedData
               label="Password"
               input={"*".repeat(
-                CryptoJS.AES.decrypt(formData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8).length || 0)}
+                CryptoJS.AES.decrypt(formData.password || "", SECRET_KEY)
+                  .toString(CryptoJS.enc.Utf8).length || 0
+              )}
             />
             <InputtedData
               label='Jenis Kelamin'
