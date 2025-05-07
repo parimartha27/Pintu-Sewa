@@ -39,6 +39,7 @@ const LabelledInput = (props: LabelledInputProps) => {
         onChange={props.onChange}
         readOnly={props.readonly ? props.readonly : false}
         maxLength={props.maxLength}
+        disabled={props.disabled}
       />
     </div>
   );

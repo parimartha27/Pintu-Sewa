@@ -141,7 +141,12 @@ const EditProfileBody = () => {
   const validateForm = () => {
     const newErrors = {
       username: username.trim() ? "" : "username tidak boleh kosong",
-      fullname: fullname.trim() ? "" : "nama lengkap tidak boleh kosong",
+      fullname:
+      !fullname.trim()
+        ? "Nama lengkap tidak boleh kosong"
+        : fullname.trim().length < 3
+        ? "Nama lengkap minimal 3 karakter"
+        : "",
       gender: gender.trim() ? "" : "jenis kelamin tidak boleh kosong",
       phone: validateHandphone(handphone),
     };
@@ -198,11 +203,33 @@ const EditProfileBody = () => {
             response.data.error_schema.error_message,
         });
       }
-    } catch (e) {
-      setAlertState({
-        isOpen: true,
-        message: "Gagal Mengedit Profile: " + e,
-      });
+    } catch (error) {
+      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.data?.error_schema?.error_code;
+        if (errorCode === "PS-01-003") {
+          setAlertState({
+            isOpen: true,
+            message: "Nomor Telepon Telah Terdaftar",
+          });
+        } else if (errorCode === "PS-01-001") {
+          setAlertState({
+            isOpen: true,
+            message: "Username Telah Terdaftar",
+          });
+        }
+        else {
+          setAlertState({
+            isOpen: true,
+            message: "Terjadi kesalahan tidak diketahui.",
+          });
+        }
+      } else {
+        setAlertState({
+          isOpen: true,
+          message: "Terjadi kesalahan tidak diketahui.",
+        });
+      }
     } finally {
       setLoadingSubmit(false);
     }

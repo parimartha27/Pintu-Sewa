@@ -132,11 +132,9 @@ const InputConfirmationContentLayout = () => {
       formDataToSend.append("password", decryptedPass);
       formDataToSend.append("notes", formData.catatan);
 
-      console.log("FORM DATA" + formDataToSend);
-
       const response = await axios.post<CustomerResponse>(
         createCustomerBaseUrl + "/v2",
-        formDataToSend
+        formDataToSend 
       );
 
       if (response.data.error_schema.error_code === "PS-00-000") {
@@ -159,10 +157,32 @@ const InputConfirmationContentLayout = () => {
         router.push("/input-biodata");
       }
     } catch (error) {
-      setAlertState({
-        isOpen: true,
-        message: "Registrasi gagal: " + error,
-      });
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.data?.error_schema?.error_code;
+    
+        if (errorCode === "PS-01-003") {
+          setAlertState({
+            isOpen: true,
+            message: "Nomor Telepon Telah Terdaftar",
+          });
+        } else if (errorCode === "PS-01-001") {
+          setAlertState({
+            isOpen: true,
+            message: "Username Telah Terdaftar",
+          });
+        }
+        else {
+          setAlertState({
+            isOpen: true,
+            message: "Registrasi gagal: " + (error.response?.data?.error_schema?.message ?? "Terjadi kesalahan."),
+          });
+        }
+      } else {
+        setAlertState({
+          isOpen: true,
+          message: "Terjadi kesalahan tidak diketahui.",
+        });
+      }
     } finally {
       setLoading(false);
     }

@@ -15,7 +15,7 @@ const useFilter = () => {
       currentParams.set(paramName, value);
     }
 
-    router.push(`?${currentParams.toString()}`);
+    router.push(`?${currentParams.toString()}`,  { scroll: false });
   };
 
   const handleCheckboxFilter = (paramName: string, value: string, isChecked: boolean) => {
@@ -91,7 +91,7 @@ const useFilter = () => {
   };
 
   const resetAllFilters = () => {
-    router.push('?');
+    router.push('?', { scroll: false });
   };
 
   return {
