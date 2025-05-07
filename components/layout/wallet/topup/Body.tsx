@@ -95,7 +95,7 @@ function TopupInput({ amount, setAmount }: TopupInputProps) {
                       </p>
                     </div>
                     <input
-                    maxLength={9}
+                    maxLength={13}
                       type="text"
                       className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
                         placeholder:text-color-primary text-[12px] rounded-lg 
