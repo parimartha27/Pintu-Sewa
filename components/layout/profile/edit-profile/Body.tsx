@@ -66,6 +66,7 @@ const EditProfileBody = () => {
     username: "",
     fullname: "",
     phone: "",
+    gender: "",
   });
 
   useEffect(() => {
@@ -141,6 +142,7 @@ const EditProfileBody = () => {
     const newErrors = {
       username: username.trim() ? "" : "username tidak boleh kosong",
       fullname: fullname.trim() ? "" : "nama lengkap tidak boleh kosong",
+      gender: gender.trim() ? "" : "jenis kelamin tidak boleh kosong",
       phone: validateHandphone(handphone),
     };
 
@@ -331,7 +333,7 @@ const EditProfileBody = () => {
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="perempuan" id="option-two" />
+                        <RadioGroupItem value="Perempuan" id="option-two" />
                         <Label
                           htmlFor="option-two"
                           className="text-[12px] text-color-primary font-medium"

@@ -4,12 +4,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardFooter } from "@/components/ui/card"
 import { OrderHistoryProps } from "@/types/orderHistory"
 import Link from "next/link"
+import { useEffect } from "react"
 
 const OrderStatusCard = ({ orderHistoryProps }: { orderHistoryProps: OrderHistoryProps }) => {
   const handleDetailClick = () => {
     localStorage.setItem("reference_number", orderHistoryProps.reference_number)
   }
 
+  useEffect(() => {
+    console.log("OBJEK ORDER HISTORY: ",orderHistoryProps)
+  })
   return (
     <Card className='w-full px-4 sm:px-5 py-3'>
       <ProductOrderHistoryHeader

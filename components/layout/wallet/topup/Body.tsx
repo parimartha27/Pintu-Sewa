@@ -95,6 +95,7 @@ function TopupInput({ amount, setAmount }: TopupInputProps) {
                       </p>
                     </div>
                     <input
+                    maxLength={13}
                       type="text"
                       className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
                         placeholder:text-color-primary text-[12px] rounded-lg 
@@ -121,7 +122,7 @@ function TopupInput({ amount, setAmount }: TopupInputProps) {
 interface PaymentMethod {
   id: string;
   name: string;
-  logo: any;
+  logo: unknown;
   description?: string;
 }
 

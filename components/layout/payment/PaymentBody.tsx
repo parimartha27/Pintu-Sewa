@@ -116,7 +116,7 @@ const PaymentBody = () => {
         } else {
           setAlertState({
             isOpen: true,
-            message: "Gagal mMmotong Saldo, Silakan Coba Lagi.",
+            message: "Saldo Tidak Cukup.\nTopup Wallet Pada Menu Profile Terlebih Dahulu!",
           })
         }
       } else {
@@ -125,6 +125,7 @@ const PaymentBody = () => {
           message: "Gagal Memperbaharui Status Transaksi",
         })
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setAlertState({
         isOpen: true,

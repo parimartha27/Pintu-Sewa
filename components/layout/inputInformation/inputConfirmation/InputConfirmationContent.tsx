@@ -1,18 +1,21 @@
 "use client"
 
-import Image from "next/image"
-import Guest from "@/public/guest.svg"
-import InputtedData from "@/components/fragments/input-information/InputtedData"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { createCustomerBaseUrl } from "@/types/globalVar"
-import LoadingPopup from "../../LoadingPopUp"
-import Alert from "@/components/layout/Alert"
-import { AlertProps } from "@/types/alert"
-import { useAuth } from "@/hooks/auth/useAuth"
-import dataUrlToFile from "@/hooks/useConvertStringToFile"
+import Image from "next/image";
+import Guest from "@/public/guest.svg";
+import InputtedData from "@/components/fragments/input-information/InputtedData";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { createCustomerBaseUrl } from "@/types/globalVar";
+import LoadingPopup from "../../LoadingPopUp";
+import Alert from "@/components/layout/Alert";
+import { AlertProps } from "@/types/alert";
+import { useAuth } from "@/hooks/auth/useAuth";
+import dataUrlToFile  from "@/hooks/useConvertStringToFile";
+import CryptoJS from "crypto-js";
+
+const SECRET_KEY = "pintusewa123";
 
 interface CustomerResponse {
   error_schema: {
@@ -38,29 +41,52 @@ const InputConfirmationContentLayout = () => {
     isOpen: false,
     message: "",
     isWrong: true,
-  })
-  const { customerId } = useAuth()
-  const [imageSrc, setImageSrc] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("image") || Guest
-    }
-    return Guest
-  })
-  const [image, setImage] = useState<File | null>(null)
+  });
+  const { customerId } = useAuth();
+  const [imageSrc, setImageSrc] = useState<string>(Guest.src); 
+  const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
-    const data: Record<string, string> = {}
-    const keys = ["username", "fullname", "jalan", "handphone", "email", "kecamatan", "kabupaten", "provinsi", "gender", "date", "kodepos", "password", "catatan", "image"]
+    if (typeof window === "undefined") return; 
+    console.log("IMAGE LOCAL STORAGE" + localStorage.getItem("image"));
 
+    const storedImage = localStorage.getItem("image");
+    if (storedImage) {
+      setImageSrc(storedImage);
+    }
+  
+    const data: Record<string, string> = {};
+    const keys = [
+      "username",
+      "fullname",
+      "jalan",
+      "handphone",
+      "email",
+      "kecamatan",
+      "kabupaten",
+      "provinsi",
+      "gender",
+      "date",
+      "kodepos",
+      "password",
+      "catatan",
+      "image",
+    ];
+  
     keys.forEach((key) => {
-      data[key] = localStorage.getItem(key) || ""
-    })
-
-    setFormData(data)
-    setImageSrc(data.image || Guest)
-
+      const value = localStorage.getItem(key);
+      data[key] = value || "";
+    });
+  
+    setFormData(data);
+    setImageSrc(data.image || Guest);
+  
     if (data.image) {
-      setImage(dataUrlToFile(data.image, "image"))
+      try {
+        setImage(dataUrlToFile(data.image, "image"));
+      } catch (err) {
+        console.error("Failed to convert data URL to File:", err);
+      }
     }
   }, [])
 
@@ -78,22 +104,25 @@ const InputConfirmationContentLayout = () => {
         return
       }
 
-      const formDataToSend = new FormData()
-      formDataToSend.append("image", image)
-      formDataToSend.append("id", customerId ?? "")
-      formDataToSend.append("username", formData.username)
-      formDataToSend.append("name", formData.fullname)
-      formDataToSend.append("street", formData.jalan)
-      formDataToSend.append("phoneNumber", formData.handphone)
-      formDataToSend.append("email", formData.email)
-      formDataToSend.append("district", formData.kecamatan)
-      formDataToSend.append("regency", formData.kabupaten)
-      formDataToSend.append("province", formData.provinsi)
-      formDataToSend.append("gender", formData.gender)
-      formDataToSend.append("birthDate", formData.date)
-      formDataToSend.append("postCode", formData.kodepos)
-      formDataToSend.append("password", formData.password)
-      formDataToSend.append("notes", formData.catatan)
+      const formDataToSend = new FormData();
+      formDataToSend.append("image", image);
+      formDataToSend.append("id", customerId ?? "");
+      formDataToSend.append("username", formData.username);
+      formDataToSend.append("name", formData.fullname);
+      formDataToSend.append("street", formData.jalan);
+      formDataToSend.append("phoneNumber", formData.handphone);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("district", formData.kecamatan);
+      formDataToSend.append("regency", formData.kabupaten);
+      formDataToSend.append("province", formData.provinsi);
+      formDataToSend.append("gender", formData.gender);
+      formDataToSend.append("birthDate", formData.date);
+      formDataToSend.append("postCode", formData.kodepos);
+      const decryptedPass = formData.password
+      ? CryptoJS.AES.decrypt(formData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)
+      : "";
+      formDataToSend.append("password", decryptedPass);
+      formDataToSend.append("notes", formData.catatan);
 
       console.log("FORM DATA" + formDataToSend)
 
@@ -110,9 +139,11 @@ const InputConfirmationContentLayout = () => {
       } else {
         setAlertState({
           isOpen: true,
-          message: "Registrasi gagal: " + response.data.error_schema.error_message,
-        })
-        router.push("/input-biodata")
+          message:
+            "Registrasi gagal: " + response.data.error_schema.error_message,
+        });
+        router.refresh();
+        router.push("/input-biodata");
       }
     } catch (error) {
       setAlertState({
