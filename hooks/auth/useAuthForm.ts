@@ -132,6 +132,7 @@ export const useAuthForm = (type?: string) => {
           const success = response?.error_schema?.error_message === "SUCCESS"
 
           if (success) {
+            localStorage.clear();
             const { token, customer_id, username, image } = response.output_schema || {}
 
             document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
@@ -152,6 +153,7 @@ export const useAuthForm = (type?: string) => {
           const success = response?.error_schema?.error_message === "SUCCESS"
 
           if (success) {
+            localStorage.clear();
             const { customer_id, status } = response.output_schema || {}
             const contactKey = data.email ? "email" : "phone_number"
             const contactValue = data.email || data.phone_number
