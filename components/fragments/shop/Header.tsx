@@ -19,6 +19,8 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
     const [shopId, setShopId] = useState<string | null>("");
     const router = useRouter();
 
+    console.log(data)
+
     const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
       const target = e.currentTarget;
       e.preventDefault();
@@ -80,7 +82,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           <div className="flex items-center space-x-1">
             <Image className="w-4 h-4 sm:w-5 sm:h-5" src={Star} alt="star" />
             <h3 className="text-lg sm:text-xl text-color-primary font-semibold">
-              {data.rating || "x.x"}
+              {data.rating || "Belum Ada Penilaian"}
             </h3>
           </div>
           <h3 className="text-xs sm:text-sm text-color-primary text-center">
@@ -101,7 +103,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           </h3>
         </div> */}
 
-        <div className="sm:w-[2px] sm:h-[42px] bg-[#D9D9D9] self-center hidden sm:block"></div>
+        {/* <div className="sm:w-[2px] sm:h-[42px] bg-[#D9D9D9] self-center hidden sm:block"></div> */}
 
         <div className="flex flex-col items-center space-y-1">
           <div className="flex items-center space-x-1">

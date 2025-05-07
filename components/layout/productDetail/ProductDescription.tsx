@@ -45,7 +45,6 @@ const ProductDescription = ({
   productDetail,
   shopDetail,
 }: ProductDescriptionProps) => {
-
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
@@ -111,18 +110,18 @@ const ProductDescription = ({
                 className="w-[12px] h-[11px] lg:w-[17.6px] lg:h-[16px]"
               />
               <h4 className="font-jakartaSans font-normal text-[10px] lg:text-[12px] ">
-                {productDetail.rating || "rating"}
+                {productDetail.rating || "Belum Ada Penilaian"}
               </h4>
             </div>
             <h4 className="px-2 text-[10px] xl:text-[12px] text-color-primary font-normal border-r-[1px] border-r-[#D9D9D9]">
               <span className="font-semibold ">
-                {productDetail.rented_times || "100"}
+                {productDetail.rented_times || "-"}
               </span>{" "}
               kali tersewa
             </h4>
             <h4 className="px-2 text-[10px] xl:text-[12px] text-color-primary font-normal">
               <span className="font-semibold ">
-                {productDetail.buy_times || "10"}
+                {productDetail.buy_times || "-"}
               </span>{" "}
               terjual
             </h4>
