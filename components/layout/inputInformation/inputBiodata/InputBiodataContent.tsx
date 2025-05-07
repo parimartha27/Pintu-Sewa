@@ -23,6 +23,9 @@ import { useAuthForm } from "@/hooks/auth/useAuthForm";
 import { BirthdayCalendar } from "@/components/ui/birthday-calendar";
 import { AlertProps } from "@/types/alert";
 import Alert from "../../Alert";
+import CryptoJS from "crypto-js";
+
+const SECRET_KEY = "pintusewa123";
 
 const InputBiodataContent = () => {
   const router = useRouter();
@@ -49,6 +52,7 @@ const InputBiodataContent = () => {
     handphone: "",
     password: "",
     date: "",
+    image: "",
   });
 
   useEffect(() => {
@@ -63,8 +67,8 @@ const InputBiodataContent = () => {
     setEmail(localStorage.getItem("email") || "");
     setHandphone(localStorage.getItem("handphone") || "");
     setPassword(localStorage.getItem("password") || "");
-    setGender(localStorage.getItem("gender") || "");
-    setProfileImage(localStorage.getItem("image") || Guest.src);
+    setGender(localStorage.getItem("gender") || "Laki-Laki");
+    setProfileImage(localStorage.getItem("image") || "");
   }, []);
 
   const validateForm = () => {
@@ -75,6 +79,7 @@ const InputBiodataContent = () => {
       handphone: validateHandphone(handphone),
       password: validatePassword(password),
       date: date ? "" : "Tanggal lahir tidak boleh kosong",
+      image: profileImage.trim() ? profileImage : "",
     };
 
     setErrors(newErrors);
@@ -115,6 +120,13 @@ const InputBiodataContent = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!profileImage.trim()) {
+      setAlertState({
+        isOpen: true,
+        message: "Foto Profile Tidak Boleh Kosong!",
+      });
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -124,7 +136,8 @@ const InputBiodataContent = () => {
     localStorage.setItem("fullname", fullname);
     localStorage.setItem("email", email);
     localStorage.setItem("handphone", handphone);
-    localStorage.setItem("password", password);
+    const encryptedPass = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
+    localStorage.setItem("password", encryptedPass);
     localStorage.setItem("gender", gender);
     localStorage.setItem("date", formattedDate || "");
     localStorage.setItem("image", profileImage || "");
@@ -269,7 +282,7 @@ const InputBiodataContent = () => {
 
             <Section Header="Jenis Kelamin">
               <RadioGroup
-                defaultValue="option-one"
+                defaultValue="Laki-Laki"
                 className="flex flex-row space-x-6 mt-1"
                 value={gender}
                 onValueChange={(value) => setGender(value)}

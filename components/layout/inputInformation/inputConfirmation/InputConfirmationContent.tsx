@@ -13,6 +13,9 @@ import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
 import { useAuth } from "@/hooks/auth/useAuth";
 import dataUrlToFile  from "@/hooks/useConvertStringToFile";
+import CryptoJS from "crypto-js";
+
+const SECRET_KEY = "pintusewa123";
 
 interface CustomerResponse {
   error_schema: {
@@ -40,11 +43,12 @@ const InputConfirmationContentLayout = () => {
     isWrong: true,
   });
   const { customerId } = useAuth();
-  const [imageSrc, setImageSrc] = useState<string>(Guest); 
+  const [imageSrc, setImageSrc] = useState<string>(Guest.src); 
   const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return; 
+    console.log("IMAGE LOCAL STORAGE" + localStorage.getItem("image"));
 
     const storedImage = localStorage.getItem("image");
     if (storedImage) {
@@ -114,7 +118,10 @@ const InputConfirmationContentLayout = () => {
       formDataToSend.append("gender", formData.gender);
       formDataToSend.append("birthDate", formData.date);
       formDataToSend.append("postCode", formData.kodepos);
-      formDataToSend.append("password", formData.password);
+      const decryptedPass = formData.password
+      ? CryptoJS.AES.decrypt(formData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)
+      : "";
+      formDataToSend.append("password", decryptedPass);
       formDataToSend.append("notes", formData.catatan);
 
       console.log("FORM DATA" + formDataToSend);
@@ -140,6 +147,7 @@ const InputConfirmationContentLayout = () => {
           message:
             "Registrasi gagal: " + response.data.error_schema.error_message,
         });
+        router.refresh();
         router.push("/input-biodata");
       }
     } catch (error) {

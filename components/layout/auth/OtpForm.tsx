@@ -61,7 +61,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
   const [otp, setOtp] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [timer, setTimer] = useState(3)
+  const [timer, setTimer] = useState(30)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
   const [verifyCount, setVerifyCount] = useState(0)
   const [resendOtpCount, setResendOtpCount] = useState(0)
@@ -167,10 +167,9 @@ const OtpForm = ({ className }: OtpFormProps) => {
       const response = await axios.post(`${otpBaseUrl}/resend?customerId=${customerId}`, "")
 
       if (response.data.error_schema?.error_message === "SUCCESS") {
-        // Update state dari response API
         setVerifyCount(response.data.output_schema.verify_count)
         setResendOtpCount(response.data.output_schema.resend_otp_count)
-        setTimer(3) // Reset timer ke 60 detik
+        setTimer(30) 
       } else {
         setError("Gagal mengirim ulang OTP")
       }
