@@ -98,7 +98,7 @@ const InputConfirmationContentLayout = () => {
       if (!image) {
         setAlertState({
           isOpen: true,
-          message: "Gambar belum dipilih!",
+          message: "Foto Profile Tidak Boleh Kosong!",
         });
         setLoading(false);
         return;
@@ -221,7 +221,8 @@ const InputConfirmationContentLayout = () => {
             />
             <InputtedData
               label="Password"
-              input={"*".repeat(formData.password?.length || 0)}
+              input={"*".repeat(
+                CryptoJS.AES.decrypt(formData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8).length || 0)}
             />
             <InputtedData
               label="Jenis Kelamin"
