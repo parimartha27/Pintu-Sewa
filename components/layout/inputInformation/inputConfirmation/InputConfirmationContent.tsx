@@ -180,7 +180,7 @@ const InputConfirmationContentLayout = () => {
       } else {
         setAlertState({
           isOpen: true,
-          message: "Terjadi kesalahan tidak diketahui.",
+          message: "Terjadi Kesalahan Tidak Diketahui",
         });
       }
     } finally {
