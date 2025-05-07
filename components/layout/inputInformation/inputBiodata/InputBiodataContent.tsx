@@ -52,7 +52,6 @@ const InputBiodataContent = () => {
     handphone: "",
     password: "",
     date: "",
-    image: "",
   });
 
   useEffect(() => {
@@ -75,15 +74,23 @@ const InputBiodataContent = () => {
     setProfileImage(localStorage.getItem("image") || "");
   }, []);
 
+  //fullname min 3
+  //username min bebas
+
   const validateForm = () => {
     const newErrors = {
       username: username.trim() ? "" : "Username tidak boleh kosong",
-      fullname: fullname.trim() ? "" : "Nama lengkap tidak boleh kosong",
+      fullname:
+      !fullname.trim()
+        ? "Nama lengkap tidak boleh kosong"
+        : fullname.trim().length < 3
+        ? "Nama lengkap minimal 3 karakter"
+        : "",
       email: validateEmail(email),
       handphone: validateHandphone(handphone),
       password: validatePassword(password),
       date: date ? "" : "Tanggal lahir tidak boleh kosong",
-      image: profileImage.trim() ? profileImage : "",
+      // image: profileImage.trim() ? profileImage : "",
     };
 
     setErrors(newErrors);
@@ -115,7 +122,7 @@ const InputBiodataContent = () => {
       reader.onload = () => {
         const imageUrl = reader.result as string;
         setProfileImage(imageUrl);
-        localStorage.setItem("profileImage", imageUrl);
+        localStorage.setItem("image", imageUrl);
       };
       reader.readAsDataURL(file);
     }
@@ -133,6 +140,7 @@ const InputBiodataContent = () => {
     }
 
     if (!validateForm()) {
+      console.log("ADA ERROR DI FORM BIODATA");
       return;
     }
     const formattedDate = date?.toISOString().split("T")[0];
@@ -258,6 +266,7 @@ const InputBiodataContent = () => {
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={true}
                 
               />
               {errors.email && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.email}</p>}

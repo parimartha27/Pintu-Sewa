@@ -181,7 +181,11 @@ const EditAddressBody = () => {
 
   const validateForm = () => {
     const newErrors = {
-      jalan: jalan.trim() ? "" : "Jalan tidak boleh kosong",
+      jalan: !jalan.trim()
+      ? "Jalan tidak boleh kosong"
+      : jalan.trim().length < 5
+      ? "Jalan minimal 5 karakter"
+      : "",
       provinsi: selectedProvinsi ? "" : "Provinsi harus dipilih",
       kabupaten: selectedKabupaten ? "" : "Kabupaten harus dipilih",
       kecamatan: selectedKecamatan ? "" : "Kecamatan harus dipilih",
