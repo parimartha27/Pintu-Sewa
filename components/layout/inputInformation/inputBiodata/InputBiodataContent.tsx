@@ -62,11 +62,15 @@ const InputBiodataContent = () => {
         : undefined
     );
 
+    if(localStorage.getItem("password")) {
+      const decryptedPass = CryptoJS.AES.decrypt(localStorage.getItem("password")!, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+      setPassword(decryptedPass);
+    }
+
     setUsername(localStorage.getItem("username") || "");
     setFullname(localStorage.getItem("fullname") || "");
     setEmail(localStorage.getItem("email") || "");
     setHandphone(localStorage.getItem("handphone") || "");
-    setPassword(localStorage.getItem("password") || "");
     setGender(localStorage.getItem("gender") || "Laki-Laki");
     setProfileImage(localStorage.getItem("image") || "");
   }, []);
@@ -125,6 +129,7 @@ const InputBiodataContent = () => {
         isOpen: true,
         message: "Foto Profile Tidak Boleh Kosong!",
       });
+      return;
     }
 
     if (!validateForm()) {
