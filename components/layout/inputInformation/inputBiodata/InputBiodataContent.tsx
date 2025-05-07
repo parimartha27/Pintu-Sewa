@@ -71,7 +71,6 @@ const InputBiodataContent = () => {
     setFullname(localStorage.getItem("fullname") || "");
     setEmail(localStorage.getItem("email") || "");
     setHandphone(localStorage.getItem("handphone") || "");
-    setPassword(localStorage.getItem("password") || "");
     setGender(localStorage.getItem("gender") || "Laki-Laki");
     setProfileImage(localStorage.getItem("image") || "");
   }, []);
