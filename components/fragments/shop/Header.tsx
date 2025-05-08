@@ -40,7 +40,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           }
       }
     }
-  }
+  
 
   useEffect(() => {
     setShopId(data.id)
