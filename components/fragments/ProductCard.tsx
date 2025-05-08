@@ -92,12 +92,12 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
             <div className="flex items-center">
               <Image className="w-3 h-3 md:w-4 md:h-4" src={Star} alt="star" />
               <h4 className="text-[8px] md:text-[10px] text-color-primary ml-1">
-                {product.rating ?? "rating product"}
+                {product.rating || "belum ada"}
               </h4>
             </div>
             <div className="flex items-center">
               <h4 className="text-[8px] md:text-[10px] text-color-primary">
-                {product.rented_times ?? "rent count"}
+                {product.rented_times || "0"}
               </h4>
               <h4 className="text-[8px] md:text-[10px] text-color-primary ml-1">
                 Kali Tersewa

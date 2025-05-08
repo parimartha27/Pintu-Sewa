@@ -30,14 +30,14 @@ export const useAuthForm = (type?: string) => {
 
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!value.trim()) return "Email tidak boleh kosong"
-    if (!emailRegex.test(value)) return "Format email tidak valid"
+    if (!value.trim()) return "Email Tidak Boleh Kosong"
+    if (!emailRegex.test(value)) return "Format Email Tidak Valid"
     return ""
   }
 
   const validateHandphone = (value: string) => {
-    if (!value.trim()) return "Handphone tidak boleh kosong"
-    if (!/^08\d{8,12}$/.test(value)) return "Nomor HP harus diawali 08 dan terdiri dari 10-14 digit angka"
+    if (!value.trim()) return "Nomor Telepon Tidak Boleh Kosong"
+    if (!/^08\d{8,12}$/.test(value)) return "Nomor Telepon Harus Diawali 08 dan Terdiri Dari 10-14 Digit Angka"
     return ""
   }
 

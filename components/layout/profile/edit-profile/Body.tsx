@@ -331,7 +331,7 @@ const EditProfileBody = () => {
                     htmlFor="fullname"
                     id="fullname"
                     type="text"
-                    maxLength={25}
+                    maxLength={40}
                     value={fullname}
                     onChange={(e) => setFullname(e.target.value)}
                   />

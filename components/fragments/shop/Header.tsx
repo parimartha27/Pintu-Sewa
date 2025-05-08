@@ -19,20 +19,25 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
   const [shopId, setShopId] = useState<string | null>("")
   const router = useRouter()
 
-  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const target = e.currentTarget
-    e.preventDefault()
+    console.log(data)
 
-    setShopId(target.getAttribute("data-shopid"))
-
-    try {
-      const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`)
-      router.push("/chat")
-    } catch (err: any) {
-      if (err.response.data.error_schema.error_code == "PS-10-001") {
-        router.push("/chat")
-      } else {
-        console.log(err)
+    const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      const target = e.currentTarget;
+      e.preventDefault();
+  
+      setShopId(target.getAttribute("data-shopid"))
+  
+      try {
+        const response = await axios.post(
+          `${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`
+        );
+        router.push('/chat')
+      } catch (err: any) {
+          if(err.response.data.error_schema.error_code == "PS-10-001"){
+            router.push('/chat')
+          }else{
+            console.log(err);
+          }
       }
     }
   }
@@ -76,15 +81,13 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
         </div>
       </div>
 
-      <div className='flex flex-col sm:flex-row sm:space-x-7 space-y-4 sm:space-y-0 w-full sm:w-auto'>
-        <div className='flex flex-col items-center space-y-1'>
-          <div className='flex items-center space-x-1'>
-            <Image
-              className='w-4 h-4 sm:w-5 sm:h-5'
-              src={Star}
-              alt='star'
-            />
-            <h3 className='text-lg sm:text-xl text-color-primary font-semibold'>{data.rating || "x.x"}</h3>
+      <div className="flex flex-col sm:flex-row sm:space-x-7 space-y-4 sm:space-y-0 w-full sm:w-auto">
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-center space-x-1">
+            <Image className="w-4 h-4 sm:w-5 sm:h-5" src={Star} alt="star" />
+            <h3 className="text-lg sm:text-xl text-color-primary font-semibold">
+              {data.rating || "Belum Ada Penilaian"}
+            </h3>
           </div>
           <h3 className='text-xs sm:text-sm text-color-primary text-center'>Rating dan Ulasan</h3>
         </div>
@@ -102,7 +105,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           </h3>
         </div> */}
 
-        <div className='sm:w-[2px] sm:h-[42px] bg-[#D9D9D9] self-center hidden sm:block'></div>
+        {/* <div className="sm:w-[2px] sm:h-[42px] bg-[#D9D9D9] self-center hidden sm:block"></div> */}
 
         <div className='flex flex-col items-center space-y-1'>
           <div className='flex items-center space-x-1'>

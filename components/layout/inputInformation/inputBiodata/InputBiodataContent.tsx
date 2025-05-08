@@ -254,7 +254,7 @@ const InputBiodataContent = () => {
                 type="text"
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
-                maxLength={25}
+                maxLength={40}
               />
               {errors.fullname && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.fullname}</p>}
             </div>
