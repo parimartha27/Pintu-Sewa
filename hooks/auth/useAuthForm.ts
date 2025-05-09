@@ -143,7 +143,7 @@ export const useAuthForm = (type?: string) => {
             // localStorage.setItem("token", token || "")
             // localStorage.setItem("customerId", customer_id || "")
 
-            router.push("/")
+            window.location.href = "/"
           } else if(response?.error_schema?.error_code === "PS-00-002"){
             setAuthError("Email atau Password Tidak Sesuai")
           }

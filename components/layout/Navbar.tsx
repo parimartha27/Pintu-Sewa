@@ -419,7 +419,7 @@ const Navbar = ({ type }: NavbarProps) => {
               <div className="hidden md:flex w-11/12 justify-center space-x-1 md:space-x-7 mr-1 xl:mr-10">
                 <div
                   onClick={() => router.push("/cart")}
-                  className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:opacity-75"
+                  className="hidden md:flex lg:w-[30px] lg:h-[30px] justify-center items-center mt-1 ml-1 hover:opacity-75 cursor-pointer"
                 >
                   <Image className="min-w-[30px]" src={Cart} alt="cart" />
                 </div>
