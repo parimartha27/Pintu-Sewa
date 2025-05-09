@@ -146,14 +146,14 @@ const InputConfirmationContentLayout = () => {
         document.cookie = `token=${
           response.data.output_schema?.token || ""
         }; path=/; Secure; SameSite=Lax`;
-        router.push("/");
+
+        window.location.href = "/";
       } else {
         setAlertState({
           isOpen: true,
           message:
             "Registrasi gagal: " + response.data.error_schema.error_message,
         });
-        router.refresh();
         router.push("/input-biodata");
       }
     } catch (error) {

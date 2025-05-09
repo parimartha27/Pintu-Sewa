@@ -146,8 +146,8 @@ const ProfileSidebarLayout = () => {
                   className='group'
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <div className='pl-5 pr-2 pb-6'>
-                    <div className='flex space-x-2'>
+                  <div className='pl-[18px] pr-2 pb-6'>
+                    <div className='flex space-x-2 '>
                       <Image
                         src={Logout}
                         alt='profile'
