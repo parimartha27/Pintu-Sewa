@@ -35,7 +35,7 @@ const ChatContentLayout = () => {
   }
 
   useEffect(() => {
-    setCustomerId(customerId);
+    // setCustomerId(customerId);
     fetchContacts();
   
     // const interval = setInterval(() => {
