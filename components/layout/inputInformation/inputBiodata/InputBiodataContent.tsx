@@ -61,8 +61,11 @@ const InputBiodataContent = () => {
         : undefined
     );
 
-    if(localStorage.getItem("password")) {
-      const decryptedPass = CryptoJS.AES.decrypt(localStorage.getItem("password")!, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+    if (localStorage.getItem("password")) {
+      const decryptedPass = CryptoJS.AES.decrypt(
+        localStorage.getItem("password")!,
+        SECRET_KEY
+      ).toString(CryptoJS.enc.Utf8);
       setPassword(decryptedPass);
     }
 
@@ -80,8 +83,7 @@ const InputBiodataContent = () => {
   const validateForm = () => {
     const newErrors = {
       username: username.trim() ? "" : "Username tidak boleh kosong",
-      fullname:
-      !fullname.trim()
+      fullname: !fullname.trim()
         ? "Nama lengkap tidak boleh kosong"
         : fullname.trim().length < 3
         ? "Nama lengkap minimal 3 karakter"
@@ -105,7 +107,7 @@ const InputBiodataContent = () => {
       setAlertState({
         isOpen: true,
         message: "Format gambar harus .JPEG, .JPG, atau .PNG",
-      })
+      });
       return;
     }
 
@@ -113,7 +115,7 @@ const InputBiodataContent = () => {
       setAlertState({
         isOpen: true,
         message: "Ukuran gambar maksimal 1MB",
-      })
+      });
       return;
     }
 
@@ -131,6 +133,23 @@ const InputBiodataContent = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+
+    const birthDate = formattedDate ? new Date(formattedDate) : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (birthDate) {
+      if (birthDate > today) {
+        setAlertState({
+          isOpen: true,
+          message: "Tanggal Lahir Tidak Boleh Lebih Dari Hari Ini",
+          isWrong: true,
+        });
+        return;
+      }
+    }
+
     if (!profileImage.trim()) {
       setAlertState({
         isOpen: true,
@@ -143,7 +162,6 @@ const InputBiodataContent = () => {
       console.log("ADA ERROR DI FORM BIODATA");
       return;
     }
-    const formattedDate = date?.toISOString().split("T")[0];
 
     localStorage.setItem("username", username);
     localStorage.setItem("fullname", fullname);
@@ -229,12 +247,9 @@ const InputBiodataContent = () => {
           </div>
         </div>
 
-        <div className='flex flex-col w-full'>
-          <form
-            onSubmit={handleSubmit}
-            className='flex flex-col space-y-5'
-          >
-            <div className='flex flex-col'>
+        <div className="flex flex-col w-full">
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+            <div className="flex flex-col">
               <LabelledInput
                 label="Username"
                 htmlFor="username"
@@ -244,9 +259,13 @@ const InputBiodataContent = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 maxLength={15}
               />
-              {errors.username && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.username}</p>}
+              {errors.username && (
+                <p className="text-red-500 text-xs md:text-md pt-2">
+                  {errors.username}
+                </p>
+              )}
             </div>
-            <div className='flex flex-col'>
+            <div className="flex flex-col">
               <LabelledInput
                 label="Nama Lengkap"
                 htmlFor="fullname"
@@ -256,9 +275,13 @@ const InputBiodataContent = () => {
                 onChange={(e) => setFullname(e.target.value)}
                 maxLength={40}
               />
-              {errors.fullname && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.fullname}</p>}
+              {errors.fullname && (
+                <p className="text-red-500 text-xs md:text-md pt-2">
+                  {errors.fullname}
+                </p>
+              )}
             </div>
-            <div className='flex flex-col'>
+            <div className="flex flex-col">
               <LabelledInput
                 label="Email"
                 htmlFor="email"
@@ -267,11 +290,14 @@ const InputBiodataContent = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={true}
-                
               />
-              {errors.email && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-xs md:text-md pt-2">
+                  {errors.email}
+                </p>
+              )}
             </div>
-            <div className='flex flex-col'>
+            <div className="flex flex-col">
               <LabelledInput
                 label="Nomor Telepon"
                 htmlFor="handphone"
@@ -280,9 +306,13 @@ const InputBiodataContent = () => {
                 value={handphone}
                 onChange={(e) => setHandphone(e.target.value)}
               />
-              {errors.handphone && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.handphone}</p>}
+              {errors.handphone && (
+                <p className="text-red-500 text-xs md:text-md pt-2">
+                  {errors.handphone}
+                </p>
+              )}
             </div>
-            <div className='flex flex-col'>
+            <div className="flex flex-col">
               <LabelledInput
                 label="Password"
                 htmlFor="password"
@@ -291,7 +321,11 @@ const InputBiodataContent = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {errors.password && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-xs md:text-md pt-2">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <Section Header="Jenis Kelamin">
@@ -324,7 +358,7 @@ const InputBiodataContent = () => {
             <div className="relative ">
               <Popover>
                 <PopoverTrigger asChild>
-                  <div className='flex flex-col'>
+                  <div className="flex flex-col">
                     <div>
                       <LabelledInput
                         label="Tanggal Lahir"
@@ -341,7 +375,11 @@ const InputBiodataContent = () => {
                       />
                       <ChevronDown className="h-4 w-4 absolute right-3 top-14 -translate-y-1/2 text-[#73787B] pointer-events-none" />
                     </div>
-                    {errors.date && <p className='text-red-500 text-xs md:text-md pt-2'>{errors.date}</p>}
+                    {errors.date && (
+                      <p className="text-red-500 text-xs md:text-md pt-2">
+                        {errors.date}
+                      </p>
+                    )}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">

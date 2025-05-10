@@ -24,9 +24,7 @@ import { customerBaseUrl } from "@/types/globalVar";
 import axios from "axios";
 import { ProfileResponse } from "@/types/profile";
 import ProfileFormSkeleton from "./ProfileFormSkeleton";
-import {
-  EditProfileResponseProps,
-} from "@/types/editProfile";
+import { EditProfileResponseProps } from "@/types/editProfile";
 import { useRouter } from "next/navigation";
 import { BirthdayCalendar } from "@/components/ui/birthday-calendar";
 import LoadingPopup from "../../LoadingPopUp";
@@ -53,7 +51,7 @@ const EditProfileBody = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [biodataData, setBiodataData] = useState<ProfileResponse>();
-   const {customerId} = useAuth();
+  const { customerId } = useAuth();
   const [loading, setLoading] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [alertState, setAlertState] = useState<AlertProps>({
@@ -71,7 +69,7 @@ const EditProfileBody = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!customerId) return; 
+      if (!customerId) return;
 
       try {
         const biodataRes = await axios.get<BiodataResponseProps>(
@@ -101,7 +99,7 @@ const EditProfileBody = () => {
         setAlertState({
           isOpen: true,
           message: "Gagal Mengambil Data: " + e,
-        })
+        });
         setLoading(false);
       }
     };
@@ -116,7 +114,7 @@ const EditProfileBody = () => {
       setAlertState({
         isOpen: true,
         message: "Format Gambar Harus .JPEG, .JPG, Atau .PNG",
-      })
+      });
       return;
     }
 
@@ -124,7 +122,7 @@ const EditProfileBody = () => {
       setAlertState({
         isOpen: true,
         message: "Ukuran Gambar Maksimal 1MB",
-      })
+      });
       return;
     }
 
@@ -141,8 +139,7 @@ const EditProfileBody = () => {
   const validateForm = () => {
     const newErrors = {
       username: username.trim() ? "" : "username tidak boleh kosong",
-      fullname:
-      !fullname.trim()
+      fullname: !fullname.trim()
         ? "Nama lengkap tidak boleh kosong"
         : fullname.trim().length < 3
         ? "Nama lengkap minimal 3 karakter"
@@ -158,7 +155,7 @@ const EditProfileBody = () => {
       setAlertState({
         isOpen: true,
         message: firstError,
-      })
+      });
       return false;
     }
 
@@ -167,30 +164,48 @@ const EditProfileBody = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-  
+
+    if (date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (date > today) {
+        setAlertState({
+          isOpen: true,
+          message: "Tanggal Lahir Tidak Boleh Lebih Dari Hari Ini",
+          isWrong: true,
+        });
+        return;
+      }
+    }
+
     setLoadingSubmit(true);
-  
+
     try {
       const formData = new FormData();
-  
+
       formData.append("id", customerId || "");
       formData.append("username", username || "");
       formData.append("name", fullname || "");
       formData.append("phoneNumber", handphone || "");
       formData.append("gender", gender || "");
-      formData.append("birthDate", date?.toISOString().split("T")[0] || "");
-      if(profileImage){
+      const formattedDate = date ? format(date, 'yyyy-MM-dd') : '';
+      formData.append("birthDate", formattedDate);
+      if (profileImage) {
         const imageFile = dataUrlToFile(profileImage || "", Guest);
         formData.append("image", imageFile);
       }
+      formData.forEach((value, key) => {
+        console.log(`Data submitted: ${key}:`, value);
+      });
 
       const response = await axios.put<EditProfileResponseProps>(
         `${customerBaseUrl}/edit-biodata`,
-        formData,
+        formData
       );
 
-      console.log("res edit profile",response);
-  
+      console.log("res edit profile", response);
+
       if (response.data.error_schema.error_message === "SUCCESS") {
         localStorage.setItem("image", response.data.output_schema.image || "");
         localStorage.setItem("username", username || "");
@@ -204,7 +219,7 @@ const EditProfileBody = () => {
         });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       if (axios.isAxiosError(error)) {
         const errorCode = error.response?.data?.error_schema?.error_code;
         if (errorCode === "PS-01-003") {
@@ -217,8 +232,7 @@ const EditProfileBody = () => {
             isOpen: true,
             message: "Username Telah Terdaftar",
           });
-        }
-        else {
+        } else {
           setAlertState({
             isOpen: true,
             message: "Terjadi Kesalahan Tidak Diketahui",
@@ -418,4 +432,3 @@ const EditProfileBody = () => {
 };
 
 export default EditProfileBody;
-

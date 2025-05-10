@@ -287,6 +287,7 @@ const EditAddressBody = () => {
                     type="text"
                     value={jalan}
                     onChange={(e) => setJalan(e.target.value)}
+                    maxLength={80}
                   />
                   <LabelledDropdown
                     label="Provinsi"
@@ -354,6 +355,7 @@ const EditAddressBody = () => {
                     type="text"
                     value={catatan}
                     onChange={(e) => setCatatan(e.target.value)}
+                    maxLength={100}
                   />
                   <Button
                     onClick={handleSubmit}

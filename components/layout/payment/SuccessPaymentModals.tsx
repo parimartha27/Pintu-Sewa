@@ -7,31 +7,28 @@ import { useRouter } from "next/navigation";
 const SuccessPaymentModals = () => {
   const router = useRouter();
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="relative z-10 w-[90%] max-w-md p-4 rounded-2xl">
-        <Card className="w-[400px] h-[360px] lg:w-[540px] lg:h-[500px] p-4 shadow-xl rounded-lg bg-white pt-10 ">
-          <CardContent className="flex flex-col items-center justify-between h-full">
-            <h3 className="text-xl lg:text-2xl font-bold text-color-primaryDark text-center">
-              SELAMAT PEMBAYARAN BERHASIL
-            </h3>
-            <Image
-              width={198}
-              height={198}
-              src={Success}
-              alt="success"
-              className="w-[100px] h-[100px] lg:w-[200px] lg:h-[200px] self-center"
-            />
-            <p
-              onClick={() => router.push("/dev/end-flow")}
-              className="text-sm text-color-primaryDark hover:opacity-70 hover:cursor-pointer"
-            >
-              {/* Kembali Ke Dashboard */}
-              Selanjutnya
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+  <Card className="w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[540px] h-auto p-4 shadow-xl rounded-2xl bg-white pt-10">
+    <CardContent className="flex flex-col items-center justify-between h-full gap-4">
+      <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-color-primaryDark text-center">
+        SELAMAT PEMBAYARAN BERHASIL
+      </h3>
+      <Image
+        width={198}
+        height={198}
+        src={Success}
+        alt="success"
+        className="w-[80px] h-[80px] sm:w-[120px] sm:h-[120px] lg:w-[150px] lg:h-[150px]"
+      />
+      <p
+        onClick={() => router.push("/dev/end-flow")}
+        className="text-sm text-color-primaryDark hover:opacity-70 hover:cursor-pointer"
+      >
+        Selanjutnya
+      </p>
+    </CardContent>
+  </Card>
+</div>
   );
 };
 
