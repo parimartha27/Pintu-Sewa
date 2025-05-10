@@ -148,7 +148,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
       }
     } catch (error) {
       console.error("Terjadi kesalahan saat verifikasi OTP:", error)
-      setError("Terjadi kesalahan saat verifikasi OTP")
+      setError("OTP Tidak Sesuai")
     } finally {
       setIsLoading(false)
     }

@@ -194,6 +194,7 @@ const InputAddressContentLayout = () => {
             type="text"
             value={jalan}
             onChange={(e) => setJalan(e.target.value)}
+            maxLength={80}
           />
           {errors.jalan && (
             <p className="text-red-500 text-xs md:text-md pt-2">
@@ -284,6 +285,7 @@ const InputAddressContentLayout = () => {
             type="text"
             value={catatan}
             onChange={(e) => setCatatan(e.target.value)}
+            maxLength={100}
           />
         </div>
 

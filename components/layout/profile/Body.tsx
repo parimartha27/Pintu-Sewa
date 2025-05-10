@@ -110,7 +110,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   {loading ? (
                     <Skeleton className="h-4 w-36" />
                   ) : (
-                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
+                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary break-words max-w-[300px]">
                       {customerData?.username || "-"}
                     </h4>
                   )}
@@ -122,7 +122,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   {loading ? (
                     <Skeleton className="h-4 w-36" />
                   ) : (
-                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
+                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary break-words max-w-[300px]">
                       {customerData?.email || "-"}
                     </h4>
                   )}
@@ -150,7 +150,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   {loading ? (
                     <Skeleton className="h-4 w-36" />
                   ) : (
-                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
+                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary break-words max-w-[300px]">
                       {customerData?.name || "-"}
                     </h4>
                   )}
@@ -232,7 +232,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   {loading ? (
                     <Skeleton className="h-4 w-36" />
                   ) : (
-                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
+                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary break-words max-w-[300px]">
                       {customerData?.street || "-"}
                     </h4>
                   )}
@@ -295,7 +295,7 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
                   {loading ? (
                     <Skeleton className="h-4 w-36" />
                   ) : (
-                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary">
+                    <h4 className="text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary break-words max-w-[300px]">
                       {customerData?.notes || "-"}
                     </h4>
                   )}
