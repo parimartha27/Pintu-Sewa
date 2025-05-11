@@ -182,7 +182,7 @@ const CheckoutProductForm = ({
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border-[1px] border-color-primary rounded-sm">
                       <p className="text-[12px] text-color-secondary">
-                        Deposit Biar Kalo Ditilep Ga Rugi Rugi Amat Lu
+                        Uang yang disetorkan sebagai jaminan saat bertransaksi <br/>untuk kenyamaman dan keamanan bersama
                       </p>
                     </TooltipContent>
                   </Tooltip>
