@@ -75,7 +75,7 @@ const InputEmailOtpForm = () => {
                       emailOrPhoneError ? "text-red-500" : ""
                     } text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4`}
                   >
-                    Nomor Hp atau Email
+                    Email
                   </Label>
                   <Input
                     ref={inputRef}
@@ -88,7 +88,7 @@ const InputEmailOtpForm = () => {
                     )}
                     id="emailOrPhone"
                     type="text"
-                    placeholder="Masukkan nomor hp atau email"
+                    placeholder="Masukkan email"
                     value={emailOrPhone}
                     onChange={handleEmailOrPhoneChange}
                   />
