@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Guest from "@/public/guest.svg"
-import EditProfileForm from "@/components/layout/profile/Form"
+import EditShopProfileForm from "@/components/layout/dashboard-seller/setting/form/form"
 import Section from "@/components/fragments/editProfile/Section"
 import { useEffect, useState } from "react"
 import axios from "axios"
@@ -77,7 +77,7 @@ function DefaultLayout({ shopData, loading }: DefaultLayoutProps) {
   return (
     <>
       {" "}
-      <EditProfileForm
+      <EditShopProfileForm
         title='Profil Toko'
         iconName='Edit'
         link='edit-profile'
@@ -175,7 +175,7 @@ function DefaultLayout({ shopData, loading }: DefaultLayoutProps) {
             </h4>
           </div>
         </div>
-      </EditProfileForm>
+      </EditShopProfileForm>
     </>
   )
 }
