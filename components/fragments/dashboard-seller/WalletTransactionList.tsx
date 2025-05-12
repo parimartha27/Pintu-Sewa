@@ -18,7 +18,7 @@ export const WalletTransactionsList = ({ transactions, loading }: WalletTransact
     return (
       <div className='p-8 flex justify-center'>
         <div className='flex flex-col items-center'>
-          <Loader2 className='h-8 w-8 animate-spin text-blue-500' />
+          <Loader2 className='h-8 w-8 animate-spin text-color-secondary' />
           <span className='mt-2 text-gray-500'>Memuat data wallet...</span>
         </div>
       </div>

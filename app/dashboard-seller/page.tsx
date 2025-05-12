@@ -180,10 +180,10 @@ const WalletSeller = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Transaksi Berlangsung</h2>
-          <Button variant="outline" size="sm" className="gap-1">
+          {/* <Button variant="outline" size="sm" className="gap-1">
             <Filter className="h-4 w-4" />
             Filter
-          </Button>
+          </Button> */}
         </div>
 
         <div className="bg-white rounded-md shadow overflow-hidden">
@@ -198,10 +198,10 @@ const WalletSeller = () => {
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Riwayat Wallet</h2>
-          <Button variant="outline" size="sm" className="gap-1">
+          {/* <Button variant="outline" size="sm" className="gap-1">
             <Filter className="h-4 w-4" />
             Filter
-          </Button>
+          </Button> */}
         </div>
 
         <div className="bg-white rounded-md shadow overflow-hidden">
