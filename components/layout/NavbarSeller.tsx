@@ -16,13 +16,13 @@ const NavigationBarSeller = () => {
   const formRef = useRef<HTMLFormElement>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<SearchResponseProps>()
-  const [username, setUsername] = useState("Parimartha Studio")
+  const [username, setUsername] = useState("Matthew Store")
   const [suggestionOpen, setSuggestionOpen] = useState(false)
 
   return (
     <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>
       <div className='h-[24px] bg-color-primaryDark w-full'></div>
-      <div className='flex h-24 items-center justify-between px-4 md:px-6'>
+      <div className='flex h-24 items-center justify-between px-4 md:px-10'>
         {/* Logo */}
         <div className='flex items-center'>
           <Link href='/dashboard-seller'>
@@ -36,7 +36,7 @@ const NavigationBarSeller = () => {
           </Link>
         </div>
 
-        {/* Search Field */}
+        {/* Search Field
         <div className='flex w-11/12 md:w-4/6 lg:w-7/12 p-1.5 items-center justify-center md:ml-10 lg:ml-0 relative'>
           <form
             className='lg:w-11/12 lg:ml-10 w-full h-12'
@@ -99,7 +99,7 @@ const NavigationBarSeller = () => {
           >
             Cari
           </Button>
-        </div>
+        </div> */}
 
         {/* User Profile */}
         <div className='flex items-center gap-4'>
@@ -107,8 +107,14 @@ const NavigationBarSeller = () => {
             <div className='hidden md:block text-right'>
               <p className='text-sm font-medium'>{username}</p>
             </div>
-            <div className='flex h-8 w-8 items-center justify-center rounded-full bg-gray-100'>
-              <User className='h-4 w-4' />
+            <div className='flex items-center justify-center rounded-full bg-gray-100'>
+              <Image
+                src='https://res.cloudinary.com/dtizgexle/image/upload/v1746891764/customer_profiles/shm870gafpryv0wtdrku.jpg'
+                alt={username}
+                width={60}
+                height={60}
+                className='w-[50px] h-[50px] rounded-full object-fill'
+              />
             </div>
           </div>
         </div>

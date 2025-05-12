@@ -1,12 +1,12 @@
 "use client"
 
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
-import ContactList from "@/components/layout/chat/ContactList"
-import ChatRoomLayout from "@/components/layout/chat/ChatRoom"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { chatBaseUrl } from "@/types/globalVar"
 import { useAuth } from "@/hooks/auth/useAuth"
+import NoChat from "@/components/fragments/chat/NoChat"
+import ContactListShop from "@/components/layout/chat/ContactListShop"
 
 const ChatSeller = () => {
   interface ChatRoomProps {
@@ -47,11 +47,11 @@ const ChatSeller = () => {
     setShopId(shopId)
     fetchContacts()
 
-    // const interval = setInterval(() => {
-    //   fetchContacts();
-    // }, 2000);
+    const interval = setInterval(() => {
+      fetchContacts();
+    }, 2000);
 
-    // return () => clearInterval(interval);
+    return () => clearInterval(interval);
   }, [])
 
   if (loading) return <div className='p-6'>Loading...</div>

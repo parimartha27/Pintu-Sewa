@@ -17,6 +17,7 @@ const ChatContentLayout = () => {
   const {customerId} = useAuth();
   const [chatList, setChatList] = useState<ChatItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [x, setCustomerId]=useState<string>("")
 
   const fetchContacts = async () => {
     try {

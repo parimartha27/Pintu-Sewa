@@ -130,7 +130,7 @@ const CreateShopBody = () => {
     if (!validateForm()) {
       setAlertState({
         isOpen: true,
-        message: "Harap perbaiki kesalahan pada form",
+        message: "Data yang Anda Input Tidak Valid",
       })
       return;
     }
@@ -335,7 +335,7 @@ const CreateShopBody = () => {
                   label="Email"
                   htmlFor="email"
                   id="email"
-                  type="email"
+                  type="text"
                   placeholder="toko@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

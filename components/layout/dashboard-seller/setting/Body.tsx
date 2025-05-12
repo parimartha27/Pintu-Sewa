@@ -7,29 +7,41 @@ import Section from "@/components/fragments/editProfile/Section"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { Skeleton } from "@/components/ui/skeleton"
-import { customerBaseUrl } from "@/types/globalVar"
-import { ProfileResponse } from "@/types/profile"
-import { useAuth } from "@/hooks/auth/useAuth"
+import { shopBaseUrl } from "@/types/globalVar"
+
+interface ShopDetailResponse {
+  id: string
+  name: string
+  description: string
+  image: string
+  street: string
+  district: string
+  regency: string
+  province: string
+  post_code: string // snake_case
+  rating: number
+  work_hours: string // snake_case
+  email: string
+}
 
 const SellerProfileBody = () => {
-  const [customerData, setCustomerData] = useState<ProfileResponse>()
+  const [shopData, setShopData] = useState<ShopDetailResponse>()
   const [loading, setLoading] = useState(true)
   const [, setError] = useState("")
+  const [shopId, setShopId] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("shopId") : null)
 
-  const {customerId} = useAuth();
-  
   useEffect(() => {
-    if (!customerId) {
+    if (!shopId) {
       setError("User ID tidak ditemukan di localStorage.")
       setLoading(false)
       return
     }
 
     axios
-      .get(`${customerBaseUrl}/${customerId}`)
+      .get(`${shopBaseUrl}/6a1a0e99-db01-4966-b35d-6e04d1551d5f`)
       .then((res) => {
         if (res.data.error_schema?.error_code === "PS-00-000") {
-          setCustomerData(res.data.output_schema)
+          setShopData(res.data.output_schema)
           console.log(res.data.output_schema)
         } else {
           setError("Gagal fetch data customer.")
@@ -47,7 +59,7 @@ const SellerProfileBody = () => {
   return (
     <>
       <DefaultLayout
-        customerData={customerData}
+        shopData={shopData}
         loading={loading}
       />
     </>
@@ -57,16 +69,16 @@ const SellerProfileBody = () => {
 export default SellerProfileBody
 
 interface DefaultLayoutProps {
-  customerData?: ProfileResponse
+  shopData?: ShopDetailResponse
   loading: boolean
 }
 
-function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
+function DefaultLayout({ shopData, loading }: DefaultLayoutProps) {
   return (
     <>
       {" "}
       <EditProfileForm
-        title='Profile Toko'
+        title='Profil Toko'
         iconName='Edit'
         link='edit-profile'
       >
@@ -74,56 +86,69 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
           <div className='flex flex-col md:flex-row items-center mt-6 w-full md:space-x-16 '>
             <div className='flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 lg:mr-12'>
               <Section
-                title='Username'
+                title='Nama Toko'
                 className='text-center lg:text-start self-center md:self-start'
               >
-                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{customerData?.username || "-"}</h4>}
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.name || "-"}</h4>}
               </Section>
               <Section
-                title='Email'
+                title='Jalan'
                 className='text-center lg:text-start self-center md:self-start'
               >
-                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{customerData?.email || "-"}</h4>}
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.street || "-"}</h4>}
               </Section>
               <Section
-                title='Jenis Kelamin'
+                title='Kabupaten'
                 className='text-center lg:text-start self-center md:self-start'
               >
-                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{customerData?.gender || "-"}</h4>}
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.regency || "-"}</h4>}
+              </Section>
+              <Section
+                title='Kode Pos'
+                className='text-center lg:text-start self-center md:self-start'
+              >
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.post_code || "-"}</h4>}
+              </Section>
+
+              <Section
+                title='Deskripsi'
+                className='text-center lg:text-start self-center md:self-start'
+              >
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.description || "-"}</h4>}
               </Section>
             </div>
 
             {/* Bagian kanan */}
             <div className='flex flex-col mb-0 md:mb-6 mx-auto md:mx-0 w-1/2 lg:mr-12'>
               <Section
-                title='Nama Lengkap'
+                title='Waktu Operasional'
                 className='text-center lg:text-start self-center md:self-start'
               >
-                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{customerData?.name || "-"}</h4>}
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.work_hours || "-"}</h4>}
               </Section>
               <Section
-                title='Nomor Telepon'
+                title='Kecamatan'
                 className='text-center lg:text-start self-center md:self-start'
               >
-                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{customerData?.phone_number || "-"}</h4>}
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.district || "-"}</h4>}
               </Section>
               <Section
-                title='Tanggal Lahir'
+                title='Provinsi'
                 className='text-center lg:text-start self-center md:self-start'
               >
-                {loading ? (
-                  <Skeleton className='h-4 w-36' />
-                ) : (
-                  <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>
-                    {customerData?.birth_date
-                      ? new Date(customerData.birth_date).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })
-                      : "-"}
-                  </h4>
-                )}
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.province || "-"}</h4>}
+              </Section>
+              <Section
+                title='Email'
+                className='text-center lg:text-start self-center md:self-start'
+              >
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-color-primary'>{shopData?.email || "matthewstore@gmail.com"}</h4>}
+              </Section>
+              <Section
+                title='Deskripsi'
+                className='text-center lg:text-start self-center md:self-start text-white '
+              >
+                {loading ? <Skeleton className='h-4 w-36' /> : <h4 className='text-[12px] xl:text-[16px] font-semibold xl:font-medium text-white'>{shopData?.description || "-"}</h4>}
               </Section>
             </div>
           </div>
@@ -134,9 +159,11 @@ function DefaultLayout({ customerData, loading }: DefaultLayoutProps) {
               <Skeleton className='w-[110px] h-[110px] rounded-full' />
             ) : (
               <Image
-                className='w-[110px] h-[110px]'
-                src={customerData?.image || Guest}
+                className='w-[110px] h-[110px] rounded-full'
+                src={shopData?.image || Guest}
                 alt=''
+                width={110}
+                height={110}
               />
             )}
 
