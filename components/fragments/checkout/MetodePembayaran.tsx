@@ -23,10 +23,10 @@ const MetodePembayaranFragments = ({
         className="flex space-x-6 mt-1"
       >
         <div className="flex items-center space-x-2">
-          <RadioGroupItem
+          {/* <RadioGroupItem
             value="selected" // Nilai unik untuk item ini
             id={nama} // Gunakan nama sebagai ID unik
-          />
+          /> */}
           <Label
             htmlFor={nama}
             className="text-[12px] text-color-primary font-medium"

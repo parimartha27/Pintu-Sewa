@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
 import { ReactNode } from "react"
+import { cn } from "@/lib/utils"
 
 type StatsCardProps = {
   title: string
@@ -23,7 +24,7 @@ export const StatsCard = ({ title, value, icon, loading, className }: StatsCardP
         ) : (
           <div className='flex items-center gap-2'>
             {icon}
-            <h3 className='text-xl font-bold'>{value}</h3>
+            <h3 className={cn('text-xl font-bold',className)}>{value}</h3>
           </div>
         )}
       </CardContent>

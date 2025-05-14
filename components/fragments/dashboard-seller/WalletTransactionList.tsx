@@ -46,7 +46,7 @@ export const WalletTransactionsList = ({ transactions, loading }: WalletTransact
           </div>
         ))
       ) : (
-        <div className='py-8 text-center text-gray-500'>Tidak ada riwayat transaksi</div>
+        <div className='py-12 text-center text-gray-500'>Tidak ada riwayat transaksi</div>
       )}
     </div>
   )
