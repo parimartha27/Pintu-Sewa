@@ -10,6 +10,7 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { useRouter } from "next/navigation"
 import axios, { Axios } from "axios";
+import { useAuth } from "@/hooks/auth/useAuth"
 import SellerLayout from "@/components/layout/dashboard-seller/Layout";
 import { StatsCard } from "@/components/fragments/dashboard-seller/StatsCard";
 import { TransactionsTable } from "@/components/fragments/dashboard-seller/TransactionTable";
@@ -46,6 +47,8 @@ interface WalletTransaction {
 }
 
 const WalletSeller = () => {
+    const { customerId } = useAuth()
+
   const router = useRouter()
   const [dashboardData, setDashboardData] = useState<ShopDashboard | null>(
     null
@@ -67,10 +70,6 @@ const WalletSeller = () => {
 
   const fetchShopId = async () => {
     try {
-      const customerId =
-        typeof window !== "undefined"
-          ? localStorage.getItem("customerId")
-          : null;
       const response = await axios.get(`${shopBaseUrl}/get-shop/${customerId}`);
       if (response.data.error_schema.error_code === "PS-00-000") {
         localStorage.setItem("shopId", response.data.output_schema);

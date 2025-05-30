@@ -5,7 +5,7 @@ import axios from "axios";
 import { chatBaseUrl } from "@/types/globalVar";
 import { useAuth } from "@/hooks/auth/useAuth";
 
-const ChatContentLayout = () => {
+const ReportContentLayout = () => {
   interface ChatItem {
     id: string;
     name: string;
@@ -61,4 +61,4 @@ const ChatContentLayout = () => {
   );
 };
 
-export default ChatContentLayout;
+export default ReportContentLayout;
