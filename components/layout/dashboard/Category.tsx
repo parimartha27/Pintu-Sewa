@@ -34,7 +34,7 @@ const categories = [
   { name: "Mobil", icon: Mobil },
   { name: "Pakaian Pria", icon: PakaianPria },
   { name: "Alat Tukang", icon: AlatPertukangan },
-  { name: "Board Game", icon: BoardGame },
+  { name: "Papan Permainan", icon: BoardGame },
   { name: "Elektronik", icon: Elektronik },
   { name: "Motor", icon: Motor },
   { name: "Alat Kesehatan", icon: AlatKesehatan },

@@ -70,6 +70,7 @@ const DashboardBody = () => {
     const fetchNearby = async () => {
       try {
         const data = await fetchNearCustomerProducts(customerId)
+        console.log("NEAR CUSTOMER", data)
         if (data.error_schema.error_message === "SUCCESS") {
           setNearCustomerProducts(data.output_schema)
         }
