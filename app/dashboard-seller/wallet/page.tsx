@@ -160,7 +160,6 @@ function PaymentMethod() {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
   const [accountNumber, setAccountNumber] = useState("")
   const [amount, setAmount] = useState("")
->>>>>>> Stashed changes
 
   const handleMethodSelect = (methodName: string) => {
     setSelectedMethod(methodName);
@@ -316,11 +315,7 @@ function PaymentMethod() {
         <Button
           className="w-full max-w-[200px] xl:h-[48px] rounded-xl hover:opacity-80 bg-custom-gradient-tr disabled:opacity-50"
           onClick={handlePayment}
-<<<<<<< Updated upstream
-          disabled={!selectedMethod}
-=======
           disabled={!selectedMethod || !accountNumber || !amount}
->>>>>>> Stashed changes
         >
           <Image src={Money} alt="money" className="w-5 h-3 xl:w-5 xl:h-5" />
           <h4 className="text-[12px] xl:text-md font-medium ">Tarik Saldo</h4>
