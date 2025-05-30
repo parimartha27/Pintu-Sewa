@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/auth/useAuth"
 import FilterSection from "@/components/fragments/shop/ProductFilter"
 import TextedCheckbox from "@/components/fragments/TextedCheckbox"
 import Star from "@/public/star.svg"
+import SellerLayout from "@/components/layout/dashboard-seller/Layout"
 
 interface Shop {
   id: string
@@ -201,34 +202,36 @@ export default function TransactionDetail() {
   const isProcessed = status === "Diproses" || status === "Dikirim"
   const isRented = status === "Sedang Disewa"
   const isFinished = status === "Selesai"
+  const isReturned = status === "Dikembalikan"
 
   return (
-    <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout mb-48'>
-      <ProfileSidebarLayout />
-      <div className='w-full'>
-        <div className='mb-6'>
-          <Link
-            href='/order-history'
-            className='flex items-center text-color-secondary mb-4'
-          >
-            <ArrowLeft className='w-4 h-4 mr-2' />
-            <span>Kembali</span>
-          </Link>
-        </div>
+    <SellerLayout>
+      <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout'>
+        {/* <ProfileSidebarLayout /> */}
+        <div className='w-full'>
+          <div className='mb-6'>
+            <Link
+              href='/order-history'
+              className='flex items-center text-color-secondary mb-4'
+            >
+              <ArrowLeft className='w-4 h-4 mr-2' />
+              <span>Kembali</span>
+            </Link>
+          </div>
 
-        <Card className='mb-6'>
-          <CardContent className='pt-6'>
-            <div className='flex-col gap-4'>
-              <h1 className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9]'>Detail Transaksi</h1>
-              <div className='flex-col pt-6 space-y-3 '>
-                <div className='flex justify-between'>
-                  <p className='text-sm text-primary'>Nomor Referensi</p>
-                  <p className='font-semibold text-lg'>{transaction_detail.reference_number}</p>
-                </div>
-                <div className='flex justify-between'>
-                  <p className='text-sm text-primary'>Status Transaksi</p>
-                  <Badge
-                    className={`p-2
+          <Card className='mb-6'>
+            <CardContent className='pt-6'>
+              <div className='flex-col gap-4'>
+                <h1 className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9]'>Detail Transaksi</h1>
+                <div className='flex-col pt-6 space-y-3 '>
+                  <div className='flex justify-between'>
+                    <p className='text-sm text-primary'>Nomor Referensi</p>
+                    <p className='font-semibold text-lg'>{transaction_detail.reference_number}</p>
+                  </div>
+                  <div className='flex justify-between'>
+                    <p className='text-sm text-primary'>Status Transaksi</p>
+                    <Badge
+                      className={`p-2
                         ${status === "Belum Dibayar" ? " bg-[#D9D9D9] text-color-primary" : ""}
                         ${status === "Diproses" ? "bg-[#FDCC0D] text-[#590505]" : ""}
                         ${status === "Dikirim" ? "bg-color-third text-color-primaryDark" : ""}
@@ -237,239 +240,239 @@ export default function TransactionDetail() {
                         ${status === "Dikembalikan" ? "bg-[#05593E] text-white" : ""}
                         ${status === "Selesai" ? "bg-custom-gradient-tr text-white" : ""}
                       `}
-                  >
-                    {transaction_detail.status}
-                  </Badge>
-                </div>
-                <div className='flex justify-between'>
-                  <p className='text-sm text-primary'>Tanggal Penyewaan</p>
-                  <p className='font-medium'>{transaction_detail.transaction_date}</p>
-                </div>
-                {transaction_detail.shipping_address && (
+                    >
+                      {transaction_detail.status}
+                    </Badge>
+                  </div>
                   <div className='flex justify-between'>
-                    <p className='text-sm text-primary'>Alamat Pengiriman</p>
-                    <p className='font-medium'>{transaction_detail.shipping_address}</p>
+                    <p className='text-sm text-primary'>Tanggal Penyewaan</p>
+                    <p className='font-medium'>{transaction_detail.transaction_date}</p>
                   </div>
-                )}
-                {transaction_detail.shipping_code && (
-                  <div className='flex justify-between'>
-                    <p className='text-sm text-primary'>Kode Pengiriman</p>
-                    <p className='font-medium'>{transaction_detail.shipping_code}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className='mb-6'>
-          <CardHeader className=''>
-            <div className='flex border-b-[1px] border-[#D9D9D9] w-full justify-between pb-4'>
-              <h1 className='text-xl font-bold'>Detail Barang</h1>
-              <div className='flex space-x-2 items-center justify-between'>
-                <p>{shop_detail.name}</p>
-                <Link href={`/chat`}>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                  >
-                    Chat Toko
-                  </Button>
-                </Link>
-                <Link href={`/shop/${shop_detail.id}`}>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                  >
-                    Kunjungi Toko
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {product_details.map((product, index) => (
-              <div
-                key={product.order_id}
-                className='my-4'
-              >
-                <div className='flex items-start gap-4'>
-                  <div className='relative w-20 h-20 rounded-md overflow-hidden bg-gray-100'>
-                    {product.image ? (
-                      <Image
-                        src={product.image}
-                        alt={product.product_name}
-                        fill
-                        className='object-cover'
-                      />
-                    ) : (
-                      <div className='flex items-center justify-center h-full'>
-                        <ShoppingBag className='w-8 h-8 text-gray-400' />
-                      </div>
-                    )}
-                  </div>
-                  <div className='flex-1'>
+                  {transaction_detail.shipping_address && (
                     <div className='flex justify-between'>
-                      <div className='space-y-2'>
-                        <h3 className='font-medium'>{product.product_name}</h3>
-                        <p className='text-sm text-gray-500'>
-                          {product.start_rent_date} - {product.end_rent_date}
-                        </p>
-                        <p className='text-sm text-gray-500'>
-                          {product.quantity} barang x {formatCurrency(product.price)}
-                        </p>
+                      <p className='text-sm text-primary'>Alamat Pengiriman</p>
+                      <p className='font-medium'>{transaction_detail.shipping_address}</p>
+                    </div>
+                  )}
+                  {transaction_detail.shipping_code && (
+                    <div className='flex justify-between'>
+                      <p className='text-sm text-primary'>Kode Pengiriman</p>
+                      <p className='font-medium'>{transaction_detail.shipping_code}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className='mb-6'>
+            <CardHeader className=''>
+              <div className='flex border-b-[1px] border-[#D9D9D9] w-full justify-between pb-4'>
+                <h1 className='text-xl font-bold'>Detail Barang</h1>
+                {/* <div className='flex space-x-2 items-center justify-between'>
+                  <p>{shop_detail.name}</p>
+                  <Link href={`/chat`}>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                    >
+                      Chat Toko
+                    </Button>
+                  </Link>
+                  <Link href={`/shop/${shop_detail.id}`}>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                    >
+                      Kunjungi Toko
+                    </Button>
+                  </Link>
+                </div> */}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {product_details.map((product, index) => (
+                <div
+                  key={product.order_id}
+                  className='my-4'
+                >
+                  <div className='flex items-start gap-4'>
+                    <div className='relative w-20 h-20 rounded-md overflow-hidden bg-gray-100'>
+                      {product.image ? (
+                        <Image
+                          src={product.image}
+                          alt={product.product_name}
+                          fill
+                          className='object-cover'
+                        />
+                      ) : (
+                        <div className='flex items-center justify-center h-full'>
+                          <ShoppingBag className='w-8 h-8 text-gray-400' />
+                        </div>
+                      )}
+                    </div>
+                    <div className='flex-1'>
+                      <div className='flex justify-between'>
+                        <div className='space-y-2'>
+                          <h3 className='font-medium'>{product.product_name}</h3>
+                          <p className='text-sm text-gray-500'>
+                            {product.start_rent_date} - {product.end_rent_date}
+                          </p>
+                          <p className='text-sm text-gray-500'>
+                            {product.quantity} barang x {formatCurrency(product.price)}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  {index < product_details.length - 1 && <Separator className='my-4' />}
                 </div>
-                {index < product_details.length - 1 && <Separator className='my-4' />}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className='mb-6'>
-          <CardHeader className='pb-2'>
-            <CardTitle className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9] w-full'>Rincian Pembayaran</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='space-y-2'>
-              <div className='flex justify-between'>
-                <span className='text-gray-600'>Metode Pembayaran</span>
-                <span className='font-medium'>{payment_detail.payment_method}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-gray-600'>Subtotal Harga Barang</span>
-                <span>{formatCurrency(payment_detail.sub_total)}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-gray-600'>Total Ongkos Kirim</span>
-                <span>{formatCurrency(payment_detail.shipping_price)}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-gray-600'>Biaya Layanan</span>
-                <span>{formatCurrency(payment_detail.service_fee)}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-gray-600'>Total Deposit</span>
-                <span>{formatCurrency(payment_detail.total_deposit)}</span>
-              </div>
-              <Separator className='my-2' />
-              <div className='flex justify-between font-medium'>
-                <span>Total Transaksi</span>
-                <span>{formatCurrency(payment_detail.grand_total)}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Action buttons based on status */}
-        <div className='flex gap-4 justify-start'>
-          {isUnpaid && !showReturnForm && !showRentToBuyForm && (
-            <Button
-              onClick={handlePayment}
-              className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
-            >
-              Bayar
-            </Button>
-          )}
-
-          {isProcessed && !showReturnForm && !showRentToBuyForm && (
-            <Button
-              onClick={handleTrackProduct}
-              className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
-            >
-              Lacak Pengiriman
-            </Button>
-          )}
-
-          {isRented && !showReturnForm && !showRentToBuyForm && (
-            <>
-              <Button
-                variant='outline'
-                className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
-                onClick={handleReturnProduct}
-              >
-                Kembalikan Barang
-              </Button>
-              <Button
-                className='bg-white text-color-primaryDark text-lg h-18 border
-                 border-color-primaryDark hover:text-white hover:bg-color-primaryDark'
-                onClick={handleBuyProduct}
-              >
-                Beli Barang
-              </Button>
-            </>
-          )}
-
-          {isFinished && !showReturnForm && !showRentToBuyForm && !showRatingForm && (
-            <Button
-              onClick={handleShowRatingForm}
-              className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
-            >
-              Rating
-            </Button>
-          )}
-        </div>
-
-        {/* Return Product Form */}
-        {showReturnForm && (
-          <Card className='mb-6'>
-            <CardHeader>
-              <CardTitle>Formulir Pengembalian Barang</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmitReturn}>
-                <div className='mb-4'>
-                  <label
-                    htmlFor='resi'
-                    className='block text-sm font-medium text-gray-700 mb-1'
-                  >
-                    Nomor Resi
-                  </label>
-                  <Input
-                    id='resi'
-                    value={resiBuying}
-                    onChange={(e) => setResiBuying(e.target.value)}
-                    placeholder='Masukkan nomor resi'
-                    required
-                  />
-                </div>
-                <div className='flex gap-4 justify-end'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={() => setShowReturnForm(false)}
-                    className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
-                    type='submit'
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
+              ))}
             </CardContent>
           </Card>
-        )}
 
-        {/* Rent to Buy Form */}
-        {showRentToBuyForm && (
           <Card className='mb-6'>
-            <CardHeader>
-              <CardTitle>Formulir Rent to Buy</CardTitle>
+            <CardHeader className='pb-2'>
+              <CardTitle className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9] w-full'>Rincian Pembayaran</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='mb-4'>
-                <p className='text-sm text-gray-500 mb-2'>Rent to Buy memungkinkan Anda untuk membeli barang yang sudah pernah disewa. Nominal yang dibayarkan adalah total harga barang dikurangi total deposit Anda.</p>
+              <div className='space-y-2'>
+                <div className='flex justify-between'>
+                  <span className='text-gray-600'>Metode Pembayaran</span>
+                  <span className='font-medium'>{payment_detail.payment_method}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span className='text-gray-600'>Subtotal Harga Barang</span>
+                  <span>{formatCurrency(payment_detail.sub_total)}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span className='text-gray-600'>Total Ongkos Kirim</span>
+                  <span>{formatCurrency(payment_detail.shipping_price)}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span className='text-gray-600'>Biaya Layanan</span>
+                  <span>{formatCurrency(payment_detail.service_fee)}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span className='text-gray-600'>Total Deposit</span>
+                  <span>{formatCurrency(payment_detail.total_deposit)}</span>
+                </div>
+                <Separator className='my-2' />
+                <div className='flex justify-between font-medium'>
+                  <span>Total Transaksi</span>
+                  <span>{formatCurrency(payment_detail.grand_total)}</span>
+                </div>
               </div>
-              <form onSubmit={handleSubmitRentToBuy}>
+            </CardContent>
+          </Card>
+
+          {/* Action buttons based on status */}
+          <div className='flex gap-4 justify-start'>
+            {isUnpaid && !showReturnForm && !showRentToBuyForm && (
+              <Button
+                onClick={handlePayment}
+                className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
+              >
+                Bayar
+              </Button>
+            )}
+
+            {isReturned && !showReturnForm && !showRentToBuyForm && (
+              <Button
+                onClick={handleTrackProduct}
+                className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
+              >
+                Lacak Pengiriman
+              </Button>
+            )}
+
+            {isProcessed && !showReturnForm && !showRentToBuyForm && (
+              <>
+                <Button
+                  variant='outline'
+                  className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
+                  onClick={handleReturnProduct}
+                >
+                  Selesai
+                </Button>
+                <Button
+                  className='bg-white text-color-primaryDark text-lg h-18 border
+                 border-color-primaryDark hover:text-white hover:bg-color-primaryDark'
+                  onClick={handleBuyProduct}
+                >
+                  Lacak Barang 
+                </Button>
+              </>
+            )}
+
+            {isFinished && !showReturnForm && !showRentToBuyForm && !showRatingForm && (
+              <Button
+                onClick={handleShowRatingForm}
+                className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
+              >
+                Rating
+              </Button>
+            )}
+          </div>
+
+          {/* Return Product Form */}
+          {showReturnForm && (
+            <Card className='mb-6'>
+              <CardHeader>
+                <CardTitle>Formulir Pengembalian Barang</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmitReturn}>
+                  <div className='mb-4'>
+                    <label
+                      htmlFor='resi'
+                      className='block text-sm font-medium text-gray-700 mb-1'
+                    >
+                      Nomor Resi
+                    </label>
+                    <Input
+                      id='resi'
+                      value={resiBuying}
+                      onChange={(e) => setResiBuying(e.target.value)}
+                      placeholder='Masukkan nomor resi'
+                      required
+                    />
+                  </div>
+                  <div className='flex gap-4 justify-end'>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={() => setShowReturnForm(false)}
+                      className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
+                      type='submit'
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Rent to Buy Form */}
+          {showRentToBuyForm && (
+            <Card className='mb-6'>
+              <CardHeader>
+                <CardTitle>Formulir Rent to Buy</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className='mb-4'>
-                  <label className='block text-sm font-medium text-gray-700 mb-1'>Input Nominal</label>
-                  <div className='flex'>
+                  <p className='text-sm text-gray-500 mb-2'>Rent to Buy memungkinkan Anda untuk membeli barang yang sudah pernah disewa. Nominal yang dibayarkan adalah total harga barang dikurangi total deposit Anda.</p>
+                </div>
+                <form onSubmit={handleSubmitRentToBuy}>
+                  <div className='mb-4'>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>Nominal Dibayarkan</label>
+                    {/* <div className='flex'>
                     <span className='inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500'>Rp</span>
                     <Input
                       type='text'
@@ -479,99 +482,101 @@ export default function TransactionDetail() {
                       placeholder='10.000.000'
                       required
                     />
+                  </div> */}
+                    <p className='text-2xl text-color-primaryDark font-bold'>Rp 25.000.000</p>
                   </div>
-                </div>
-                <div className='flex gap-4 justify-end'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={() => setShowRentToBuyForm(false)}
-                    className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
-                    type='submit'
-                  >
-                    Bayar
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
+                  <div className='flex gap-4 justify-end'>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={() => setShowRentToBuyForm(false)}
+                      className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
+                      type='submit'
+                    >
+                      Bayar
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          )}
 
-        {showRatingForm && (
-          <Card className='mb-6'>
-            <CardHeader>
-              <CardTitle className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9] w-full'>Survey Kepuasaan Penyewaan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='space-y-4'>
-                {/* Review Text Input */}
-                <div className='mb-4'>
+          {showRatingForm && (
+            <Card className='mb-6'>
+              <CardHeader>
+                <CardTitle className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9] w-full'>Survey Kepuasaan Penyewaan</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-4'>
+                  {/* Review Text Input */}
+                  <div className='mb-4'>
+                    <label
+                      htmlFor='review'
+                      className='block text-sm font-medium text-gray-700 mb-1'
+                    >
+                      Ulasan
+                    </label>
+                    <Input
+                      id='review'
+                      placeholder='Barang yang disewa sangat baik dan luar biasa'
+                      className='w-full'
+                    />
+                  </div>
                   <label
                     htmlFor='review'
                     className='block text-sm font-medium text-gray-700 mb-1'
                   >
-                    Ulasan
+                    Review
                   </label>
-                  <Input
-                    id='review'
-                    placeholder='Barang yang disewa sangat baik dan luar biasa'
-                    className='w-full'
-                  />
-                </div>
-                <label
-                  htmlFor='review'
-                  className='block text-sm font-medium text-gray-700 mb-1'
-                >
-                  Review
-                </label>
 
-                {/* Rating Input */}
-                <div className='mx-2 space-y-4'>
-                  {[5, 4, 3, 2, 1].map((rating) => (
-                    <TextedCheckbox
-                      key={rating}
-                      // checked={isCheckboxSelected("minRatings", rating.toString())}
-                      // onCheckedChange={() => handleCheckboxFilter("minRatings", rating.toString(), !isCheckboxSelected("minRatings", rating.toString()))}
+                  {/* Rating Input */}
+                  <div className='mx-2 space-y-4'>
+                    {[5, 4, 3, 2, 1].map((rating) => (
+                      <TextedCheckbox
+                        key={rating}
+                        // checked={isCheckboxSelected("minRatings", rating.toString())}
+                        // onCheckedChange={() => handleCheckboxFilter("minRatings", rating.toString(), !isCheckboxSelected("minRatings", rating.toString()))}
+                      >
+                        <div className='flex space-x-3 items-center'>
+                          <Image
+                            width={14}
+                            height={12}
+                            src={Star}
+                            alt={`Star ${rating}`}
+                          />
+                          <p className='text-[12px] text-color-primary'>{rating}</p>
+                        </div>
+                      </TextedCheckbox>
+                    ))}
+                  </div>
+
+                  <div className='flex gap-4 justify-end'>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={() => setShowRatingForm(false)}
+                      className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
                     >
-                      <div className='flex space-x-3 items-center'>
-                        <Image
-                          width={14}
-                          height={12}
-                          src={Star}
-                          alt={`Star ${rating}`}
-                        />
-                        <p className='text-[12px] text-color-primary'>{rating}</p>
-                      </div>
-                    </TextedCheckbox>
-                  ))}
+                      Batal
+                    </Button>
+                    <Button
+                      className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
+                      type='submit'
+                    >
+                      Submit
+                    </Button>
+                  </div>
                 </div>
-
-                <div className='flex gap-4 justify-end'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={() => setShowRatingForm(false)}
-                    className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
-                    type='submit'
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
+    </SellerLayout>
   )
 }

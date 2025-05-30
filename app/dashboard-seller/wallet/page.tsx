@@ -255,21 +255,21 @@ function PaymentMethod() {
       <div className='py-6'>
         <div className='space-y-4'>
           <div>
-            <label className='block text-sm font-medium text-color-primary mb-1'>Nomor Rekening</label>
+            <label className='block text-sm font-medium text-color-primary mb-1'>Nominal Saldo</label>
             <input
               type='text'
               className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='Masukkan nomor rekening'
+              placeholder='Masukkan nominal saldo'
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value)}
             />
           </div>
           <div>
-            <label className='block text-sm font-medium text-color-primary mb-1'>Nama Pemilik Rekening</label>
+            <label className='block text-sm font-medium text-color-primary mb-1'>Nomor Rekening</label>
             <input
               type='text'
               className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='Masukkan nama pemilik rekening'
+              placeholder='Masukkan nomor rekening'
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
             />

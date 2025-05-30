@@ -7,9 +7,9 @@ export default function TransactionDetailPage() {
   
   return (
     <main className='min-h-screen bg-gray-50'>
-      <Navbar />
+      {/* <Navbar /> */}
       <TransactionDetail/>
-      <Footer />
+      {/* <Footer /> */}
     </main>
   )
 }
