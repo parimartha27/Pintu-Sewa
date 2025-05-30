@@ -300,8 +300,8 @@ const Navbar = ({ type }: NavbarProps) => {
                         </button>
                         <button
                           className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
-                          // onClick={() => router.push("/create-shop")}
-                          onClick={() => router.push("/dev")}
+                          onClick={() => router.push("/create-shop")}
+                          // onClick={() => router.push("/dev")}
                         >
                           Toko
                         </button>
@@ -341,8 +341,8 @@ const Navbar = ({ type }: NavbarProps) => {
               <div className="hidden sm:block mx-2 min-h-[30px] min-w-[2px] bg-gray-500 mt-2" />
 
               <Link
-                // href='/create-shop'
-                href="/dev"
+                href='/dashboard-seller'
+                // href="/dev"
                 className="hidden sm:flex w-2/5 md:w-1/6 space-x-2 mt-1 ml-1 hover:opacity-75 lg:ml-3"
               >
                 <Image

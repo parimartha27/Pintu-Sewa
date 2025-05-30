@@ -25,8 +25,22 @@ interface ShopTransaction {
   shipping_price: number
 }
 
+type TransactionsTableProps = {
+  transactions: Array<{
+    refference_no: string
+    create_at: string
+    customer_name: string
+    start_date: string
+    end_date: string
+    duration: number
+    status: string
+    deposit_status: boolean
+  }>
+  loading: boolean
+}
+
 const TransactionHistorySeller = () => {
-  const [transactions, setTransactions] = useState<ShopTransaction[]>([])
+  const [transactions, setTransactions] = useState<TransactionsTableProps[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -63,18 +77,9 @@ const TransactionHistorySeller = () => {
   return (
     <SellerLayout>
       <p className='font-semibold text-color-primary text-xl pb-2'>Transaksi Berlangsung</p>
-      <div className='flex w-full h-full shadow-sm rounded-xl border'>
+      <div className='flex w-full h-full shadow-sm rounded-xl border items-center'>
         <TransactionsTable
-          transactions={transactions.map((t) => ({
-            refference_no: t.reference_number,
-            create_at: t.transaction_date,
-            customer_name: t.products[0]?.productName || "N/A",
-            start_date: t.products[0]?.startDate || "N/A",
-            end_date: t.products[0]?.endDate || "N/A",
-            duration: calculateDuration(t.products[0]?.startDate, t.products[0]?.endDate),
-            status: t.status,
-            deposit_status: t.total_deposit > 0,
-          }))}
+          transactions={transactions || []}
           loading={loading}
         />
       </div>
@@ -82,7 +87,6 @@ const TransactionHistorySeller = () => {
   )
 }
 
-// Helper function to calculate duration in days
 function calculateDuration(startDate: string, endDate: string): number {
   if (!startDate || !endDate) return 0
   const start = new Date(startDate)

@@ -8,12 +8,16 @@ import {
   fetchWalletHistory,
 } from "@/services/dashboardService";
 import { formatCurrency } from "@/lib/utils";
+import { useRouter } from "next/navigation"
+import axios, { Axios } from "axios";
+import { useAuth } from "@/hooks/auth/useAuth"
 import SellerLayout from "@/components/layout/dashboard-seller/Layout";
 import { StatsCard } from "@/components/fragments/dashboard-seller/StatsCard";
 import { TransactionsTable } from "@/components/fragments/dashboard-seller/TransactionTable";
 import { WalletTransactionsList } from "@/components/fragments/dashboard-seller/WalletTransactionList";
 import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
+import { shopBaseUrl } from "@/types/globalVar";
 
 interface ShopDashboard {
   wallet: number;
@@ -43,10 +47,16 @@ interface WalletTransaction {
 }
 
 const WalletSeller = () => {
+    const { customerId } = useAuth()
+
+  const router = useRouter()
   const [dashboardData, setDashboardData] = useState<ShopDashboard | null>(
     null
   );
   const [walletHistory, setWalletHistory] = useState<WalletTransaction[]>([]);
+  const [shopId, setShopId] = useState<String | null>(
+    typeof window !== "undefined" ? localStorage.getItem("shopId") : null
+  );
   const [loading, setLoading] = useState({
     dashboard: true,
     wallet: true,
@@ -58,37 +68,52 @@ const WalletSeller = () => {
     isWrong: true,
   });
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const shopId =
-          typeof window !== "undefined" ? localStorage.getItem("shopId") : null;
-
-        if (!shopId) {
-          throw new Error("Shop ID not found");
-        }
-
-        const [dashboard, wallet] = await Promise.all([
-          fetchShopDashboard(shopId),
-          fetchWalletHistory(shopId),
-        ]);
-
-        setDashboardData(dashboard);
-        setWalletHistory(wallet);
-        setLoading({ dashboard: false, wallet: false });
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError(err instanceof Error ? err.message : "Failed to fetch data");
-        setLoading({ dashboard: false, wallet: false });
-        setAlertState({
-          isOpen: true,
-          message: err instanceof Error ? err.message : "Failed to fetch data",
-        });
+  const fetchShopId = async () => {
+    try {
+      const response = await axios.get(`${shopBaseUrl}/get-shop/${customerId}`);
+      if (response.data.error_schema.error_code === "PS-00-000") {
+        localStorage.setItem("shopId", response.data.output_schema);
+        setShopId(response.data.output_schema);
+      }else if (response.data.error_schema.error_code === "PS-00-002"){
+        router.push("/create-shop")
       }
-    };
+    } catch (err: any) {
+      console.log("ini errornya bro", err);
+    }
+  };
 
-    loadData();
-  }, []);
+  const loadData = async () => {
+    try {
+      const getShopToken = localStorage.getItem("shopId");
+
+      if (!getShopToken) throw new Error("Shop ID tidak ditemukan");
+      const [dashboard, wallet] = await Promise.all([
+        fetchShopDashboard(getShopToken),
+        fetchWalletHistory(getShopToken),
+      ]);
+
+      setDashboardData(dashboard);
+      setWalletHistory(wallet);
+      setLoading({ dashboard: false, wallet: false });
+
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
+      setLoading({ dashboard: false, wallet: false });
+      setAlertState({
+        isOpen: true,
+        message: err instanceof Error ? err.message : "Failed to fetch data",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!shopId) {
+      fetchShopId();
+    }else{
+      loadData();
+    }
+  }, [shopId]);
 
   if (error) {
     return (
@@ -154,10 +179,10 @@ const WalletSeller = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Transaksi Berlangsung</h2>
-          <Button variant="outline" size="sm" className="gap-1">
+          {/* <Button variant="outline" size="sm" className="gap-1">
             <Filter className="h-4 w-4" />
             Filter
-          </Button>
+          </Button> */}
         </div>
 
         <div className="bg-white rounded-md shadow overflow-hidden">
@@ -172,10 +197,10 @@ const WalletSeller = () => {
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Riwayat Wallet</h2>
-          <Button variant="outline" size="sm" className="gap-1">
+          {/* <Button variant="outline" size="sm" className="gap-1">
             <Filter className="h-4 w-4" />
             Filter
-          </Button>
+          </Button> */}
         </div>
 
         <div className="bg-white rounded-md shadow overflow-hidden">

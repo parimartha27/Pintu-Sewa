@@ -152,8 +152,15 @@ const TransactionHistorySeller = () => {
 export default TransactionHistorySeller;
 
 function PaymentMethod() {
+<<<<<<< Updated upstream
   const router = useRouter();
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+=======
+  const router = useRouter()
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
+  const [accountNumber, setAccountNumber] = useState("")
+  const [amount, setAmount] = useState("")
+>>>>>>> Stashed changes
 
   const handleMethodSelect = (methodName: string) => {
     setSelectedMethod(methodName);
@@ -161,7 +168,20 @@ function PaymentMethod() {
   };
 
   const handlePayment = () => {
+<<<<<<< Updated upstream
     if (!selectedMethod) return;
+=======
+    if (!selectedMethod || !accountNumber) {
+      // Show error if account number is not filled
+      return
+    }
+
+    // Save account number to localStorage
+    localStorage.setItem("accountNumber", accountNumber)
+    localStorage.setItem("amountWithdraw", amount)
+    router.push("/payment")
+  }
+>>>>>>> Stashed changes
 
     router.push("/payment");
   };
@@ -175,8 +195,40 @@ function PaymentMethod() {
           Lihat Semua
         </h3>
       </CardHeader>
+<<<<<<< Updated upstream
       <CardContent className="flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0 border-t-[1px] border-t-[#D9D9D9]">
         <div className="flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3">
+=======
+
+      {/* Account Information Section */}
+      <div className='py-6'>
+        <div className='space-y-4'>
+          <div>
+            <label className='block text-sm font-medium text-color-primary mb-1'>Nomor Rekening</label>
+            <input
+              type='text'
+              className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              placeholder='Masukkan nomor rekening'
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className='block text-sm font-medium text-color-primary mb-1'>Jumlah Penarikan Saldo</label>
+            <input
+              type='text'
+              className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              placeholder='Masukkan jumlah saldo yang ingin ditarik'
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <CardContent className='flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0'>
+        <div className='flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3'>
+>>>>>>> Stashed changes
           <div
             className={`cursor-pointer p-2 rounded-lg ${
               selectedMethod === "BCA Virtual Account"
@@ -264,7 +316,11 @@ function PaymentMethod() {
         <Button
           className="w-full max-w-[200px] xl:h-[48px] rounded-xl hover:opacity-80 bg-custom-gradient-tr disabled:opacity-50"
           onClick={handlePayment}
+<<<<<<< Updated upstream
           disabled={!selectedMethod}
+=======
+          disabled={!selectedMethod || !accountNumber || !amount}
+>>>>>>> Stashed changes
         >
           <Image src={Money} alt="money" className="w-5 h-3 xl:w-5 xl:h-5" />
           <h4 className="text-[12px] xl:text-md font-medium ">Tarik Saldo</h4>

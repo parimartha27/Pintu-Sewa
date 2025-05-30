@@ -1,24 +1,19 @@
 "use client";
 
-import Image from "next/image";
-import OpenShop from "@/public/openShop.svg";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import LabelledInput from "@/components/fragments/editProfile/LabelledInput";
-import Section from "@/components/fragments/filter/Section";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import TextedCheckbox from "@/components/fragments/TextedCheckbox";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import LabelledDropdown from "@/components/fragments/editProfile/LabelledDropdown";
-import axios from "axios";
-import { shopBaseUrl } from "@/types/globalVar";
+import Image from "next/image"
+import OpenShop from "@/public/openShop.svg"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import LabelledInput from "@/components/fragments/editProfile/LabelledInput"
+import Section from "@/components/fragments/filter/Section"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+import TextedCheckbox from "@/components/fragments/TextedCheckbox"
+import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import LabelledDropdown from "@/components/fragments/editProfile/LabelledDropdown"
+import axios, { Axios } from "axios"
+import { shopBaseUrl } from "@/types/globalVar"
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
 import { useAuth } from "@/hooks/auth/useAuth";
@@ -30,39 +25,31 @@ interface AddressData {
 
 interface CreateShopRequest {
   customer_id: string | null;
-  name: string;
-  email: string;
-  street: string;
-  district: string;
-  regency: string;
-  province: string;
-  post_code: string;
-  is_same_address: boolean;
+  email: string
+  street: string
+  district: string
+  regency: string
+  province: string
+  post_code: string
+  is_same_address: string
 }
 
 const CreateShopBody = () => {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [shopName, setShopName] = useState("");
-  const [email, setEmail] = useState("");
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [addressType, setAddressType] = useState<
-    "Alamat Saat Ini" | "Alamat Baru"
-  >("Alamat Saat Ini");
-  const [provinsi, setProvinsi] = useState<AddressData[]>([]);
-  const [kabupaten, setKabupaten] = useState<AddressData[]>([]);
-  const [kecamatan, setKecamatan] = useState<AddressData[]>([]);
-  const [kodePos, setKodePos] = useState<AddressData[]>([]);
-  const [jalan, setJalan] = useState("");
-  const [selectedProvinsi, setSelectedProvinsi] = useState<string | number>("");
-  const [selectedKabupaten, setSelectedKabupaten] = useState<string | number>(
-    ""
-  );
-  const [selectedKecamatan, setSelectedKecamatan] = useState<string | number>(
-    ""
-  );
-  const [selectedKodePos, setSelectedKodePos] = useState<string | number>("");
-
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [shopName, setShopName] = useState("")
+  const [email, setEmail] = useState("")
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [addressType, setAddressType] = useState<"Alamat Saat Ini" | "Alamat Baru">("Alamat Saat Ini")
+  const [provinsi, setProvinsi] = useState<AddressData[]>([])
+  const [kabupaten, setKabupaten] = useState<AddressData[]>([])
+  const [kecamatan, setKecamatan] = useState<AddressData[]>([])
+  const [kodePos, setKodePos] = useState<AddressData[]>([])
+  const [jalan, setJalan] = useState("")
+  const [selectedProvinsi, setSelectedProvinsi] = useState<string | number>("")
+  const [selectedKabupaten, setSelectedKabupaten] = useState<string | number>("")
+  const [selectedKecamatan, setSelectedKecamatan] = useState<string | number>("")
+  const [selectedKodePos, setSelectedKodePos] = useState<string | number>("")
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
@@ -143,7 +130,7 @@ const CreateShopBody = () => {
     if (!validateForm()) {
       setAlertState({
         isOpen: true,
-        message: "Harap perbaiki kesalahan pada form",
+        message: "Data yang Anda Input Tidak Valid",
       })
       return;
     }
@@ -162,14 +149,15 @@ const CreateShopBody = () => {
         regency: getTextById(selectedKabupaten, kabupaten),
         province: getTextById(selectedProvinsi, provinsi),
         post_code: getTextById(selectedKodePos, kodePos),
-        is_same_address: addressType === "Alamat Saat Ini",
-      };
-
-      const response = await axios.post(`${shopBaseUrl}/create`, shopData);
-
+        is_same_address: addressType === "Alamat Saat Ini" ? "y" : "n",
+      }
+      console.log(shopData);
+      const response = await axios.post(`${shopBaseUrl}/create`, shopData)
+      console.log(response);
       if (response.data) {
-        // localStorage.setItem("shopId", response.data.shopId)
-        router.push("/create-shop/confirmation");
+        localStorage.setItem("shopId", response.data.output_schema.id)
+        alert("Toko berhasil dibuat!")
+        router.push("/dashboard-seller")
       } else {
         throw new Error("Gagal membuat toko");
       }
@@ -347,7 +335,7 @@ const CreateShopBody = () => {
                   label="Email"
                   htmlFor="email"
                   id="email"
-                  type="email"
+                  type="text"
                   placeholder="toko@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
