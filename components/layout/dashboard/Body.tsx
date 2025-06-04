@@ -53,7 +53,7 @@ const DashboardBody = () => {
         const data = await fetchRecommendedProducts()
         if (data.error_schema.error_message === "SUCCESS") {
           setRecommendedProducts(data.output_schema)
-        }
+        } 
       } catch (err) {
         setError("Gagal memuat rekomendasi: " + err)
       } finally {

@@ -5,9 +5,10 @@ import Instagram from "@/public/instagram.svg";
 import Email from "@/public/email.svg";
 import Image from "next/image";
 import WebLogo from "@/public/pintuSewaWhite.svg";
+import {useRouter} from "next/navigation"
 
 const Footer = () => {
-
+  const router = useRouter();
   return (
     <div className="w-full min-h-[400px] flex flex-col justify-center bg-gradient-to-r from-[#052659] to-[#0B52BF]">
       <div className="flex h-4/5 justify-around">
@@ -23,13 +24,13 @@ const Footer = () => {
               <h4 className="text-[14px] lg:text-[18px] text-white font-light">
                 Tentang Pintu Sewa
               </h4>
-              <h4 className="text-[14px] lg:text-[18px] text-white font-light">
+              <h4 onClick={() => router.push("/terms-and-conditions")} className="text-[14px] lg:text-[18px] text-white font-light hover:underline hover:cursor-pointer">
                 Syarat dan Ketentuan Pengguna
               </h4>
-              <h4 className="text-[14px] lg:text-[18px] text-white font-light">
+              <h4 onClick={() => router.push("/privacy-policy")} className="text-[14px] lg:text-[18px] text-white font-light hover:underline hover:cursor-pointer">
                 Kebijakan Pengguna
               </h4>
-              <h4 className="text-[14px] lg:text-[18px] text-white font-light">FAQ</h4>
+              <h4 onClick={() => router.push("/frequently-asked-questions")} className="text-[14px] lg:text-[18px] text-white font-light hover:underline hover:cursor-pointer">FAQ</h4>
             </div>
             <div className="flex flex-col justify-between pb-16 gap-y-4">
               <h4 className="text-[18px] text-white font-medium ">

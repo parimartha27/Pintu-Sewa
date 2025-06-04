@@ -1,24 +1,97 @@
-List Defect:
+Homepage
+- Ngerubah Fatching Image -> yang tadinya ke unsplash sekarang ke cloudinary ( PAR )
+- Input Satu Satu Barang ( PAR )
+- Perbaikin Struktur Table ( PAR )
+- Banner Carousel ( Optional ) ( BUN )
+- Banner Carousel Slide Speed diperlambat ( MAT ) -> DONE
+- Kosistensi Bahasa Kategori ( Bahasa Indonesia Semua ) (MAT) -> DONE
+- Card Product kalau Rattingnya kosong maka rating tidak perlu ditampilkan (MAT) -> DONE
 
-- Kabupaten jadi -> Kabupaten/Kota (done)
-- nomor hp masih bisa input karakter (ini sudah diatasi pakai validasi)
-- calender tidak auto close dan tidak bisa pilih spesifik tahun
+Login -> Ganti Passwordnya gk bisa ( MAT )
+
+Footer : 
+Tentang Pintu Sewa - Biodata kita (PAR)
+Syarat dan Ketentuan Pengguna - (MAT)
+Kebijakan Pengguna - Aturan - (MAT)
+FAQ - (YAN)
+
+Media Sosial :
+No Telp - Kosongin
+Instagram - @pintu_sewa
+Email - pintusewa2025@gmail.com ( YAN )
+
+Fitur Kategori :
+Harga Minimum dan Harga Maximum Masih Rusak ( BE ) ( YAN )
+Clear Filter ( MAT )
+Benerin Pageable Search ( INI BARENG BARENG )
+
+Forgot Password : 
+Tambahin OTP ( MAT )
+
+Wallet : 
+Bagian methode pembayaran disamakan dengan checkout ( YAN )
+Tanggal di description disesuaikan bahasa indonesia ( BE ) ( YAN )
 
 
-List feature not done:
+Fitur Detail Barang :
+- Max. Sewa diganti jadi Sisa Stock ( MAT ) -> DONE
+- Chat -> Fitur Dalam Pengembangan dihilangkan -> di Redirect ke halaman view chat ( YAN )
+- Ongkir Mulai Dari *** -> diperbaiki pake Endpoint Random ( YAN ) ( BE DAN FE )
+- Calender Mulai -> Dimulai dari tanggal hari ini + estimasi pengiriman selain itu disable / tambah validasi ( MAT )
+- Ketika Checkout Stock janga dikurangi dulu ( BE ) (YAN)
+- Filter Rating harus bisa memilih lebih dari 1 filter ( BE ) ( PAR )
+- Filter Foto dibuat bisa ( YAN )
 
-- image uploading
-- middleware
-- validation for not having customerId
-- undo delete from cart
-- select courier (done)
+Checkout :
+Periode Sewa Konsisten Bahasa ( ini di Backend ) ( YAN )
+Logic Checkout diperbaiki : Total Produk Disewa masih barang satuan belum hitung quantity ( PAR )
 
-list plot hole:
-- jagain semua chat ke dev (sebelum survey)
-- jagain toko ke dev (sebelum survey)
-- filter max price min price, masih beda tag form
-- upload foto dibenerin (sebelum survey)
-- edit pass either arahin ke dev atau mau dikejer 
+Payment : 
+Batas Akhir Pembayaran Ganti 2 jam aja ( MAT )
+Foto Metode Pembayaran masih Hardcode ( MAT )
+
+Cart : 
+Fetching Data Product ( BE ) -> tambahin validasi check periode sewanya , harus disesuaikan dengan hari ini ( YAN )
+Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT )
+Contoh : kalau sekarang tgl 1 otomatis baru bisa sewa di tanggal 1 + durasi pengiriman
+
+Waktu Checkout yang di halaman checkout baru hapus cart ( YAN )
+Waktu checkout yang di cart jangan hapus ( YAN )
+
+Register :
+No Telp -> To Be Confirm ( PAR )
+Syarat dan Ktentuan - dibikin hyperlink ke Syarat dan Ketentuan Page ( MAT )
+Google Oauth ( MAT )
+Validasi kalau dapat status REGISTERED ke halaman daftar ( MAT )
+Validasi kalau dapat status VERIFY_OTP ke halaman send OTP ( MAT )
+Backend harus kirim status tambahin penjagaan ( YAN )
+
+Verification OTP :
+Kalau udh 30 menit Reset Verify OTP dan resend_otp pake Endpoint Valid ( YAN )
+Waktu hit 10x tendang ke dashboard ( MAT )
+
+
+
+Create Toko : 
+- Syarat dan Ketentuan diarahin ke page syarat dan ketentuan ( YAN )
+- syarat dan ketentuan dibikin hyper link ( YAN )
+- alert berhasil dibuat pop up ( YAN )
+
+
+=============================== PAGE YANG BELUM DIBUAT ===============================
+
+Dashboard Toko - TRANSACTION DETAIL ( PAR )
+               - TRANSACTION DETAIL ( VALIDASI STATUS UNTUK PENYESUAIAN TOMBOL ) (PAR)
+	       - TRANSACTION DETAIL - TRACK ORDER ( ENDPOINT DAN TAMPILAN ) ( YAN / PAR )
+
+DASHBOARD TOKO - Withdraw wallet -> diperbaiki ( YAN )
+Dashboard toko - edit toko ( PAR )
+Dashboard toko - EDit product ( PAR )
+INSERT PRODUCT JALANIN ( PAR )
+
+
+
+Bikin Link Khusus Untuk Class Diagram ( YAN )
 
 
 

@@ -370,7 +370,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             </div>
           </div>
           <h3 className="text-[8px] xl:text-[10px] text-color-grayPrimary font-normal">
-            Max. sewa {productDetail.stock} buah
+            Sisa Stok:{" "}<span className="font-semibold">{productDetail.stock}</span>
           </h3>
         </div>
 
