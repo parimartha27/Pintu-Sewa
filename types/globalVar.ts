@@ -1,4 +1,4 @@
-export const baseUrl = "https://pintu-sewa.up.railway.app/api";
+export const baseUrl = "http://localhost:8080/api";
 export const searchSuggestionBaseUrl = `${baseUrl}/search`;
 export const reviewBaseUrl = `${baseUrl}/review`;
 export const authBaseUrl = `${baseUrl}/authentication`;

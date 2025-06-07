@@ -9,6 +9,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -48,7 +49,7 @@ const TransactionHistorySeller = () => {
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
-    isWrong: true
+    isWrong: true,
   });
 
   useEffect(() => {
@@ -89,7 +90,7 @@ const TransactionHistorySeller = () => {
         setAlertState({
           isOpen: true,
           message: err instanceof Error ? err.message : "Failed to fetch data",
-        })
+        });
       }
     };
 
@@ -110,7 +111,7 @@ const TransactionHistorySeller = () => {
         <Alert
           message={alertState.message}
           isOpen={alertState.isOpen}
-          onClose={() => setAlertState({ isOpen: false, message: ""})}
+          onClose={() => setAlertState({ isOpen: false, message: "" })}
           isWrong={alertState.isWrong}
         />
       )}
@@ -143,7 +144,7 @@ const TransactionHistorySeller = () => {
             />
           </div>
         </div>
-        <PaymentMethod />
+        <WithdrawSection />
       </div>
     </SellerLayout>
   );
@@ -151,12 +152,10 @@ const TransactionHistorySeller = () => {
 
 export default TransactionHistorySeller;
 
-function PaymentMethod() {
-
-  const router = useRouter()
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
-  const [accountNumber, setAccountNumber] = useState("")
-  const [amount, setAmount] = useState("")
+function WithdrawSection() {
+  const router = useRouter();
+  const [amount, setAmount] = useState<string>("");
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
   const handleMethodSelect = (methodName: string) => {
     setSelectedMethod(methodName);
@@ -164,150 +163,159 @@ function PaymentMethod() {
   };
 
   const handlePayment = () => {
-    if (!selectedMethod || !accountNumber) {
-      // Show error if account number is not filled
-      return
-    }
+    if (!selectedMethod) return;
 
-    // Save account number to localStorage
-    localStorage.setItem("accountNumber", accountNumber)
-    localStorage.setItem("amountWithdraw", amount)
-    router.push("/payment")
-  }
+    router.push("/payment");
+  };
 
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    // Cegah jika input bukan angka sama sekali
+    if (!/^\d*$/.test(rawValue)) return;
+
+    setAmount(rawValue);
+  };
 
   return (
-    <Card className="px-2 md:px-6 mb-[224px]">
-      <CardHeader className="flex flex-col items-center md:flex-row md:justify-between px-0">
-        <h2 className="text-md font-semibold text-color-primary">
-          Metode Penarikan Saldo
-        </h2>
-        <h3 className="text-sm font-medium text-color-secondary hover:opacity-70 hover:cursor-pointer">
-          Lihat Semua
-        </h3>
-      </CardHeader>
+    <>
+      <Card className="w-full">
+        <CardHeader className="items-center justify-between px-4 md:px-6">
+          <CardTitle className="text-md w-full font-semibold  border-b-[#D9D9D9]">
+            Withdraw Amount
+          </CardTitle>
+        </CardHeader>
 
-      {/* Account Information Section */}
-      <div className='py-6'>
-        <div className='space-y-4'>
-          <div>
-            <label className='block text-sm font-medium text-color-primary mb-1'>Nomor Rekening</label>
-            <input
-              type='text'
-              className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='Masukkan nomor rekening'
-              value={accountNumber}
-              onChange={(e) => setAccountNumber(e.target.value)}
-            />
+        <CardContent>
+          <div className="flex flex-col w-full">
+            <p className="text-color-primary pb-4">Nominal</p>
+            <form className="w-auto">
+              <div className="relative h-[40px]">
+                <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
+                  <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
+                    Rp
+                  </p>
+                </div>
+                <input
+                  type="text"
+                  className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
+                        placeholder:text-color-primary text-[12px] rounded-lg 
+                        focus:ring-1 focus:ring-color-primaryDark focus:outline-none
+                        focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
+                  placeholder="0"
+                  value={amount}
+                  onChange={handleAmountChange}
+                />
+              </div>
+              {/* {error && <p className="text-red-500 text-xs mt-2">{error}</p>} */}
+            </form>
           </div>
-          <div>
-            <label className='block text-sm font-medium text-color-primary mb-1'>Jumlah Penarikan Saldo</label>
-            <input
-              type='text'
-              className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='Masukkan jumlah saldo yang ingin ditarik'
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
+        </CardContent>
+      </Card>
+      <Card className="px-2 md:px-6 mb-[224px]">
+        <CardHeader className="flex flex-col items-center md:flex-row md:justify-between px-0">
+          <h2 className="text-md font-semibold text-color-primary">
+            Metode Penarikan Saldo
+          </h2>
+          <h3 className="text-sm font-medium text-color-secondary hover:opacity-70 hover:cursor-pointer">
+            Lihat Semua
+          </h3>
+        </CardHeader>
+        <CardContent className="flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0 border-b-[1px] border-t-[1px] border-t-[#D9D9D9]">
+          <div className="flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3">
+            <div
+              className={`cursor-pointer p-2 rounded-lg ${
+                selectedMethod === "BCA Virtual Account"
+                  ? "bg-blue-50 border border-blue-300"
+                  : ""
+              }`}
+              onClick={() => handleMethodSelect("BCA Virtual Account")}
+            >
+              <MetodePembayaranFragments
+                nama="BCA Virtual Account"
+                gambar={BCA}
+              />
+            </div>
+            <div
+              className={`cursor-pointer p-2 rounded-lg ${
+                selectedMethod === "BRI Virtual Account"
+                  ? "bg-blue-50 border border-blue-300"
+                  : ""
+              }`}
+              onClick={() => handleMethodSelect("BRI Virtual Account")}
+            >
+              <MetodePembayaranFragments
+                nama="BRI Virtual Account"
+                gambar={BRI}
+              />
+            </div>
+            <div
+              className={`cursor-pointer p-2 rounded-lg ${
+                selectedMethod === "BNI Virtual Account"
+                  ? "bg-blue-50 border border-blue-300"
+                  : ""
+              }`}
+              onClick={() => handleMethodSelect("BNI Virtual Account")}
+            >
+              <MetodePembayaranFragments
+                nama="BNI Virtual Account"
+                gambar={BNI}
+              />
+            </div>
           </div>
-        </div>
-      </div>
 
-      <CardContent className='flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0'>
-        <div className='flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3'>
-          <div
-            className={`cursor-pointer p-2 rounded-lg ${
-              selectedMethod === "BCA Virtual Account"
-                ? "bg-blue-50 border border-blue-300"
-                : ""
-            }`}
-            onClick={() => handleMethodSelect("BCA Virtual Account")}
-          >
-            <MetodePembayaranFragments
-              nama="BCA Virtual Account"
-              gambar={BCA}
-            />
+          <div className="hidden md:flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3 lg:ml-[147px]">
+            <div
+              className={`cursor-pointer p-2 rounded-lg ${
+                selectedMethod === "BCA Virtual Account (2)"
+                  ? "bg-blue-50 border border-blue-300"
+                  : ""
+              }`}
+              onClick={() => handleMethodSelect("BCA Virtual Account (2)")}
+            >
+              <MetodePembayaranFragments
+                nama="BCA Virtual Account"
+                gambar={BCA}
+              />
+            </div>
+            <div
+              className={`cursor-pointer p-2 rounded-lg ${
+                selectedMethod === "BRI Virtual Account (2)"
+                  ? "bg-blue-50 border border-blue-300"
+                  : ""
+              }`}
+              onClick={() => handleMethodSelect("BRI Virtual Account (2)")}
+            >
+              <MetodePembayaranFragments
+                nama="BRI Virtual Account"
+                gambar={BRI}
+              />
+            </div>
+            <div
+              className={`cursor-pointer p-2 rounded-lg ${
+                selectedMethod === "BNI Virtual Account (2)"
+                  ? "bg-blue-50 border border-blue-300"
+                  : ""
+              }`}
+              onClick={() => handleMethodSelect("BNI Virtual Account (2)")}
+            >
+              <MetodePembayaranFragments
+                nama="BNI Virtual Account"
+                gambar={BNI}
+              />
+            </div>
           </div>
-          <div
-            className={`cursor-pointer p-2 rounded-lg ${
-              selectedMethod === "BRI Virtual Account"
-                ? "bg-blue-50 border border-blue-300"
-                : ""
-            }`}
-            onClick={() => handleMethodSelect("BRI Virtual Account")}
+        </CardContent>
+        <CardFooter className="p-0 pt-[18px] pb-7 ">
+          <Button
+            className="w-full max-w-[200px] xl:h-[48px] rounded-xl hover:opacity-80 bg-custom-gradient-tr disabled:opacity-50"
+            onClick={handlePayment}
+            disabled={!selectedMethod || !amount || parseInt(amount) === 0}
           >
-            <MetodePembayaranFragments
-              nama="BRI Virtual Account"
-              gambar={BRI}
-            />
-          </div>
-          <div
-            className={`cursor-pointer p-2 rounded-lg ${
-              selectedMethod === "BNI Virtual Account"
-                ? "bg-blue-50 border border-blue-300"
-                : ""
-            }`}
-            onClick={() => handleMethodSelect("BNI Virtual Account")}
-          >
-            <MetodePembayaranFragments
-              nama="BNI Virtual Account"
-              gambar={BNI}
-            />
-          </div>
-        </div>
-
-        <div className="hidden md:flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3 lg:ml-[147px]">
-          <div
-            className={`cursor-pointer p-2 rounded-lg ${
-              selectedMethod === "BCA Virtual Account (2)"
-                ? "bg-blue-50 border border-blue-300"
-                : ""
-            }`}
-            onClick={() => handleMethodSelect("BCA Virtual Account (2)")}
-          >
-            <MetodePembayaranFragments
-              nama="BCA Virtual Account"
-              gambar={BCA}
-            />
-          </div>
-          <div
-            className={`cursor-pointer p-2 rounded-lg ${
-              selectedMethod === "BRI Virtual Account (2)"
-                ? "bg-blue-50 border border-blue-300"
-                : ""
-            }`}
-            onClick={() => handleMethodSelect("BRI Virtual Account (2)")}
-          >
-            <MetodePembayaranFragments
-              nama="BRI Virtual Account"
-              gambar={BRI}
-            />
-          </div>
-          <div
-            className={`cursor-pointer p-2 rounded-lg ${
-              selectedMethod === "BNI Virtual Account (2)"
-                ? "bg-blue-50 border border-blue-300"
-                : ""
-            }`}
-            onClick={() => handleMethodSelect("BNI Virtual Account (2)")}
-          >
-            <MetodePembayaranFragments
-              nama="BNI Virtual Account"
-              gambar={BNI}
-            />
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="p-0 pt-[18px] pb-7 ">
-        <Button
-          className="w-full max-w-[200px] xl:h-[48px] rounded-xl hover:opacity-80 bg-custom-gradient-tr disabled:opacity-50"
-          onClick={handlePayment}
-          disabled={!selectedMethod || !accountNumber || !amount}
-        >
-          <Image src={Money} alt="money" className="w-5 h-3 xl:w-5 xl:h-5" />
-          <h4 className="text-[12px] xl:text-md font-medium ">Tarik Saldo</h4>
-        </Button>
-      </CardFooter>
-    </Card>
+            <Image src={Money} alt="money" className="w-5 h-3 xl:w-5 xl:h-5" />
+            <h4 className="text-[12px] xl:text-md font-medium ">Tarik Saldo</h4>
+          </Button>
+        </CardFooter>
+      </Card>
+    </>
   );
 }
