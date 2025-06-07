@@ -62,7 +62,7 @@ const Category = () => {
     <>
       <div className="hidden md:block w-full max-h-[400px] mt-5 lg:mt-10 rounded-sm overflow-hidden">
         <Carousel
-          plugins={[Autoplay({ delay: 2000 })]}
+          plugins={[Autoplay({ delay: 4000 })]}
           className="w-full max-h-[400px]"
           opts={{
             loop: true,
