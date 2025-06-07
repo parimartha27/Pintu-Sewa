@@ -21,8 +21,6 @@ import { ProductCardProps } from "@/types/productCard";
 import isValidImage from "@/hooks/useValidImage";
 
 const ProductCard = ({ product }: { product: ProductCardProps }) => {
-
-
   return (
     <div className="p-1 w-full min-w-[200px] md:max-w-[240px] h-full max-h-[300px] md:max-h-[360px]">
       <Link href={`/product/${product.id}`}>
@@ -90,10 +88,19 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
 
           <CardFooter className="flex justify-between items-end pt-2 md:pt-3 px-2 md:px-3">
             <div className="flex items-center">
-              <Image className="w-3 h-3 md:w-4 md:h-4" src={Star} alt="star" />
-              <h4 className="text-[8px] md:text-[10px] text-color-primary ml-1">
-                {product.rating ||""}
-              </h4>
+              {product.rating != 0 && (
+                <>
+                  {" "}
+                  <Image
+                    className="w-3 h-3 md:w-4 md:h-4"
+                    src={Star}
+                    alt="star"
+                  />
+                  <h4 className="text-[8px] md:text-[10px] text-color-primary ml-1">
+                    {product.rating || ""}
+                  </h4>
+                </>
+              )}
             </div>
             <div className="flex items-center">
               <h4 className="text-[8px] md:text-[10px] text-color-primary">

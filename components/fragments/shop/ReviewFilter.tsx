@@ -5,9 +5,10 @@ import Star from "@/public/star.svg";
 import Image from "next/image";
 import TextedCheckbox from "../TextedCheckbox";
 import useFilter from "@/hooks/filter/useFilter";
+import { Button } from "@/components/ui/button";
 
 const ReviewFilter = () => {
-  const { isCheckboxSelected, handleCheckboxFilter } = useFilter();
+  const { isCheckboxSelected, handleCheckboxFilter, resetAllFilters } = useFilter();
 
   return (
     <div className="hidden lg:flex flex-col w-full max-w-[280px] ">
@@ -91,6 +92,12 @@ const ReviewFilter = () => {
               Durasi Pengiriman
             </TextedCheckbox>
           </div>
+           <Button
+            onClick={resetAllFilters}
+            className="bg-color-primaryDark hover:bg-color-secondary max-w-[100px] ml-4"
+          >
+            Bersihkan
+          </Button>
         </div>
       </Card>
     </div>
