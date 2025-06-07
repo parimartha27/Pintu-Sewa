@@ -1,5 +1,4 @@
 import { ErrorSchema } from "./errorSchema";
-
   
 export interface CartResponseProps {
     error_schema: ErrorSchema;

@@ -83,7 +83,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
       setVerifyCount(response.data.output_schema.verify_count)
       setResendOtpCount(response.data.output_schema.resend_otp_count)
 
-      if (response.data.output_schema.verify_count > 10) {
+      if (response.data.output_schema.verify_count == 10) {
         router.push("/")
       }
     } catch (error) {
@@ -144,6 +144,7 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
         router.push("/input-biodata")
       } else {
+        if(verifyCount >= 10)router.push("/");
         setError("OTP yang diinput tidak sesuai")
       }
     } catch (error) {
