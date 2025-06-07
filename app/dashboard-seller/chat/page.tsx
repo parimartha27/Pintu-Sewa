@@ -1,8 +1,8 @@
 "use client"
 
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
-import ContactList from "@/components/layout/chat/ContactList"
-import ChatRoomLayout from "@/components/layout/chat/ChatRoom"
+import ContactListShop from "@/components/layout/chat/ContactListShop"
+import NoChat from "@/components/fragments/chat/NoChat";
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { chatBaseUrl } from "@/types/globalVar"

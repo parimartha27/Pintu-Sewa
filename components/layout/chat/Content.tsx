@@ -39,14 +39,13 @@ const ChatContentLayout = () => {
   }
 
   useEffect(() => {
-    setCustomerId(customerId);
     fetchContacts();
   
-    const interval = setInterval(() => {
-      fetchContacts();
-    }, 500);
+    // const interval = setInterval(() => {
+    //   fetchContacts();
+    // }, 500);
   
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   if (loading) return <div className="p-6">Loading...</div>;
