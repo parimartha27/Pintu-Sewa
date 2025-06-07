@@ -83,8 +83,7 @@ const ShopAndLocation = ({
         <Button
           className="flex max-w-[72px] max-h-[28px] lg:max-h-8 h-full gap-x-1 mt-3 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark"
           data-shopId={shopDetail.id}
-          // onClick={createRoomChat}
-          onClick={() => router.push("/dev")}
+          onClick={createRoomChat}
         >
           <Image
             src={Chat}

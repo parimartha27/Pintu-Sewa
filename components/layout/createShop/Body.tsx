@@ -79,6 +79,10 @@ const CreateShopBody = () => {
     return item ? item.id : "";
   };
 
+  const redirectFunction = () => {
+    router.push("/terms-and-conditions")
+  };
+
   const validateForm = (): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const postCodeRegex = /^\d{5}$/;
@@ -493,8 +497,7 @@ const CreateShopBody = () => {
                     onCheckedChange={() => setAgreedToTerms(!agreedToTerms)}
                   >
                     Saya menyetujui{" "}
-                    <span className="font-semibold">syarat</span> dan{" "}
-                    <span className="font-semibold">ketentuan</span> Pembuatan
+                    <span onClick={redirectFunction} className="font-semibold underline cursor-pointer">syarat dan ketentuan</span> Pembuatan
                     Toko
                   </TextedCheckbox>
                 </div>
