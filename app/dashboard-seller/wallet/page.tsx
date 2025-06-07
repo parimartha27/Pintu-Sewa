@@ -152,10 +152,7 @@ const TransactionHistorySeller = () => {
 export default TransactionHistorySeller;
 
 function PaymentMethod() {
-<<<<<<< Updated upstream
-  const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
-=======
+
   const router = useRouter()
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
   const [accountNumber, setAccountNumber] = useState("")
@@ -167,9 +164,6 @@ function PaymentMethod() {
   };
 
   const handlePayment = () => {
-<<<<<<< Updated upstream
-    if (!selectedMethod) return;
-=======
     if (!selectedMethod || !accountNumber) {
       // Show error if account number is not filled
       return
@@ -180,10 +174,8 @@ function PaymentMethod() {
     localStorage.setItem("amountWithdraw", amount)
     router.push("/payment")
   }
->>>>>>> Stashed changes
 
-    router.push("/payment");
-  };
+
   return (
     <Card className="px-2 md:px-6 mb-[224px]">
       <CardHeader className="flex flex-col items-center md:flex-row md:justify-between px-0">
@@ -194,10 +186,6 @@ function PaymentMethod() {
           Lihat Semua
         </h3>
       </CardHeader>
-<<<<<<< Updated upstream
-      <CardContent className="flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0 border-t-[1px] border-t-[#D9D9D9]">
-        <div className="flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3">
-=======
 
       {/* Account Information Section */}
       <div className='py-6'>
@@ -227,7 +215,6 @@ function PaymentMethod() {
 
       <CardContent className='flex flex-col md:flex-row md:space-x-12 lg:space-x-[147px] p-0 pb-7 pt-[18px] md:pt-0'>
         <div className='flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3'>
->>>>>>> Stashed changes
           <div
             className={`cursor-pointer p-2 rounded-lg ${
               selectedMethod === "BCA Virtual Account"
