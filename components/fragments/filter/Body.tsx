@@ -20,9 +20,11 @@ const FilterBody = () => {
     isValueInMultiParam,
     isCheckboxSelected,
     handleCheckboxFilter,
-    handleInputFilter,
+    // handleInputFilter,
     getInputValue,
     updateSearchParam,
+    resetAllFilters,
+    handleMultiInputFilter
   } = useFilter();
   const [province, setProvince] = useState<dataAlamatProps[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -113,6 +115,29 @@ const FilterBody = () => {
   ];
 
   const locations = ["DKI Jakarta", "Jawa Barat", "Bali", "Bandung"];
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    const parsed = parseInt(raw || "0", 10);
+
+    if (parsed <= 1000000000) {
+      setter(raw);
+    }
+  };
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const params = {
+    minPrice: minPrice.trim() === '' ? null : minPrice,
+    maxPrice: maxPrice.trim() === '' ? null : maxPrice,
+  };
+
+  handleMultiInputFilter(params);
+};
 
   return (
     <>
@@ -227,54 +252,40 @@ const FilterBody = () => {
         </FilterSection>
         <FilterSection Header="Harga">
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleInputFilter("minPrice", minPrice);
-            }}
-            className="max-w-[220px] w-auto"
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 max-w-[300px]"
           >
             <div className="relative h-[40px]">
-              <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 h-full">
                 <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
                   Rp
                 </p>
               </div>
               <input
                 value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
+                onChange={(e) => handleChange(e, setMinPrice)}
                 type="text"
-                className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
-                  placeholder:text-color-primary text-[12px] rounded-lg 
-                  focus:ring-1 focus:ring-color-primaryDark  focus:outline-none
-                  focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
+                inputMode="numeric"
                 placeholder="Harga Minimum"
+                className="bg-gray-50 border border-color-primaryDark text-color-primaryDark placeholder:text-color-primary text-[12px] rounded-lg focus:ring-1 focus:ring-color-primaryDark focus:outline-none focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
               />
             </div>
-          </form>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleInputFilter("maxPrice", maxPrice);
-            }}
-            className="max-w-[220px] w-auto"
-          >
             <div className="relative h-[40px]">
-              <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 h-full">
                 <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
                   Rp
                 </p>
               </div>
               <input
-                onChange={(e) => setMaxPrice(e.target.value)}
                 value={maxPrice}
+                onChange={(e) => handleChange(e, setMaxPrice)}
                 type="text"
-                className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
-                  placeholder:text-color-primary text-[12px] rounded-lg 
-                  focus:ring-1 focus:ring-color-primaryDark  focus:outline-none
-                  focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
+                inputMode="numeric"
                 placeholder="Harga Maksimum"
+                className="bg-gray-50 border border-color-primaryDark text-color-primaryDark placeholder:text-color-primary text-[12px] rounded-lg focus:ring-1 focus:ring-color-primaryDark focus:outline-none focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
               />
             </div>
+             <button type="submit" className="hidden">Submit</button>
           </form>
         </FilterSection>
         <FilterSection Header="Rent to Buy">
@@ -328,6 +339,12 @@ const FilterBody = () => {
             </TextedCheckbox>
           ))}
         </FilterSection>
+        <Button
+          onClick={resetAllFilters}
+          className="bg-color-primaryDark hover:bg-color-secondary"
+        >
+          Bersihkan
+        </Button>
         {/* <FilterSection Header="Durasi Pengiriman">
           <TextedCheckbox>1 Hari</TextedCheckbox>
           <TextedCheckbox>2 Hari</TextedCheckbox>

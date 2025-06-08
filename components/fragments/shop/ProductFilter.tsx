@@ -17,6 +17,8 @@ const ShopProductFilter = () => {
     handleInputFilter,
     getInputValue,
     updateSearchParam,
+    resetAllFilters,
+    handleMultiInputFilter,
   } = useFilter();
   const [isOpen, setIsOpen] = useState(false);
   const [minPrice, setMinPrice] = useState(getInputValue("minPrice") || "");
@@ -61,6 +63,29 @@ const ShopProductFilter = () => {
     else newRentDuration = "";
 
     updateSearchParam("rentDurations", newRentDuration || null);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    const parsed = parseInt(raw || "0", 10);
+
+    if (parsed <= 1000000000) {
+      setter(raw);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const params = {
+      minPrice: minPrice.trim() === "" ? null : minPrice,
+      maxPrice: maxPrice.trim() === "" ? null : maxPrice,
+    };
+
+    handleMultiInputFilter(params);
   };
 
   return (
@@ -125,56 +150,42 @@ const ShopProductFilter = () => {
           </FilterSection>
 
           <FilterSection Header="Harga">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleInputFilter("minPrice", minPrice);
-              }}
-              className="max-w-[220px] w-auto"
-            >
-              <div className="relative h-[40px]">
-                <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
-                  <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
-                    Rp
-                  </p>
-                </div>
-                <input
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  type="text"
-                  className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
-                  placeholder:text-color-primary text-[12px] rounded-lg 
-                  focus:ring-1 focus:ring-color-primaryDark  focus:outline-none
-                  focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
-                  placeholder="Harga Minimum"
-                />
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 max-w-[300px]"
+          >
+            <div className="relative h-[40px]">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 h-full">
+                <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
+                  Rp
+                </p>
               </div>
-            </form>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleInputFilter("maxPrice", maxPrice);
-              }}
-              className="max-w-[220px] w-auto"
-            >
-              <div className="relative h-[40px]">
-                <div className="absolute inset-y-0 start-0 flex items-center pl-3 h-full">
-                  <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
-                    Rp
-                  </p>
-                </div>
-                <input
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  value={maxPrice}
-                  type="text"
-                  className="bg-gray-50 border border-color-primaryDark text-color-primaryDark 
-                  placeholder:text-color-primary text-[12px] rounded-lg 
-                  focus:ring-1 focus:ring-color-primaryDark  focus:outline-none
-                  focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
-                  placeholder="Harga Maksimum"
-                />
+              <input
+                value={minPrice}
+                onChange={(e) => handleChange(e, setMinPrice)}
+                type="text"
+                inputMode="numeric"
+                placeholder="Harga Minimum"
+                className="bg-gray-50 border border-color-primaryDark text-color-primaryDark placeholder:text-color-primary text-[12px] rounded-lg focus:ring-1 focus:ring-color-primaryDark focus:outline-none focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
+              />
+            </div>
+            <div className="relative h-[40px]">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 h-full">
+                <p className="text-[12px] text-color-primary font-medium border-r border-r-[#D9D9D9] px-3 flex items-center h-[90%]">
+                  Rp
+                </p>
               </div>
-            </form>
+              <input
+                value={maxPrice}
+                onChange={(e) => handleChange(e, setMaxPrice)}
+                type="text"
+                inputMode="numeric"
+                placeholder="Harga Maksimum"
+                className="bg-gray-50 border border-color-primaryDark text-color-primaryDark placeholder:text-color-primary text-[12px] rounded-lg focus:ring-1 focus:ring-color-primaryDark focus:outline-none focus:border-color-primaryDark block w-full pl-16 p-2.5 h-full"
+              />
+            </div>
+             <button type="submit" className="hidden">Submit</button>
+          </form>
           </FilterSection>
 
           <FilterSection Header="Rent to Buy">
@@ -229,6 +240,12 @@ const ShopProductFilter = () => {
               </TextedCheckbox>
             ))}
           </FilterSection>
+          <Button
+            onClick={resetAllFilters}
+            className="bg-color-primaryDark hover:bg-color-secondary max-w-[100px]"
+          >
+            Bersihkan
+          </Button>
         </Card>
       </div>
     </>

@@ -121,7 +121,7 @@ const ProductDescription = ({
             </h4>
             <h4 className="px-2 text-[10px] xl:text-[12px] text-color-primary font-normal">
               <span className="font-semibold ">
-                {productDetail.buy_times || "-"}
+                {productDetail.buy_times || "0"}
               </span>{" "}
               terjual
             </h4>
