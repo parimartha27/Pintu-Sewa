@@ -138,10 +138,12 @@ const OtpForm = ({ className }: OtpFormProps) => {
 
       if (response.data.error_schema?.error_message === "SUCCESS") {
         document.cookie = "status=otp_verify; path=/; Secure; SameSite=Lax"
-
         localStorage.removeItem("username")
         localStorage.removeItem("password")
-
+        
+        if(localStorage.getItem("email")) localStorage.setItem("register_by", "email")
+        else localStorage.setItem("register_by", "phone_number")
+      
         router.push("/input-biodata")
       } else {
         if(verifyCount >= 10)router.push("/");

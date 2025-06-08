@@ -42,7 +42,7 @@ const categories = [
   { name: "Komputer", icon: Komputer },
   { name: "Akun Subskripsi", icon: AkunSubskripsi },
   { name: "Peralatan Bayi", icon: PeralatanBayi },
-  { name: "Furniture", icon: Furniture },
+  { name: "Furnitur", icon: Furniture },
   { name: "Alat Olahraga", icon: AlatOlahraga },
   { name: "Handphone", icon: Handphone },
   { name: "Peralatan Rumah", icon: PeralatanRumah },

@@ -38,7 +38,7 @@ Fitur Detail Barang :
 - Max. Sewa diganti jadi Sisa Stock ( MAT ) -> DONE
 - Chat -> Fitur Dalam Pengembangan dihilangkan -> di Redirect ke halaman view chat ( YAN )
 - Ongkir Mulai Dari *** -> diperbaiki pake Endpoint Random ( YAN ) ( BE DAN FE )
-- Calender Mulai -> Dimulai dari tanggal hari ini + estimasi pengiriman selain itu disable / tambah validasi ( MAT )
+- Calender Mulai -> Dimulai dari tanggal hari ini + estimasi pengiriman selain itu disable / tambah validasi ( MAT ) -> WAITING FOR BE
 - Ketika Checkout Stock janga dikurangi dulu ( BE ) (YAN)
 - Filter Rating harus bisa memilih lebih dari 1 filter ( BE ) ( PAR )
 - Filter Foto dibuat bisa ( YAN )
@@ -48,13 +48,12 @@ Periode Sewa Konsisten Bahasa ( ini di Backend ) ( YAN )
 Logic Checkout diperbaiki : Total Produk Disewa masih barang satuan belum hitung quantity ( PAR )
 
 Payment : 
-Batas Akhir Pembayaran Ganti 2 jam aja ( MAT )
-Foto Metode Pembayaran masih Hardcode ( MAT )
+Batas Akhir Pembayaran Ganti 2 jam aja ( MAT ) -> DONE
+Foto Metode Pembayaran masih Hardcode ( MAT ) -> DONE
 
 Cart : 
 Fetching Data Product ( BE ) -> tambahin validasi check periode sewanya , harus disesuaikan dengan hari ini ( YAN )
-Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT ) (ini keknya checkboxnya tetep ada, tapi ada validasi pas klik tombol checkout)
-Kalau produk habis, tetep ada tapi didisable dan checkbox hilang. cuman bisa dihapus (MAT)
+Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT ) (ini keknya checkboxnya tetep ada, tapi ada validasi pas klik tombol checkout) -> message done, waiting be for checkout flag validation
 Kalau hapus, kasih fitur undo (MAT)
 
 Contoh : kalau sekarang tgl 1 otomatis baru bisa sewa di tanggal 1 + durasi pengiriman
@@ -64,7 +63,7 @@ Waktu checkout yang di cart jangan hapus ( YAN )
 
 Register :
 No Telp -> To Be Confirm ( PAR )
-Syarat dan Ktentuan - dibikin hyperlink ke Syarat dan Ketentuan Page ( MAT )
+Syarat dan Ktentuan - dibikin hyperlink ke Syarat dan Ketentuan Page ( MAT ) -> DONE
 Google Oauth ( MAT )
 Validasi kalau dapat status REGISTERED ke halaman daftar ( MAT )
 Validasi kalau dapat status VERIFY_OTP ke halaman send OTP ( MAT )
@@ -72,7 +71,7 @@ Backend harus kirim status tambahin penjagaan ( YAN )
 
 Verification OTP :
 Kalau udh 30 menit Reset Verify OTP dan resend_otp pake Endpoint Valid ( YAN )
-Waktu hit 10x tendang ke dashboard ( MAT )
+Waktu hit 10x tendang ke dashboard ( MAT ) -> DONE
 
 Create Toko : 
 - Syarat dan Ketentuan diarahin ke page syarat dan ketentuan ( YAN )

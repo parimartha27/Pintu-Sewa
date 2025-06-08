@@ -25,7 +25,7 @@ const CartBody = () => {
   const [shopCartItems, setShopCartItems] = useState<ShopCartProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCartIds, setSelectedCartIds] = useState<string[]>([]);
-  const [totalProductInCart, setTotalProductInCart] = useState<number>(0);
+  const [, setTotalProductInCart] = useState<number>(0);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const hasSelectedItems = selectedCartIds.length > 0;
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -34,7 +34,7 @@ const CartBody = () => {
     message: "",
     isWrong: true,
   });
-  const {customerId} = useAuth();
+  const { customerId } = useAuth();
 
   const fetchCartData = async (customerId: string) => {
     try {
@@ -45,18 +45,18 @@ const CartBody = () => {
       console.log("SHOPS:", shops);
       setShopCartItems(shops);
       setTotalProductInCart(cartRes.data.output_schema.total_product_cart);
-  
+
       const storedCartIds = JSON.parse(
         localStorage.getItem("selectedCartIds") || "[]"
       );
-  
+
       const allIds = shops.flatMap((shop) =>
         shop.carts.map((cart) => cart.cart_id)
       );
       const validCartIds = storedCartIds.filter((id: string) =>
         allIds.includes(id)
       );
-  
+
       setSelectedCartIds(validCartIds);
     } catch (error) {
       console.error("Failed to fetch cart data:", error);
@@ -85,30 +85,49 @@ const CartBody = () => {
   }, [selectedCartIds, isInitialLoad]);
 
   const allCartIds = shopCartItems.flatMap((shop) =>
-    shop.carts.map((cart) => cart.cart_id)
+    shop.carts
+      .filter((cart) => cart.available_to_rent)
+      .map((cart) => cart.cart_id)
   );
+
   const isAllSelected =
     allCartIds.length > 0 &&
     allCartIds.every((id) => selectedCartIds.includes(id));
+
   const selectedShopIds = shopCartItems
-    .filter((shop) =>
-      shop.carts.every((cart) => selectedCartIds.includes(cart.cart_id))
-    )
+    .filter((shop) => {
+      const availableCarts = shop.carts.filter(
+        (cart) => cart.available_to_rent
+      );
+      return (
+        availableCarts.length > 0 &&
+        availableCarts.every((cart) => selectedCartIds.includes(cart.cart_id))
+      );
+    })
     .map((shop) => shop.shop_id);
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedCartIds(checked ? allCartIds : []);
+    const availableCartIds = shopCartItems.flatMap((shop) =>
+      shop.carts
+        .filter((cart) => cart.available_to_rent)
+        .map((cart) => cart.cart_id)
+    );
+
+    setSelectedCartIds(checked ? availableCartIds : []);
   };
 
   const handleShopSelect = (shopId: string, checked: boolean) => {
     const shop = shopCartItems.find((s) => s.shop_id === shopId);
     if (!shop) return;
 
-    const shopCartIds = shop.carts.map((c) => c.cart_id);
+    const availableShopCartIds = shop.carts
+      .filter((cart) => cart.available_to_rent)
+      .map((cart) => cart.cart_id);
+
     setSelectedCartIds((prev) =>
       checked
-        ? [...new Set([...prev, ...shopCartIds])]
-        : prev.filter((id) => !shopCartIds.includes(id))
+        ? [...new Set([...prev, ...availableShopCartIds])]
+        : prev.filter((id) => !availableShopCartIds.includes(id))
     );
   };
 
@@ -207,7 +226,7 @@ const CartBody = () => {
                   <h2 className="text-[16px] font-semibold text-color-primary pb-1">
                     Pilih Semua{" "}
                     <span className="font-light">
-                      ({totalProductInCart || "NaN"})
+                      ({allCartIds.length || "NaN"})
                     </span>
                   </h2>
                 </CardHeader>
