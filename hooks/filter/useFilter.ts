@@ -94,6 +94,22 @@ const useFilter = () => {
     router.push('?', { scroll: false });
   };
 
+const handleMultiInputFilter = (params: Record<string, string | null>) => {
+  const currentParams = new URLSearchParams(window.location.search);
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === null || value === '') {
+      currentParams.delete(key);
+    } else {
+      currentParams.set(key, value.toString());
+    }
+  });
+
+  const newUrl = `?${currentParams.toString()}`;
+  
+  router.replace(newUrl,  { scroll: false });
+};
+
   return {
     handleCheckboxFilter,
     handleButtonFilter,
@@ -105,7 +121,8 @@ const useFilter = () => {
     getInputValue,
     getActiveFilters,
     resetAllFilters,
-    updateSearchParam
+    updateSearchParam,
+    handleMultiInputFilter
   };
 };
 

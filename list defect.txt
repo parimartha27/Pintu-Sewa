@@ -11,9 +11,9 @@ Login -> Ganti Passwordnya gk bisa ( MAT )
 
 Footer : 
 Tentang Pintu Sewa - Biodata kita (PAR)
-Syarat dan Ketentuan Pengguna - (MAT)
-Kebijakan Pengguna - Aturan - (MAT)
-FAQ - (YAN)
+Syarat dan Ketentuan Pengguna - (MAT) -> DONE
+Kebijakan Pengguna - Aturan - (MAT) -> DONE
+FAQ - (YAN || MAT) -> DONE (KALO MAU NAMBAHIN SILAHKAN)
 
 Media Sosial :
 No Telp - Kosongin
@@ -22,7 +22,8 @@ Email - pintusewa2025@gmail.com ( YAN )
 
 Fitur Kategori :
 Harga Minimum dan Harga Maximum Masih Rusak ( BE ) ( YAN )
-Clear Filter ( MAT )
+Clear Filter ( MAT ) -> DONE
+Max price min price fixing (MAT) -> DONE
 Benerin Pageable Search ( INI BARENG BARENG )
 
 Forgot Password : 
@@ -52,7 +53,10 @@ Foto Metode Pembayaran masih Hardcode ( MAT )
 
 Cart : 
 Fetching Data Product ( BE ) -> tambahin validasi check periode sewanya , harus disesuaikan dengan hari ini ( YAN )
-Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT )
+Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT ) (ini keknya checkboxnya tetep ada, tapi ada validasi pas klik tombol checkout)
+Kalau produk habis, tetep ada tapi didisable dan checkbox hilang. cuman bisa dihapus (MAT)
+Kalau hapus, kasih fitur undo (MAT)
+
 Contoh : kalau sekarang tgl 1 otomatis baru bisa sewa di tanggal 1 + durasi pengiriman
 
 Waktu Checkout yang di halaman checkout baru hapus cart ( YAN )
@@ -69,8 +73,6 @@ Backend harus kirim status tambahin penjagaan ( YAN )
 Verification OTP :
 Kalau udh 30 menit Reset Verify OTP dan resend_otp pake Endpoint Valid ( YAN )
 Waktu hit 10x tendang ke dashboard ( MAT )
-
-
 
 Create Toko : 
 - Syarat dan Ketentuan diarahin ke page syarat dan ketentuan ( YAN )
