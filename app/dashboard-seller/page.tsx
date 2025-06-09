@@ -67,7 +67,7 @@ const WalletSeller = () => {
         localStorage.setItem("shopId", response.data.output_schema.shop_id)
         localStorage.setItem("shopName", response.data.output_schema.shop_name)
         localStorage.setItem("shopImage", response.data.output_schema.shop_image)
-        setShopId(response.data.output_schema.shopId)
+        setShopId(response.data.output_schema.shop_id)
       } else if (response.data.error_schema.error_code === "PS-00-002") {
         router.push("/create-shop")
       }
