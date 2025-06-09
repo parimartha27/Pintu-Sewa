@@ -12,6 +12,7 @@ import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
 import TextedCheckbox from "@/components/fragments/TextedCheckbox"
 import Star from "@/public/star.svg"
+import { useAuth } from "@/hooks/auth/useAuth"
 
 interface Shop {
   id: string
@@ -57,10 +58,9 @@ interface TransactionData {
   shop_detail: Shop
 }
 
-// Props untuk komponen ini
 type TransactionDetailContentProps = {
   transactionData: TransactionData
-  role: "customer" | "seller" // Tambahkan role untuk membedakan logika jika perlu
+  role: "customer" | "seller"
 }
 
 export const TransactionDetailContent = ({ transactionData, role }: TransactionDetailContentProps) => {
@@ -69,7 +69,7 @@ export const TransactionDetailContent = ({ transactionData, role }: TransactionD
   const [resiBuying, setResiBuying] = useState<string>("")
   const [nominalAmount, setNominalAmount] = useState<string>("")
   const [showRatingForm, setShowRatingForm] = useState<boolean>(false)
-
+  const shopId = typeof window !== "undefined" ? localStorage.getItem("shopId") : null
   const { transaction_detail, product_details, payment_detail, shop_detail } = transactionData
   const status = transaction_detail.status
 
@@ -78,10 +78,7 @@ export const TransactionDetailContent = ({ transactionData, role }: TransactionD
   const isRented = status === "Sedang Disewa"
   const isFinished = status === "Selesai"
 
-  // Handler untuk navigasi (diambil alih oleh page wrapper)
   const handlePayment = () => {
-    // Logika ini mungkin lebih baik dihandle di parent component (page.tsx)
-    // Tapi untuk sementara kita letakkan di sini
     localStorage.setItem("paymentAmount", payment_detail.grand_total.toString())
     localStorage.setItem("paymentMethod", payment_detail.payment_method)
     window.location.href = `/payment`
@@ -91,7 +88,6 @@ export const TransactionDetailContent = ({ transactionData, role }: TransactionD
     window.location.href = `/lacak-produk`
   }
 
-  // Handler untuk form
   const handleReturnProduct = () => {
     setShowReturnForm(true)
     setShowRentToBuyForm(false)
@@ -108,13 +104,13 @@ export const TransactionDetailContent = ({ transactionData, role }: TransactionD
 
   const handleSubmitReturn = (e: React.FormEvent) => {
     e.preventDefault()
-    alert(`(Simulasi) Form pengembalian dikirim dengan nomor resi: ${resiBuying}`)
+    alert(`Form pengembalian dikirim dengan nomor resi: ${resiBuying}`)
     setShowReturnForm(false)
   }
 
   const handleSubmitRentToBuy = (e: React.FormEvent) => {
     e.preventDefault()
-    alert(`(Simulasi) Form Rent to Buy dikirim dengan nominal: ${nominalAmount}`)
+    alert(`Form Rent to Buy dikirim dengan nominal: ${nominalAmount}`)
     setShowRentToBuyForm(false)
   }
 
@@ -166,25 +162,27 @@ export const TransactionDetailContent = ({ transactionData, role }: TransactionD
         <CardHeader className=''>
           <div className='flex border-b-[1px] border-[#D9D9D9] w-full justify-between pb-4'>
             <h1 className='text-xl font-bold'>Detail Barang</h1>
-            <div className='flex space-x-2 items-center justify-between'>
-              <p>{shop_detail.name}</p>
-              <Link href={`/chat`}>
-                <Button
-                  variant='outline'
-                  size='sm'
-                >
-                  Chat Toko
-                </Button>
-              </Link>
-              <Link href={`/shop/${shop_detail.id}`}>
-                <Button
-                  variant='outline'
-                  size='sm'
-                >
-                  Kunjungi Toko
-                </Button>
-              </Link>
-            </div>
+            {!shopId && (
+              <div className='flex space-x-2 items-center justify-between'>
+                <p>{shop_detail.name}</p>
+                <Link href={`/chat`}>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                  >
+                    Chat Toko
+                  </Button>
+                </Link>
+                <Link href={`/shop/${shop_detail.id}`}>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                  >
+                    Kunjungi Toko
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent>

@@ -1,15 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams, Link } from "next/navigation"
+import { useParams } from "next/navigation"
 import axios from "axios"
 import { ArrowLeft } from "lucide-react"
 import { Loader2 } from "lucide-react"
-
 import ProfileSidebarLayout from "@/components/layout/ProfileSidebar"
-import { TransactionDetailContent } from "@/components/features/transactions/TransactionDetailContent"
+import { TransactionDetailContent } from "@/components/layout/detail-transaction/detailTransaction"
 import { transactionBaseUrl } from "@/types/globalVar"
 import { useAuth } from "@/hooks/auth/useAuth"
+import Link from "next/link"
+import Navbar from "@/components/layout/Navbar"
+import Footer from "@/components/layout/Footer"
 
 interface TransactionResponse {
   error_schema: { error_code: string; error_message: string }
@@ -43,7 +45,7 @@ export default function CustomerTransactionDetailPage() {
         }
         const response = await axios.post<TransactionResponse>(`${transactionBaseUrl}/detail`, payload)
 
-        if (response.data.error_schema.error_code !== "ER-00-000") {
+        if (response.data.error_schema.error_code !== "PS-00-000") {
           throw new Error(response.data.error_schema.error_message)
         }
 
@@ -87,20 +89,24 @@ export default function CustomerTransactionDetailPage() {
   }
 
   return (
-    <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout mb-48'>
-      <ProfileSidebarLayout /> {/* 👈 Dibungkus dengan layout customer */}
-      <div className='w-full'>
-        <div className='mb-6'>
-          <Link
-            href='/order-history'
-            className='flex items-center text-color-secondary mb-4'
-          >
-            <ArrowLeft className='w-4 h-4 mr-2' />
-            <span>Kembali</span>
-          </Link>
+    <>
+      <Navbar />
+      <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout mb-48'>
+        <ProfileSidebarLayout />
+        <div className='w-full'>
+          <div className='mb-6'>
+            <Link
+              href='/order-history'
+              className='flex items-center text-color-secondary mb-4'
+            >
+              <ArrowLeft className='w-4 h-4 mr-2' />
+              <span>Kembali</span>
+            </Link>
+          </div>
+          {renderContent()}
         </div>
-        {renderContent()}
       </div>
-    </div>
+      <Footer />
+    </>
   )
 }
