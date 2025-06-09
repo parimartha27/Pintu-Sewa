@@ -24,12 +24,12 @@ export interface Shop {
 }
 
 export interface Product {
-  productId: string;
-  productName: string;
+  product_id: string;
+  product_name: string;
   quantity: number;
   price: number;
   image: string;
-  startDate: string;
-  endDate: string;
-  subTotal: number;
+  start_date: string;
+  end_date: string;
+  sub_total: number;
 }
