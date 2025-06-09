@@ -33,7 +33,7 @@ const OrderStatusCard = ({ orderHistoryProps }: { orderHistoryProps: OrderHistor
       <CardFooter className='flex flex-col items-end sm:space-x-3 space-y-[14px] py-3 px-0 border-t border-t-[#D9D9D9] border-opacity-50'>
         <div className='flex flex-col'>
           <h2 className='text-sm font-semibold text-color-primary text-end'>Total Harga</h2>
-          <h4 className='text-base text-color-primaryDark font-semibold'>Rp {formatCurrency(orderHistoryProps.total_price)}</h4>
+          <h4 className='text-base text-color-primaryDark font-semibold'>{formatCurrency(orderHistoryProps.total_price)}</h4>
         </div>
         <div className='flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-[28px] sm:items-center'>
           <Link
