@@ -37,8 +37,7 @@ const OrderStatusCard = ({ orderHistoryProps }: { orderHistoryProps: OrderHistor
         </div>
         <div className='flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-[28px] sm:items-center'>
           <Link
-            href='/order-history/detail'
-            onClick={handleDetailClick}
+            href={`/order-history/${orderHistoryProps.reference_number}`}
             className='text-xs sm:text-sm text-color-secondary font-medium hover:opacity-70'
           >
             Detail Transaksi

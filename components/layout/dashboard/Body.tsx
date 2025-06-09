@@ -21,7 +21,7 @@ const DashboardBody = () => {
   const [nearCustomerLoading, setNearCustomerLoading] = useState(true)
   const [error, setError] = useState("")
 
-  const {customerId, token} = useAuth();
+  const { customerId, token } = useAuth()
 
   const isLoggedIn = isClient && (!!session || !!token)
 
@@ -47,13 +47,12 @@ const DashboardBody = () => {
   }, [])
 
   useEffect(() => {
-
     const fetchRecommended = async () => {
       try {
         const data = await fetchRecommendedProducts()
         if (data.error_schema.error_message === "SUCCESS") {
           setRecommendedProducts(data.output_schema)
-        } 
+        }
       } catch (err) {
         setError("Gagal memuat rekomendasi: " + err)
       } finally {
@@ -75,7 +74,7 @@ const DashboardBody = () => {
           setNearCustomerProducts(data.output_schema)
         }
       } catch (err) {
-        setError("Gagal memuat produk terdekat: " + err)
+        setError("Gagal memuat produk terdekat: ")
       } finally {
         setNearCustomerLoading(false)
       }
@@ -91,7 +90,7 @@ const DashboardBody = () => {
       <div>
         <h4 className='font-semibold text-start md:text-center xl:text-start ml-1 text-color-primary text-[20px] md:text-[24px] mt-7 md:mt-0 mb-4'>Banyak Orang Menyewa Ini</h4>
 
-        {error && <div className='text-red-500'>{error}</div>}
+        {/* {error && <div className='text-red-500'>{error}</div>} */}
         {mostRentedLoading ? (
           <ProductList
             products={[]}
