@@ -15,13 +15,22 @@ import {
 } from "@/components/ui/card";
 import { useState, useRef } from "react";
 import { useAuthForm } from "@/hooks/auth/useAuthForm";
+import axios from "axios";
+import { emailValidationUrl } from "@/types/globalVar";
+import { useRouter } from "next/navigation";
 
 const InputEmailOtpForm = () => {
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { handleEmailOrPhoneChange, emailOrPhone, emailOrPhoneError, setEmailOrPhoneError, validateEmailOrPhone} = useAuthForm();
-
+  const {
+    handleEmailOrPhoneChange,
+    emailOrPhone,
+    emailOrPhoneError,
+    setEmailOrPhoneError,
+    validateEmailOrPhone,
+  } = useAuthForm();
+  const [error, setError] = useState();
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -30,11 +39,26 @@ const InputEmailOtpForm = () => {
     const error = validateEmailOrPhone(emailOrPhone);
     if (error) {
       setEmailOrPhoneError(error);
-      return; 
+      return;
     }
     try {
       setIsLoading(true);
-      window.location.href = "/login";
+
+      const request = {
+        email: emailOrPhone,
+      };
+      console.log("checking email req: ", request);
+      const response = await axios.post(emailValidationUrl, request);
+
+      console.log("checking email res: ", response.data);
+      if (response.data.error_schema.error_code == "PS-00-000") {
+        localStorage.setItem("otp_type", "reset_password");
+        localStorage.setItem("email", response.data.output_schema.email);
+        document.cookie = `status=${response.data.output_schema.customer_id}; path=/; Secure; SameSite=Lax`
+        // router.push("/input-otp");
+      } else if (response.data.error_schema.error_code == "PS-00-002") {
+        setError(response.data.output_schema);
+      }
     } catch (error) {
       console.error("Error during password reset:", error);
     } finally {
@@ -84,7 +108,7 @@ const InputEmailOtpForm = () => {
                       "text-color-grayPrimary font-normal border-2 rounded-xl focus:ring-2 p-6",
                       emailOrPhoneError
                         ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-400 focus:ring-color-primaryDark"
+                        : "border-gray-400"
                     )}
                     id="emailOrPhone"
                     type="text"
@@ -95,6 +119,11 @@ const InputEmailOtpForm = () => {
                   {emailOrPhoneError && (
                     <p className="text-red-500 text-[10px] lg:text-[12px] xl:text-[14px] mt-1">
                       {emailOrPhoneError}
+                    </p>
+                  )}
+                  {error && (
+                    <p className="text-red-500 text-[10px] lg:text-[12px] xl:text-[14px] mt-1">
+                      {error}
                     </p>
                   )}
                 </div>

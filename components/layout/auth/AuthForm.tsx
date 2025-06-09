@@ -27,8 +27,7 @@ interface AuthFormProps {
   className?: string;
 }
 
-const AuthForm  = ({ type, className }: AuthFormProps) => {
-
+const AuthForm = ({ type, className }: AuthFormProps) => {
   const router = useRouter();
 
   const {
@@ -115,11 +114,22 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                       onCheckedChange={handleCheckboxChange}
                       id="terms"
                     />
-                    <p
-                      className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] leading-none"
-                    >
-                      Saya menyetujui <span onClick={() => router.push("/terms-and-conditions")} className="font-bold cursor-pointer hover:opacity-75">syarat</span>{" "}
-                      dan <span onClick={() => router.push("/terms-and-conditions")} className="font-bold cursor-pointer hover:opacity-75">ketentuan</span> Pintu Sewa
+                    <p className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] leading-none">
+                      Saya menyetujui{" "}
+                      <span
+                        onClick={() => router.push("/terms-and-conditions")}
+                        className="font-bold cursor-pointer hover:opacity-75"
+                      >
+                        syarat
+                      </span>{" "}
+                      dan{" "}
+                      <span
+                        onClick={() => router.push("/terms-and-conditions")}
+                        className="font-bold cursor-pointer hover:opacity-75"
+                      >
+                        ketentuan
+                      </span>{" "}
+                      Pintu Sewa
                     </p>
                   </div>
                 ) : (
@@ -136,10 +146,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                         >
                           Password
                         </h4>
-                        <Link 
-                        // href={"/input-email-otp"}
-                        href={"/dev"}
-                        >
+                        <Link href={"/input-email-otp"}>
                           <h4 className="text-color-primaryDark font-bold hover:opacity-70 text-[12px] lg:text-[14px] xl:text-[16px]">
                             Lupa Password?
                           </h4>
@@ -168,7 +175,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                   </div>
                 )}
                 {isLoading && (
-                  <LoadingPopup message="Sedang Memproses Data Anda..."/>
+                  <LoadingPopup message="Sedang Memproses Data Anda..." />
                 )}
                 {authError && (
                   <p className="text-red-500 text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] mt-1">
@@ -196,7 +203,7 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
               // onClick={() =>
               //   signIn("google", { callbackUrl: "/", redirect: false })
               // }
-              onClick={()=>router.push("/dev")}
+              onClick={() => router.push("/dev")}
               className="w-full mb-5 h-[50px] xs:h-[54px] md:h-[48px] flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-400 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <Image
@@ -232,6 +239,6 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
       </Card>
     </div>
   );
-}
+};
 
 export default AuthForm;

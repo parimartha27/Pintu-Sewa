@@ -163,7 +163,6 @@ export const useAuthForm = (type?: string) => {
             document.cookie = `status=${status}; path=/; Secure; SameSite=Lax`
                         // document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
             document.cookie = `customerId=${customer_id}; path=/; Secure; SameSite=Lax`
-
             router.push("/otp")
           } else {
             setAuthError(response?.error_schema?.error_message || "Terjadi kesalahan")
@@ -181,7 +180,7 @@ export const useAuthForm = (type?: string) => {
         setAuthError("Email Atau Password Tidak Sesuai")
       }
     } finally {
-      localStorage.setItem("otpType", "register")
+      localStorage.setItem("otp_type", "register")
       setIsLoading(false)
     }
   }

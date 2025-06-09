@@ -29,6 +29,7 @@ import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { addDays, isBefore, isWithinInterval } from "date-fns";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 interface ProductInCartDetailProps {
   cartItem: CartItemProps;
@@ -62,13 +63,14 @@ const ProductInCartDetail = ({
     cartItem.end_rent_date ? new Date(cartItem.end_rent_date) : undefined
   );
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
     isWrong: true,
   });
   const today = new Date();
-  const disableUntil = addDays(today, 5);
+  const disableUntil = addDays(today, 4);
   let showError = false;
 
   if (cartItem.start_rent_date) {
@@ -283,12 +285,12 @@ const ProductInCartDetail = ({
           }`}
         >
           <div className="flex space-x-4">
-            {cartItem.available_to_rent && (
-              <Checkbox
-                checked={isChecked}
-                onCheckedChange={handleCheckChange}
-              />
-            )}
+            <Checkbox
+              checked={isChecked}
+              onCheckedChange={handleCheckChange}
+              disabled={!isAvailable}
+            />
+
             <Image
               width={88}
               height={88}
@@ -449,15 +451,18 @@ const ProductInCartDetail = ({
         </div>
 
         <div
-          onClick={handleDeleteClick}
+          onClick={() => setShowConfirm(true)}
           className="flex self-end lg:self-start space-x-2 mt-6 lg:mt-1 hover:font-semibold hover:cursor-pointer max-w-[70px] "
         >
           <Image src={Delete} alt="delete" />
-          <h2 className="text-color-primary text-[14px] mr-[6px]">
-            Hapus
-          </h2>
+          <h2 className="text-color-primary text-[14px] mr-[6px]">Hapus</h2>
         </div>
       </div>
+      <ConfirmDeleteModal
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={handleDeleteClick}
+      />
     </>
   );
 };

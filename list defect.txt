@@ -54,7 +54,7 @@ Foto Metode Pembayaran masih Hardcode ( MAT ) -> DONE
 Cart : 
 Fetching Data Product ( BE ) -> tambahin validasi check periode sewanya , harus disesuaikan dengan hari ini ( YAN )
 Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT ) (ini keknya checkboxnya tetep ada, tapi ada validasi pas klik tombol checkout) -> message done, waiting be for checkout flag validation
-Kalau hapus, kasih fitur undo (MAT)
+Kalau hapus, kasih fitur konfirmasi (MAT) -> DONE
 
 Contoh : kalau sekarang tgl 1 otomatis baru bisa sewa di tanggal 1 + durasi pengiriman
 

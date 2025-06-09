@@ -33,7 +33,7 @@ import { AlertProps } from "@/types/alert";
 import { useAuth } from "@/hooks/auth/useAuth";
 
 function formatDate(date: Date | undefined) {
-  return date?.toISOString().split("T")[0];
+  return date ? format(date, "yyyy-MM-dd") : undefined;
 }
 
 const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {

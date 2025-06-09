@@ -5,6 +5,7 @@ export const authBaseUrl = `${baseUrl}/authentication`;
 export const otpBaseUrl = `${baseUrl}/otp`;
 export const productBaseUrl = `${baseUrl}/product`;
 export const customerBaseUrl = `${baseUrl}/customers`;
+export const emailValidationUrl = `${customerBaseUrl}/validate/credential`;
 export const createCustomerBaseUrl = `${customerBaseUrl}/create`;
 export const filteredProductBaseUrl = `${productBaseUrl}/filter`;
 export const shopBaseUrl = `${baseUrl}/shop`;

@@ -127,6 +127,8 @@ const OtpForm = ({ className }: OtpFormProps) => {
         return
       }
 
+      const otp_type = localStorage.getItem("otp_type");
+
       const payload: OtpRequest = {
         otp_code: otp,
         // verify_count: verifyCount,
@@ -144,7 +146,14 @@ const OtpForm = ({ className }: OtpFormProps) => {
         if(localStorage.getItem("email")) localStorage.setItem("register_by", "email")
         else localStorage.setItem("register_by", "phone_number")
       
-        router.push("/input-biodata")
+        if(otp_type === "register"){
+          router.push("/input-biodata")
+        }else if (otp_type === "reset_password") {
+          router.push("/reset-password")
+        }else{
+          router.push("/not-found")
+        }
+
       } else {
         if(verifyCount >= 10)router.push("/");
         setError("OTP yang diinput tidak sesuai")

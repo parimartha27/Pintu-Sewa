@@ -253,7 +253,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         <FilterSection Header="Harga">
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 max-w-[300px]"
+            className="flex flex-col gap-4 max-w-[200px]"
           >
             <div className="relative h-[40px]">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 h-full">
