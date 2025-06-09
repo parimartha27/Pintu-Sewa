@@ -55,7 +55,10 @@ const ProductDescription = ({
             {Array.isArray(productDetail.images) &&
               productDetail &&
               productDetail.images.map((src, index) => (
-                <CarouselItem key={index} className="relative w-full  h-[300px]">
+                <CarouselItem
+                  key={index}
+                  className="relative w-full  h-[300px]"
+                >
                   <Image
                     key={index}
                     src={isValidImage(src) ? src : TestImage.src}
@@ -70,7 +73,11 @@ const ProductDescription = ({
         </Carousel>
         <div className="hidden w-full xl:max-w-[406px] md:flex md:flex-col">
           <Image
-            src={isValidImage(productDetail.images[selectedIndex]) ? productDetail.images[selectedIndex] : TestImage.src}
+            src={
+              isValidImage(productDetail.images[selectedIndex])
+                ? productDetail.images[selectedIndex]
+                : TestImage.src
+            }
             alt={`product-image-${selectedIndex}`}
             width={406}
             height={403}
@@ -167,7 +174,9 @@ const ProductDescription = ({
                 <Image src={Box} alt="jam" className="w-[16px] h-[16px]" />
                 <h3 className="text-[12px] xl:text-[14px]  text-color-primary font-normal">
                   Min. Jumlah Sewa:{" "}
-                  <span className="font-bold">{productDetail.min_rented  || "NaN"}</span>
+                  <span className="font-bold">
+                    {productDetail.min_rented || "NaN"}
+                  </span>
                 </h3>
               </div>
               <div className="flex flex-col">
@@ -178,24 +187,30 @@ const ProductDescription = ({
                   </h3>
                 </div>
                 <ul className="pl-8 space-y-2 text-color-primary text-[12px] xl:text-[14px] font-normal list-disc list-inside ">
-                  <li>
-                    Harian:{" "}
-                    <span className="font-bold">
-                      {formatToRupiah(productDetail.daily_price || "NaN")}
-                    </span>
-                  </li>
-                  <li>
-                    Mingguan:{" "}
-                    <span className="font-bold">
-                      {formatToRupiah(productDetail.weekly_price || "NaN")}
-                    </span>
-                  </li>
-                  <li>
-                    Bulanan:{" "}
-                    <span className="font-bold">
-                      {formatToRupiah(productDetail.monthly_price || "NaN")}
-                    </span>
-                  </li>
+                  {productDetail.daily_price && (
+                    <li>
+                      Harian:{" "}
+                      <span className="font-bold">
+                        {formatToRupiah(productDetail.daily_price || "NaN")}
+                      </span>
+                    </li>
+                  )}
+                  {productDetail.weekly_price && (
+                    <li>
+                      Mingguan:{" "}
+                      <span className="font-bold">
+                        {formatToRupiah(productDetail.weekly_price || "NaN")}
+                      </span>
+                    </li>
+                  )}
+                  {productDetail.monthly_price && (
+                    <li>
+                      Bulanan:{" "}
+                      <span className="font-bold">
+                        {formatToRupiah(productDetail.monthly_price || "NaN")}
+                      </span>
+                    </li>
+                  )}
                 </ul>
               </div>
               <div className="flex flex-col">
