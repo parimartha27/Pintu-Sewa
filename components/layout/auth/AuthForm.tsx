@@ -115,13 +115,12 @@ const AuthForm  = ({ type, className }: AuthFormProps) => {
                       onCheckedChange={handleCheckboxChange}
                       id="terms"
                     />
-                    <label
-                      htmlFor="terms"
+                    <p
                       className="text-[12px] xs:text-[13px] sm:text-[14px] md:text-[13px] lg:text-[14px] xl:text-[16px] leading-none"
                     >
-                      Saya menyetujui <span className="font-bold">syarat</span>{" "}
-                      dan <span className="font-bold">ketentuan</span> Pintu Sewa
-                    </label>
+                      Saya menyetujui <span onClick={() => router.push("/terms-and-conditions")} className="font-bold cursor-pointer hover:opacity-75">syarat</span>{" "}
+                      dan <span onClick={() => router.push("/terms-and-conditions")} className="font-bold cursor-pointer hover:opacity-75">ketentuan</span> Pintu Sewa
+                    </p>
                   </div>
                 ) : (
                   <div className="">

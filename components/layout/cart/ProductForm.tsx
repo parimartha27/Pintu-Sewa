@@ -20,9 +20,8 @@ const CartProductForm = ({
   onShopSelect,
   onProductSelect,
   onDelete,
-  onRefresh
+  onRefresh,
 }: CartProductFormProps) => {
-
   const handleShopCheckboxChange = (checked: boolean) => {
     onShopSelect(shopCart.shop_id, checked);
   };
@@ -35,13 +34,19 @@ const CartProductForm = ({
     return null;
   }
 
+  const hasAvailableProducts = shopCart.carts.some(
+    (cart) => cart.available_to_rent
+  );
+
   return (
     <Card className="w-full max-h-auto p-1 pt-4 shadow-lg mt-8 px-6 bg-white">
       <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-0 pt-0">
-        <Checkbox
-          checked={isSelected}
-          onCheckedChange={(checked) => handleShopCheckboxChange(!!checked)}
-        />
+        {hasAvailableProducts && (
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={(checked) => handleShopCheckboxChange(!!checked)}
+          />
+        )}
         <h2 className="text-[16px] font-semibold text-color-primary pb-1">
           {shopCart.shop_name}
         </h2>

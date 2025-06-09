@@ -9,6 +9,11 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  addDays,
+  isBefore,
+  isWithinInterval,
+} from "date-fns";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -46,9 +51,10 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const disableUntil = addDays(today, 4);
 
   const [startDate, setStartDate] = useState<Date | undefined>(
-    () => new Date()
+    () => addDays(today, 5)
   );
 
   const [endDate, setEndDate] = useState<Date | undefined>(() => {
@@ -58,14 +64,14 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
     if (duration === "1 Minggu") daysToAdd = 7;
     else if (duration === "1 Bulan") daysToAdd = 30;
 
-    baseDate.setDate(baseDate.getDate() + daysToAdd);
+    baseDate.setDate(baseDate.getDate() + daysToAdd + 5);
     return baseDate;
   });
 
   const [qty, setQty] = useState<number>(productDetail.min_rented);
   const max = productDetail.stock;
 
-  const {customerId, token} = useAuth();
+  const { customerId, token } = useAuth();
 
   function handleDecreaseQty() {
     if (qty > productDetail.min_rented) setQty(qty - 1);
@@ -160,13 +166,13 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   };
 
   const handleAddToCart = async () => {
-    if(!customerId || !token){
+    if (!customerId || !token) {
       setAlertState({
         isOpen: true,
         message: "Silahkan Login Terlebih Dahulu",
-      })
+      });
       return;
-    } 
+    }
     const validation = validateDates();
     if (!validation.valid) {
       setAlertState({
@@ -205,13 +211,13 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   };
 
   const handleCheckout = async () => {
-    if(!customerId || !token){
+    if (!customerId || !token) {
       setAlertState({
         isOpen: true,
         message: "Silahkan Login Terlebih Dahulu",
-      })
+      });
       return;
-    } 
+    }
     const validation = validateDates();
     if (!validation.valid) {
       setAlertState({
@@ -291,7 +297,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={productDetail.stock <= 0 }
+                  disabled={productDetail.stock <= 0}
                   className={cn(
                     "w-[132px] justify-start text-left font-normal text-[12px] text-color-primary border-[1px] border-[#73787B] bg-transparent hover:bg-slate-200",
                     !startDate && "text-muted-foreground"
@@ -310,6 +316,10 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
                   onSelect={setStartDate}
                   selected={startDate}
                   initialFocus
+                  disabled={(date) =>
+                    isBefore(date, today) ||
+                    isWithinInterval(date, { start: today, end: disableUntil })
+                  }
                 />
               </PopoverContent>
             </Popover>
@@ -343,6 +353,10 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
                   mode="single"
                   onSelect={setEndDate}
                   selected={endDate}
+                  disabled={(date) =>
+                    isBefore(date, today) ||
+                    isWithinInterval(date, { start: today, end: disableUntil })
+                  }
                   initialFocus
                 />
               </PopoverContent>
@@ -370,7 +384,8 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
             </div>
           </div>
           <h3 className="text-[8px] xl:text-[10px] text-color-grayPrimary font-normal">
-            Sisa Stok:{" "}<span className="font-semibold">{productDetail.stock}</span>
+            Sisa Stok:{" "}
+            <span className="font-semibold">{productDetail.stock}</span>
           </h3>
         </div>
 
@@ -410,10 +425,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
           <Button
             ref={buttonRef}
             onClick={handleAddToCart}
-            disabled={
-              addToCartLoading ||
-              productDetail.stock <= 0
-            }
+            disabled={addToCartLoading || productDetail.stock <= 0}
             className={`w-full xl:h-[54px] bg-transparent border-[1px] border-color-primaryDark hover:bg-slate-200  flex space-x-[9px] ${
               productDetail.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
             } ${addToCartLoading ? "opacity-50 cursor-not-allowed" : ""}`}

@@ -288,8 +288,8 @@ const InputBiodataContent = () => {
                 id="email"
                 type="text"
                 value={email}
+                disabled={localStorage.getItem("register_by") == "email" ? true : false}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={true}
               />
               {errors.email && (
                 <p className="text-red-500 text-xs md:text-md pt-2">
@@ -304,6 +304,7 @@ const InputBiodataContent = () => {
                 id="handphone"
                 type="text"
                 value={handphone}
+                disabled={localStorage.getItem("register_by") == "phone_number" ? true : false}
                 onChange={(e) => setHandphone(e.target.value)}
               />
               {errors.handphone && (

@@ -22,11 +22,13 @@ import {
   differenceInWeeks,
   differenceInMonths,
   format,
+  isValid,
 } from "date-fns";
 import { parseIndoDateToISO } from "@/hooks/useIndoDate";
 import Alert from "@/components/layout/Alert";
 import { AlertProps } from "@/types/alert";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { addDays, isBefore, isWithinInterval } from "date-fns";
 
 interface ProductInCartDetailProps {
   cartItem: CartItemProps;
@@ -48,7 +50,7 @@ const ProductInCartDetail = ({
   onDelete,
   isChecked,
   onCheckChange,
-  onRefresh
+  onRefresh,
 }: ProductInCartDetailProps) => {
   const [qty, setQty] = useState<number>(cartItem.quantity);
   const [max] = useState<number>(cartItem.stock);
@@ -65,7 +67,18 @@ const ProductInCartDetail = ({
     message: "",
     isWrong: true,
   });
-  const {customerId} = useAuth();
+  const today = new Date();
+  const disableUntil = addDays(today, 5);
+  let showError = false;
+
+  if (cartItem.start_rent_date) {
+    const parsedDate = new Date(cartItem.start_rent_date);
+    if (isValid(parsedDate) && isBefore(parsedDate, disableUntil)) {
+      showError = true;
+    }
+  }
+
+  const { customerId } = useAuth();
 
   const getMinDurationAndUnit = (
     product: CartItemProps
@@ -118,7 +131,7 @@ const ProductInCartDetail = ({
   };
 
   const handleSelectEndDate = (date: Date | undefined) => {
-    setEndDate(date); 
+    setEndDate(date);
   };
 
   const handleDecreaseQty = async () => {
@@ -188,10 +201,10 @@ const ProductInCartDetail = ({
 
   const handleApplyDate = async () => {
     if (!startDate || !endDate) return;
-  
+
     const { value, unit } = getMinDurationAndUnit(cartItem);
     let isValid = false;
-  
+
     switch (unit) {
       case "day":
         isValid = differenceInDays(endDate, startDate) >= value;
@@ -203,7 +216,7 @@ const ProductInCartDetail = ({
         isValid = differenceInMonths(endDate, startDate) >= value;
         break;
     }
-  
+
     if (!isValid) {
       setAlertState({
         isOpen: true,
@@ -215,7 +228,7 @@ const ProductInCartDetail = ({
       setIsPopoverOpen(false);
       return;
     }
-  
+
     try {
       const payload: CartRequestHandleProps = {
         cart_id: cartItem.cart_id,
@@ -223,9 +236,9 @@ const ProductInCartDetail = ({
         start_rent_date: format(startDate, "yyyy-MM-dd"),
         end_rent_date: format(endDate, "yyyy-MM-dd"),
       };
-  
+
       const res = await axios.put(`${cartBaseUrl}/edit`, payload);
-  
+
       if (res.data.error_schema.error_message === "SUCCESS") {
         onRefresh();
         setAlertState({
@@ -262,24 +275,27 @@ const ProductInCartDetail = ({
         />
       )}
       <div
-        className={`flex flex-col lg:flex-row lg:flex-wrap lg:justify-between mb-6 lg:lg-3 pt-6 lg:pt-3 border-t-[1px] border-t-[#D9D9D9] ${
-          !isAvailable ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+        className={`flex flex-col lg:flex-row lg:flex-wrap lg:justify-between mb-6 lg:lg-3 pt-6 lg:pt-3 border-t-[1px] border-t-[#D9D9D9] `}
       >
-        <div className="flex space-x-8 w-[300px]">
+        <div
+          className={`flex space-x-8 w-[300px] ${
+            !isAvailable ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
           <div className="flex space-x-4">
-            <Checkbox
-              disabled={!isAvailable}
-              checked={isChecked}
-              onCheckedChange={handleCheckChange}
-            />
+            {cartItem.available_to_rent && (
+              <Checkbox
+                checked={isChecked}
+                onCheckedChange={handleCheckChange}
+              />
+            )}
             <Image
               width={88}
               height={88}
               src={cartItem.image || ProductImage}
               alt="product"
               className={`w-[60px] h-[60px] xl:w-[88px] xl:h-[88px] min-w-[60px] min-h-[60px] xl:min-w-[88px] xl:min-h-[88px] object-fit rounded-md ${
-                !isAvailable ? "grayscale" : ""
+                !cartItem.available_to_rent ? "grayscale" : ""
               }`}
             />
           </div>
@@ -301,7 +317,11 @@ const ProductInCartDetail = ({
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-16 mt-10 lg:mt-0">
+        <div
+          className={`flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-16 mt-10 lg:mt-0 ${
+            !isAvailable ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
           <div className="flex flex-col space-y-1 md:space-y-3 w-[300px]">
             <div className="flex space-x-1">
               <h2 className="text-color-primary text-[14px] font-semibold">
@@ -333,7 +353,13 @@ const ProductInCartDetail = ({
                         mode="single"
                         selected={startDate}
                         onSelect={handleSelectStartDate}
-                        disabled={{ before: new Date() }}
+                        disabled={(date) =>
+                          isBefore(date, today) ||
+                          isWithinInterval(date, {
+                            start: today,
+                            end: disableUntil,
+                          })
+                        }
                         initialFocus
                       />
                     </div>
@@ -346,10 +372,13 @@ const ProductInCartDetail = ({
                         mode="single"
                         selected={endDate}
                         onSelect={handleSelectEndDate}
-                        disabled={{
-                          before: startDate || new Date(),
-                          from: startDate ? undefined : new Date(),
-                        }}
+                        disabled={(date) =>
+                          isBefore(date, today) ||
+                          isWithinInterval(date, {
+                            start: today,
+                            end: disableUntil,
+                          })
+                        }
                         initialFocus
                       />
                     </div>
@@ -357,6 +386,7 @@ const ProductInCartDetail = ({
 
                   <Button
                     onClick={handleApplyDate}
+                    disabled={startDate && endDate ? false : true}
                     className="w-full self-end mb-6 mr-4 max-w-[100px] mt-4 bg-color-secondary hover:bg-blue-700 "
                   >
                     Terapkan
@@ -364,6 +394,17 @@ const ProductInCartDetail = ({
                 </PopoverContent>
               </Popover>
             </div>
+
+            {showError && (
+              <p className="text-red-500 text-sm mb-2 font-semibold">
+                Tanggal mulai sewa minimal{" "}
+                {disableUntil.toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            )}
 
             <h2 className="text-color-primary text-[14px] md:space-y-3">
               {cartItem.start_rent_date && cartItem.end_rent_date
@@ -388,7 +429,9 @@ const ProductInCartDetail = ({
             </h2>
             <div
               className={`flex space-x-[7px] xl:space-x-3 px-2.5 py-3 items-center border-[1px] border-[#73787B] bg-transparent w-full max-w-[60px] xl:max-w-[72px] h-[20px] rounded-sm ${
-                !isAvailable ? "pointer-events-none opacity-50" : ""
+                !cartItem.available_to_rent
+                  ? "pointer-events-none opacity-50"
+                  : ""
               }`}
             >
               <button onClick={handleDecreaseQty} className="hover:opacity-75">
@@ -407,12 +450,12 @@ const ProductInCartDetail = ({
 
         <div
           onClick={handleDeleteClick}
-          className={`flex self-end lg:self-start space-x-2 mt-6 lg:mt-1 hover:font-semibold hover:cursor-pointer max-w-[70px] ${
-            !isAvailable ? "pointer-events-none" : ""
-          }`}
+          className="flex self-end lg:self-start space-x-2 mt-6 lg:mt-1 hover:font-semibold hover:cursor-pointer max-w-[70px] "
         >
           <Image src={Delete} alt="delete" />
-          <h2 className="text-color-primary text-[14px] mr-[6px]">Hapus</h2>
+          <h2 className="text-color-primary text-[14px] mr-[6px]">
+            Hapus
+          </h2>
         </div>
       </div>
     </>

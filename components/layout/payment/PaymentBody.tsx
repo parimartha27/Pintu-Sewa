@@ -53,7 +53,7 @@ const PaymentBody = () => {
       localStorage.getItem("paymentMethod") || "Unknown Method";
 
     const formattedDeadline =
-      new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString("id-ID", {
+      new Date(Date.now() + 2 * 60 * 60 * 1000).toLocaleString("id-ID", {
         weekday: "long",
         day: "numeric",
         month: "long",
