@@ -1,37 +1,61 @@
 "use client"
 
-// Interface untuk data form di Frontend
-export interface Product {
+import React, { useState, useEffect } from "react"
+import { useForm, Controller, useWatch } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { Card } from "@/components/ui/card"
+import axios from "axios"
+import { X, Upload } from "lucide-react"
+import { AlertProps } from "@/types/alert"
+import Alert from "@/components/layout/Alert"
+import { productBaseUrl } from "@/types/globalVar"
+
+interface ProductFormData {
   name: string
   category: string
   photos: string[]
   stock: number
+  price: number
+  description: string
   dimensions: {
     length: number
     width: number
     height: number
     weight: number
   }
-  price: number // Tetap ada di form, tapi diabaikan saat submit
-  description: string
   rentalOptions: {
-    types: number
+    daily: boolean
+    weekly: boolean
+    monthly: boolean
+
     dailyPrice: number
     weeklyPrice: number
     monthlyPrice: number
+
+    deposit: number
   }
   minimumRentalDuration: number
-  rentToBuy: boolean
-  shippingService: string // Tetap ada di form, tapi diabaikan saat submit
+  rentToBuy: {
+    is_rnb: boolean
+
+    buy_price: number
+  }
+  shippingService: string
 }
 
-// Interface untuk payload yang dikirim ke Backend (sesuai DTO)
 export interface AddProductRequest {
   shop_id: string | null
   name: string
   category: string
   rent_category: number
   is_rnb: boolean
+  buy_price?: number
+  deposit: number
   weight: number
   height: number
   width: number
@@ -47,109 +71,111 @@ export interface AddProductRequest {
   image: string
 }
 
-import React, { useState } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import { Card } from "@/components/ui/card"
-import axios from "axios"
-import { X, Upload } from "lucide-react"
-import { AlertProps } from "@/types/alert"
-import Alert from "@/components/layout/Alert"
-import { productBaseUrl } from "@/types/globalVar"
-
 export default function AddProductForm() {
-  const shopId = localStorage.getItem("shopId")
+  const [shopId, setShopId] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
-  const [rentalOptions, setRentalOptions] = useState({
-    daily: false,
-    weekly: false,
-    monthly: false,
-  })
-
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
     isWrong: true,
   })
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedShopId = localStorage.getItem("shopId")
+      if (storedShopId) {
+        setShopId(storedShopId)
+      } else {
+        setAlertState({
+          isOpen: true,
+          message: "ID Toko tidak ditemukan. Harap login kembali.",
+          isWrong: true,
+        })
+      }
+    }
+  }, [])
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isValid },
-  } = useForm<Product>({
+  } = useForm<ProductFormData>({
     mode: "onChange",
+
     defaultValues: {
       name: "",
       category: "",
       stock: 0,
       price: 0,
       description: "",
-      dimensions: {
-        length: 0,
-        width: 0,
-        height: 0,
-        weight: 0,
-      },
+      dimensions: { length: 0, width: 0, height: 0, weight: 0 },
       rentalOptions: {
-        types: 0,
+        daily: false,
+        weekly: false,
+        monthly: false,
         dailyPrice: 0,
         weeklyPrice: 0,
         monthlyPrice: 0,
+        deposit: 0,
       },
-      minimumRentalDuration: 0,
-      rentToBuy: false,
+      minimumRentalDuration: 1,
+      rentToBuy: {
+        is_rnb: false,
+        buy_price: 0,
+      },
       shippingService: "",
     },
   })
 
-  // =================================================================
-  // == LOGIKA BARU / YANG DIUBAH ADA DI BAWAH INI ==
-  // =================================================================
+  const watchRentalOptions = useWatch({ control, name: "rentalOptions" })
+  const watchRentToBuy = useWatch({ control, name: "rentToBuy.is_rnb" })
 
   const calculateRentalType = () => {
     let type = 0
-    if (rentalOptions.daily) type += 1 // Harian = 1
-    if (rentalOptions.weekly) type += 2 // Mingguan = 2
-    if (rentalOptions.monthly) type += 4 // Bulanan = 4
+
+    if (watchRentalOptions.daily) type += 1
+    if (watchRentalOptions.weekly) type += 2
+    if (watchRentalOptions.monthly) type += 4
     return type
   }
 
-  const onSubmit = async (data: Product) => {
+  const onSubmit = async (data: ProductFormData) => {
+    if (!shopId) {
+      setAlertState({ isOpen: true, message: "Tidak dapat mengirim, ID Toko tidak valid.", isWrong: true })
+      return
+    }
     setIsSubmitting(true)
     try {
       const payload: AddProductRequest = {
+        shop_id: shopId,
         name: data.name,
         category: data.category,
         stock: data.stock,
         description: data.description,
+        condition_description: data.description,
         rent_category: calculateRentalType(),
-        is_rnb: data.rentToBuy,
+        is_rnb: data.rentToBuy.is_rnb,
+        buy_price: data.rentToBuy.is_rnb ? data.rentToBuy.buy_price : undefined,
+        deposit: data.rentalOptions.deposit,
         min_rented: data.minimumRentalDuration,
         length: data.dimensions.length,
         width: data.dimensions.width,
         height: data.dimensions.height,
         weight: data.dimensions.weight,
-        daily_price: rentalOptions.daily ? data.rentalOptions.dailyPrice : undefined,
-        weekly_price: rentalOptions.weekly ? data.rentalOptions.weeklyPrice : undefined,
-        monthly_price: rentalOptions.monthly ? data.rentalOptions.monthlyPrice : undefined,
-        shop_id: "d5c0eace-078c-4eee-8ef8-f4306d055367",
+
+        daily_price: watchRentalOptions.daily ? data.rentalOptions.dailyPrice : undefined,
+        weekly_price: watchRentalOptions.weekly ? data.rentalOptions.weeklyPrice : undefined,
+        monthly_price: watchRentalOptions.monthly ? data.rentalOptions.monthlyPrice : undefined,
         status: "ACTIVE",
-        condition_description: "erwerwerwer",
         image: uploadedImages.length > 0 ? uploadedImages[0] : "",
       }
 
-      console.log("Data Asli dari Form:", data)
+      console.log("Data Asli dari Form (terstruktur):", data)
       console.log("Payload yang Dikirim ke Backend:", payload)
 
       const response = await axios.post(`${productBaseUrl}/add`, payload)
-      console.log("Response:", response.data)
 
       setAlertState({
         isOpen: true,
@@ -159,22 +185,10 @@ export default function AddProductForm() {
     } catch (error) {
       console.error("Error adding product:", error)
       const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || String(error.message) : String(error)
-      setAlertState({
-        isOpen: true,
-        message: `Gagal Menambahkan Produk: ${errorMessage}`,
-        isWrong: true,
-      })
+      setAlertState({ isOpen: true, message: `Gagal Menambahkan Produk: ${errorMessage}`, isWrong: true })
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  // =================================================================
-  // == AKHIR DARI LOGIKA BARU. FUNGSI DI BAWAH INI TETAP SAMA ==
-  // =================================================================
-
-  const handleRentalChange = (type: "daily" | "weekly" | "monthly", checked: boolean) => {
-    setRentalOptions((prev) => ({ ...prev, [type]: checked }))
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,10 +212,8 @@ export default function AddProductForm() {
     setUploadedImages(newImages)
   }
 
+  undefined
   return (
-    // =============================================================
-    // == TAMPILAN (JSX) DI BAWAH INI TIDAK DIUBAH SAMA SEKALI ==
-    // =============================================================
     <main className='container'>
       {alertState.isOpen && (
         <Alert
@@ -214,10 +226,8 @@ export default function AddProductForm() {
       <h1 className='text-2xl font-semibold mb-6'>Tambah Produk</h1>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Informasi Produk */}
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Informasi Produk</h2>
-
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -236,7 +246,6 @@ export default function AddProductForm() {
             />
             {errors.name && <p className='text-red-500 text-sm mt-1'>Nama produk tidak boleh kosong</p>}
           </div>
-
           <div>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -284,11 +293,8 @@ export default function AddProductForm() {
           </div>
         </Card>
 
-        {/* Detail Produk */}
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Detail Produk</h2>
-
-          {/* Foto Produk */}
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -304,7 +310,6 @@ export default function AddProductForm() {
               Resolusi Gambar: Min 300 × 300 px <br />
               Ukuran Gambar: Max 1 MB
             </div>
-
             <div className='grid grid-cols-5 gap-4 mb-4'>
               {[0, 1, 2, 3, 4].map((index) => (
                 <div
@@ -349,8 +354,6 @@ export default function AddProductForm() {
             </div>
             {uploadedImages.length === 0 && <p className='text-red-500 text-sm'>Minimal satu foto produk diperlukan</p>}
           </div>
-
-          {/* Stok Produk */}
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -366,16 +369,10 @@ export default function AddProductForm() {
               type='number'
               className='w-full'
               placeholder='0'
-              {...register("stock", {
-                required: true,
-                min: 1,
-                valueAsNumber: true,
-              })}
+              {...register("stock", { required: true, min: 1, valueAsNumber: true })}
             />
             {errors.stock && <p className='text-red-500 text-sm mt-1'>Stok produk tidak boleh 0 atau kosong</p>}
           </div>
-
-          {/* Dimensi Produk */}
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
               <Label className='font-medium'>
@@ -383,7 +380,6 @@ export default function AddProductForm() {
               </Label>
             </div>
             <div className='text-sm text-gray-500 mb-2'>Input ukuran dimensi produk yang akan disewakan</div>
-
             <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
               <div>
                 <Label htmlFor='length'>Panjang (cm)</Label>
@@ -391,11 +387,7 @@ export default function AddProductForm() {
                   id='length'
                   type='number'
                   placeholder='0'
-                  {...register("dimensions.length", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
+                  {...register("dimensions.length", { required: true, min: 1, valueAsNumber: true })}
                 />
                 {errors.dimensions?.length && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -405,11 +397,7 @@ export default function AddProductForm() {
                   id='width'
                   type='number'
                   placeholder='0'
-                  {...register("dimensions.width", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
+                  {...register("dimensions.width", { required: true, min: 1, valueAsNumber: true })}
                 />
                 {errors.dimensions?.width && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -419,11 +407,7 @@ export default function AddProductForm() {
                   id='height'
                   type='number'
                   placeholder='0'
-                  {...register("dimensions.height", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
+                  {...register("dimensions.height", { required: true, min: 1, valueAsNumber: true })}
                 />
                 {errors.dimensions?.height && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -433,18 +417,12 @@ export default function AddProductForm() {
                   id='weight'
                   type='number'
                   placeholder='0'
-                  {...register("dimensions.weight", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
+                  {...register("dimensions.weight", { required: true, min: 1, valueAsNumber: true })}
                 />
                 {errors.dimensions?.weight && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
             </div>
           </div>
-
-          {/* Harga Produk */}
           <div className='mb-6'>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -462,17 +440,11 @@ export default function AddProductForm() {
                 type='number'
                 className='rounded-l-none'
                 placeholder='10.000.000'
-                {...register("price", {
-                  required: true,
-                  min: 1,
-                  valueAsNumber: true,
-                })}
+                {...register("price", { required: true, min: 1, valueAsNumber: true })}
               />
             </div>
             {errors.price && <p className='text-red-500 text-sm mt-1'>Harga produk tidak boleh 0 atau kosong</p>}
           </div>
-
-          {/* Deskripsi Produk */}
           <div>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -493,40 +465,6 @@ export default function AddProductForm() {
           </div>
         </Card>
 
-        {/* Layanan Pengiriman */}
-        {/* <Card className='p-6 mb-6'>
-          <div className='flex justify-between items-center mb-4 text-color-primary pb-4 border-b-[1px]'>
-            <Label className='font-medium'>
-              Layanan Pengiriman <span className='text-red-500 '>*</span>
-            </Label>
-          </div>
-          <div className='text-sm text-gray-500 mb-2'>Pilih jasa pengiriman yang sesuai dengan jenis produkmu</div>
-          <Controller
-            name='shippingService'
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
-                value={field.value}
-              >
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Pilih Layanan Pengiriman' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='1'>JNE</SelectItem>
-                  <SelectItem value='2'>TIKI</SelectItem>
-                  <SelectItem value='3'>SiCepat</SelectItem>
-                  <SelectItem value='4'>J&T</SelectItem>
-                  <SelectItem value='5'>GoSend</SelectItem>
-                  <SelectItem value='6'>GrabExpress</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </Card> */}
-
-        {/* Penyewaan */}
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Penyewaan</h2>
 
@@ -537,38 +475,54 @@ export default function AddProductForm() {
               </Label>
             </div>
             <div className='text-sm text-gray-500 mb-2'>Masukkan opsi durasi penyewaan dalam satuan waktu tertentu, seperti harian, mingguan, bulanan.</div>
-
             <div className='flex flex-wrap gap-6 mt-4'>
-              <div className='flex items-center space-x-2'>
-                <Checkbox
-                  id='daily'
-                  checked={rentalOptions.daily}
-                  onCheckedChange={(checked) => handleRentalChange("daily", checked === true)}
-                />
-                <Label htmlFor='daily'>Harian</Label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <Checkbox
-                  id='weekly'
-                  checked={rentalOptions.weekly}
-                  onCheckedChange={(checked) => handleRentalChange("weekly", checked === true)}
-                />
-                <Label htmlFor='weekly'>Mingguan</Label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <Checkbox
-                  id='monthly'
-                  checked={rentalOptions.monthly}
-                  onCheckedChange={(checked) => handleRentalChange("monthly", checked === true)}
-                />
-                <Label htmlFor='monthly'>Bulanan</Label>
-              </div>
+              <Controller
+                name='rentalOptions.daily'
+                control={control}
+                render={({ field }) => (
+                  <div className='flex items-center space-x-2'>
+                    <Checkbox
+                      id='daily'
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <Label htmlFor='daily'>Harian</Label>
+                  </div>
+                )}
+              />
+              <Controller
+                name='rentalOptions.weekly'
+                control={control}
+                render={({ field }) => (
+                  <div className='flex items-center space-x-2'>
+                    <Checkbox
+                      id='weekly'
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <Label htmlFor='weekly'>Mingguan</Label>
+                  </div>
+                )}
+              />
+              <Controller
+                name='rentalOptions.monthly'
+                control={control}
+                render={({ field }) => (
+                  <div className='flex items-center space-x-2'>
+                    <Checkbox
+                      id='monthly'
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <Label htmlFor='monthly'>Bulanan</Label>
+                  </div>
+                )}
+              />
             </div>
-            {!rentalOptions.daily && !rentalOptions.weekly && !rentalOptions.monthly && <p className='text-red-500 text-sm mt-1'>Pilih minimal satu durasi penyewaan</p>}
+            {!watchRentalOptions?.daily && !watchRentalOptions?.weekly && !watchRentalOptions?.monthly && <p className='text-red-500 text-sm mt-1'>Pilih minimal satu durasi penyewaan</p>}
           </div>
 
-          {/* Harga Harian */}
-          {rentalOptions.daily && (
+          {watchRentalOptions?.daily && (
             <div className='mb-6'>
               <Label
                 htmlFor='dailyPrice'
@@ -584,19 +538,14 @@ export default function AddProductForm() {
                   type='number'
                   className='rounded-l-none'
                   placeholder='100.000'
-                  {...register("rentalOptions.dailyPrice", {
-                    required: rentalOptions.daily,
-                    min: rentalOptions.daily ? 1 : 0,
-                    valueAsNumber: true,
-                  })}
+                  {...register("rentalOptions.dailyPrice", { required: watchRentalOptions.daily, min: 1, valueAsNumber: true })}
                 />
               </div>
               {errors.rentalOptions?.dailyPrice && <p className='text-red-500 text-sm mt-1'>Harga harian tidak boleh 0 atau kosong</p>}
             </div>
           )}
 
-          {/* Harga Mingguan */}
-          {rentalOptions.weekly && (
+          {watchRentalOptions?.weekly && (
             <div className='mb-6'>
               <Label
                 htmlFor='weeklyPrice'
@@ -612,19 +561,14 @@ export default function AddProductForm() {
                   type='number'
                   className='rounded-l-none'
                   placeholder='2.000.000'
-                  {...register("rentalOptions.weeklyPrice", {
-                    required: rentalOptions.weekly,
-                    min: rentalOptions.weekly ? 1 : 0,
-                    valueAsNumber: true,
-                  })}
+                  {...register("rentalOptions.weeklyPrice", { required: watchRentalOptions.weekly, min: 1, valueAsNumber: true })}
                 />
               </div>
               {errors.rentalOptions?.weeklyPrice && <p className='text-red-500 text-sm mt-1'>Harga mingguan tidak boleh 0 atau kosong</p>}
             </div>
           )}
 
-          {/* Harga Bulanan */}
-          {rentalOptions.monthly && (
+          {watchRentalOptions?.monthly && (
             <div className='mb-6'>
               <Label
                 htmlFor='monthlyPrice'
@@ -640,18 +584,37 @@ export default function AddProductForm() {
                   type='number'
                   className='rounded-l-none'
                   placeholder='10.000.000'
-                  {...register("rentalOptions.monthlyPrice", {
-                    required: rentalOptions.monthly,
-                    min: rentalOptions.monthly ? 1 : 0,
-                    valueAsNumber: true,
-                  })}
+                  {...register("rentalOptions.monthlyPrice", { required: watchRentalOptions.monthly, min: 1, valueAsNumber: true })}
                 />
               </div>
               {errors.rentalOptions?.monthlyPrice && <p className='text-red-500 text-sm mt-1'>Harga bulanan tidak boleh 0 atau kosong</p>}
             </div>
           )}
 
-          {/* Jumlah Minimum Sewa */}
+          <div className='mb-6'>
+            <Label
+              htmlFor='deposit'
+              className='font-medium'
+            >
+              Uang Jaminan (Deposit)
+            </Label>
+            <div className='text-sm text-gray-500 mb-2'>Masukkan jumlah deposit jika diperlukan. Isi 0 jika tidak ada.</div>
+            <div className='flex items-center'>
+              <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
+              <Input
+                id='deposit'
+                type='number'
+                className='rounded-l-none'
+                placeholder='0'
+                {...register("rentalOptions.deposit", {
+                  valueAsNumber: true,
+                  min: { value: 0, message: "Deposit tidak boleh negatif" },
+                })}
+              />
+            </div>
+            {errors.rentalOptions?.deposit && <p className='text-red-500 text-sm mt-1'>{errors.rentalOptions.deposit.message}</p>}
+          </div>
+
           <div>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -690,10 +653,8 @@ export default function AddProductForm() {
           </div>
         </Card>
 
-        {/* Fitur Spesial */}
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Fitur Spesial</h2>
-
           <div>
             <div className='flex justify-between items-center mb-1'>
               <Label
@@ -705,54 +666,72 @@ export default function AddProductForm() {
             </div>
             <div className='text-sm text-gray-500 mb-2'>Rent to Buy adalah fitur unik pinjaman yang bisa digunakan oleh para seller.</div>
 
-            <div className='flex items-center space-x-4 mt-2'>
-              <div className='flex items-center space-x-2'>
-                <Controller
-                  name='rentToBuy'
-                  control={control}
-                  render={({ field }) => (
-                    <div className='flex items-center space-x-2'>
-                      <input
-                        type='radio'
-                        id='rentToBuy_ya'
-                        value='true'
-                        checked={field.value === true}
-                        onChange={() => field.onChange(true)}
-                        className='w-4 h-4 text-blue-600'
-                      />
-                      <Label htmlFor='rentToBuy_ya'>Ya</Label>
-                    </div>
-                  )}
-                />
-              </div>
-              <div className='flex items-center space-x-2'>
-                <Controller
-                  name='rentToBuy'
-                  control={control}
-                  render={({ field }) => (
-                    <div className='flex items-center space-x-2'>
-                      <input
-                        type='radio'
-                        id='rentToBuy_tidak'
-                        value='false'
-                        checked={field.value === false}
-                        onChange={() => field.onChange(false)}
-                        className='w-4 h-4 text-blue-600'
-                      />
-                      <Label htmlFor='rentToBuy_tidak'>Tidak</Label>
-                    </div>
-                  )}
-                />
-              </div>
-            </div>
+            <Controller
+              name='rentToBuy.is_rnb'
+              control={control}
+              render={({ field }) => (
+                <div className='flex items-center space-x-4 mt-2'>
+                  <div className='flex items-center space-x-2'>
+                    <input
+                      type='radio'
+                      id='rentToBuy_ya'
+                      value='true'
+                      checked={field.value === true}
+                      onChange={() => field.onChange(true)}
+                      className='w-4 h-4 text-blue-600'
+                    />
+                    <Label htmlFor='rentToBuy_ya'>Ya</Label>
+                  </div>
+                  <div className='flex items-center space-x-2'>
+                    <input
+                      type='radio'
+                      id='rentToBuy_tidak'
+                      value='false'
+                      checked={field.value === false}
+                      onChange={() => field.onChange(false)}
+                      className='w-4 h-4 text-blue-600'
+                    />
+                    <Label htmlFor='rentToBuy_tidak'>Tidak</Label>
+                  </div>
+                </div>
+              )}
+            />
           </div>
+
+          {watchRentToBuy && (
+            <div className='mt-6'>
+              <Label
+                htmlFor='buy_price'
+                className='font-medium'
+              >
+                Harga Beli Produk (Rent to Buy)
+              </Label>
+              <div className='text-sm text-gray-500 mb-2'>Masukkan harga jika penyewa ingin membeli produk ini.</div>
+              <div className='flex items-center'>
+                <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
+                <Input
+                  id='buy_price'
+                  type='number'
+                  className='rounded-l-none'
+                  placeholder='10.000.000'
+                  {...register("rentToBuy.buy_price", {
+                    required: "Harga beli wajib diisi jika Rent to Buy aktif",
+                    valueAsNumber: true,
+                    min: { value: 1, message: "Harga beli harus lebih dari 0" },
+                  })}
+                />
+              </div>
+              {errors.rentToBuy?.buy_price && <p className='text-red-500 text-sm mt-1'>{errors.rentToBuy.buy_price.message}</p>}
+            </div>
+          )}
         </Card>
+
         <Button
           type='submit'
           className='bg-custom-gradient-tr hover:bg-blue-900 text-white px-8 py-2'
-          disabled={!isValid || isSubmitting || uploadedImages.length === 0 || (!rentalOptions.daily && !rentalOptions.weekly && !rentalOptions.monthly)}
+          disabled={!isValid || isSubmitting || uploadedImages.length === 0 || (!watchRentalOptions?.daily && !watchRentalOptions?.weekly && !watchRentalOptions?.monthly)}
         >
-          Tambahkan Produk
+          {isSubmitting ? "Menambahkan..." : "Tambahkan Produk"}
         </Button>
       </form>
     </main>
