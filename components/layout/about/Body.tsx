@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import dev1 from "@/public/dev1.jpg";
 import dev2 from "@/public/dev2.jpg";
-import dev3 from "@/public/dev3.png";
+import dev3 from "@/public/dev3.jpg";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import PintuSewa from "@/public/pintuSewa.svg";
@@ -57,7 +57,7 @@ const AboutBody = () => {
               className="object-cover w-full h-[400px]"
             />
             <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-11/12 bg-white bg-opacity-90 px-4 py-3 rounded-md">
-              <p className="text-lg font-semibold text-gray-900">Andryan</p>
+              <p className="text-lg font-semibold text-gray-900">Putu Agus Parimartha</p>
               <p className="text-sm text-gray-500">Developers</p>
             </div>
           </div>
@@ -71,7 +71,7 @@ const AboutBody = () => {
             />
             <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-11/12 bg-white bg-opacity-90 px-4 py-3 rounded-md">
               <p className="text-lg font-semibold text-gray-900">
-                Putu Agus Parimartha
+                Andryan
               </p>
               <p className="text-sm text-gray-500">Developers</p>
             </div>
