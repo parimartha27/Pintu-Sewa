@@ -22,7 +22,7 @@ interface ShopDashboard {
   wallet_report: unknown[]
   transaction_count: number
   transaction_list: Array<{
-    refference_no: string
+    reference_number: string
     create_at: string
     customer_name: string
     start_date: string

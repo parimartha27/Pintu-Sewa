@@ -4,7 +4,7 @@ import { StatusBadge } from "./StatusBadge"
 
 type TransactionsTableProps = {
   transactions: Array<{
-    refference_no: string
+    reference_number: string
     create_at: string
     customer_name: string
     start_date: string
@@ -46,8 +46,8 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
         <TableBody className='h-60 items-center align-middle'>
           {transactions.length > 0 ? (
             transactions.map((transaction, index) => (
-              <TableRow key={transaction.refference_no || index}>
-                <TableCell className='font-medium pl-8'>{transaction.refference_no}</TableCell>
+              <TableRow key={transaction.reference_number || index}>
+                <TableCell className='font-medium pl-8'>{transaction.reference_number}</TableCell>
                 <TableCell>
                   {new Date(transaction.create_at).toLocaleDateString("id-ID", {
                     day: "numeric",

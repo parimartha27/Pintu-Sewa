@@ -5,29 +5,9 @@ import { TransactionsTable } from "@/components/fragments/dashboard-seller/Trans
 import { useState, useEffect } from "react"
 import { fetchShopTransactions } from "@/services/transactionService"
 
-interface ShopTransaction {
-  reference_number: string
-  status: string
-  transaction_date: string
-  shop: {
-    id: string
-    name: string
-  }
-  products: Array<{
-    productName: string
-    quantity: number
-    startDate: string
-    endDate: string
-  }>
-  total_price: number
-  total_deposit: number
-  shipping_partner: string
-  shipping_price: number
-}
-
 type TransactionsTableProps = {
   transactions: Array<{
-    refference_no: string
+    reference_number: string
     create_at: string
     customer_name: string
     start_date: string
@@ -85,14 +65,6 @@ const TransactionHistorySeller = () => {
       </div>
     </SellerLayout>
   )
-}
-
-function calculateDuration(startDate: string, endDate: string): number {
-  if (!startDate || !endDate) return 0
-  const start = new Date(startDate)
-  const end = new Date(endDate)
-  const diffTime = Math.abs(end.getTime() - start.getTime())
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 }
 
 export default TransactionHistorySeller
