@@ -163,7 +163,15 @@ export const useAuthForm = (type?: string) => {
             document.cookie = `status=${status}; path=/; Secure; SameSite=Lax`
                         // document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
             document.cookie = `customerId=${customer_id}; path=/; Secure; SameSite=Lax`
-            router.push("/otp")
+
+            if(status === "REGISTERED"){
+              router.push("/input-biodata")
+            }else if(status === "OTP_VERIFY"){
+              router.push("/otp")
+            }else{
+              router.push("/not-found")
+            }
+      
           } else {
             setAuthError(response?.error_schema?.error_message || "Terjadi kesalahan")
           }
@@ -187,11 +195,13 @@ export const useAuthForm = (type?: string) => {
 
   const loginGoogleHandler = async () => {
     try {
+      console.log("Login with Google");
       const response = await signIn("google", {
         callbackUrl: "/",
         redirect: false,
       })
 
+      console.log("Login with Google Response:", response);
       if (response?.ok) {
         const session = await getSession()
 
@@ -202,6 +212,7 @@ export const useAuthForm = (type?: string) => {
             profilePicture: session.user.image || "/default-profile.png",
           }
 
+          //DISINI MINTA ENDPOINT BALIKAN 
           await sendOauthData(userData, (response) => {
             if (response.error_schema?.error_message === "SUCCESS") {
               document.cookie = `userId=${response.output_schema.user_id}; path=/; Secure; SameSite=Lax`

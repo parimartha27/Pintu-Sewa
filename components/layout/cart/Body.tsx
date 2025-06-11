@@ -27,13 +27,13 @@ const CartBody = () => {
   const [selectedCartIds, setSelectedCartIds] = useState<string[]>([]);
   const [, setTotalProductInCart] = useState<number>(0);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const hasSelectedItems = selectedCartIds.length > 0;
   const [submitLoading, setSubmitLoading] = useState(false);
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
     isWrong: true,
   });
+  const hasSelectedItems = selectedCartIds.length > 0;
   const { customerId } = useAuth();
 
   const fetchCartData = async (customerId: string) => {
@@ -99,6 +99,7 @@ const CartBody = () => {
       const availableCarts = shop.carts.filter(
         (cart) => cart.available_to_rent
       );
+
       return (
         availableCarts.length > 0 &&
         availableCarts.every((cart) => selectedCartIds.includes(cart.cart_id))
@@ -114,6 +115,16 @@ const CartBody = () => {
     );
 
     setSelectedCartIds(checked ? availableCartIds : []);
+  };
+
+  const isAnyProductAvailableToChecked = () => {
+    const availableCartIds = shopCartItems.flatMap((shop) =>
+      shop.carts
+        .filter((cart) => cart.available_to_rent)
+        .map((cart) => cart.cart_id)
+    );
+
+    return availableCartIds.length > 0;
   };
 
   const handleShopSelect = (shopId: string, checked: boolean) => {
@@ -149,7 +160,29 @@ const CartBody = () => {
     );
   };
 
+  const checkAllSelectedItemsValid = () => {
+    const allErrorDateCartIds = shopCartItems
+      .flatMap((shop) => shop.carts)
+      .filter((cart) => cart.date_error)
+      .map((cart) => cart.cart_id);
+
+    const isValid = selectedCartIds.every(
+      (id) => !allErrorDateCartIds.includes(id)
+    );
+
+    return isValid;
+  };
+
   const handleCheckout = async () => {
+    const isValid = checkAllSelectedItemsValid();
+    if (!isValid) {
+      setAlertState({
+        isOpen: true,
+        message: "Mohon perbaiki tanggal sewa produk yang kamu pilih!",
+      });
+      return;
+    }
+
     const payload = {
       customer_id: customerId,
       cart_ids: selectedCartIds || "[]",
@@ -217,20 +250,22 @@ const CartBody = () => {
           !loading &&
           shopCartItems.length > 0 && (
             <>
-              <Card className="p-0 mt-4">
-                <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-[29px] pt-0 py-[14px]">
-                  <Checkbox
-                    checked={isAllSelected}
-                    onCheckedChange={(checked) => handleSelectAll(!!checked)}
-                  />
-                  <h2 className="text-[16px] font-semibold text-color-primary pb-1">
-                    Pilih Semua{" "}
-                    <span className="font-light">
-                      ({allCartIds.length || "NaN"})
-                    </span>
-                  </h2>
-                </CardHeader>
-              </Card>
+              {isAnyProductAvailableToChecked() && (
+                <Card className="p-0 mt-4">
+                  <CardHeader className="w-full flex space-x-4 items-center md:items-center pb-0 pl-[29px] pt-0 py-[14px]">
+                    <Checkbox
+                      checked={isAllSelected}
+                      onCheckedChange={(checked) => handleSelectAll(!!checked)}
+                    />
+                    <h2 className="text-[16px] font-semibold text-color-primary pb-1">
+                      Pilih Semua{" "}
+                      <span className="font-light">
+                        ({allCartIds.length || "0"})
+                      </span>
+                    </h2>
+                  </CardHeader>
+                </Card>
+              )}
 
               <div className="flex flex-col w-full space-y-[18px] pb-8 mt-[18px]">
                 {shopCartItems.map((item) => (
