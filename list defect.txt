@@ -1,3 +1,9 @@
+Auth: 
+- Backend bagi algoritma buat jwt nya, buat gua validasi pakai keynya aja di middleware
+- setiap hit api cek apakah jwt expired, jika ya maka hit api refresh token, set token di cookies
+- kalo log out hapus refresh token
+- refresh token expired, user harus login ulang
+
 Homepage
 - Ngerubah Fatching Image -> yang tadinya ke unsplash sekarang ke cloudinary ( PAR )
 - Input Satu Satu Barang ( PAR )
@@ -53,7 +59,7 @@ Foto Metode Pembayaran masih Hardcode ( MAT ) -> DONE
 
 Cart : 
 Fetching Data Product ( BE ) -> tambahin validasi check periode sewanya , harus disesuaikan dengan hari ini ( YAN )
-Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT ) (ini keknya checkboxnya tetep ada, tapi ada validasi pas klik tombol checkout) -> message done, waiting be for checkout flag validation
+Fetching Data Product ( FE ) -> Kalau dapat error periode sewa, di disable dan kasih pesan error buat perbaiki ( MAT ) (ini keknya checkboxnya tetep ada, tapi ada validasi pas klik tombol checkout) -> DONE
 Kalau hapus, kasih fitur konfirmasi (MAT) -> DONE
 
 Contoh : kalau sekarang tgl 1 otomatis baru bisa sewa di tanggal 1 + durasi pengiriman
@@ -64,9 +70,9 @@ Waktu checkout yang di cart jangan hapus ( YAN )
 Register :
 No Telp -> To Be Confirm ( PAR )
 Syarat dan Ktentuan - dibikin hyperlink ke Syarat dan Ketentuan Page ( MAT ) -> DONE
-Google Oauth ( MAT )
-Validasi kalau dapat status REGISTERED ke halaman daftar ( MAT )
-Validasi kalau dapat status VERIFY_OTP ke halaman send OTP ( MAT )
+Google Oauth ( MAT ) -> MINTA BACKEND KIRIM STATUS UNTUK LEMPAR DIA KEMANA, DAN ENDPOINT BUAT BALIKIN PROFILE PICTURE DAN USERNAMENYA KALO UDAH REGISTER
+Validasi kalau dapat status REGISTERED ke halaman daftar ( MAT ) -> DONE
+Validasi kalau dapat status VERIFY_OTP ke halaman send OTP ( MAT ) -> DONE
 Backend harus kirim status tambahin penjagaan ( YAN )
 
 Verification OTP :

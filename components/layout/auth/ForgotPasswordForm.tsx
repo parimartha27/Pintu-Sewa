@@ -107,6 +107,7 @@ const ForgotPasswordForm = ({ className }: ForgotPasswordFormProps) => {
             if (token) {
               router.push("/profile");
             } else {
+              localStorage.clear();
               router.push("/login");
             }
           },

@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useAuthForm } from "@/hooks/auth/useAuthForm";
 import LoadingPopup from "../LoadingPopUp";
 
+
 interface AuthFormProps {
   type: "login" | "register";
   className?: string;
@@ -43,6 +44,7 @@ const AuthForm = ({ type, className }: AuthFormProps) => {
     handlePasswordChange,
     handleCheckboxChange,
     handleSubmit,
+    loginGoogleHandler
   } = useAuthForm(type);
 
   return (
@@ -200,10 +202,10 @@ const AuthForm = ({ type, className }: AuthFormProps) => {
             </div>
             <Button
               variant="outline"
-              // onClick={() =>
-              //   signIn("google", { callbackUrl: "/", redirect: false })
-              // }
-              onClick={() => router.push("/dev")}
+              onClick={() =>
+               loginGoogleHandler()
+              }
+              // onClick={() => router.push("/dev")}
               className="w-full mb-5 h-[50px] xs:h-[54px] md:h-[48px] flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-400 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <Image

@@ -54,8 +54,8 @@ const InputEmailOtpForm = () => {
       if (response.data.error_schema.error_code == "PS-00-000") {
         localStorage.setItem("otp_type", "reset_password");
         localStorage.setItem("email", response.data.output_schema.email);
-        document.cookie = `status=${response.data.output_schema.customer_id}; path=/; Secure; SameSite=Lax`
-        // router.push("/input-otp");
+        document.cookie = `customerId=${response.data.output_schema.customer_id}; path=/; Secure; SameSite=Lax`
+        router.push("/otp");
       } else if (response.data.error_schema.error_code == "PS-00-002") {
         setError(response.data.output_schema);
       }

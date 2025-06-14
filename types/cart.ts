@@ -25,6 +25,7 @@ export interface CartItemProps {
     daily_price: number;
     weekly_price: number;
     monthly_price: number;
+    date_error:boolean;
   }
   
   export interface ShopCartProps {
