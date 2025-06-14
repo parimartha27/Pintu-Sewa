@@ -355,6 +355,7 @@ const EditProfileBody = () => {
                     id="handphone"
                     type="phone"
                     value={handphone}
+                    maxLength={13}
                     onChange={(e) => setHandphone(e.target.value)}
                   />
                   <Section title="Jenis Kelamin">

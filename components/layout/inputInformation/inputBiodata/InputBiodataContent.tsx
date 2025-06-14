@@ -303,6 +303,7 @@ const InputBiodataContent = () => {
                 htmlFor="handphone"
                 id="handphone"
                 type="text"
+                maxLength={13}
                 value={handphone}
                 disabled={localStorage.getItem("register_by") == "phone_number" ? true : false}
                 onChange={(e) => setHandphone(e.target.value)}
