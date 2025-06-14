@@ -4,7 +4,7 @@ import ContactCard from "@/components/fragments/chat/ContactCard";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Chat from "@/public/chat.svg";
-import ChatRoomLayout from "./ChatRoom";
+import ChatRoomLayout from "./ChatRoomCustomer";
 
 interface ChatItem {
   id: string;
@@ -18,7 +18,7 @@ interface ContactListProps {
   contacts: ChatItem[];
 }
 
-const ContactList = ({ contacts }: ContactListProps) => {
+const ContactListCustomer = ({ contacts }: ContactListProps) => {
   const [showContacts, setShowContacts] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ChatItem | null>(null)
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -97,4 +97,4 @@ const ContactList = ({ contacts }: ContactListProps) => {
   );
 };
 
-export default ContactList;
+export default ContactListCustomer;

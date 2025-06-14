@@ -14,6 +14,9 @@ import Link from "next/link"
 import { transactionBaseUrl } from "@/types/globalVar"
 import ProfileSidebarLayout from "@/components/layout/ProfileSidebar"
 import { useAuth } from "@/hooks/auth/useAuth"
+import FilterSection from "@/components/fragments/shop/ProductFilter"
+import TextedCheckbox from "@/components/fragments/TextedCheckbox"
+import Star from "@/public/star.svg"
 
 interface Shop {
   id: string
@@ -78,7 +81,10 @@ export default function TransactionDetail() {
   const [showRentToBuyForm, setShowRentToBuyForm] = useState<boolean>(false)
   const [resiBuying, setResiBuying] = useState<string>("")
   const [nominalAmount, setNominalAmount] = useState<string>("")
-  const {customerId} = useAuth();
+  const { customerId } = useAuth()
+  const [showRatingForm, setShowRatingForm] = useState<boolean>(false)
+  const [rating, setRating] = useState<string>("")
+  const [review, setReview] = useState<string>("")
 
   useEffect(() => {
     const fetchTransactionDetail = async () => {
@@ -114,6 +120,10 @@ export default function TransactionDetail() {
   const handleBuyProduct = () => {
     setShowRentToBuyForm(true)
     setShowReturnForm(false)
+  }
+
+  const handleShowRatingForm = () => {
+    setShowRatingForm(true)
   }
 
   const handlePayment = () => {
@@ -190,6 +200,7 @@ export default function TransactionDetail() {
   const isUnpaid = status === "Belum Dibayar"
   const isProcessed = status === "Diproses" || status === "Dikirim"
   const isRented = status === "Sedang Disewa"
+  const isFinished = status === "Selesai"
 
   return (
     <div className='flex flex-col md:flex-row w-full m-1 justify-self-center md:p-0 md:px-6 md:pt-12 max-w-[1400px] max-h-auto space-x-0 md:space-x-8 bg-color-layout mb-48'>
@@ -390,6 +401,15 @@ export default function TransactionDetail() {
               </Button>
             </>
           )}
+
+          {isFinished && !showReturnForm && !showRentToBuyForm && !showRatingForm && (
+            <Button
+              onClick={handleShowRatingForm}
+              className='bg-custom-gradient-tr text-white text-lg h-18 hover:text-white hover:opacity-70'
+            >
+              Rating
+            </Button>
+          )}
         </div>
 
         {/* Return Product Form */}
@@ -478,6 +498,76 @@ export default function TransactionDetail() {
                   </Button>
                 </div>
               </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {showRatingForm && (
+          <Card className='mb-6'>
+            <CardHeader>
+              <CardTitle className='text-xl font-bold pb-4 border-b-[1px] border-[#D9D9D9] w-full'>Survey Kepuasaan Penyewaan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='space-y-4'>
+                {/* Review Text Input */}
+                <div className='mb-4'>
+                  <label
+                    htmlFor='review'
+                    className='block text-sm font-medium text-gray-700 mb-1'
+                  >
+                    Ulasan
+                  </label>
+                  <Input
+                    id='review'
+                    placeholder='Barang yang disewa sangat baik dan luar biasa'
+                    className='w-full'
+                  />
+                </div>
+                <label
+                  htmlFor='review'
+                  className='block text-sm font-medium text-gray-700 mb-1'
+                >
+                  Review
+                </label>
+
+                {/* Rating Input */}
+                <div className='mx-2 space-y-4'>
+                  {[5, 4, 3, 2, 1].map((rating) => (
+                    <TextedCheckbox
+                      key={rating}
+                      // checked={isCheckboxSelected("minRatings", rating.toString())}
+                      // onCheckedChange={() => handleCheckboxFilter("minRatings", rating.toString(), !isCheckboxSelected("minRatings", rating.toString()))}
+                    >
+                      <div className='flex space-x-3 items-center'>
+                        <Image
+                          width={14}
+                          height={12}
+                          src={Star}
+                          alt={`Star ${rating}`}
+                        />
+                        <p className='text-[12px] text-color-primary'>{rating}</p>
+                      </div>
+                    </TextedCheckbox>
+                  ))}
+                </div>
+
+                <div className='flex gap-4 justify-end'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => setShowRatingForm(false)}
+                    className='border border-red-800 h-10 hover:text-white hover:bg-red-800'
+                  >
+                    Batal
+                  </Button>
+                  <Button
+                    className='bg-white text-color-primaryDark text-sm h-10 border border-color-primaryDark hover:bg-color-primaryDark hover:text-white'
+                    type='submit'
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}

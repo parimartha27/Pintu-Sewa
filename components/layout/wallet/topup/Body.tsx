@@ -14,6 +14,9 @@ import ProfileSidebarLayout from "../../ProfileSidebar";
 import BCA from "@/public/BCA.svg";
 import BRI from "@/public/BRI.svg";
 import BNI from "@/public/BNI.svg";
+import CimbNiaga from "@/public/cimbNiaga.jpg";
+import Gopay from "@/public/gopay.jpg";
+import Ovo from "@/public/ovo.jpg";
 import Money from "@/public/money.svg";
 import MetodePembayaranFragments from "@/components/fragments/checkout/MetodePembayaran";
 import Image from "next/image";
@@ -139,6 +142,9 @@ function MetodeTopup({ amount }: { amount: string }) {
     { id: "BCA Virtual Account", name: "BCA Virtual Account", logo: BCA },
     { id: "BRI Virtual Account", name: "BRI Virtual Account", logo: BRI },
     { id: "BNI Virtual Account", name: "BNI Virtual Account", logo: BNI },
+    { id: "CIMB Niaga", name: "CIMB Niaga", logo: CimbNiaga.src },
+    { id: "Gopay", name: "Gopay", logo: Gopay.src },
+    { id: "Ovo", name: "Ovo", logo: Ovo.src },
   ];
 
   const handleMethodSelect = (methodId: string) => {

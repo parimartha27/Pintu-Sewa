@@ -50,12 +50,6 @@ const OrderHistoryContentBodyInner = () => {
     setIsClient(true)
   }, [])
 
-  // useEffect(() => {
-  //   if (isClient) {
-  //     setCustomerId(localStorage.getItem("customerId"))
-  //   }
-  // }, [isClient])
-
   useEffect(() => {
     const fetchData = async () => {
       if (!customerId) return
@@ -84,7 +78,6 @@ const OrderHistoryContentBodyInner = () => {
     }
   }, [customerId, statusParam, search, startDate, endDate])
 
-  // Show a loading state while waiting for client-side rendering
   if (!isClient) {
     return (
       <div className='w-full mt-[35px]'>

@@ -21,7 +21,7 @@ const Footer = () => {
           </div>
           <div className="h-3/5 flex flex-wrap justify-between">
             <div className="flex flex-col justify-between space-y-7 md:space-y-0 mb-10">
-              <h4 className="text-[14px] lg:text-[18px] text-white font-light">
+              <h4 onClick={() => router.push("/about")} className="text-[14px] lg:text-[18px] text-white font-light hover:underline hover:cursor-pointer">
                 Tentang Pintu Sewa
               </h4>
               <h4 onClick={() => router.push("/terms-and-conditions")} className="text-[14px] lg:text-[18px] text-white font-light hover:underline hover:cursor-pointer">

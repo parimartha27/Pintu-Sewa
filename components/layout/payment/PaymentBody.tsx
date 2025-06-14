@@ -166,7 +166,7 @@ const PaymentBody = () => {
         />
       )}
 
-      {!isSuccessPaymentOpen && <SuccessPaymentModals />}
+      {isSuccessPaymentOpen && <SuccessPaymentModals />}
       {isLoading && <LoadingPopup />}
       <PaymentStepModals
         isOpen={isPaymentStepOpen}

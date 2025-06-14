@@ -13,11 +13,11 @@ const ProductOrderHistoryContent = ({orderHistoryProduct}: {orderHistoryProduct:
     </div>
     <div className="flex flex-col space-y-1 sm:space-y-2">
       <h2 className="text-sm sm:text-base text-color-primary font-semibold">
-        {orderHistoryProduct.productName || "Nama Produk"}
+        {orderHistoryProduct.product_name || "Nama Produk"}
       </h2>
       <h2 className="text-xs sm:text-sm text-color-primary">
-      {orderHistoryProduct.startDate && orderHistoryProduct.endDate
-              ? `${orderHistoryProduct.startDate} - ${orderHistoryProduct.endDate}`
+      {orderHistoryProduct.start_date && orderHistoryProduct.end_date
+              ? `${orderHistoryProduct.start_date} - ${orderHistoryProduct.end_date}`
               : "28 Januari 2025 - 28 Februari 2025"}
       </h2>
       <h2 className="text-xs sm:text-sm text-color-primary">{orderHistoryProduct.quantity || "qty"} barang x {formatToRupiah(orderHistoryProduct.price) || "gratis" }</h2>
@@ -25,7 +25,7 @@ const ProductOrderHistoryContent = ({orderHistoryProduct}: {orderHistoryProduct:
   </div>
   <div className="flex flex-col items-end self-end text-end space-y-1 sm:space-y-2">
     <h2 className="text-xs sm:text-sm text-color-primary font-medium">Subtotal</h2>
-    <h2 className="text-sm text-color-primary font-semibold">{formatToRupiah(orderHistoryProduct.subTotal) || "gratis"}</h2>
+    <h2 className="text-sm text-color-primary font-semibold">{formatToRupiah(orderHistoryProduct.sub_total) || "gratis"}</h2>
   </div>
 </CardContent>
 

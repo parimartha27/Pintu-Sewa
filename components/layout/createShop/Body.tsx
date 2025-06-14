@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LabelledDropdown from "@/components/fragments/editProfile/LabelledDropdown";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { shopBaseUrl } from "@/types/globalVar";
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
@@ -30,14 +30,13 @@ interface AddressData {
 
 interface CreateShopRequest {
   customer_id: string | null;
-  name: string;
   email: string;
   street: string;
   district: string;
   regency: string;
   province: string;
   post_code: string;
-  is_same_address: boolean;
+  is_same_address: string;
 }
 
 const CreateShopBody = () => {
@@ -62,7 +61,6 @@ const CreateShopBody = () => {
     ""
   );
   const [selectedKodePos, setSelectedKodePos] = useState<string | number>("");
-
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
@@ -80,7 +78,7 @@ const CreateShopBody = () => {
     terms: "",
   });
 
-  const {customerId} = useAuth();
+  const { customerId } = useAuth();
 
   const getTextById = (id: string | number, data: AddressData[]): string => {
     const item = data.find((item) => item.id === id);
@@ -90,6 +88,10 @@ const CreateShopBody = () => {
   const getIdByText = (text: string, data: AddressData[]): string => {
     const item = data.find((item) => item.text === text);
     return item ? item.id : "";
+  };
+
+  const redirectFunction = () => {
+    router.push("/terms-and-conditions");
   };
 
   const validateForm = (): boolean => {
@@ -143,16 +145,14 @@ const CreateShopBody = () => {
     if (!validateForm()) {
       setAlertState({
         isOpen: true,
-        message: "Harap perbaiki kesalahan pada form",
-      })
+        message: "Data yang Anda Input Tidak Valid",
+      });
       return;
     }
 
     setIsLoading(true);
 
     try {
-
-
       const shopData: CreateShopRequest = {
         customer_id: customerId,
         name: shopName,
@@ -162,14 +162,21 @@ const CreateShopBody = () => {
         regency: getTextById(selectedKabupaten, kabupaten),
         province: getTextById(selectedProvinsi, provinsi),
         post_code: getTextById(selectedKodePos, kodePos),
-        is_same_address: addressType === "Alamat Saat Ini",
+        is_same_address: addressType === "Alamat Saat Ini" ? "y" : "n",
       };
-
+      console.log(shopData);
       const response = await axios.post(`${shopBaseUrl}/create`, shopData);
-
+      console.log(response);
       if (response.data) {
-        // localStorage.setItem("shopId", response.data.shopId)
-        router.push("/create-shop/confirmation");
+        localStorage.setItem("shopId", response.data.output_schema.id);
+        setAlertState({
+          isOpen: true,
+          message: "Toko berhasil dibuat",
+          isWrong: false,
+        });
+        setTimeout(() => {
+          router.push("/dashboard-seller");
+        }, 3000); 
       } else {
         throw new Error("Gagal membuat toko");
       }
@@ -178,7 +185,7 @@ const CreateShopBody = () => {
       setAlertState({
         isOpen: true,
         message: "Gagal membuat toko: " + error,
-      })
+      });
     } finally {
       setIsLoading(false);
     }
@@ -204,7 +211,7 @@ const CreateShopBody = () => {
         setAlertState({
           isOpen: true,
           message: "Gagal mengambil data provinsi: " + error,
-        })
+        });
       }
     };
     fetchProvinsi();
@@ -290,16 +297,18 @@ const CreateShopBody = () => {
   }, [selectedKabupaten, selectedKecamatan]);
 
   return (
-    <>      {alertState.isOpen && (
-      <Alert
-        message={alertState.message}
-        isOpen={alertState.isOpen}
-        onClose={() => setAlertState({ isOpen: false, message: "", isWrong: true })}
-  isWrong={alertState.isWrong}
-      />
-    )}
-
+    <>
       {" "}
+      {alertState.isOpen && (
+        <Alert
+          message={alertState.message}
+          isOpen={alertState.isOpen}
+          onClose={() =>
+            setAlertState({ isOpen: false, message: "", isWrong: true })
+          }
+          isWrong={alertState.isWrong}
+        />
+      )}{" "}
       <div className="flex justify-center pb-16 px-2 lg:px-6 mx-auto w-full max-w-[1280px] min-h-screen h-auto bg-color-layout pt-12">
         {/* Left side - Image */}
         <div className="hidden lg:flex flex-col w-1/2 items-center">
@@ -347,7 +356,7 @@ const CreateShopBody = () => {
                   label="Email"
                   htmlFor="email"
                   id="email"
-                  type="email"
+                  type="text"
                   placeholder="toko@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -505,9 +514,13 @@ const CreateShopBody = () => {
                     onCheckedChange={() => setAgreedToTerms(!agreedToTerms)}
                   >
                     Saya menyetujui{" "}
-                    <span className="font-semibold">syarat</span> dan{" "}
-                    <span className="font-semibold">ketentuan</span> Pembuatan
-                    Toko
+                    <span
+                      onClick={redirectFunction}
+                      className="font-semibold underline cursor-pointer"
+                    >
+                      syarat dan ketentuan
+                    </span>{" "}
+                    Pembuatan Toko
                   </TextedCheckbox>
                 </div>
               </CardContent>

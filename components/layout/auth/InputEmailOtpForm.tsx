@@ -85,7 +85,7 @@ const InputEmailOtpForm = () => {
               Reset Password
             </CardTitle>
             <CardDescription className="text-[14px] xs:text-[15px] sm:text-[16px] md:text-[14px] lg:text-[16px] xl:text-[20px] text-color-primary font-normal font-sans">
-              Yuk input email atau nomor hp dulu untuk kirim OTP
+              Yuk input email atau nomor hp dulu
             </CardDescription>
           </CardHeader>
 
@@ -99,7 +99,7 @@ const InputEmailOtpForm = () => {
                       emailOrPhoneError ? "text-red-500" : ""
                     } text-[12px] lg:text-[14px] xl:text-[16px] mt-3 md:mt-4`}
                   >
-                    Nomor Hp atau Email
+                    Email
                   </Label>
                   <Input
                     ref={inputRef}
@@ -112,7 +112,7 @@ const InputEmailOtpForm = () => {
                     )}
                     id="emailOrPhone"
                     type="text"
-                    placeholder="Masukkan nomor hp atau email"
+                    placeholder="Masukkan email"
                     value={emailOrPhone}
                     onChange={handleEmailOrPhoneChange}
                   />

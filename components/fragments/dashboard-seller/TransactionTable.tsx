@@ -1,11 +1,13 @@
+"use client"
+
+import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Loader2 } from "lucide-react"
 import { StatusBadge } from "./StatusBadge"
-import { formatCurrency } from "@/lib/utils"
 
 type TransactionsTableProps = {
   transactions: Array<{
-    refference_no: string
+    reference_number: string
     create_at: string
     customer_name: string
     start_date: string
@@ -18,15 +20,22 @@ type TransactionsTableProps = {
 }
 
 export const TransactionsTable = ({ transactions, loading }: TransactionsTableProps) => {
+  const router = useRouter()
+
   if (loading) {
     return (
       <div className='p-8 flex justify-center'>
         <div className='flex flex-col items-center'>
-          <Loader2 className='h-8 w-8 animate-spin text-blue-500' />
+          <Loader2 className='h-8 w-8 animate-spin text-color-secondary' />
           <span className='mt-2 text-gray-500'>Memuat data transaksi...</span>
         </div>
       </div>
     )
+  }
+
+  const handleRowClick = (referenceNumber: string) => {
+    // Arahkan ke halaman detail dinamis milik SELLER
+    router.push(`/dashboard-seller/transaction-history/${referenceNumber}`)
   }
 
   return (
@@ -44,15 +53,19 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
             <TableHead>Deposit</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className='h-60 items-center align-middle'>
           {transactions.length > 0 ? (
-            transactions.map((transaction, index) => (
-              <TableRow key={transaction.refference_no || index}>
-                <TableCell className='font-medium pl-8'>{transaction.refference_no}</TableCell>
-                <TableCell>{new Date(transaction.create_at).toLocaleDateString()}</TableCell>
+            transactions.map((transaction) => (
+              <TableRow
+                key={transaction.reference_number}
+                onClick={() => handleRowClick(transaction.reference_number)}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800'
+              >
+                <TableCell className='font-medium pl-8'>{transaction.reference_number}</TableCell>
+                <TableCell>{new Date(transaction.create_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</TableCell>
                 <TableCell>{transaction.customer_name}</TableCell>
-                <TableCell>{transaction.start_date}</TableCell>
-                <TableCell>{transaction.end_date}</TableCell>
+                <TableCell>{new Date(transaction.start_date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</TableCell>
+                <TableCell>{new Date(transaction.end_date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</TableCell>
                 <TableCell>{transaction.duration} hari</TableCell>
                 <TableCell>
                   <StatusBadge status={transaction.status} />
@@ -66,7 +79,7 @@ export const TransactionsTable = ({ transactions, loading }: TransactionsTablePr
                 colSpan={8}
                 className='text-center py-4 text-gray-500'
               >
-                Tidak ada transaksi berlangsung
+                Tidak ada transaksi ditemukan
               </TableCell>
             </TableRow>
           )}

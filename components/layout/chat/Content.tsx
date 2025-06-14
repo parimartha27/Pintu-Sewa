@@ -1,4 +1,4 @@
-import ContactList from "./ContactList";
+import ContactListCustomer from "./ContactListCustomer";
 import NoChat from "@/components/fragments/chat/NoChat";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -21,7 +21,11 @@ const ChatContentLayout = () => {
   const fetchContacts = async () => {
     try {
       const response = await axios.get(`${chatBaseUrl}/customer/get-roomchat?id=${customerId}`);
-      setChatList(response.data.output_schema)
+      setChatList(
+        Array.isArray(response.data.output_schema)
+          ? response.data.output_schema
+          : []
+      );
     } catch (error) {
       console.error("Error fetching contacts:", error);
       setChatList([]);
@@ -35,12 +39,11 @@ const ChatContentLayout = () => {
   }
 
   useEffect(() => {
-    // setCustomerId(customerId);
     fetchContacts();
   
     // const interval = setInterval(() => {
     //   fetchContacts();
-    // }, 5000); // polling every 5 seconds
+    // }, 500);
   
     // return () => clearInterval(interval);
   }, []);
@@ -52,7 +55,7 @@ const ChatContentLayout = () => {
       {chatList.length === 0 ? (
         <NoChat />
       ) : (
-        <ContactList contacts={chatList} />
+        <ContactListCustomer contacts={chatList} />
       )}
     </div>
   );

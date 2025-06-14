@@ -70,11 +70,6 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
       href: "/dashboard-seller/wallet",
     },
     {
-      name: "Customer Report",
-      icon: <User className='h-4 w-4' />,
-      href: "/customer-report",
-    },
-    {
       name: "Pengaturan Toko",
       icon: <Settings className='h-4 w-4' />,
       href: "/dashboard-seller/setting",
