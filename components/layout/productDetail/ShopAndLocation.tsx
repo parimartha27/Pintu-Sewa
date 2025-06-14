@@ -48,7 +48,7 @@ const ShopAndLocation = ({
   }, []);
 
   return (
-    <div className="w-full mt-7 flex flex-col px-2">
+    <div className="w-full mt-7 flex flex-col px-2 bg-b">
       <div className="flex justify-between border-y-[1px] border-[#D9D9D9]">
         <div className="flex space-x-3 py-[14px]">
           <Image
@@ -96,11 +96,11 @@ const ShopAndLocation = ({
           </h4>
         </Button>
       </div>
-      <div className="flex flex-col pt-3 pl-5 space-y-2">
+      <div className="flex flex-col pt-3 space-y-2">
         <h2 className="text-[12px] lg:text-[16px] font-semibold text-color-primary">
           Pengiriman
         </h2>
-        <div className="flex space-x-[6px]">
+        <div className="flex space-x-[6px] items-center">
           <Image
             src={Location}
             alt="truck"
@@ -110,7 +110,7 @@ const ShopAndLocation = ({
             Dikirim dari <span className="font-bold">{shopDetail.regency}</span>
           </h4>
         </div>
-        <div className="flex space-x-[6px]">
+        <div className="flex space-x-[6px] items-center">
           <Image
             src={Truck}
             alt="truck"

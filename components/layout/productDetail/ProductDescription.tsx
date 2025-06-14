@@ -161,7 +161,7 @@ const ProductDescription = ({
               value="detail"
               className="flex flex-col mt-3 p-3 space-y-4"
             >
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 items-center">
                 <Image src={Jam} alt="jam" className="w-[16px] h-[16px]" />
                 <h3 className="text-[12px] xl:text-[14px] text-color-primary font-normal">
                   Min. Durasi Sewa:{" "}
@@ -170,7 +170,7 @@ const ProductDescription = ({
                   </span>
                 </h3>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 items-center">
                 <Image src={Box} alt="jam" className="w-[16px] h-[16px]" />
                 <h3 className="text-[12px] xl:text-[14px]  text-color-primary font-normal">
                   Min. Jumlah Sewa:{" "}
@@ -180,7 +180,7 @@ const ProductDescription = ({
                 </h3>
               </div>
               <div className="flex flex-col">
-                <div className="flex space-x-2 mb-3">
+                <div className="flex space-x-2 mb-3 items-center">
                   <Image src={Coin} alt="jam" className="w-[16px] h-[16px]" />
                   <h3 className="text-[12px] xl:text-[14px] text-color-primary font-normal">
                     Harga Sewa
@@ -195,15 +195,15 @@ const ProductDescription = ({
                       </span>
                     </li>
                   )}
-                  {productDetail.weekly_price && (
+                  {productDetail.weekly_price !== 0 && (
                     <li>
                       Mingguan:{" "}
                       <span className="font-bold">
                         {formatToRupiah(productDetail.weekly_price || "NaN")}
-                      </span>
+                      </span> 
                     </li>
                   )}
-                  {productDetail.monthly_price && (
+                  {productDetail.monthly_price !==0 && (
                     <li>
                       Bulanan:{" "}
                       <span className="font-bold">
