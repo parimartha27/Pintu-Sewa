@@ -18,9 +18,9 @@ interface ShopDetailResponse {
   district: string
   regency: string
   province: string
-  post_code: string // snake_case
+  post_code: string
   rating: number
-  work_hours: string // snake_case
+  work_hours: string
   email: string
 }
 
@@ -38,7 +38,7 @@ const SellerProfileBody = () => {
     }
 
     axios
-      .get(`${shopBaseUrl}/6a1a0e99-db01-4966-b35d-6e04d1551d5f`)
+      .get(`${shopBaseUrl}/${shopId}`)
       .then((res) => {
         if (res.data.error_schema?.error_code === "PS-00-000") {
           setShopData(res.data.output_schema)
@@ -78,9 +78,9 @@ function DefaultLayout({ shopData, loading }: DefaultLayoutProps) {
     <>
       {" "}
       <EditShopProfileForm
-        title='Profil Toko'
+        title='Profil Toko - Seller Profile Body'
         iconName='Edit'
-        link='edit-profile'
+        link='edit'
       >
         <div className='w-full flex justify-center items-center pb-3 xl:pb-0'>
           <div className='flex flex-col md:flex-row items-center mt-6 w-full md:space-x-16 '>

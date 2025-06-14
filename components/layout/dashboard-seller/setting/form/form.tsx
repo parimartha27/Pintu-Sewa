@@ -16,7 +16,6 @@ interface EditProfileProps {
 const EditShopProfileForm = ({ title, iconName, children, link }: EditProfileProps) => {
   const router = useRouter()
   return (
-    // TODO: change max-w-[1000px] -> diskusi sama metiu
     <Card className='w-full  max-h-auto px-3 md:px-6 pb-6 shadow-lg border-none'>
       <CardHeader className='flex flex-col sm:flex-row items-start md:items-center justify-between w-full border-b-[1px] border-b-[#D9D9D9] px-0 pb-4'>
         <h2 className='text-[16px] md:text-[18px] font-semibold text-color-primary'>{title}</h2>
