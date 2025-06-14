@@ -83,9 +83,11 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
           <h4 className='text-color-primaryDark text-[12px] lg:text-sm lg:font-medium'>Chat</h4>
         </Button>
       </div>
-      <div className='flex flex-col pt-3 pl-5 space-y-2'>
-        <h2 className='text-[12px] lg:text-[16px] font-semibold text-color-primary'>Pengiriman</h2>
-        <div className='flex space-x-[6px]'>
+      <div className="flex flex-col pt-3 space-y-2">
+        <h2 className="text-[12px] lg:text-[16px] font-semibold text-color-primary">
+          Pengiriman
+        </h2>
+        <div className="flex space-x-[6px] items-center">
           <Image
             src={Location}
             alt='truck'
@@ -95,7 +97,7 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
             Dikirim dari <span className='font-bold'>{shopDetail.regency}</span>
           </h4>
         </div>
-        <div className='flex space-x-[6px]'>
+        <div className="flex space-x-[6px] items-center">
           <Image
             src={Truck}
             alt='truck'

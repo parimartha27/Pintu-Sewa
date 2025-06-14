@@ -279,12 +279,12 @@ const InputBiodataContent = () => {
             </div>
             <div className='flex flex-col'>
               <LabelledInput
-                label='Nomor Telepon'
-                htmlFor='handphone'
-                id='handphone'
-                type='text'
+                label="Nomor Telepon"
+                htmlFor="handphone"
+                id="handphone"
+                type="text"
+                maxLength={13}
                 value={handphone}
-                // [FIX] Menggunakan state untuk properti disabled
                 disabled={isHandphoneDisabled}
                 onChange={(e) => setHandphone(e.target.value)}
               />
