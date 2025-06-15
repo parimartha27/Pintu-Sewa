@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import RegisterImage from "@/public/register.svg"
 import Star from "@/public/star.svg"
 import Chat from "@/public/chat.svg"
@@ -11,24 +10,24 @@ import { Button } from "@/components/ui/button"
 import { ProductDetailShopProps } from "@/types/shop"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
-import { chatBaseUrl } from "@/types/globalVar"
+import { chatBaseUrl, ekspedisiUrl } from "@/types/globalVar"
 import axios from "axios"
 import { useAuth } from "@/hooks/auth/useAuth"
 
 const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps }) => {
   const { customerId } = useAuth()
-  const [shopId, setShopId] = useState<string | null>("")
   const router = useRouter()
 
-  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const target = e.currentTarget
-    e.preventDefault()
+  const [shippingPrice, setShippingPrice] = useState<number | null>(null)
 
+  // Create room chat
+  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     try {
-      const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`)
+      const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopDetail.id}`)
       router.push("/chat")
     } catch (err: any) {
-      if (err.response.data.error_schema.error_code == "PS-10-001") {
+      if (err.response?.data?.error_schema?.error_code === "PS-10-001") {
         router.push("/chat")
       } else {
         console.log(err)
@@ -36,10 +35,22 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
     }
   }
 
+  // Fetch shipping price
   useEffect(() => {
-    setShopId(shopDetail.id)
-    // setCustomerId(localStorage.getItem("customerId"))
-  }, [])
+    const fetchShippingPrice = async () => {
+      if (!customerId || !shopDetail.id) return
+
+      try {
+        const res = await axios.get(`${ekspedisiUrl}/price/${customerId}/${shopDetail.id}`)
+        const price = res.data.output_schema
+        setShippingPrice(price)
+      } catch (error) {
+        console.error("Gagal fetch ongkir:", error)
+      }
+    }
+
+    fetchShippingPrice()
+  }, [customerId, shopDetail.id])
 
   return (
     <div className='w-full mt-7 flex flex-col px-2'>
@@ -72,7 +83,6 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
         </div>
         <Button
           className='flex max-w-[72px] max-h-[28px] lg:max-h-8 h-full gap-x-1 mt-3 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark'
-          data-shopid={shopDetail.id}
           onClick={createRoomChat}
         >
           <Image
@@ -83,27 +93,26 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
           <h4 className='text-color-primaryDark text-[12px] lg:text-sm lg:font-medium'>Chat</h4>
         </Button>
       </div>
-      <div className="flex flex-col pt-3 space-y-2">
-        <h2 className="text-[12px] lg:text-[16px] font-semibold text-color-primary">
-          Pengiriman
-        </h2>
-        <div className="flex space-x-[6px] items-center">
+
+      <div className='flex flex-col pt-3 space-y-2'>
+        <h2 className='text-[12px] lg:text-[16px] font-semibold text-color-primary'>Pengiriman</h2>
+        <div className='flex space-x-[6px] items-center'>
           <Image
             src={Location}
-            alt='truck'
+            alt='location'
             className='w-[14px] h-[10px] lg:w-[16px] lg:h-[16px]'
           />
           <h4 className='text-[10px] lg:text-sm lg:font-medium text-color-primary'>
             Dikirim dari <span className='font-bold'>{shopDetail.regency}</span>
           </h4>
         </div>
-        <div className="flex space-x-[6px] items-center">
+        <div className='flex space-x-[6px] items-center'>
           <Image
             src={Truck}
             alt='truck'
             className='w-[14px] h-[10px] lg:w-[16px] lg:h-[16px]'
           />
-          <h4 className='text-[10px] lg:text-sm lg:font-medium text-color-primary'>Ongkir mulai Rp 50.000 (ini belum)</h4>
+          <h4 className='text-[10px] lg:text-sm lg:font-medium text-color-primary'>{shippingPrice !== null ? `Ongkir mulai Rp ${shippingPrice.toLocaleString("id-ID")}` : "Menghitung ongkir..."}</h4>
         </div>
       </div>
     </div>
