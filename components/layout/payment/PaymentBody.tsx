@@ -31,10 +31,9 @@ const PaymentBody = () => {
     isWrong: true,
   });
 
-  const {customerId} = useAuth();
+  const { customerId } = useAuth();
 
   const generateAccountNumber = (method: string) => {
-    
     const prefixes: Record<string, string> = {
       "BCA Virtual Account": "1234",
       "BRI Virtual Account": "5678",
@@ -50,8 +49,12 @@ const PaymentBody = () => {
 
   useEffect(() => {
     const storedAmount = localStorage.getItem("grandTotalPayment") || "0";
-    const storedMethod =
+    let storedMethod =
       localStorage.getItem("paymentMethod") || "Unknown Method";
+
+    if (storedMethod === "Pintu_Sewa_Wallet") {
+      storedMethod = "Pintu Sewa Wallet";
+    }
 
     const formattedDeadline =
       new Date(Date.now() + 2 * 60 * 60 * 1000).toLocaleString("id-ID", {
@@ -117,21 +120,22 @@ const PaymentBody = () => {
         } else {
           setAlertState({
             isOpen: true,
-            message: "Saldo Tidak Cukup.\nTopup Wallet Pada Menu Profile Terlebih Dahulu!",
-          })
+            message:
+              "Saldo Tidak Cukup.\nTopup Wallet Pada Menu Profile Terlebih Dahulu!",
+          });
         }
       } else {
         setAlertState({
           isOpen: true,
           message: "Gagal Memperbaharui Status Transaksi",
-        })
+        });
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setAlertState({
         isOpen: true,
         message: "Pembayaran Gagal, Silahkan Coba Lagi",
-      })
+      });
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +151,7 @@ const PaymentBody = () => {
       "BCA Virtual Account": "/BCA.svg",
       "BRI Virtual Account": "/BRI.svg",
       "BNI Virtual Account": "/BNI.svg",
-      "Cimb Niaga": "/cimbNiaga.jpg",
+      "Pintu Sewa Wallet": "/pintuSewa.svg",
       Ovo: "/ovo.jpg",
       Gopay: "/gopay.jpg",
     };

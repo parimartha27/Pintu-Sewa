@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CardHeader } from "@/components/ui/card";
@@ -72,7 +73,7 @@ const ProductOrderHistoryHeader = ({
           {shop.name || "Toko Tidak Diketahui"}
         </h2>
         <Button
-          onClick={() => alert("Chat")}
+          onClick={() => router.push(`/chat`)}
           className="flex items-center gap-x-1 px-2 py-1 rounded-sm bg-transparent hover:bg-slate-200 border border-color-primaryDark text-xs sm:text-sm"
         >
           <Image
