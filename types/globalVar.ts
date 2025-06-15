@@ -1,11 +1,11 @@
-export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 export const searchSuggestionBaseUrl = `${baseUrl}/search`
 export const reviewBaseUrl = `${baseUrl}/review`
 export const authBaseUrl = `${baseUrl}/authentication`
 export const otpBaseUrl = `${baseUrl}/otp`
 export const productBaseUrl = `${baseUrl}/product`
 export const customerBaseUrl = `${baseUrl}/customers`
-export const emailValidationUrl = `${customerBaseUrl}/validate/credential`;
+export const emailValidationUrl = `${customerBaseUrl}/validate/credential`
 export const createCustomerBaseUrl = `${customerBaseUrl}/create`
 export const filteredProductBaseUrl = `${productBaseUrl}/filter`
 export const shopBaseUrl = `${baseUrl}/shop`
@@ -19,4 +19,4 @@ export const walletBaseUrl = `${baseUrl}/wallet`
 export const checkoutBaseUrl = `${baseUrl}/checkout`
 export const transactionDetailBaseUrl = `${transactionBaseUrl}/transaction-detail`
 export const chatBaseUrl = `${baseUrl}/chat`
-
+export const trackingBaseUrl = `${baseUrl}/lacak-produk`

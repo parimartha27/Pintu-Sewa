@@ -1,24 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useParams } from "next/navigation"
-import Link from "next/link"
 import axios from "axios"
-import { ArrowLeft } from "lucide-react"
-import { Loader2 } from "lucide-react"
+import Link from "next/link"
+import { ArrowLeft, Loader2 } from "lucide-react"
 import { TransactionDetailContent } from "@/components/layout/detail-transaction/detailTransaction"
 import { transactionBaseUrl } from "@/types/globalVar"
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
-
-interface TransactionResponse {
-  error_schema: { error_code: string; error_message: string }
-  output_schema: any
-}
-
-interface Payload {
-  reference_number: string
-  shop_id: string
-}
 
 export default function SellerTransactionDetailPage() {
   const params = useParams()
@@ -29,73 +18,57 @@ export default function SellerTransactionDetailPage() {
   const shopId = typeof window !== "undefined" ? localStorage.getItem("shopId") : null
   const reference_number = params.reference_number as string
 
-  useEffect(() => {
+  const fetchTransactionDetail = useCallback(async () => {
     if (!reference_number || !shopId) return
+    setLoading(true)
+    setError(null)
+    try {
+      const payload = { reference_number, shop_id: shopId }
+      const response = await axios.post(`${transactionBaseUrl}/detail`, payload)
 
-    const fetchTransactionDetail = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const payload: Payload = {
-          reference_number: reference_number,
-          shop_id: shopId,
-        }
-        const response = await axios.post<TransactionResponse>(`${transactionBaseUrl}/detail`, payload)
-
-        if (response.data.error_schema.error_code !== "PS-00-000") {
-          throw new Error(response.data.error_schema.error_message)
-        }
-
-        setTransactionData(response.data.output_schema)
-      } catch (err: any) {
-        setError(err.message || "Gagal memuat detail transaksi")
-      } finally {
-        setLoading(false)
+      if (response.data.error_schema.error_code !== "PS-00-000") {
+        throw new Error(response.data.error_schema.error_message)
       }
+      setTransactionData(response.data.output_schema)
+    } catch (err: any) {
+      setError(err.message || "Gagal memuat detail transaksi")
+    } finally {
+      setLoading(false)
     }
-
-    fetchTransactionDetail()
   }, [reference_number, shopId])
 
+  useEffect(() => {
+    fetchTransactionDetail()
+  }, [fetchTransactionDetail])
+
   const renderContent = () => {
-    if (loading) {
+    if (loading && !transactionData) {
       return (
         <div className='p-8 flex justify-center'>
-          <div className='flex flex-col items-center'>
-            <Loader2 className='h-8 w-8 animate-spin text-color-secondary' />
-            <span className='mt-2 text-gray-500'>Memuat data transaksi...</span>
-          </div>
+          <Loader2 className='h-8 w-8 animate-spin' />
         </div>
       )
     }
-
-    if (error) {
-      return <div className='text-center p-8 text-red-500'>Error: {error}</div>
-    }
-
-    if (!transactionData) {
-      return <div className='text-center p-8'>Tidak ada data ditemukan.</div>
-    }
+    if (error) return <div className='text-center p-8 text-red-500'>Error: {error}</div>
+    if (!transactionData) return <div className='text-center p-8'>Tidak ada data ditemukan.</div>
 
     return (
       <TransactionDetailContent
         transactionData={transactionData}
         role='seller'
+        reFetchData={fetchTransactionDetail} // Teruskan fungsi re-fetch
       />
     )
   }
 
   return (
     <SellerLayout>
-      <div className='mb-6'>
-        <Link
-          href='/dashboard-seller/transaction-history'
-          className='flex items-center text-color-secondary mb-4'
-        >
-          <ArrowLeft className='w-4 h-4 mr-2' />
-          <span>Kembali ke Riwayat Transaksi</span>
-        </Link>
-      </div>
+      <Link
+        href='/dashboard-seller/transaction-history'
+        className='flex items-center ...'
+      >
+        <ArrowLeft /> Kembali
+      </Link>
       {renderContent()}
     </SellerLayout>
   )
