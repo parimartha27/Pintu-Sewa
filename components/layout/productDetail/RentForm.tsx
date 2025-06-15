@@ -12,6 +12,7 @@ import {
   addDays,
   isBefore,
   isWithinInterval,
+  differenceInCalendarDays 
 } from "date-fns";
 import {
   Popover,
@@ -82,30 +83,29 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   }
 
   function calculateTotal() {
-    if (!startDate || !endDate) return 0;
+      if (!startDate || !endDate) return 0;
 
-    const diffInTime = endDate.getTime() - startDate.getTime();
-    const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
-    const days = diffInDays < 1 ? 1 : diffInDays + 1;
+  const diffInDays = differenceInCalendarDays(endDate, startDate);
+  const days = diffInDays >= 0 ? diffInDays + 1 : 0;
 
-    let total = 0;
-    let remainingDays = days;
+  let total = 0;
+  let remainingDays = days;
 
-    const monthlyPrice = productDetail.monthly_price || 0;
-    const weeklyPrice = productDetail.weekly_price || 0;
-    const dailyPrice = productDetail.daily_price || 0;
+  const monthlyPrice = productDetail.monthly_price || 0;
+  const weeklyPrice = productDetail.weekly_price || 0;
+  const dailyPrice = productDetail.daily_price || 0;
 
-    const months = Math.floor(remainingDays / 30);
-    total += months * monthlyPrice;
-    remainingDays %= 30;
+  const months = Math.floor(remainingDays / 30);
+  total += months * monthlyPrice;
+  remainingDays %= 30;
 
-    const weeks = Math.floor(remainingDays / 7);
-    total += weeks * weeklyPrice;
-    remainingDays %= 7;
+  const weeks = Math.floor(remainingDays / 7);
+  total += weeks * weeklyPrice;
+  remainingDays %= 7;
 
-    total += remainingDays * dailyPrice;
+  total += remainingDays * dailyPrice;
 
-    return formatToRupiah(total * qty);
+  return formatToRupiah(total * qty);
   }
 
   const validateDates = (): { valid: boolean; message?: string } => {
