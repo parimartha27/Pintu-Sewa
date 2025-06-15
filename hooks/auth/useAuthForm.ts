@@ -132,7 +132,7 @@ export const useAuthForm = (type?: string) => {
           const success = response?.error_schema?.error_message === "SUCCESS"
 
           if (success) {
-            localStorage.clear();
+            localStorage.clear()
             const { token, customer_id, username, image } = response.output_schema || {}
 
             document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
@@ -144,7 +144,7 @@ export const useAuthForm = (type?: string) => {
             // localStorage.setItem("customerId", customer_id || "")
 
             window.location.href = "/"
-          } else if(response?.error_schema?.error_code === "PS-00-002"){
+          } else if (response?.error_schema?.error_code === "PS-00-002") {
             setAuthError("Email atau Password Tidak Sesuai")
           }
         })
@@ -153,7 +153,7 @@ export const useAuthForm = (type?: string) => {
           const success = response?.error_schema?.error_message === "SUCCESS"
 
           if (success) {
-            localStorage.clear();
+            localStorage.clear()
             const { customer_id, status } = response.output_schema || {}
             const contactKey = data.email ? "email" : "phone_number"
             const contactValue = data.email || data.phone_number
@@ -161,30 +161,29 @@ export const useAuthForm = (type?: string) => {
             localStorage.setItem(contactKey, contactValue)
             // localStorage.setItem("customerId", customer_id || "Tidak ada user id")
             document.cookie = `status=${status}; path=/; Secure; SameSite=Lax`
-                        // document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
+            // document.cookie = `token=${token}; path=/; Secure; SameSite=Lax`
             document.cookie = `customerId=${customer_id}; path=/; Secure; SameSite=Lax`
 
-            if(status === "REGISTERED"){
+            if (status === "REGISTERED") {
               router.push("/input-biodata")
-            }else if(status === "OTP_VERIFY"){
+            } else if (status === "VERIFY_OTP") {
               router.push("/otp")
-            }else{
+            } else {
               router.push("/not-found")
             }
-      
           } else {
             setAuthError(response?.error_schema?.error_message || "Terjadi kesalahan")
           }
         })
       }
     } catch (error) {
-      const err = error as {error_schema: ErrorSchema}
+      const err = error as { error_schema: ErrorSchema }
       console.log(err)
-      if(err.error_schema.error_code === "PS-01-002"){
+      if (err.error_schema.error_code === "PS-01-002") {
         setAuthError("Email Sudah Terdaftar")
-      }else if(err.error_schema.error_code === "PS-00-002"){
+      } else if (err.error_schema.error_code === "PS-00-002") {
         setAuthError("Email Atau Password Tidak Sesuai")
-      }else if(err.error_schema.error_code === "PS-99-500"){
+      } else if (err.error_schema.error_code === "PS-99-500") {
         setAuthError("Email Atau Password Tidak Sesuai")
       }
     } finally {
@@ -195,13 +194,13 @@ export const useAuthForm = (type?: string) => {
 
   const loginGoogleHandler = async () => {
     try {
-      console.log("Login with Google");
+      console.log("Login with Google")
       const response = await signIn("google", {
         callbackUrl: "/",
         redirect: false,
       })
 
-      console.log("Login with Google Response:", response);
+      console.log("Login with Google Response:", response)
       if (response?.ok) {
         const session = await getSession()
 
@@ -212,7 +211,7 @@ export const useAuthForm = (type?: string) => {
             profilePicture: session.user.image || "/default-profile.png",
           }
 
-          //DISINI MINTA ENDPOINT BALIKAN 
+          //DISINI MINTA ENDPOINT BALIKAN
           await sendOauthData(userData, (response) => {
             if (response.error_schema?.error_message === "SUCCESS") {
               document.cookie = `userId=${response.output_schema.user_id}; path=/; Secure; SameSite=Lax`
