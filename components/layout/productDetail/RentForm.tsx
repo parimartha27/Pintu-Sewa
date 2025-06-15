@@ -151,7 +151,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
     }
 
     if (dayDiff < minDays - 1) {
-      return { valid: false, message: `Durasi sewa minimal ${minDays} hari` };
+      return { valid: false, message: Durasi sewa minimal ${minDays} hari };
     }
 
     return { valid: true };
@@ -186,7 +186,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       setAddToCartLoading(true);
       console.log("add to cart req: ", addToCartReq);
       const res = await axios.post<AddToCartResponse>(
-        `${cartBaseUrl}/add`,
+        ${cartBaseUrl}/add,
         addToCartReq
       );
       if (res.data.error_schema.error_message === "SUCCESS") {
@@ -239,7 +239,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       console.log("PAYLOAD CHECKOUT: ", payload);
       setCheckoutLoading(true);
       const res = await axios.post<checkoutFromCartResponseProps>(
-        `${checkoutBaseUrl}/product`,
+        ${checkoutBaseUrl}/product,
         payload
       );
       if (res.data.error_schema.error_message === "SUCCESS") {
@@ -449,4 +449,4 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   );
 };
 
-export default RentForm;
+export default RentForm;
