@@ -1,45 +1,16 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useEffect } from "react"
 import Link from "next/link"
 import PintuSewaSeller from "@/public/pintuSewaSeler.png"
 
-interface ShopInformation {
-  shopName: string | null
-  shopImage: string | null
-}
-
 const NavigationBarSeller: React.FC = () => {
-  const [shopInformation, setShopInformation] = useState<ShopInformation>({
-    shopName: null,
-    shopImage: null,
-  })
-
-  const getLocalStorageItem = (key: string): string | null => {
-    if (typeof window !== "undefined" && window.localStorage) {
-      try {
-        return localStorage.getItem(key)
-      } catch (error) {
-        console.error(`Error accessing localStorage for key ${key}:`, error)
-        return null
-      }
-    }
-    return null
-  }
-
-  useEffect(() => {
-    setShopInformation({
-      shopName: getLocalStorageItem("shopName"),
-      shopImage: getLocalStorageItem("shopImage"),
-    })
-  }, [])
-
   const defaultImage = "https://res.cloudinary.com/dtizgexle/image/upload/v1749995104/logoTOko_fshgim.jpg"
 
   // Default fallback values
-  const shopName = shopInformation.shopName || "Shop Name"
-  const shopImage = shopInformation.shopImage || defaultImage.trim()
+  const shopName = typeof window != "undefined" ? localStorage.getItem("shopName") : "Shop Name"
+  const shopImage = typeof window != "undefined" ? localStorage.getItem("shopImage") : defaultImage.trim()
+
   return (
     <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>
       <div className='h-[24px] bg-color-primaryDark w-full'></div>
