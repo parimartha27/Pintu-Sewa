@@ -20,7 +20,7 @@ const ProductInCheckoutDetail = ({
             className="w-[60px] h-[60px] xl:w-[88px] xl:h-[88px] rounded-md"
           />
         </div>
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 max-w-[220px]">
           <h2 className="text-color-primary text-[16px] font-semibold">
             {rentedItemDetail.product_name || "Nama Toko"}
           </h2>

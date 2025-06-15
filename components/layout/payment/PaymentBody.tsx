@@ -34,7 +34,7 @@ const PaymentBody = () => {
   const { customerId } = useAuth();
 
   const generateAccountNumber = (method: string) => {
-    
+
     const prefixes: Record<string, string> = {
       "BCA Virtual Account": "1234",
       "BRI Virtual Account": "5678",
@@ -132,7 +132,7 @@ const PaymentBody = () => {
       "BCA Virtual Account": "/BCA.svg",
       "BRI Virtual Account": "/BRI.svg",
       "BNI Virtual Account": "/BNI.svg",
-      "CIMB Niaga": "/cimbNiaga.jpg",
+      "Pintu_Sewa_Wallet": "/pintuSewa.svg",
       Ovo: "/ovo.jpg",
       Gopay: "/gopay.jpg",
     };
@@ -198,7 +198,7 @@ const PaymentBody = () => {
               <Card className="w-full">
                 <CardHeader className="flex flex-col md:flex-row md:items-center border-b p-0 mx-6 py-6 md:justify-between space-y-2 md:space-y-0">
                   <CardTitle className="text-lg md:text-xl font-semibold text-color-primary  w-full">
-                    {paymentData.method}
+                    {paymentData.method === "Pintu_Sewa_Wallet" ? "Pintu Sewa Wallet" : paymentData.method}
                   </CardTitle>
                   <div className="hidden md:flex items-center justify-center w-[200px] h-[40px] ">
                     <Image
