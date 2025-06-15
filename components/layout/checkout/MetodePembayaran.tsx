@@ -7,7 +7,7 @@ import {
 import BCA from "@/public/BCA.svg";
 import BRI from "@/public/BRI.svg";
 import BNI from "@/public/BNI.svg";
-import CimbNiaga from "@/public/cimbNiaga.jpg";
+import PintuSewaWallet from "@/public/pintuSewa.svg";
 import Gopay from "@/public/gopay.jpg";
 import Ovo from "@/public/ovo.jpg";
 import Money from "@/public/money.svg";
@@ -100,10 +100,10 @@ const MetodePembayaranLayout = ({
 
           <div className="flex flex-col space-y-[18px] lg:space-y-0 w-full lg:w-1/3 lg:ml-[147px]">
             <MetodePembayaranFragments
-              nama="CIMB Niaga"
-              gambar={CimbNiaga.src}
-              isSelected={selectedMethod === "CIMB Niaga"}
-              onSelect={() => setSelectedMethod("CIMB Niaga")}
+              nama="Pintu Sewa Wallet"
+              gambar={PintuSewaWallet.src}
+              isSelected={selectedMethod === "Pintu_Sewa_Wallet"}
+              onSelect={() => setSelectedMethod("Pintu_Sewa_Wallet")}
             />
 
             <MetodePembayaranFragments

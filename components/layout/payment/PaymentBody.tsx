@@ -34,6 +34,7 @@ const PaymentBody = () => {
   const {customerId} = useAuth();
 
   const generateAccountNumber = (method: string) => {
+    
     const prefixes: Record<string, string> = {
       "BCA Virtual Account": "1234",
       "BRI Virtual Account": "5678",
