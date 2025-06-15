@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import SellerLayout from "@/components/layout/dashboard-seller/Layout"
-import axios from "axios"
+import Link from "next/link"
 
 interface Product {
   id: string
@@ -56,13 +55,9 @@ const DaftarProduk = () => {
   const [activeTab, setActiveTab] = useState("semua")
   const [isLoading, setIsLoading] = useState(false)
 
-  // Fungsi untuk mengambil data produk dari API
   const fetchProducts = async () => {
     try {
       setIsLoading(true)
-      // Uncomment dan sesuaikan kode berikut untuk mengintegrasikan dengan API
-      // const response = await axios.get('/api/seller/products');
-      // setProducts(response.data);
       setIsLoading(false)
     } catch (error) {
       console.error("Error fetching products:", error)
@@ -70,7 +65,6 @@ const DaftarProduk = () => {
     }
   }
 
-  // Fungsi untuk menghapus produk
   const deleteProduct = async (productId: string) => {
     try {
       // Uncomment dan sesuaikan kode berikut untuk mengintegrasikan dengan API
@@ -134,10 +128,12 @@ const DaftarProduk = () => {
     <>
       <div className='flex justify-between items-center mb-6'>
         <h1 className='text-2xl font-semibold text-color-primary'>Daftar Produk</h1>
-        <Button className='bg-custom-gradient-tr hover:bg-color-secondary'>
-          <Plus className='mr-2 h-4 w-4' />
-          Tambah Produk
-        </Button>
+        <a href='/dashboard-seller/product/add'>
+          <Button className='bg-custom-gradient-tr hover:bg-color-secondary'>
+            <Plus className='mr-2 h-4 w-4' />
+            Tambah Produk
+          </Button>
+        </a>
       </div>
 
       <Card className='border border-gray-200 rounded-lg shadow-sm'>
@@ -310,7 +306,6 @@ const DaftarProduk = () => {
                       <Switch
                         checked={product.isActive}
                         onCheckedChange={(checked) => toggleProductStatus(product.id, checked)}
-                      
                       />
                     </td>
                     <td className='px-4 py-4'>

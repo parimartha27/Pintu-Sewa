@@ -79,6 +79,9 @@ export default function AddProductForm() {
     isOpen: false,
     message: "",
     isWrong: true,
+    onClose() {
+      window.location.href = "/dashboard-seller/product/add"
+    },
   })
 
   useEffect(() => {
@@ -168,12 +171,12 @@ export default function AddProductForm() {
         daily_price: watchRentalOptions.daily ? data.rentalOptions.dailyPrice : undefined,
         weekly_price: watchRentalOptions.weekly ? data.rentalOptions.weeklyPrice : undefined,
         monthly_price: watchRentalOptions.monthly ? data.rentalOptions.monthlyPrice : undefined,
-        status: "ACTIVE",
+        status: "AVAIABLE",
         image: uploadedImages.length > 0 ? uploadedImages[0] : "",
       }
 
-      console.log("Data Asli dari Form (terstruktur):", data)
-      console.log("Payload yang Dikirim ke Backend:", payload)
+      // console.log("Data Asli dari Form (terstruktur):", data)
+      // console.log("Payload yang Dikirim ke Backend:", payload)
 
       const response = await axios.post(`${productBaseUrl}/add`, payload)
 
@@ -212,7 +215,6 @@ export default function AddProductForm() {
     setUploadedImages(newImages)
   }
 
-  undefined
   return (
     <main className='container'>
       {alertState.isOpen && (
@@ -366,10 +368,21 @@ export default function AddProductForm() {
             <div className='text-sm text-gray-500 mb-2'>Tambahkan stok secara kasat Biar ketersediaan stok produk yang bisa untuk disewa</div>
             <Input
               id='stock'
-              type='number'
-              className='w-full'
+              type='text'
+              inputMode='numeric'
               placeholder='0'
-              {...register("stock", { required: true, min: 1, valueAsNumber: true })}
+              className='w-full'
+              {...register("stock", {
+                required: true,
+                min: 1,
+                valueAsNumber: true,
+              })}
+              onKeyDown={(e) => {
+                const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                  e.preventDefault()
+                }
+              }}
             />
             {errors.stock && <p className='text-red-500 text-sm mt-1'>Stok produk tidak boleh 0 atau kosong</p>}
           </div>
@@ -385,9 +398,21 @@ export default function AddProductForm() {
                 <Label htmlFor='length'>Panjang (cm)</Label>
                 <Input
                   id='length'
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
                   placeholder='0'
-                  {...register("dimensions.length", { required: true, min: 1, valueAsNumber: true })}
+                  className='w-full'
+                  {...register("dimensions.length", {
+                    required: true,
+                    min: 1,
+                    valueAsNumber: true,
+                  })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
                 {errors.dimensions?.length && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -395,9 +420,21 @@ export default function AddProductForm() {
                 <Label htmlFor='width'>Lebar (cm)</Label>
                 <Input
                   id='width'
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
                   placeholder='0'
-                  {...register("dimensions.width", { required: true, min: 1, valueAsNumber: true })}
+                  className='w-full'
+                  {...register("dimensions.width", {
+                    required: true,
+                    min: 1,
+                    valueAsNumber: true,
+                  })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
                 {errors.dimensions?.width && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -405,9 +442,21 @@ export default function AddProductForm() {
                 <Label htmlFor='height'>Tinggi (cm)</Label>
                 <Input
                   id='height'
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
                   placeholder='0'
-                  {...register("dimensions.height", { required: true, min: 1, valueAsNumber: true })}
+                  className='w-full'
+                  {...register("dimensions.height", {
+                    required: true,
+                    min: 1,
+                    valueAsNumber: true,
+                  })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
                 {errors.dimensions?.height && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -415,9 +464,21 @@ export default function AddProductForm() {
                 <Label htmlFor='weight'>Berat (gr)</Label>
                 <Input
                   id='weight'
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
                   placeholder='0'
-                  {...register("dimensions.weight", { required: true, min: 1, valueAsNumber: true })}
+                  className='w-full'
+                  {...register("dimensions.weight", {
+                    required: true,
+                    min: 1,
+                    valueAsNumber: true,
+                  })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
                 {errors.dimensions?.weight && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
               </div>
@@ -437,10 +498,21 @@ export default function AddProductForm() {
               <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
               <Input
                 id='price'
-                type='number'
-                className='rounded-l-none'
+                type='text'
+                inputMode='numeric'
                 placeholder='10.000.000'
-                {...register("price", { required: true, min: 1, valueAsNumber: true })}
+                className='rounded-l-none'
+                {...register("price", {
+                  required: true,
+                  min: 1,
+                  valueAsNumber: true,
+                })}
+                onKeyDown={(e) => {
+                  const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                  if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
               />
             </div>
             {errors.price && <p className='text-red-500 text-sm mt-1'>Harga produk tidak boleh 0 atau kosong</p>}
@@ -535,10 +607,17 @@ export default function AddProductForm() {
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='dailyPrice'
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
+                  placeholder='10.000.000'
                   className='rounded-l-none'
-                  placeholder='100.000'
                   {...register("rentalOptions.dailyPrice", { required: watchRentalOptions.daily, min: 1, valueAsNumber: true })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
               </div>
               {errors.rentalOptions?.dailyPrice && <p className='text-red-500 text-sm mt-1'>Harga harian tidak boleh 0 atau kosong</p>}
@@ -558,10 +637,17 @@ export default function AddProductForm() {
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='weeklyPrice'
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
+                  placeholder='10.000.000'
                   className='rounded-l-none'
-                  placeholder='2.000.000'
                   {...register("rentalOptions.weeklyPrice", { required: watchRentalOptions.weekly, min: 1, valueAsNumber: true })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
               </div>
               {errors.rentalOptions?.weeklyPrice && <p className='text-red-500 text-sm mt-1'>Harga mingguan tidak boleh 0 atau kosong</p>}
@@ -581,10 +667,17 @@ export default function AddProductForm() {
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='monthlyPrice'
-                  type='number'
-                  className='rounded-l-none'
+                  type='text'
+                  inputMode='numeric'
                   placeholder='10.000.000'
+                  className='rounded-l-none'
                   {...register("rentalOptions.monthlyPrice", { required: watchRentalOptions.monthly, min: 1, valueAsNumber: true })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
               </div>
               {errors.rentalOptions?.monthlyPrice && <p className='text-red-500 text-sm mt-1'>Harga bulanan tidak boleh 0 atau kosong</p>}
@@ -603,13 +696,20 @@ export default function AddProductForm() {
               <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
               <Input
                 id='deposit'
-                type='number'
+                type='text'
+                inputMode='numeric'
+                placeholder='10.000.000'
                 className='rounded-l-none'
-                placeholder='0'
                 {...register("rentalOptions.deposit", {
                   valueAsNumber: true,
                   min: { value: 0, message: "Deposit tidak boleh negatif" },
                 })}
+                onKeyDown={(e) => {
+                  const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                  if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
               />
             </div>
             {errors.rentalOptions?.deposit && <p className='text-red-500 text-sm mt-1'>{errors.rentalOptions.deposit.message}</p>}
@@ -711,14 +811,21 @@ export default function AddProductForm() {
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='buy_price'
-                  type='number'
-                  className='rounded-l-none'
+                  type='text'
+                  inputMode='numeric'
                   placeholder='10.000.000'
+                  className='rounded-l-none'
                   {...register("rentToBuy.buy_price", {
                     required: "Harga beli wajib diisi jika Rent to Buy aktif",
                     valueAsNumber: true,
                     min: { value: 1, message: "Harga beli harus lebih dari 0" },
                   })}
+                  onKeyDown={(e) => {
+                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
+                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
               </div>
               {errors.rentToBuy?.buy_price && <p className='text-red-500 text-sm mt-1'>{errors.rentToBuy.buy_price.message}</p>}

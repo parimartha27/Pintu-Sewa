@@ -35,9 +35,11 @@ const NavigationBarSeller: React.FC = () => {
     })
   }, [])
 
+  const defaultImage = "https://res.cloudinary.com/dtizgexle/image/upload/v1749995104/logoTOko_fshgim.jpg"
+
   // Default fallback values
   const shopName = shopInformation.shopName || "Shop Name"
-  const shopImage = shopInformation.shopImage || "/default-shop-image.png"
+  const shopImage = shopInformation.shopImage || defaultImage.trim()
   return (
     <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>
       <div className='h-[24px] bg-color-primaryDark w-full'></div>

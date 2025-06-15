@@ -7,7 +7,6 @@ import Chat from "@/public/chat.svg"
 import { Button } from "@/components/ui/button"
 import Star from "@/public/star.svg"
 import { useRouter } from "next/navigation"
-import Product from "@/public/productTest.jpeg"
 import { ShopHeaderProps } from "@/types/shopDetail"
 import { chatBaseUrl } from "@/types/globalVar"
 import axios from "axios"
@@ -19,28 +18,27 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
   const [shopId, setShopId] = useState<string | null>("")
   const router = useRouter()
 
-    console.log(data)
+  const storeImageDefault = "https://res.cloudinary.com/dtizgexle/image/upload/v1749995104/logoTOko_fshgim.jpg"
 
-    const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-      const target = e.currentTarget;
-      e.preventDefault();
-  
-      setShopId(target.getAttribute("data-shopid"))
-  
-      try {
-        const response = await axios.post(
-          `${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`
-        );
-        router.push('/chat')
-      } catch (err: any) {
-          if(err.response.data.error_schema.error_code == "PS-10-001"){
-            router.push('/chat')
-          }else{
-            console.log(err);
-          }
+  console.log(data)
+
+  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.currentTarget
+    e.preventDefault()
+
+    setShopId(target.getAttribute("data-shopid"))
+
+    try {
+      const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`)
+      router.push("/chat")
+    } catch (err: any) {
+      if (err.response.data.error_schema.error_code == "PS-10-001") {
+        router.push("/chat")
+      } else {
+        console.log(err)
       }
     }
-  
+  }
 
   useEffect(() => {
     setShopId(data.id)
@@ -53,7 +51,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
           className='w-16 h-16 sm:w-[100px] sm:h-[100px] self-center rounded-full object-cover'
           width={100}
           height={100}
-          src={data.image ?? Product}
+          src={data.image ?? storeImageDefault}
           alt='guest'
         />
         <div className='flex flex-col items-center sm:items-start'>
@@ -81,13 +79,15 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:space-x-7 space-y-4 sm:space-y-0 w-full sm:w-auto">
-        <div className="flex flex-col items-center space-y-1">
-          <div className="flex items-center space-x-1">
-            <Image className="w-4 h-4 sm:w-5 sm:h-5" src={Star} alt="star" />
-            <h3 className="text-lg sm:text-xl text-color-primary font-semibold">
-              {data.rating || "Belum Ada Penilaian"}
-            </h3>
+      <div className='flex flex-col sm:flex-row sm:space-x-7 space-y-4 sm:space-y-0 w-full sm:w-auto'>
+        <div className='flex flex-col items-center space-y-1'>
+          <div className='flex items-center space-x-1'>
+            <Image
+              className='w-4 h-4 sm:w-5 sm:h-5'
+              src={Star}
+              alt='star'
+            />
+            <h3 className='text-lg sm:text-xl text-color-primary font-semibold'>{data.rating || "Belum Ada Penilaian"}</h3>
           </div>
           <h3 className='text-xs sm:text-sm text-color-primary text-center'>Rating dan Ulasan</h3>
         </div>
@@ -109,7 +109,7 @@ const ShopHeader = ({ data }: { data: ShopHeaderProps }) => {
 
         <div className='flex flex-col items-center space-y-1'>
           <div className='flex items-center space-x-1'>
-            <h3 className='text-lg sm:text-xl text-color-primary font-semibold'>{data.work_hours || "Sampe Bangkrut"}</h3>
+            <h3 className='text-lg sm:text-xl text-color-primary font-semibold'>{data.work_hours || "08:00-17:00"}</h3>
           </div>
           <h3 className='text-xs sm:text-sm text-color-primary text-center'>Jam Operasional Toko</h3>
         </div>

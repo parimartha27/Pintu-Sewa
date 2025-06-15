@@ -78,7 +78,7 @@ function DefaultLayout({ shopData, loading }: DefaultLayoutProps) {
     <>
       {" "}
       <EditShopProfileForm
-        title='Profil Toko - Seller Profile Body'
+        title='Profil Toko'
         iconName='Edit'
         link='edit'
       >

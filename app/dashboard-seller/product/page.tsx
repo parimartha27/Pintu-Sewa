@@ -1,4 +1,3 @@
-// app/seller/products/page.tsx
 "use client"
 
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
