@@ -3,7 +3,7 @@
 import SellerLayout from "@/components/layout/dashboard-seller/Layout"
 import AddProductForm from "@/components/fragments/dashboard-seller/product/AddProductForm"
 
-const ChatSeller = () => {
+const AddProductPage = () => {
   return (
     <SellerLayout>
       <AddProductForm />
@@ -11,4 +11,4 @@ const ChatSeller = () => {
   )
 }
 
-export default ChatSeller
+export default AddProductPage
