@@ -324,8 +324,8 @@ const Navbar = ({ type }: NavbarProps) => {
                 )}
 
                 <Link
-                  // href='/chat'
-                  href="/dev"
+                  href='/chat'
+                  // href="/dev"
                   className="hidden lg:block hover:opacity-75"
                 >
                   <Image
