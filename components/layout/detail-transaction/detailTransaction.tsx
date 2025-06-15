@@ -170,7 +170,6 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
   }
 
   const handleCancelTransaction = () => {
-    // Backend membutuhkan customerId untuk pengembalian dana
     const transactionCustomerId = typeof window != "undefined" ? localStorage.getItem("customerId") : null
     if (!transactionCustomerId) {
       toast("Customer ID tidak ditemukan untuk transaksi ini.")

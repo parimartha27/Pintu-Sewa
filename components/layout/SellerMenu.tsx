@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { LayoutDashboard, MessageSquare, History, Package, Wallet, User, Settings, LogOut, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { useRouter } from "next/navigation"
 
 interface SellerMenuProps {
   className?: string
@@ -29,6 +30,14 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
   const [isProductOpen, setIsProductOpen] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    localStorage.removeItem("shopId")
+    localStorage.removeItem("shopName")
+    localStorage.removeItem("shopImage")
+    router.push("/")
+  }
 
   // Close mobile SellerMenu when path changes
   useEffect(() => {
@@ -155,12 +164,18 @@ const SellerMenu = ({ className }: SellerMenuProps) => {
             </Collapsible>
 
             <Button
+              onClick={handleSignOut}
               variant='ghost'
               size='sm'
-              className='w-full justify-start gap-2 text-red-500 mt-4'
+              className='w-full justify-start text-red-500'
             >
-              <LogOut className='h-4 w-4' />
-              <span>Logout</span>
+              <a
+                href={"/"}
+                className='flex items-center gap-2 rounded-md text-sm font-medium transition-colors'
+              >
+                <LogOut className='h-4 w-4' />
+                <span>Logout</span>
+              </a>
             </Button>
           </div>
         </div>
