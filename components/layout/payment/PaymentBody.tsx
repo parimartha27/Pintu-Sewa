@@ -31,9 +31,10 @@ const PaymentBody = () => {
     isWrong: true,
   });
 
-  const { customerId } = useAuth();
+  const {customerId} = useAuth();
 
   const generateAccountNumber = (method: string) => {
+
     const prefixes: Record<string, string> = {
       "BCA Virtual Account": "1234",
       "BRI Virtual Account": "5678",
@@ -49,12 +50,8 @@ const PaymentBody = () => {
 
   useEffect(() => {
     const storedAmount = localStorage.getItem("grandTotalPayment") || "0";
-    let storedMethod =
+    const storedMethod =
       localStorage.getItem("paymentMethod") || "Unknown Method";
-
-    if (storedMethod === "Pintu_Sewa_Wallet") {
-      storedMethod = "Pintu Sewa Wallet";
-    }
 
     const formattedDeadline =
       new Date(Date.now() + 2 * 60 * 60 * 1000).toLocaleString("id-ID", {
@@ -120,22 +117,21 @@ const PaymentBody = () => {
         } else {
           setAlertState({
             isOpen: true,
-            message:
-              "Saldo Tidak Cukup.\nTopup Wallet Pada Menu Profile Terlebih Dahulu!",
-          });
+            message: "Saldo Tidak Cukup.\nTopup Wallet Pada Menu Profile Terlebih Dahulu!",
+          })
         }
       } else {
         setAlertState({
           isOpen: true,
           message: "Gagal Memperbaharui Status Transaksi",
-        });
+        })
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setAlertState({
         isOpen: true,
         message: "Pembayaran Gagal, Silahkan Coba Lagi",
-      });
+      })
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +147,7 @@ const PaymentBody = () => {
       "BCA Virtual Account": "/BCA.svg",
       "BRI Virtual Account": "/BRI.svg",
       "BNI Virtual Account": "/BNI.svg",
-      "Pintu Sewa Wallet": "/pintuSewa.svg",
+      "Pintu_Sewa_Wallet": "/pintuSewa.svg",
       Ovo: "/ovo.jpg",
       Gopay: "/gopay.jpg",
     };
@@ -217,7 +213,7 @@ const PaymentBody = () => {
               <Card className="w-full">
                 <CardHeader className="flex flex-col md:flex-row md:items-center border-b p-0 mx-6 py-6 md:justify-between space-y-2 md:space-y-0">
                   <CardTitle className="text-lg md:text-xl font-semibold text-color-primary  w-full">
-                    {paymentData.method}
+                    {paymentData.method === "Pintu_Sewa_Wallet" ? "Pintu Sewa Wallet" : paymentData.method}
                   </CardTitle>
                   <div className="hidden md:flex items-center justify-center w-[200px] h-[40px] ">
                     <Image
