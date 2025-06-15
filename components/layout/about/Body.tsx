@@ -58,7 +58,7 @@ const AboutBody = () => {
             />
             <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-11/12 bg-white bg-opacity-90 px-4 py-3 rounded-md">
               <p className="text-lg font-semibold text-gray-900">Putu Agus Parimartha</p>
-              <p className="text-sm text-gray-500">Developers</p>
+              <p className="text-sm text-gray-500">Developer</p>
             </div>
           </div>
           <div className="relative w-full md:w-[320px] border-2 rounded-lg overflow-hidden shadow-md">
@@ -73,7 +73,7 @@ const AboutBody = () => {
               <p className="text-lg font-semibold text-gray-900">
                 Andryan
               </p>
-              <p className="text-sm text-gray-500">Developers</p>
+              <p className="text-sm text-gray-500">Developer</p>
             </div>
           </div>
           <div className="relative w-full md:w-[320px] border-2 rounded-lg overflow-hidden shadow-md">
@@ -88,7 +88,7 @@ const AboutBody = () => {
               <p className="text-lg font-semibold text-gray-900">
                 Steven Matthew
               </p>
-              <p className="text-sm text-gray-500">Developers</p>
+              <p className="text-sm text-gray-500">Developer</p>
             </div>
           </div>
         </div>
