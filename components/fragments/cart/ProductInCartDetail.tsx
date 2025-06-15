@@ -70,7 +70,7 @@ const ProductInCartDetail = ({
     isWrong: true,
   });
   const today = new Date();
-  const disableUntil = addDays(today, 4);
+  const disableUntil = addDays(today, 5);
   // let showError = false;
 
   // if (cartItem.start_rent_date) {

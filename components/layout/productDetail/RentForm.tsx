@@ -60,7 +60,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
   const [endDate, setEndDate] = useState<Date | undefined>(() => {
     const baseDate = new Date();
 
-    let daysToAdd = 1;
+    let daysToAdd = 0;
     if (duration === "1 Minggu") daysToAdd = 7;
     else if (duration === "1 Bulan") daysToAdd = 30;
 
@@ -86,7 +86,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
 
     const diffInTime = endDate.getTime() - startDate.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
-    const days = diffInDays < 1 ? 1 : diffInDays;
+    const days = diffInDays < 1 ? 1 : diffInDays + 1;
 
     let total = 0;
     let remainingDays = days;
@@ -150,7 +150,7 @@ const RentForm = ({ productDetail }: { productDetail: ProductDetailProps }) => {
       minDays = 30;
     }
 
-    if (dayDiff < minDays) {
+    if (dayDiff < minDays - 1) {
       return { valid: false, message: `Durasi sewa minimal ${minDays} hari` };
     }
 
