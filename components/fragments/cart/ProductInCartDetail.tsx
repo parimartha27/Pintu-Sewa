@@ -22,7 +22,7 @@ import {
   differenceInWeeks,
   differenceInMonths,
   format,
-  isValid,
+  // isValid,
 } from "date-fns";
 import { parseIndoDateToISO } from "@/hooks/useIndoDate";
 import Alert from "@/components/layout/Alert";
@@ -71,14 +71,14 @@ const ProductInCartDetail = ({
   });
   const today = new Date();
   const disableUntil = addDays(today, 4);
-  let showError = false;
+  // let showError = false;
 
-  if (cartItem.start_rent_date) {
-    const parsedDate = new Date(cartItem.start_rent_date);
-    if (isValid(parsedDate) && isBefore(parsedDate, disableUntil)) {
-      showError = true;
-    }
-  }
+  // if (cartItem.start_rent_date) {
+  //   const parsedDate = new Date(cartItem.start_rent_date);
+  //   if (isValid(parsedDate) && isBefore(parsedDate, disableUntil)) {
+  //     showError = true;
+  //   }
+  // }
 
   const { customerId } = useAuth();
 
@@ -397,7 +397,7 @@ const ProductInCartDetail = ({
               </Popover>
             </div>
 
-            {showError && (
+            {(cartItem.date_error) && (
               <p className="text-red-500 text-sm mb-2 font-semibold">
                 Tanggal mulai sewa minimal{" "}
                 {disableUntil.toLocaleDateString("id-ID", {
