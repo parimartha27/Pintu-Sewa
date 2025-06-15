@@ -31,7 +31,7 @@ const PaymentBody = () => {
     isWrong: true,
   });
 
-  const {customerId} = useAuth();
+  const { customerId } = useAuth();
 
   const generateAccountNumber = (method: string) => {
     const prefixes: Record<string, string> = {
@@ -93,44 +93,29 @@ const PaymentBody = () => {
       const totalAmount = paymentData.totalAmount.replace(/\./g, "");
       const payload = {
         reference_numbers: referenceNumbers,
-        next_status: "Diproses",
+        payment_method:paymentData.method,
+        customer_id:customerId,
+        amount: parseInt(localStorage.getItem("grandTotalPayment") || "0"),
       };
-      console.log(payload);
-      const updateStatusResponse = await axios.patch(
-        `${transactionDetailBaseUrl}/set-status`,
+      const response = await axios.patch(
+        `${transactionDetailBaseUrl}/payment`,
         payload
       );
 
-      if (updateStatusResponse.data.error_schema.error_code === "PS-00-000") {
-        const paymentResponse = await axios.patch(
-          `${walletBaseUrl}/payment?customerId=${customerId}&amount=${totalAmount}&refference_no=${referenceNumbers}`
-        );
-
-        if (paymentResponse.data.error_schema.error_code === "PS-00-000") {
-          localStorage.removeItem("grandTotalPayment");
-          localStorage.removeItem("paymentMethod");
-          localStorage.removeItem("paymentData");
-          localStorage.removeItem("transactionIds");
-          localStorage.removeItem("referenceNo");
-          setIsSuccessPaymentOpen(true);
-        } else {
-          setAlertState({
-            isOpen: true,
-            message: "Saldo Tidak Cukup.\nTopup Wallet Pada Menu Profile Terlebih Dahulu!",
-          })
-        }
-      } else {
-        setAlertState({
-          isOpen: true,
-          message: "Gagal Memperbaharui Status Transaksi",
-        })
+      if (response.data.error_schema.error_code === "PS-00-000") {
+        localStorage.removeItem("grandTotalPayment");
+        localStorage.removeItem("paymentMethod");
+        localStorage.removeItem("paymentData");
+        localStorage.removeItem("transactionIds");
+        localStorage.removeItem("referenceNo");
+        setIsSuccessPaymentOpen(true);
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     } catch (error) {
       setAlertState({
         isOpen: true,
         message: "Pembayaran Gagal, Silahkan Coba Lagi",
-      })
+      });
     } finally {
       setIsLoading(false);
     }
@@ -146,7 +131,7 @@ const PaymentBody = () => {
       "BCA Virtual Account": "/BCA.svg",
       "BRI Virtual Account": "/BRI.svg",
       "BNI Virtual Account": "/BNI.svg",
-      "Cimb Niaga": "/cimbNiaga.jpg",
+      "CIMB Niaga": "/cimbNiaga.jpg",
       Ovo: "/ovo.jpg",
       Gopay: "/gopay.jpg",
     };

@@ -16,10 +16,12 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { TransactionResponseProps } from "@/types/checkout";
 import { formatToRupiah } from "@/hooks/useConvertRupiah";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertProps } from "@/types/alert";
 import Alert from "../Alert";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { transactionDetailBaseUrl } from "@/types/globalVar";
 
 const MetodePembayaranLayout = ({
   checkoutDetail,
@@ -35,12 +37,37 @@ const MetodePembayaranLayout = ({
     isWrong: true,
   });
 
+  const processPayment = async () => {
+    try {
+      const stored =
+        typeof window !== "undefined"
+          ? localStorage.getItem("referenceNo")
+          : null;
+      const referenceNumbers: string[] = stored ? JSON.parse(stored) : [];
+      const payload = {
+        reference_numbers: referenceNumbers,
+      };
+      const response = await axios.patch(
+        `${transactionDetailBaseUrl}/process`,
+        payload
+      );
+
+      if (response.data.error_schema.error_code === "PS-00-000") {
+        router.push("/payment");
+      } else {
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error processing transaction:", error);
+    }
+  };
+
   const handlePayment = () => {
     if (!selectedMethod) {
       setAlertState({
         isOpen: true,
         message: "Pilih Metode Pembayaran Terlebih Dahulu!",
-      })
+      });
       return;
     }
 
@@ -50,7 +77,7 @@ const MetodePembayaranLayout = ({
       checkoutDetail?.grand_total_payment?.toString() ?? "0"
     );
 
-    router.push("/payment");
+    processPayment();
   };
 
   return (
