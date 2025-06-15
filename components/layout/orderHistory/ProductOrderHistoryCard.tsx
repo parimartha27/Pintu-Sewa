@@ -1,23 +1,20 @@
-import ProductOrderHistoryContent from "@/components/fragments/orderHistory/ProductOrderHistoryContent";
-import ProductOrderHistoryHeader from "@/components/fragments/orderHistory/ProductOrderHistoryHeader";
-import { Button } from "@/components/ui/button";
-import { Card, CardFooter } from "@/components/ui/card";
-import { OrderHistoryProps } from "@/types/orderHistory";
-import Link from "next/link";
-import { useEffect } from "react";
-import { formatCurrency } from "@/lib/utils";
+import ProductOrderHistoryContent from "@/components/fragments/orderHistory/ProductOrderHistoryContent"
+import ProductOrderHistoryHeader from "@/components/fragments/orderHistory/ProductOrderHistoryHeader"
+import { Button } from "@/components/ui/button"
+import { Card, CardFooter } from "@/components/ui/card"
+import { OrderHistoryProps } from "@/types/orderHistory"
+import Link from "next/link"
+import { useEffect } from "react"
+import { formatCurrency } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
-const OrderStatusCard = ({
-  orderHistoryProps,
-}: {
-  orderHistoryProps: OrderHistoryProps;
-}) => {
-  const handleDetailClick = () => {
-    localStorage.setItem(
-      "reference_number",
-      orderHistoryProps.reference_number
-    );
-  };
+const OrderStatusCard = ({ orderHistoryProps }: { orderHistoryProps: OrderHistoryProps }) => {
+  const router = useRouter()
+
+  const HandleLacakProduk = () => {
+    localStorage.setItem("reference_number", orderHistoryProps.reference_number)
+    router.push("/order-history/lacak-produk")
+  }
 
   useEffect(() => {
     console.log("OBJEK ORDER HISTORY: ", orderHistoryProps);
@@ -55,7 +52,7 @@ const OrderStatusCard = ({
           </Link>
           {(orderHistoryProps.status === "Dikirim" ||
             orderHistoryProps.status === "Dikembalikan") && (
-            <Button className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-color-primary bg-transparent border border-color-primaryDark hover:bg-slate-200">
+            <Button onClick={HandleLacakProduk} className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-color-primary bg-transparent border border-color-primaryDark hover:bg-slate-200">
               Lacak Produk
             </Button>
           )}
