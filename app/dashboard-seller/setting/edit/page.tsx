@@ -190,18 +190,11 @@ const SettingSeller = () => {
         formData.append("image", imageFile)
       }
 
-      // Debug: Log form data
-      formData.forEach((value, key) => {
-        console.log(`Data submitted: ${key}:`, value)
-      })
-
       const response = await axios.put(`${shopBaseUrl}/edit`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
-
-      console.log("res edit shop profile", response)
 
       if (response.data.error_schema?.error_message === "SUCCESS") {
         localStorage.setItem("shopImage", response.data.output_schema.image)

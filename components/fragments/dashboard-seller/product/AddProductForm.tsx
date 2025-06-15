@@ -175,9 +175,6 @@ export default function AddProductForm() {
         image: uploadedImages.length > 0 ? uploadedImages[0] : "",
       }
 
-      // console.log("Data Asli dari Form (terstruktur):", data)
-      // console.log("Payload yang Dikirim ke Backend:", payload)
-
       const response = await axios.post(`${productBaseUrl}/add`, payload)
 
       setAlertState({
