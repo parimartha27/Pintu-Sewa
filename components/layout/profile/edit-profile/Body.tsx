@@ -331,6 +331,7 @@ const EditProfileBody = () => {
                   onSubmit={handleSubmit}
                   className="flex flex-col space-y-5"
                 >
+                
                   <LabelledInput
                     label="Username"
                     htmlFor="username"
