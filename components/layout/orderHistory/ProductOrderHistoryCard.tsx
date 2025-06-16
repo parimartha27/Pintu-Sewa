@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation"
 
 const OrderStatusCard = ({ orderHistoryProps }: { orderHistoryProps: OrderHistoryProps }) => {
   const router = useRouter()
-
   const HandleLacakProduk = () => {
     localStorage.setItem("reference_number", orderHistoryProps.reference_number)
     router.push("/order-history/lacak-produk")
