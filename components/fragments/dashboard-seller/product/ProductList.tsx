@@ -1,343 +1,302 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Search, Plus, Filter, ChevronDown, Trash2, Edit } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { useState, useEffect, useTransition, useCallback } from "react"
+import { useRouter } from "next/navigation"
+import axios from "axios"
+import { MoreHorizontal, PlusCircle, Star } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
 
 interface Product {
   id: string
   name: string
-  sku: string
-  price: number
+  category: string
+  daily_price: number
+  weekly_price: number
+  monthly_price: number
   stock: number
-  isActive: boolean
-  imageUrl: string
+  status: "AVAILABLE" | "UNAVAILABLE" | "AVAIABLE"
+  main_image: string
+  rating: number
+  rnb: boolean
 }
 
-const DaftarProduk = () => {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "1",
-      name: "Novel Karangan Parimartha",
-      sku: "SKU",
-      price: 10000000,
-      stock: 100,
-      isActive: true,
-      imageUrl: "/images/book.jpg",
-    },
-    {
-      id: "2",
-      name: "Novel Karangan Parimartha",
-      sku: "SKU",
-      price: 10000000,
-      stock: 100,
-      isActive: false,
-      imageUrl: "/images/book.jpg",
-    },
-    {
-      id: "3",
-      name: "Novel Karangan Parimartha",
-      sku: "SKU",
-      price: 10000000,
-      stock: 100,
-      isActive: true,
-      imageUrl: "/images/book.jpg",
-    },
-  ])
+interface OutputSchema {
+  current_page: number
+  total_items: number
+  total_pages: number
+  products: Product[]
+}
 
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState("semua")
-  const [isLoading, setIsLoading] = useState(false)
+interface ApiResponse {
+  error_schema: { error_code: string; error_message: string }
+  output_schema: OutputSchema
+}
 
-  const fetchProducts = async () => {
+interface ProductFilterParams {
+  search?: string
+  page?: number
+}
+
+function formatCurrency(amount: number): string {
+  if (amount === 0) return "-"
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(amount)
+}
+
+const apiClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/product",
+  headers: { "Content-Type": "application/json" },
+})
+
+const shopId = typeof window != "undefined" ? localStorage.getItem("shopId") : null
+
+const getProductsByShop = async (params: ProductFilterParams): Promise<ApiResponse> => {
+  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, v]) => v != null && v !== ""))
+  const { data } = await apiClient.get(`/shop/penyedia-jasa/${shopId}`, { params: filteredParams })
+  return data
+}
+
+const deleteProduct = async (productId: string): Promise<any> => {
+  const { data } = await apiClient.delete(`/delete/${productId}`)
+  return data
+}
+
+// --- MAIN COMPONENT ---
+export default function ProductDashboardPage() {
+  const router = useRouter()
+
+  // Ganti dengan shopId dari sesi login atau sumber lain
+  const shopId = "ganti-dengan-shop-id-asli"
+
+  const [data, setData] = useState<ApiResponse | null>(null)
+  const [filters, setFilters] = useState<ProductFilterParams>({ search: "", page: 0 })
+  const [searchTerm, setSearchTerm] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [isDeleting, startDeleteTransition] = useTransition()
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null)
+
+  // Debounce untuk search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, search: searchTerm, page: 0 }))
+    }, 500)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [searchTerm])
+
+  const fetchProducts = useCallback(async () => {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
+      const result = await getProductsByShop(shopId, filters)
+      setData(result)
+    } catch (error) {
+      console.error("Fetch error:", error)
+      toast("Terjadi kesalahan saat mengambil data produk dari server.")
+    } finally {
       setIsLoading(false)
-    } catch (error) {
-      console.error("Error fetching products:", error)
-      setIsLoading(false)
     }
-  }
-
-  const deleteProduct = async (productId: string) => {
-    try {
-      // Uncomment dan sesuaikan kode berikut untuk mengintegrasikan dengan API
-      // await axios.delete(`/api/seller/products/${productId}`);
-      setProducts(products.filter((product) => product.id !== productId))
-      setSelectedProducts(selectedProducts.filter((id) => id !== productId))
-    } catch (error) {
-      console.error("Error deleting product:", error)
-    }
-  }
-
-  // Fungsi untuk mengubah status aktif produk
-  const toggleProductStatus = async (productId: string, isActive: boolean) => {
-    try {
-      // Uncomment dan sesuaikan kode berikut untuk mengintegrasikan dengan API
-      // await axios.patch(`/api/seller/products/${productId}`, { isActive });
-      setProducts(products.map((product) => (product.id === productId ? { ...product, isActive } : product)))
-    } catch (error) {
-      console.error("Error updating product status:", error)
-    }
-  }
-
-  // Fungsi untuk memilih semua produk
-  const selectAllProducts = (checked: boolean) => {
-    if (checked) {
-      setSelectedProducts(filteredProducts.map((product) => product.id))
-    } else {
-      setSelectedProducts([])
-    }
-  }
-
-  // Fungsi untuk memilih produk individual
-  const toggleProductSelection = (productId: string) => {
-    if (selectedProducts.includes(productId)) {
-      setSelectedProducts(selectedProducts.filter((id) => id !== productId))
-    } else {
-      setSelectedProducts([...selectedProducts, productId])
-    }
-  }
-
-  // Filter produk berdasarkan tab aktif dan pencarian
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.sku.toLowerCase().includes(searchQuery.toLowerCase())
-
-    if (activeTab === "semua") return matchesSearch
-    if (activeTab === "aktif") return matchesSearch && product.isActive
-
-    return matchesSearch
-  })
-
-  // Format angka dengan pemisah ribuan
-  const formatPrice = (price: number) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-  }
+  }, [shopId, filters, toast])
 
   useEffect(() => {
-    // fetchProducts();
-  }, [])
+    if (shopId) {
+      fetchProducts()
+    }
+  }, [fetchProducts, shopId])
+
+  const handleDelete = async () => {
+    if (!productToDelete) return
+
+    startDeleteTransition(async () => {
+      try {
+        await deleteProduct(productToDelete.id)
+        toast(`Berhasil  Dihapus ✅ \n
+          Produk "${productToDelete.name}" telah dihapus.`)
+        setProductToDelete(null)
+        fetchProducts()
+      } catch (error: any) {
+        toast("Produk ini tidak dapat dihapus karena masih ada transaksi berlangsung.")
+        setProductToDelete(null)
+      }
+    })
+  }
+
+  const products = data?.output_schema?.products || []
 
   return (
     <>
-      <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl font-semibold text-color-primary'>Daftar Produk</h1>
-        <a href='/dashboard-seller/product/add'>
-          <Button className='bg-custom-gradient-tr hover:bg-color-secondary'>
-            <Plus className='mr-2 h-4 w-4' />
+      <div className='space-y-6 bg-white text-primary-dark p-4 md:p-8 rounded-lg shadow-md'>
+        <div className='flex items-center justify-between'>
+          <div>
+            <h1 className='text-2xl font-bold text-primary-dark'>Daftar Produk</h1>
+            <p className='text-gray-500'>Kelola semua produk Anda di sini.</p>
+          </div>
+          <Button
+            onClick={() => router.push("/dashboard-seller/product/add")}
+            className='bg-primary-blue hover:bg-blue-900 text-white'
+          >
+            <PlusCircle className='mr-2 h-4 w-4' />
             Tambah Produk
           </Button>
-        </a>
+        </div>
+
+        <div className='flex items-center'>
+          <Input
+            placeholder='Cari nama produk...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='max-w-sm border-gray-300 focus:ring-primary-blue focus:border-primary-blue'
+          />
+        </div>
+
+        <div className='rounded-md border'>
+          <Table>
+            <TableHeader>
+              <TableRow className='bg-gray-50 hover:bg-gray-100'>
+                <TableHead className='text-primary-dark font-semibold'>Produk</TableHead>
+                <TableHead className='text-primary-dark font-semibold'>Harga Harian</TableHead>
+                <TableHead className='text-primary-dark font-semibold'>Harga Mingguan</TableHead>
+                <TableHead className='text-primary-dark font-semibold'>Harga Bulanan</TableHead>
+                <TableHead className='text-primary-dark font-semibold'>Stok</TableHead>
+                <TableHead className='text-primary-dark font-semibold'>Status</TableHead>
+                <TableHead className='text-primary-dark font-semibold'>Rating</TableHead>
+                <TableHead className='text-right text-primary-dark font-semibold'>Aksi</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    className='h-48 text-center text-gray-500'
+                  >
+                    Memuat data produk...
+                  </TableCell>
+                </TableRow>
+              ) : products.length > 0 ? (
+                products.map((product) => (
+                  <TableRow
+                    key={product.id}
+                    className='hover:bg-gray-50'
+                  >
+                    <TableCell>
+                      <div className='flex items-center space-x-3'>
+                        <img
+                          src={product.main_image}
+                          alt={product.name}
+                          className='h-12 w-12 rounded-lg object-cover'
+                        />
+                        <div>
+                          <div className='font-medium text-primary-dark'>{product.name}</div>
+                          <div className='text-sm text-gray-500'>{product.category}</div>
+                          {product.rnb && (
+                            <Badge
+                              variant='secondary'
+                              className='mt-1'
+                            >
+                              RnB
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{formatCurrency(product.daily_price)}</TableCell>
+                    <TableCell>{formatCurrency(product.weekly_price)}</TableCell>
+                    <TableCell>{formatCurrency(product.monthly_price)}</TableCell>
+                    <TableCell className='font-medium'>{product.stock}</TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={product.status.toUpperCase() === "AVAILABLE"}
+                        disabled
+                        className='data-[state=checked]:bg-primary-blue'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className='flex items-center space-x-1'>
+                        <Star className='h-4 w-4 text-yellow-400 fill-yellow-400' />
+                        <span>{product.rating.toFixed(1)}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant='ghost'
+                            className='h-8 w-8 p-0'
+                          >
+                            <span className='sr-only'>Buka menu</span>
+                            <MoreHorizontal className='h-4 w-4' />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align='end'>
+                          <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            onClick={() => router.push(`/dashboard-seller/product/edit/${product.id}`)}
+                            className='cursor-pointer'
+                          >
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className='text-red-600 focus:text-white focus:bg-red-600 cursor-pointer'
+                            onSelect={() => setProductToDelete(product)}
+                          >
+                            Hapus
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    className='h-48 text-center text-gray-500'
+                  >
+                    Tidak ada produk yang cocok dengan pencarian Anda.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
-      <Card className='border border-gray-200 rounded-lg shadow-sm'>
-        {/* Tab Navigation */}
-        <div className='border-b border-gray-200 px-6 py-4'>
-          <div className='flex space-x-6'>
-            <button
-              className={`pb-4 ${activeTab === "semua" ? "text-color-secondary border-b-2 border-color-secondary font-medium" : "text-gray-500"}`}
-              onClick={() => setActiveTab("semua")}
+      <AlertDialog
+        open={!!productToDelete}
+        onOpenChange={() => setProductToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Penghapusan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus produk
+              <span className='font-bold text-primary-dark'> {productToDelete?.name}</span>? Aksi ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className='bg-red-600 hover:bg-red-700 text-white'
             >
-              Semua Produk (2)
-            </button>
-            <button
-              className={`pb-4 ${activeTab === "aktif" ? "text-color-secondary border-b-2 border-color-secondary font-medium" : "text-gray-500"}`}
-              onClick={() => setActiveTab("aktif")}
-            >
-              Aktif (2)
-            </button>
-          </div>
-        </div>
-
-        {/* Search and Filter */}
-        <div className='p-6 border-b border-gray-200'>
-          <div className='flex flex-col md:flex-row gap-4'>
-            <div className='relative flex-grow'>
-              <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                <Search className='h-5 w-5 text-gray-400' />
-              </div>
-              <Input
-                type='text'
-                placeholder='Cari produk Anda'
-                className='pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
-            <div className='flex flex-wrap gap-2'>
-              <div className='relative'>
-                <Button
-                  variant='outline'
-                  className='flex items-center gap-2 border border-gray-300'
-                >
-                  <Filter className='h-4 w-4' />
-                  Filter
-                  <ChevronDown className='h-4 w-4' />
-                </Button>
-              </div>
-
-              <div className='relative'>
-                <Button
-                  variant='outline'
-                  className='flex items-center gap-2 border border-gray-300'
-                >
-                  Filter Spesial
-                  <ChevronDown className='h-4 w-4' />
-                </Button>
-              </div>
-
-              <div className='relative'>
-                <Button
-                  variant='outline'
-                  className='flex items-center gap-2 border border-gray-300'
-                >
-                  Kategori
-                  <ChevronDown className='h-4 w-4' />
-                </Button>
-              </div>
-
-              <div className='relative'>
-                <Button
-                  variant='outline'
-                  className='flex items-center gap-2 border border-gray-300'
-                >
-                  Urutkan
-                  <ChevronDown className='h-4 w-4' />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Product Table */}
-        <CardContent>
-          <div className='overflow-x-auto'>
-            <table className='w-full'>
-              <thead className='bg-gray-50'>
-                <tr>
-                  <th className='px-4 py-3 text-left'>
-                    <div className='flex items-center'>
-                      <Checkbox
-                        checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
-                        onCheckedChange={(checked) => selectAllProducts(checked === true)}
-                      />
-                      <span className='ml-2'>Pilih Semua Produk</span>
-                    </div>
-                  </th>
-                  <th className='px-4 py-3 text-left'>Harga</th>
-                  <th className='px-4 py-3 text-left'>Kelengkapan</th>
-                  <th className='px-4 py-3 text-left'>Stok</th>
-                  <th className='px-4 py-3 text-left'>Aktif</th>
-                  <th className='px-4 py-3 text-left'>Pengaturan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProducts.map((product) => (
-                  <tr
-                    key={product.id}
-                    className='border-b border-gray-200 hover:bg-gray-50'
-                  >
-                    <td className='px-4 py-4'>
-                      <div className='flex items-center'>
-                        <Checkbox
-                          checked={selectedProducts.includes(product.id)}
-                          onCheckedChange={() => toggleProductSelection(product.id)}
-                        />
-                        <div className='ml-4 flex items-center'>
-                          <div className='h-16 w-16 bg-gray-200 rounded-md overflow-hidden'>
-                            <img
-                              src={product.imageUrl}
-                              alt={product.name}
-                              className='h-full w-full object-cover'
-                              onError={(e) => {
-                                ;(e.target as HTMLImageElement).src = "/placeholder.png"
-                              }}
-                            />
-                          </div>
-                          <div className='ml-4'>
-                            <p className='font-medium text-gray-900'>{product.name}</p>
-                            <p className='text-gray-500'>{product.sku}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className='px-4 py-4'>
-                      <div className='relative'>
-                        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                          <span className='text-gray-500'>Rp</span>
-                        </div>
-                        <Input
-                          type='text'
-                          className='pl-10 pr-4 py-2 border border-gray-300 rounded-md w-32'
-                          value={formatPrice(product.price)}
-                          onChange={(e) => {
-                            // Handle price change logic
-                          }}
-                        />
-                      </div>
-                    </td>
-                    <td className='px-4 py-4'>
-                      <Button
-                        variant='outline'
-                        className='flex items-center gap-2 border border-gray-300'
-                      >
-                        Rent to Buy
-                        <ChevronDown className='h-4 w-4' />
-                      </Button>
-                    </td>
-                    <td className='px-4 py-4'>
-                      <Input
-                        type='number'
-                        className='px-4 py-2 border border-gray-300 rounded-md w-24'
-                        value={product.stock}
-                        onChange={(e) => {
-                          // Handle stock change logic
-                        }}
-                      />
-                    </td>
-                    <td className='px-4 py-4'>
-                      <Switch
-                        checked={product.isActive}
-                        onCheckedChange={(checked) => toggleProductStatus(product.id, checked)}
-                      />
-                    </td>
-                    <td className='px-4 py-4'>
-                      <div className='relative'>
-                        <Button
-                          variant='outline'
-                          className='flex items-center gap-2 border border-gray-300'
-                        >
-                          Atur
-                          <ChevronDown className='h-4 w-4' />
-                        </Button>
-                        <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 hidden'>
-                          <div className='py-1'>
-                            <button className='flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left'>
-                              <Trash2 className='h-4 w-4 mr-2' /> Hapus
-                            </button>
-                            <button className='flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left'>
-                              <Edit className='h-4 w-4 mr-2' /> Edit
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+              {isDeleting ? "Menghapus..." : "Ya, Hapus Produk"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
-
-export default DaftarProduk
