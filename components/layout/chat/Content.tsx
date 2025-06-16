@@ -48,7 +48,7 @@ const ChatContentLayout = () => {
     // return () => clearInterval(interval);
   }, []);
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return <div className="p-6 min-h-[500px]"></div>;
 
   return (
     <div className="flex w-full min-h-[500px] mb-36 shadow-md">

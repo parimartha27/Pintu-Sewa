@@ -21,12 +21,12 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
   const router = useRouter()
 
   const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const target = e.currentTarget
     e.preventDefault()
 
     try {
       const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`)
       router.push("/chat")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.response.data.error_schema.error_code == "PS-10-001") {
         router.push("/chat")
@@ -72,7 +72,6 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
         </div>
         <Button
           className='flex max-w-[72px] max-h-[28px] lg:max-h-8 h-full gap-x-1 mt-3 bg-transparent hover:bg-slate-200 border-[1px] border-color-primaryDark'
-          data-shopid={shopDetail.id}
           onClick={createRoomChat}
         >
           <Image

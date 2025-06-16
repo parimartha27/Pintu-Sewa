@@ -70,7 +70,8 @@ const ProductInCartDetail = ({
     isWrong: true,
   });
   const today = new Date();
-  const disableUntil = addDays(today, 5);
+  const disableUntil = addDays(today, 4);
+  const enableDate = addDays(today, 5);
   // let showError = false;
 
   // if (cartItem.start_rent_date) {
@@ -209,13 +210,13 @@ const ProductInCartDetail = ({
 
     switch (unit) {
       case "day":
-        isValid = differenceInDays(endDate, startDate) >= value;
+        isValid = differenceInDays(endDate, startDate) + 1 >= value;
         break;
       case "week":
-        isValid = differenceInWeeks(endDate, startDate) >= value;
+        isValid = differenceInWeeks(endDate, startDate) + 1 >= value;
         break;
       case "month":
-        isValid = differenceInMonths(endDate, startDate) >= value;
+        isValid = differenceInMonths(endDate, startDate) + 1 >= value;
         break;
     }
 
@@ -239,6 +240,7 @@ const ProductInCartDetail = ({
         end_rent_date: format(endDate, "yyyy-MM-dd"),
       };
 
+      console.log("payload ubah tanggal: ", payload);
       const res = await axios.put(`${cartBaseUrl}/edit`, payload);
 
       if (res.data.error_schema.error_message === "SUCCESS") {
@@ -400,7 +402,7 @@ const ProductInCartDetail = ({
             {(cartItem.date_error) && (
               <p className="text-red-500 text-sm mb-2 font-semibold">
                 Tanggal mulai sewa minimal{" "}
-                {disableUntil.toLocaleDateString("id-ID", {
+                {enableDate.toLocaleDateString("id-ID", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",

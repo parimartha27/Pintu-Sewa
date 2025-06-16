@@ -5,6 +5,10 @@ import { CardHeader } from "@/components/ui/card";
 import Chat from "@/public/chat.svg";
 import { Shop } from "@/types/orderHistory";
 import { useRouter } from "next/navigation";
+import { chatBaseUrl } from "@/types/globalVar";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 interface OrderStatusCardProps {
   status: string;
@@ -19,9 +23,31 @@ const ProductOrderHistoryHeader = ({
   reference_number,
   shop,
 }: OrderStatusCardProps) => {
+  const { customerId } = useAuth()
+  const [shopId, setShopId] = useState<string | null>("")
   const router = useRouter();
   let bgColor = "bg-gray-300";
   let textColor = "text-black";
+
+  const createRoomChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+
+    try {
+      const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopId}`)
+      router.push("/chat")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      if (err.response.data.error_schema.error_code == "PS-10-001") {
+        router.push("/chat")
+      } else {
+        console.log(err)
+      }
+    }
+  }
+
+   useEffect(() => {
+      setShopId(shop.id)
+    }, [])
 
   switch (status) {
     case "Belum Dibayar":
@@ -73,7 +99,7 @@ const ProductOrderHistoryHeader = ({
           {shop.name || "Toko Tidak Diketahui"}
         </h2>
         <Button
-          onClick={() => router.push(`/chat`)}
+          onClick={createRoomChat}
           className="flex items-center gap-x-1 px-2 py-1 rounded-sm bg-transparent hover:bg-slate-200 border border-color-primaryDark text-xs sm:text-sm"
         >
           <Image
