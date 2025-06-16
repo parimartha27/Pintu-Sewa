@@ -53,7 +53,7 @@ const WalletSeller = () => {
     dashboard: true,
     wallet: true,
   })
-  const [error, setError] = useState<string | null>(null)
+
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
@@ -72,7 +72,13 @@ const WalletSeller = () => {
         router.push("/create-shop")
       }
     } catch (err: any) {
-      console.log("Error access dahsboard seller", err)
+      setAlertState({
+        isOpen: true,
+        message: "Terjadi kesalahan!",
+        onClose: () => {
+          router.push("/dashboard")
+        },
+      })
     }
   }
 
@@ -87,12 +93,13 @@ const WalletSeller = () => {
       setWalletHistory(wallet)
       setLoading({ dashboard: false, wallet: false })
     } catch (err) {
-      console.error("Error fetching data:", err)
-      setError(err instanceof Error ? err.message : "Failed to fetch data")
       setLoading({ dashboard: false, wallet: false })
       setAlertState({
         isOpen: true,
-        message: err instanceof Error ? err.message : "Failed to fetch data",
+        message: "Terjadi kesalahan!",
+        onClose: () => {
+          router.push("/dashboard")
+        },
       })
     }
   }
@@ -105,21 +112,16 @@ const WalletSeller = () => {
     }
   }, [shopId])
 
-  if (error) {
-    return (
-      <SellerLayout>
-        <div className='p-4 text-red-500'>{error}</div>
-      </SellerLayout>
-    )
-  }
-
   return (
     <SellerLayout>
       {alertState.isOpen && (
         <Alert
           message={alertState.message}
           isOpen={alertState.isOpen}
-          onClose={() => setAlertState({ isOpen: false, message: "" })}
+          onClose={() => {
+            setAlertState({ ...alertState, isOpen: false })
+            if (alertState.onClose) alertState.onClose()
+          }}
           isWrong={alertState.isWrong}
         />
       )}

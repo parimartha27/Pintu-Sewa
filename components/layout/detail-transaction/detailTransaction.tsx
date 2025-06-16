@@ -61,7 +61,6 @@ interface TransactionDetailContentProps {
 
 const api = axios.create({ baseURL: transactionBaseUrl })
 
-// Definisikan tipe payload sesuai DTO Backend
 type PaymentPayload = { reference_numbers: string[]; payment_method: string; customer_id: string; amount: number }
 type ShippingPayload = { reference_number: string; shipping_code: string }
 type ReturnPayload = { reference_number: string; return_code: string }
@@ -77,7 +76,6 @@ const handleApiCall = async (request: Promise<any>) => {
   return response.data
 }
 
-// Kumpulan fungsi untuk memanggil API
 const apiService = {
   payment: (payload: PaymentPayload) => handleApiCall(api.patch("/transaction-detail/payment", payload)),
   ship: (payload: ShippingPayload) => handleApiCall(api.patch("/transaction-detail/set-shipping", payload)),
@@ -182,6 +180,7 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     performAction(apiService.cancel(payload), "Transaksi telah dibatalkan.")
   }
 
+<<<<<<< Updated upstream
   const handleDoneTransaction = (e: React.FormEvent) => {
     e.preventDefault()
     console.log(customerId)
@@ -189,6 +188,11 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     
     // Backend membutuhkan customerId untuk pengembalian deposit
     if (!customerId) {
+=======
+  const handleDoneTransaction = () => {
+    const transactionCustomerId = typeof window != "undefined" ? localStorage.getItem("customerId") : null
+    if (!transactionCustomerId) {
+>>>>>>> Stashed changes
       toast("Customer ID tidak ditemukan untuk transaksi ini.")
       return
     }

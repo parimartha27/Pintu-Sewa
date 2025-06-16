@@ -3,13 +3,21 @@
 import Image from "next/image"
 import Link from "next/link"
 import PintuSewaSeller from "@/public/pintuSewaSeler.png"
+import { useState, useEffect } from "react"
 
 const NavigationBarSeller: React.FC = () => {
   const defaultImage = "https://res.cloudinary.com/dtizgexle/image/upload/v1749995104/logoTOko_fshgim.jpg"
 
-  // Default fallback values
-  const shopName = typeof window != "undefined" ? localStorage.getItem("shopName") : "Shop Name"
-  const shopImage = typeof window != "undefined" ? localStorage.getItem("shopImage") : defaultImage.trim()
+  const [shopName, setShopName] = useState("Shop Name")
+  const [shopImage, setShopImage] = useState(defaultImage)
+
+  useEffect(() => {
+    const name = localStorage.getItem("shopName")
+    const image = localStorage.getItem("shopImage")
+
+    if (name) setShopName(name)
+    if (image) setShopImage(image)
+  }, [])
 
   return (
     <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>

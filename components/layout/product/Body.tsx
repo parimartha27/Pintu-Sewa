@@ -55,12 +55,9 @@ const ProductBodyContent = () => {
       try {
         setLoading(true)
         const url = `${filteredProductBaseUrl}?categories=${category}&name=${name}&rentDurations=${filters.rentDuration}&locations=${filters.location}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&isRnbOptions=${filters.isRnb}&minRatings=${filters.minRating}&page=${page}&size=${size}`
-        console.log(url)
+
         const response = await axios.get<ProductResponse>(url)
-        console.log(response)
-
         setProducts(response.data.output_schema.content)
-
         setTotalPages(response.data.output_schema.total_pages || 1)
       } catch (error) {
         console.log(error)
@@ -112,11 +109,6 @@ const ProductBodyContent = () => {
 
           <div className='flex flex-col items-center w-full h-auto space-y-3 md:space-y-16'>
             <div className='w-full xl:pl-20 flex flex-col'>
-              {/* {error && (
-                <>
-                  <NoProduct /> <div className='hidden md:block lg:hidden bg-color-layout h-[50px]'></div>
-                </>
-              )} */}
               {loading ? (
                 <ProductList
                   products={[]}
