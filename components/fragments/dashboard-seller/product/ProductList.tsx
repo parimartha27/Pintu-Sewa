@@ -75,9 +75,6 @@ const deleteProduct = async (productId: string): Promise<any> => {
 export default function ProductDashboardPage() {
   const router = useRouter()
 
-  // Ganti dengan shopId dari sesi login atau sumber lain
-  const shopId = "ganti-dengan-shop-id-asli"
-
   const [data, setData] = useState<ApiResponse | null>(null)
   const [filters, setFilters] = useState<ProductFilterParams>({ search: "", page: 0 })
   const [searchTerm, setSearchTerm] = useState("")
