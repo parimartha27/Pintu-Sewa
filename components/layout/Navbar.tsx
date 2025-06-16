@@ -266,8 +266,8 @@ const Navbar = ({ type }: NavbarProps) => {
                 ) : (
                   <>
                     <Link
-                      // href='/chat'
-                      href="/dev"
+                      href='/chat'
+                      // href="/dev"
                       className="hidden hover:opacity-75 md:block lg:hidden"
                     >
                       <Image
@@ -307,8 +307,8 @@ const Navbar = ({ type }: NavbarProps) => {
                         </button>
                         <button
                           className="block w-full text-left text-color-primaryDark p-2 hover:bg-color-third"
-                          // onClick={() => router.push("/chat")}
-                          onClick={() => router.push("/dev")}
+                          onClick={() => router.push("/chat")}
+                          // onClick={() => router.push("/dev")}
                         >
                           Chat
                         </button>
@@ -324,8 +324,8 @@ const Navbar = ({ type }: NavbarProps) => {
                 )}
 
                 <Link
-                  // href='/chat'
-                  href="/dev"
+                  href='/chat'
+                  // href="/dev"
                   className="hidden lg:block hover:opacity-75"
                 >
                   <Image

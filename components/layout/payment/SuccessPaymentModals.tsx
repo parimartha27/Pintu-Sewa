@@ -21,7 +21,8 @@ const SuccessPaymentModals = () => {
         className="w-[80px] h-[80px] sm:w-[120px] sm:h-[120px] lg:w-[150px] lg:h-[150px]"
       />
       <p
-        onClick={() => router.push("/dev/end-flow")}
+        // onClick={() => router.push("/dev/end-flow")}
+        onClick={() => router.push("/")}
         className="text-sm text-color-primaryDark hover:opacity-70 hover:cursor-pointer"
       >
         Selanjutnya
