@@ -25,12 +25,14 @@ import {
 } from "@/components/ui/collapsible";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Package } from "lucide-react";
+import ConfirmLogoutModal from "../fragments/ConfirmLogoutModal";
 
 const ProfileSidebarLayout = () => {
   const pathname = usePathname();
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/login" });
 
@@ -223,7 +225,7 @@ const ProfileSidebarLayout = () => {
                         height={20}
                       />
                       <h4
-                        onClick={handleSignOut}
+                        onClick={() => setIsConfirmOpen(true)}
                         className="text-color-primary text-xs lg:text-sm font-medium group-hover:underline"
                       >
                         Logout
@@ -236,6 +238,11 @@ const ProfileSidebarLayout = () => {
           </div>
         </div>
       </div>
+      <ConfirmLogoutModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleSignOut}
+      ></ConfirmLogoutModal>
     </div>
   );
 };

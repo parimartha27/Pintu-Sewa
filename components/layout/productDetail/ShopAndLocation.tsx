@@ -26,6 +26,7 @@ const ShopAndLocation = ({ shopDetail }: { shopDetail: ProductDetailShopProps })
     try {
       const response = await axios.post(`${chatBaseUrl}/create-roomchat?customerId=${customerId}&shopId=${shopDetail.id}`)
       router.push("/chat")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.response?.data?.error_schema?.error_code === "PS-10-001") {
         router.push("/chat")
