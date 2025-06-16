@@ -110,6 +110,11 @@ const PaymentBody = () => {
         localStorage.removeItem("transactionIds");
         localStorage.removeItem("referenceNo");
         setIsSuccessPaymentOpen(true);
+      }else if(response.data.error_schema.error_code === "PS-99-999"){
+        setAlertState({
+        isOpen: true,
+        message: "Pembayaran Gagal, Periksa Saldo Anda",
+      });
       }
 
     } catch (error) {
