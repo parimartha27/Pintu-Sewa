@@ -1,7 +1,15 @@
+// app/dashboard-seller/product/edit/[productId]/page.tsx
+
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { useForm, Controller, useWatch } from "react-hook-form"
+import axios, { AxiosError } from "axios"
+
+import { productBaseUrl } from "@/types/globalVar"
+import { AlertProps } from "@/types/alert"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -9,19 +17,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import axios from "axios"
-import { X, Upload } from "lucide-react"
-import { AlertProps } from "@/types/alert"
 import Alert from "@/components/layout/Alert"
-import { productBaseUrl } from "@/types/globalVar"
+import { X, Upload } from "lucide-react"
 
-interface ProductFormData {
+// Tipe data untuk form, didefinisikan secara manual
+interface EditProductFormData {
   name: string
   category: string
-  photos: string[]
   stock: number
-  price: number
   description: string
+  conditionDescription: string
   dimensions: {
     length: number
     width: number
@@ -32,521 +37,453 @@ interface ProductFormData {
     daily: boolean
     weekly: boolean
     monthly: boolean
-
-    dailyPrice: number
-    weeklyPrice: number
-    monthlyPrice: number
-
+    dailyPrice?: number
+    weeklyPrice?: number
+    monthlyPrice?: number
     deposit: number
   }
-  minimumRentalDuration: number
-  rentToBuy: {
-    is_rnb: boolean
-
-    buy_price: number
-  }
-  shippingService: string
+  minRented: number
+  isRnb: boolean
+  buyPrice?: number
+  status: string
 }
 
-export interface EditProductRequest {
-  shop_id: string | null
+// Tipe data dari API GET (snake_case)
+interface ProductDetailApiResponse {
+  id: string
   name: string
   category: string
   rent_category: number
   is_rnb: boolean
-  buy_price?: number
-  deposit: number
   weight: number
   height: number
   width: number
   length: number
-  daily_price?: number
-  weekly_price?: number
-  monthly_price?: number
+  daily_price: number | null
+  weekly_price: number | null
+  monthly_price: number | null
   description: string
   condition_description: string
   stock: number
   min_rented: number
   status: string
-  image: string
+  image: string // Sesuai info terakhir, ini adalah string
+  // Field lain yang mungkin ada dari backend, seperti buy_price dan deposit
+  buy_price?: number
+  deposit?: number
 }
 
-export default function EditProductForm() {
+export default function EditProductPage() {
+  const router = useRouter()
+  const params = useParams()
+  const productId = params.productId as string
+
   const [shopId, setShopId] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [uploadedImages, setUploadedImages] = useState<string[]>([])
+
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+
   const [alertState, setAlertState] = useState<AlertProps>({
     isOpen: false,
     message: "",
     isWrong: true,
-    onClose() {
-      window.location.href = "/dashboard-seller/product/add"
-    },
   })
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedShopId = localStorage.getItem("shopId")
-      if (storedShopId) {
-        setShopId(storedShopId)
-      } else {
-        setAlertState({
-          isOpen: true,
-          message: "ID Toko tidak ditemukan. Harap login kembali.",
-          isWrong: true,
-        })
-      }
-    }
-  }, [])
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isValid },
-  } = useForm<ProductFormData>({
+  } = useForm<EditProductFormData>({
     mode: "onChange",
-
-    defaultValues: {
-      name: "",
-      category: "",
-      stock: 0,
-      price: 0,
-      description: "",
-      dimensions: { length: 0, width: 0, height: 0, weight: 0 },
-      rentalOptions: {
-        daily: false,
-        weekly: false,
-        monthly: false,
-        dailyPrice: 0,
-        weeklyPrice: 0,
-        monthlyPrice: 0,
-        deposit: 0,
-      },
-      minimumRentalDuration: 1,
-      rentToBuy: {
-        is_rnb: false,
-        buy_price: 0,
-      },
-      shippingService: "",
-    },
   })
 
   const watchRentalOptions = useWatch({ control, name: "rentalOptions" })
-  const watchRentToBuy = useWatch({ control, name: "rentToBuy.is_rnb" })
+  const watchIsRnb = useWatch({ control, name: "isRnb" })
 
-  const calculateRentalType = () => {
-    let type = 0
+  const fetchProductData = useCallback(async () => {
+    if (!productId) return
+    setIsLoading(true)
+    try {
+      const response = await axios.get<{ output_schema: ProductDetailApiResponse }>(`${productBaseUrl}/${productId}`)
+      const product = response.data.output_schema
 
-    if (watchRentalOptions.daily) type += 1
-    if (watchRentalOptions.weekly) type += 2
-    if (watchRentalOptions.monthly) type += 4
-    return type
+      const defaultValues: EditProductFormData = {
+        name: product.name,
+        category: product.category,
+        stock: product.stock,
+        description: product.description,
+        conditionDescription: product.condition_description,
+        dimensions: {
+          length: product.length,
+          width: product.width,
+          height: product.height,
+          weight: product.weight,
+        },
+        rentalOptions: {
+          daily: (product.rent_category & 1) === 1,
+          weekly: (product.rent_category & 2) === 2,
+          monthly: (product.rent_category & 4) === 4,
+          dailyPrice: product.daily_price ?? undefined,
+          weeklyPrice: product.weekly_price ?? undefined,
+          monthlyPrice: product.monthly_price ?? undefined,
+          deposit: product.deposit ?? 0,
+        },
+        minRented: product.min_rented,
+        isRnb: product.is_rnb,
+        buyPrice: product.buy_price ?? undefined,
+        status: product.status,
+      }
+
+      reset(defaultValues)
+      if (product.image && product.image.length > 0) {
+        setImagePreviews(product.image.split(";"))
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data produk:", error)
+      setAlertState({ isOpen: true, message: "Gagal mengambil data produk. Coba lagi nanti.", isWrong: true })
+    } finally {
+      setIsLoading(false)
+    }
+  }, [productId, reset])
+
+  useEffect(() => {
+    const storedShopId = localStorage.getItem("shopId")
+    if (storedShopId) {
+      setShopId(storedShopId)
+      fetchProductData()
+    } else {
+      setAlertState({ isOpen: true, message: "ID Toko tidak ditemukan. Harap login kembali.", isWrong: true })
+    }
+  }, [fetchProductData])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+
+    const newImageFiles = Array.from(files)
+    setImageFiles(newImageFiles.slice(0, 5))
+    const newPreviews = newImageFiles.map((file) => URL.createObjectURL(file))
+    setImagePreviews(newPreviews.slice(0, 5))
   }
 
-  const onSubmit = async (data: ProductFormData) => {
+  const removeImage = (indexToRemove: number) => {
+    setImagePreviews((prev) => prev.filter((_, i) => i !== indexToRemove))
+    setImageFiles((prev) => prev.filter((_, i) => i !== indexToRemove))
+  }
+
+  const onSubmit = async (data: EditProductFormData) => {
     if (!shopId) {
       setAlertState({ isOpen: true, message: "Tidak dapat mengirim, ID Toko tidak valid.", isWrong: true })
       return
     }
+    if (imageFiles.length === 0 && imagePreviews.length === 0) {
+      setAlertState({ isOpen: true, message: "Produk harus memiliki setidaknya satu gambar.", isWrong: true })
+      return
+    }
+
     setIsSubmitting(true)
-    try {
-      const payload: EditProductRequest = {
-        shop_id: shopId,
-        name: data.name,
-        category: data.category,
-        stock: data.stock,
-        description: data.description,
-        condition_description: data.description,
-        rent_category: calculateRentalType(),
-        is_rnb: data.rentToBuy.is_rnb,
-        buy_price: data.rentToBuy.is_rnb ? data.rentToBuy.buy_price : undefined,
-        deposit: data.rentalOptions.deposit,
-        min_rented: data.minimumRentalDuration,
-        length: data.dimensions.length,
-        width: data.dimensions.width,
-        height: data.dimensions.height,
-        weight: data.dimensions.weight,
+    const formData = new FormData()
 
-        daily_price: watchRentalOptions.daily ? data.rentalOptions.dailyPrice : undefined,
-        weekly_price: watchRentalOptions.weekly ? data.rentalOptions.weeklyPrice : undefined,
-        monthly_price: watchRentalOptions.monthly ? data.rentalOptions.monthlyPrice : undefined,
-        status: "AVAIABLE",
-        image: uploadedImages.length > 0 ? uploadedImages[0] : "",
+    const appendIfDefined = (key: string, value: any) => {
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        formData.append(key, String(value))
       }
+    }
 
-      // console.log("Data Asli dari Form (terstruktur):", data)
-      // console.log("Payload yang Dikirim ke Backend:", payload)
+    formData.append("shopId", shopId)
+    appendIfDefined("name", data.name)
+    appendIfDefined("category", data.category)
+    appendIfDefined("stock", data.stock)
+    appendIfDefined("description", data.description)
+    appendIfDefined("conditionDescription", data.conditionDescription)
+    appendIfDefined("length", data.dimensions.length)
+    appendIfDefined("width", data.dimensions.width)
+    appendIfDefined("height", data.dimensions.height)
+    appendIfDefined("weight", data.dimensions.weight)
+    appendIfDefined("minRented", data.minRented)
+    appendIfDefined("status", data.status)
+    appendIfDefined("isRnb", data.isRnb)
 
-      const response = await axios.post(`${productBaseUrl}/add`, payload)
+    let rentCategory = 0
+    if (data.rentalOptions.daily) rentCategory += 1
+    if (data.rentalOptions.weekly) rentCategory += 2
+    if (data.rentalOptions.monthly) rentCategory += 4
+    formData.append("rentCategory", String(rentCategory))
+
+    if (data.rentalOptions.daily) appendIfDefined("dailyPrice", data.rentalOptions.dailyPrice)
+    if (data.rentalOptions.weekly) appendIfDefined("weeklyPrice", data.rentalOptions.weeklyPrice)
+    if (data.rentalOptions.monthly) appendIfDefined("monthlyPrice", data.rentalOptions.monthlyPrice)
+
+    appendIfDefined("deposit", data.rentalOptions.deposit)
+    if (data.isRnb) appendIfDefined("buyPrice", data.buyPrice)
+
+    if (imageFiles.length > 0) {
+      imageFiles.forEach((file) => {
+        formData.append("images", file)
+      })
+    }
+
+    try {
+      await axios.put(`${productBaseUrl}/edit/${productId}`, formData)
 
       setAlertState({
         isOpen: true,
-        message: "Sukses Menambahkan Produk",
+        message: "Sukses Memperbarui Produk!",
         isWrong: false,
+        onClose: () => router.push("/dashboard-seller/product"),
       })
     } catch (error) {
-      console.error("Error adding product:", error)
-      const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || String(error.message) : String(error)
-      setAlertState({ isOpen: true, message: `Gagal Menambahkan Produk: ${errorMessage}`, isWrong: true })
+      console.error("Error updating product:", error)
+      const err = error as AxiosError<{ error_schema: { error_message: string } }>
+      const errorMessage = err.response?.data?.error_schema?.error_message || "Terjadi kesalahan"
+      setAlertState({ isOpen: true, message: `Gagal Memperbarui Produk: ${errorMessage}`, isWrong: true })
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
-
-    const newImages = [...uploadedImages]
-    for (let i = 0; i < files.length; i++) {
-      if (newImages.length < 5) {
-        const file = files[i]
-        const imageUrl = URL.createObjectURL(file)
-        newImages.push(imageUrl)
-      }
-    }
-    setUploadedImages(newImages)
-  }
-
-  const removeImage = (index: number) => {
-    const newImages = [...uploadedImages]
-    newImages.splice(index, 1)
-    setUploadedImages(newImages)
+  if (isLoading) {
+    return (
+      <main className='container py-10'>
+        <h1 className='text-2xl font-semibold mb-6'>Memuat Data Produk...</h1>
+        <div className='space-y-6'>
+          <div className='h-48 bg-gray-200 rounded-lg w-full animate-pulse'></div>
+          <div className='h-96 bg-gray-200 rounded-lg w-full animate-pulse'></div>
+          <div className='h-72 bg-gray-200 rounded-lg w-full animate-pulse'></div>
+        </div>
+      </main>
+    )
   }
 
   return (
-    <main className='container'>
+    <main className='container py-10'>
       {alertState.isOpen && (
         <Alert
           message={alertState.message}
           isOpen={alertState.isOpen}
-          onClose={() => setAlertState({ isOpen: false, message: "", isWrong: true })}
+          onClose={alertState.onClose || (() => setAlertState((prev) => ({ ...prev, isOpen: false })))}
           isWrong={alertState.isWrong}
         />
       )}
-      <h1 className='text-2xl font-semibold mb-6'>Tambah Produk</h1>
+      <h1 className='text-2xl font-semibold mb-6'>Edit Produk</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Informasi Produk</h2>
           <div className='mb-6'>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='name'
-                className='font-medium'
-              >
-                Nama Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Nama produk maksimal 25 karakter. Dengan minimal jumlah produk, tips produk yang relevan produk</div>
+            <Label
+              htmlFor='name'
+              className='font-medium'
+            >
+              Nama Produk <span className='text-red-500'>*</span>
+            </Label>
+            <div className='text-sm text-gray-500 mb-2'>Nama produk maksimal 100 karakter.</div>
             <Input
               id='name'
-              className='w-full'
               placeholder='Contoh: Mobil Toyota Innova Hitam Tahun 2024'
-              {...register("name", { required: true })}
+              {...register("name", {
+                required: "Nama produk tidak boleh kosong",
+                maxLength: { value: 100, message: "Nama produk maksimal 100 karakter" },
+              })}
             />
-            {errors.name && <p className='text-red-500 text-sm mt-1'>Nama produk tidak boleh kosong</p>}
+            {errors.name && <p className='text-red-500 text-sm mt-1'>{errors.name.message}</p>}
           </div>
           <div>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='category'
-                className='font-medium'
-              >
-                Kategori Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Pilih kategori yang sesuai dengan produk yang akan ditawarkan</div>
+            <Label
+              htmlFor='category'
+              className='font-medium'
+            >
+              Kategori Produk <span className='text-red-500'>*</span>
+            </Label>
+            <div className='text-sm text-gray-500 mb-2'>Pilih kategori yang sesuai dengan produk.</div>
             <Controller
               name='category'
               control={control}
-              rules={{ required: true }}
+              rules={{ required: "Kategori produk harus dipilih" }}
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
                 >
-                  <SelectTrigger className='w-full'>
+                  <SelectTrigger>
                     <SelectValue placeholder='Pilih Kategori' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value='Papan Permainan'>Papan Permainan</SelectItem>
                     <SelectItem value='Alat Kesehatan'>Alat Kesehatan</SelectItem>
                     <SelectItem value='Motor'>Motor</SelectItem>
-                    <SelectItem value='Pakaian Wanita'>Pakaian Wanita</SelectItem>
-                    <SelectItem value='Peralatan Bayi'>Peralatan Bayi</SelectItem>
-                    <SelectItem value='Peralatan Sekolah'>Peralatan Sekolah</SelectItem>
-                    <SelectItem value='Pakaian Pria'>Pakaian Pria</SelectItem>
-                    <SelectItem value='Furnitur'>Furnitur</SelectItem>
-                    <SelectItem value='Peralatan Rumah'>Peralatan Rumah</SelectItem>
-                    <SelectItem value='Elektronik'>Elektronik</SelectItem>
-                    <SelectItem value='Alat Tukang'>Alat Tukang</SelectItem>
                     <SelectItem value='Mobil'>Mobil</SelectItem>
-                    <SelectItem value='Handphone'>Handphone</SelectItem>
-                    <SelectItem value='Komputer'>Komputer</SelectItem>
-                    <SelectItem value='Akun subskripsi'>Akun subskripsi</SelectItem>
-                    <SelectItem value='Alat Olahraga'>Alat Olahraga</SelectItem>
+                    <SelectItem value='Elektronik'>Elektronik</SelectItem>
+                    {/* Tambahkan kategori lainnya */}
                   </SelectContent>
                 </Select>
               )}
             />
-            {errors.category && <p className='text-red-500 text-sm mt-1'>Kategori produk harus dipilih</p>}
+            {errors.category && <p className='text-red-500 text-sm mt-1'>{errors.category.message}</p>}
           </div>
         </Card>
 
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Detail Produk</h2>
           <div className='mb-6'>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='photos'
-                className='font-medium'
-              >
-                Foto Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Masukkan foto yang sesuai dan menggambarkan produk yang akan disewakan</div>
-            <div className='text-xs text-gray-500 mb-1'>
-              Format Gambar: JPEG, JPG, PNG <br />
-              Resolusi Gambar: Min 300 × 300 px <br />
-              Ukuran Gambar: Max 1 MB
-            </div>
-            <div className='grid grid-cols-5 gap-4 mb-4'>
-              {[0, 1, 2, 3, 4].map((index) => (
+            <Label className='font-medium'>
+              Foto Produk <span className='text-red-500'>*</span>
+            </Label>
+            <div className='text-sm text-gray-500 mb-2'>Ganti gambar dengan memilih file baru. Gambar lama akan digantikan.</div>
+            <div className='grid grid-cols-2 md:grid-cols-5 gap-4 mb-4'>
+              {imagePreviews.map((src, index) => (
                 <div
                   key={index}
-                  className='border border-dashed border-gray-300 rounded flex items-center justify-center h-24 relative'
+                  className='border rounded h-24 relative'
                 >
-                  {uploadedImages[index] ? (
-                    <>
-                      <img
-                        src={uploadedImages[index]}
-                        alt={`Product ${index + 1}`}
-                        className='h-full w-full object-cover rounded'
-                      />
-                      <button
-                        type='button'
-                        onClick={() => removeImage(index)}
-                        className='absolute top-1 right-1 bg-red-500 text-white rounded-full p-1'
-                      >
-                        <X size={12} />
-                      </button>
-                    </>
-                  ) : index === uploadedImages.length ? (
-                    <label className='cursor-pointer flex flex-col items-center justify-center w-full h-full'>
-                      <Upload
-                        size={24}
-                        className='text-gray-400'
-                      />
-                      <input
-                        type='file'
-                        accept='image/jpeg,image/png,image/jpg'
-                        className='hidden'
-                        onChange={handleImageUpload}
-                      />
-                    </label>
-                  ) : (
-                    <div className='text-gray-300'>
-                      <Upload size={24} />
-                    </div>
-                  )}
+                  <img
+                    src={src}
+                    alt={`Preview ${index + 1}`}
+                    className='h-full w-full object-cover rounded'
+                  />
+                  <button
+                    type='button'
+                    onClick={() => removeImage(index)}
+                    className='absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 leading-none hover:bg-red-700'
+                  >
+                    <X size={12} />
+                  </button>
                 </div>
               ))}
+              {imagePreviews.length < 5 && (
+                <label className='border-dashed border-2 rounded flex items-center justify-center h-24 cursor-pointer hover:border-blue-500'>
+                  <div className='text-center'>
+                    <Upload
+                      size={24}
+                      className='text-gray-400 mx-auto'
+                    />
+                    <span className='text-xs text-gray-500'>Ganti/Tambah</span>
+                  </div>
+                  <input
+                    type='file'
+                    accept='image/jpeg,image/png,image/jpg'
+                    className='hidden'
+                    multiple
+                    onChange={handleImageChange}
+                  />
+                </label>
+              )}
             </div>
-            {uploadedImages.length === 0 && <p className='text-red-500 text-sm'>Minimal satu foto produk diperlukan</p>}
           </div>
+
           <div className='mb-6'>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='stock'
-                className='font-medium'
-              >
-                Stok Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Tambahkan stok secara kasat Biar ketersediaan stok produk yang bisa untuk disewa</div>
+            <Label
+              htmlFor='stock'
+              className='font-medium'
+            >
+              Stok Produk <span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='stock'
-              type='text'
-              inputMode='numeric'
+              type='number'
               placeholder='0'
-              className='w-full'
               {...register("stock", {
-                required: true,
-                min: 1,
+                required: "Stok tidak boleh kosong",
+                min: { value: 1, message: "Stok minimal 1" },
                 valueAsNumber: true,
               })}
-              onKeyDown={(e) => {
-                const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                  e.preventDefault()
-                }
-              }}
             />
-            {errors.stock && <p className='text-red-500 text-sm mt-1'>Stok produk tidak boleh 0 atau kosong</p>}
+            {errors.stock && <p className='text-red-500 text-sm mt-1'>{errors.stock.message}</p>}
           </div>
+
           <div className='mb-6'>
-            <div className='flex justify-between items-center mb-1'>
-              <Label className='font-medium'>
-                Dimensi Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Input ukuran dimensi produk yang akan disewakan</div>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+            <Label className='font-medium'>
+              Dimensi Produk (cm) & Berat (gr) <span className='text-red-500'>*</span>
+            </Label>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mt-2'>
               <div>
                 <Label htmlFor='length'>Panjang (cm)</Label>
                 <Input
                   id='length'
-                  type='text'
-                  inputMode='numeric'
+                  type='number'
                   placeholder='0'
-                  className='w-full'
-                  {...register("dimensions.length", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("dimensions.length", { required: true, min: 0.1, valueAsNumber: true })}
                 />
-                {errors.dimensions?.length && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
+                {errors.dimensions?.length && <p className='text-red-500 text-sm mt-1'>Wajib diisi</p>}
               </div>
               <div>
                 <Label htmlFor='width'>Lebar (cm)</Label>
                 <Input
                   id='width'
-                  type='text'
-                  inputMode='numeric'
+                  type='number'
                   placeholder='0'
-                  className='w-full'
-                  {...register("dimensions.width", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("dimensions.width", { required: true, min: 0.1, valueAsNumber: true })}
                 />
-                {errors.dimensions?.width && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
+                {errors.dimensions?.width && <p className='text-red-500 text-sm mt-1'>Wajib diisi</p>}
               </div>
               <div>
                 <Label htmlFor='height'>Tinggi (cm)</Label>
                 <Input
                   id='height'
-                  type='text'
-                  inputMode='numeric'
+                  type='number'
                   placeholder='0'
-                  className='w-full'
-                  {...register("dimensions.height", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("dimensions.height", { required: true, min: 0.1, valueAsNumber: true })}
                 />
-                {errors.dimensions?.height && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
+                {errors.dimensions?.height && <p className='text-red-500 text-sm mt-1'>Wajib diisi</p>}
               </div>
               <div>
                 <Label htmlFor='weight'>Berat (gr)</Label>
                 <Input
                   id='weight'
-                  type='text'
-                  inputMode='numeric'
+                  type='number'
                   placeholder='0'
-                  className='w-full'
-                  {...register("dimensions.weight", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("dimensions.weight", { required: true, min: 0.1, valueAsNumber: true })}
                 />
-                {errors.dimensions?.weight && <p className='text-red-500 text-sm mt-1'>Nilai harus lebih dari 0</p>}
+                {errors.dimensions?.weight && <p className='text-red-500 text-sm mt-1'>Wajib diisi</p>}
               </div>
             </div>
           </div>
+
           <div className='mb-6'>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='price'
-                className='font-medium'
-              >
-                Harga Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Tulis harga produkmu yang sesuai.</div>
-            <div className='flex items-center'>
-              <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
-              <Input
-                id='price'
-                type='text'
-                inputMode='numeric'
-                placeholder='10.000.000'
-                className='rounded-l-none'
-                {...register("price", {
-                  required: true,
-                  min: 1,
-                  valueAsNumber: true,
-                })}
-                onKeyDown={(e) => {
-                  const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                  if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                    e.preventDefault()
-                  }
-                }}
-              />
-            </div>
-            {errors.price && <p className='text-red-500 text-sm mt-1'>Harga produk tidak boleh 0 atau kosong</p>}
-          </div>
-          <div>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='description'
-                className='font-medium'
-              >
-                Deskripsi Produk <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Tambahkan deskripsi produk dengan highlight keunggulan produk tersebut karena ini akan digunakan sebagai informasi kepada pembeli.</div>
+            <Label
+              htmlFor='description'
+              className='font-medium'
+            >
+              Deskripsi Produk <span className='text-red-500'>*</span>
+            </Label>
             <Textarea
               id='description'
               className='w-full min-h-[120px]'
               placeholder='Deskripsikan lengkap tentang produk...'
-              {...register("description", { required: true })}
+              {...register("description", { required: "Deskripsi produk wajib diisi" })}
             />
-            {errors.description && <p className='text-red-500 text-sm mt-1'>Deskripsi produk tidak boleh kosong</p>}
+            {errors.description && <p className='text-red-500 text-sm mt-1'>{errors.description.message}</p>}
+          </div>
+          <div>
+            <Label
+              htmlFor='conditionDescription'
+              className='font-medium'
+            >
+              Deskripsi Kondisi Produk <span className='text-red-500'>*</span>
+            </Label>
+            <Textarea
+              id='conditionDescription'
+              className='w-full min-h-[120px]'
+              placeholder='Deskripsikan kondisi terkini produk...'
+              {...register("conditionDescription", { required: "Deskripsi kondisi produk wajib diisi" })}
+            />
+            {errors.conditionDescription && <p className='text-red-500 text-sm mt-1'>{errors.conditionDescription.message}</p>}
           </div>
         </Card>
 
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Penyewaan</h2>
-
           <div className='mb-6'>
-            <div className='flex justify-between items-center mb-1'>
-              <Label className='font-medium'>
-                Durasi Penyewaan <span className='text-red-500'>*</span>
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Masukkan opsi durasi penyewaan dalam satuan waktu tertentu, seperti harian, mingguan, bulanan.</div>
+            <Label className='font-medium'>
+              Durasi Penyewaan <span className='text-red-500'>*</span>
+            </Label>
             <div className='flex flex-wrap gap-6 mt-4'>
               <Controller
                 name='rentalOptions.daily'
@@ -591,7 +528,6 @@ export default function EditProductForm() {
                 )}
               />
             </div>
-            {!watchRentalOptions?.daily && !watchRentalOptions?.weekly && !watchRentalOptions?.monthly && <p className='text-red-500 text-sm mt-1'>Pilih minimal satu durasi penyewaan</p>}
           </div>
 
           {watchRentalOptions?.daily && (
@@ -602,25 +538,17 @@ export default function EditProductForm() {
               >
                 Harga Harian
               </Label>
-              <div className='text-sm text-gray-500 mb-2'>Tulis harga produkmu saat durasi sewa harian.</div>
               <div className='flex items-center'>
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='dailyPrice'
-                  type='text'
-                  inputMode='numeric'
-                  placeholder='10.000.000'
+                  type='number'
+                  placeholder='0'
                   className='rounded-l-none'
-                  {...register("rentalOptions.dailyPrice", { required: watchRentalOptions.daily, min: 1, valueAsNumber: true })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("rentalOptions.dailyPrice", { valueAsNumber: true, required: "Harga harian wajib diisi" })}
                 />
               </div>
-              {errors.rentalOptions?.dailyPrice && <p className='text-red-500 text-sm mt-1'>Harga harian tidak boleh 0 atau kosong</p>}
+              {errors.rentalOptions?.dailyPrice && <p className='text-red-500 text-sm mt-1'>{errors.rentalOptions.dailyPrice.message}</p>}
             </div>
           )}
 
@@ -632,25 +560,17 @@ export default function EditProductForm() {
               >
                 Harga Mingguan
               </Label>
-              <div className='text-sm text-gray-500 mb-2'>Tulis harga produkmu saat durasi sewa mingguan.</div>
               <div className='flex items-center'>
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='weeklyPrice'
-                  type='text'
-                  inputMode='numeric'
-                  placeholder='10.000.000'
+                  type='number'
+                  placeholder='0'
                   className='rounded-l-none'
-                  {...register("rentalOptions.weeklyPrice", { required: watchRentalOptions.weekly, min: 1, valueAsNumber: true })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("rentalOptions.weeklyPrice", { valueAsNumber: true, required: "Harga mingguan wajib diisi" })}
                 />
               </div>
-              {errors.rentalOptions?.weeklyPrice && <p className='text-red-500 text-sm mt-1'>Harga mingguan tidak boleh 0 atau kosong</p>}
+              {errors.rentalOptions?.weeklyPrice && <p className='text-red-500 text-sm mt-1'>{errors.rentalOptions.weeklyPrice.message}</p>}
             </div>
           )}
 
@@ -662,25 +582,17 @@ export default function EditProductForm() {
               >
                 Harga Bulanan
               </Label>
-              <div className='text-sm text-gray-500 mb-2'>Tulis harga produkmu saat durasi sewa bulanan.</div>
               <div className='flex items-center'>
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
                   id='monthlyPrice'
-                  type='text'
-                  inputMode='numeric'
-                  placeholder='10.000.000'
+                  type='number'
+                  placeholder='0'
                   className='rounded-l-none'
-                  {...register("rentalOptions.monthlyPrice", { required: watchRentalOptions.monthly, min: 1, valueAsNumber: true })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("rentalOptions.monthlyPrice", { valueAsNumber: true, required: "Harga bulanan wajib diisi" })}
                 />
               </div>
-              {errors.rentalOptions?.monthlyPrice && <p className='text-red-500 text-sm mt-1'>Harga bulanan tidak boleh 0 atau kosong</p>}
+              {errors.rentalOptions?.monthlyPrice && <p className='text-red-500 text-sm mt-1'>{errors.rentalOptions.monthlyPrice.message}</p>}
             </div>
           )}
 
@@ -691,58 +603,40 @@ export default function EditProductForm() {
             >
               Uang Jaminan (Deposit)
             </Label>
-            <div className='text-sm text-gray-500 mb-2'>Masukkan jumlah deposit jika diperlukan. Isi 0 jika tidak ada.</div>
             <div className='flex items-center'>
               <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
               <Input
                 id='deposit'
-                type='text'
-                inputMode='numeric'
-                placeholder='10.000.000'
+                type='number'
+                placeholder='0'
                 className='rounded-l-none'
-                {...register("rentalOptions.deposit", {
-                  valueAsNumber: true,
-                  min: { value: 0, message: "Deposit tidak boleh negatif" },
-                })}
-                onKeyDown={(e) => {
-                  const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                  if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                    e.preventDefault()
-                  }
-                }}
+                {...register("rentalOptions.deposit", { valueAsNumber: true })}
               />
             </div>
-            {errors.rentalOptions?.deposit && <p className='text-red-500 text-sm mt-1'>{errors.rentalOptions.deposit.message}</p>}
           </div>
 
           <div>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='minimumRentalDuration'
-                className='font-medium'
-              >
-                Jumlah Minimum Sewa
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Masukkan jumlah minimum sewa produkmu</div>
+            <Label
+              htmlFor='minRented'
+              className='font-medium'
+            >
+              Jumlah Minimum Sewa (hari) <span className='text-red-500'>*</span>
+            </Label>
             <Controller
-              name='minimumRentalDuration'
+              name='minRented'
               control={control}
               rules={{ required: true, min: 1 }}
               render={({ field }) => (
                 <Select
                   onValueChange={(value) => field.onChange(parseInt(value))}
-                  value={field.value.toString()}
+                  value={String(field.value)}
                 >
-                  <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='3' />
+                  <SelectTrigger>
+                    <SelectValue placeholder='Pilih durasi' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value='1'>1</SelectItem>
-                    <SelectItem value='2'>2</SelectItem>
                     <SelectItem value='3'>3</SelectItem>
-                    <SelectItem value='4'>4</SelectItem>
-                    <SelectItem value='5'>5</SelectItem>
                     <SelectItem value='7'>7</SelectItem>
                     <SelectItem value='14'>14</SelectItem>
                     <SelectItem value='30'>30</SelectItem>
@@ -755,80 +649,45 @@ export default function EditProductForm() {
 
         <Card className='p-6 mb-6'>
           <h2 className='text-lg font-semibold mb-4 text-color-primary pb-4 border-b-[1px]'>Fitur Spesial</h2>
-          <div>
-            <div className='flex justify-between items-center mb-1'>
-              <Label
-                htmlFor='rentToBuy'
-                className='font-medium'
-              >
-                Rent to Buy
-              </Label>
-            </div>
-            <div className='text-sm text-gray-500 mb-2'>Rent to Buy adalah fitur unik pinjaman yang bisa digunakan oleh para seller.</div>
-
+          <div className='flex items-center space-x-2'>
             <Controller
-              name='rentToBuy.is_rnb'
+              name='isRnb'
               control={control}
               render={({ field }) => (
-                <div className='flex items-center space-x-4 mt-2'>
-                  <div className='flex items-center space-x-2'>
-                    <input
-                      type='radio'
-                      id='rentToBuy_ya'
-                      value='true'
-                      checked={field.value === true}
-                      onChange={() => field.onChange(true)}
-                      className='w-4 h-4 text-blue-600'
-                    />
-                    <Label htmlFor='rentToBuy_ya'>Ya</Label>
-                  </div>
-                  <div className='flex items-center space-x-2'>
-                    <input
-                      type='radio'
-                      id='rentToBuy_tidak'
-                      value='false'
-                      checked={field.value === false}
-                      onChange={() => field.onChange(false)}
-                      className='w-4 h-4 text-blue-600'
-                    />
-                    <Label htmlFor='rentToBuy_tidak'>Tidak</Label>
-                  </div>
-                </div>
+                <Checkbox
+                  id='isRnb'
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               )}
             />
+            <Label
+              htmlFor='isRnb'
+              className='font-medium'
+            >
+              Aktifkan Fitur Rent-to-Buy
+            </Label>
           </div>
 
-          {watchRentToBuy && (
-            <div className='mt-6'>
+          {watchIsRnb && (
+            <div className='mt-4'>
               <Label
-                htmlFor='buy_price'
+                htmlFor='buyPrice'
                 className='font-medium'
               >
-                Harga Beli Produk (Rent to Buy)
+                Harga Beli Produk
               </Label>
-              <div className='text-sm text-gray-500 mb-2'>Masukkan harga jika penyewa ingin membeli produk ini.</div>
               <div className='flex items-center'>
                 <span className='bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l'>Rp</span>
                 <Input
-                  id='buy_price'
-                  type='text'
-                  inputMode='numeric'
-                  placeholder='10.000.000'
+                  id='buyPrice'
+                  type='number'
+                  placeholder='0'
                   className='rounded-l-none'
-                  {...register("rentToBuy.buy_price", {
-                    required: "Harga beli wajib diisi jika Rent to Buy aktif",
-                    valueAsNumber: true,
-                    min: { value: 1, message: "Harga beli harus lebih dari 0" },
-                  })}
-                  onKeyDown={(e) => {
-                    const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Tab", "Delete"]
-                    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
-                      e.preventDefault()
-                    }
-                  }}
+                  {...register("buyPrice", { valueAsNumber: true, required: "Harga beli wajib diisi jika fitur aktif" })}
                 />
               </div>
-              {errors.rentToBuy?.buy_price && <p className='text-red-500 text-sm mt-1'>{errors.rentToBuy.buy_price.message}</p>}
+              {errors.buyPrice && <p className='text-red-500 text-sm mt-1'>{errors.buyPrice.message}</p>}
             </div>
           )}
         </Card>
@@ -836,9 +695,9 @@ export default function EditProductForm() {
         <Button
           type='submit'
           className='bg-custom-gradient-tr hover:bg-blue-900 text-white px-8 py-2'
-          disabled={!isValid || isSubmitting || uploadedImages.length === 0 || (!watchRentalOptions?.daily && !watchRentalOptions?.weekly && !watchRentalOptions?.monthly)}
+          disabled={!isValid || isSubmitting || isLoading}
         >
-          {isSubmitting ? "Menambahkan..." : "Tambahkan Produk"}
+          {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
         </Button>
       </form>
     </main>

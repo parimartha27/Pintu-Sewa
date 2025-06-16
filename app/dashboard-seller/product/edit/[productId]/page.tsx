@@ -6,6 +6,7 @@ import EditProductForm from "@/components/fragments/dashboard-seller/product/Edi
 const EditProductPage = () => {
   return (
     <SellerLayout>
+      <p>Halaman Edit Product DEV</p>
       <EditProductForm />
     </SellerLayout>
   )

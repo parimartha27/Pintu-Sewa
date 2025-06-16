@@ -46,7 +46,7 @@ const NavigationBarSeller: React.FC = () => {
                 />
               ) : (
                 <div className='w-[50px] h-[50px] rounded-full bg-gray-300 flex items-center justify-center'>
-                  <span className='text-gray-600 text-sm font-medium'>{shopName.charAt(0).toUpperCase()}</span>
+                  <span className='text-gray-600 text-sm font-medium'>{shopName}</span>
                 </div>
               )}
             </div>
