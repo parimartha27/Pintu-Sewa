@@ -16,7 +16,7 @@ import Dots from "@/public/dots.png";
 import Chat from "@/public/chat.svg";
 import Wallet from "@/public/wallet.svg";
 import { useState } from "react";
-import { signOut } from "next-auth/react";
+//import { signOut } from "next-auth/react";
 import Cookies from "js-cookie";
 import {
   Collapsible,
@@ -26,19 +26,21 @@ import {
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import ConfirmLogoutModal from "../fragments/ConfirmLogoutModal";
+import { useRouter } from "next/navigation";
 
 const ProfileSidebarLayout = () => {
   const pathname = usePathname();
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
+  const router = useRouter();
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/login" });
+    // await signOut({ callbackUrl: "/login" });
 
     localStorage.clear();
     sessionStorage.clear();
     Object.keys(Cookies.get()).forEach((cookie) => Cookies.remove(cookie));
+    router.push("/login");
   };
 
   return (
