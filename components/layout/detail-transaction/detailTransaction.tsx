@@ -69,7 +69,7 @@ type DonePayload = { reference_number: string; customer_id: string }
 type CancelPayload = { reference_number: string; customer_id: string }
 
 const handleApiCall = async (request: Promise<any>) => {
-  const response = await request;
+  const response = await request
   if (response.data?.error_schema?.error_code !== "PS-00-000") {
     throw new Error(response.data?.error_schema?.error_message || "Terjadi kesalahan pada server.")
   }
@@ -81,7 +81,7 @@ const apiService = {
   ship: (payload: ShippingPayload) => handleApiCall(api.patch("/transaction-detail/set-shipping", payload)),
   receive: (payload: BasicPayload) => handleApiCall(api.patch("/transaction-detail/receive-item", payload)),
   return: (payload: ReturnPayload) => handleApiCall(api.patch("/transaction-detail/return-item", payload)),
-  done: (payload: DonePayload) =>  handleApiCall(api.patch("/transaction-detail/done", payload)),
+  done: (payload: DonePayload) => handleApiCall(api.patch("/transaction-detail/done", payload)),
   cancel: (payload: CancelPayload) => handleApiCall(api.patch("/transaction-detail/cancelled", payload)),
   // [MASA DEPAN] Fungsi placeholder
   track: (refNum: string, idPayload: { customer_id?: string; shop_id?: string }) => {
@@ -103,7 +103,6 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
   const { customerId } = useAuth()
   const router = useRouter()
   const shopId = typeof window !== "undefined" ? localStorage.getItem("shopId") : null
-
 
   // State untuk UI & Form
   const [loadingAction, setLoadingAction] = useState<boolean>(false)
@@ -180,19 +179,9 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     performAction(apiService.cancel(payload), "Transaksi telah dibatalkan.")
   }
 
-<<<<<<< Updated upstream
   const handleDoneTransaction = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(customerId)
-    console.log(refNum)
-    
-    // Backend membutuhkan customerId untuk pengembalian deposit
     if (!customerId) {
-=======
-  const handleDoneTransaction = () => {
-    const transactionCustomerId = typeof window != "undefined" ? localStorage.getItem("customerId") : null
-    if (!transactionCustomerId) {
->>>>>>> Stashed changes
       toast("Customer ID tidak ditemukan untuk transaksi ini.")
       return
     }
@@ -202,8 +191,8 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
 
   // --- FUTURE/PLACEHOLDER ACTIONS ---
   const handleTrackProduct = () => {
-    localStorage.setItem('seller_refference_number',transactionData.transaction_detail.reference_number)
-    router.push('/dashboard-seller/transaction-history/track-order');
+    localStorage.setItem("seller_refference_number", transactionData.transaction_detail.reference_number)
+    router.push("/dashboard-seller/transaction-history/track-order")
   }
 
   const handleBuyProduct = () => {
