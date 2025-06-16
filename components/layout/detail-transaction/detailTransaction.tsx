@@ -6,7 +6,7 @@ import { useState } from "react"
 import axios, { AxiosError } from "axios"
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingBag, Loader2 } from "lucide-react"
+import { ShoppingBag, Loader2, Router } from "lucide-react"
 import { useAuth } from "@/hooks/auth/useAuth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,7 +14,8 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { formatCurrency } from "@/lib/utils"
-import { transactionBaseUrl, reviewBaseUrl, trackingBaseUrl } from "@/types/globalVar"
+import { transactionBaseUrl, reviewBaseUrl, trackingBaseUrl, transactionDetailBaseUrl } from "@/types/globalVar"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 interface TransactionResponse {
@@ -69,7 +70,7 @@ type DonePayload = { reference_number: string; customer_id: string }
 type CancelPayload = { reference_number: string; customer_id: string }
 
 const handleApiCall = async (request: Promise<any>) => {
-  const response = await request
+  const response = await request;
   if (response.data?.error_schema?.error_code !== "PS-00-000") {
     throw new Error(response.data?.error_schema?.error_message || "Terjadi kesalahan pada server.")
   }
@@ -82,7 +83,7 @@ const apiService = {
   ship: (payload: ShippingPayload) => handleApiCall(api.patch("/transaction-detail/set-shipping", payload)),
   receive: (payload: BasicPayload) => handleApiCall(api.patch("/transaction-detail/receive-item", payload)),
   return: (payload: ReturnPayload) => handleApiCall(api.patch("/transaction-detail/return-item", payload)),
-  done: (payload: DonePayload) => handleApiCall(api.patch("/transaction-detail/done", payload)),
+  done: (payload: DonePayload) =>  handleApiCall(api.patch("/transaction-detail/done", payload)),
   cancel: (payload: CancelPayload) => handleApiCall(api.patch("/transaction-detail/cancelled", payload)),
   // [MASA DEPAN] Fungsi placeholder
   track: (refNum: string, idPayload: { customer_id?: string; shop_id?: string }) => {
@@ -102,7 +103,9 @@ const apiService = {
 // --- MAIN COMPONENT ---
 export function TransactionDetailContent({ transactionData, role, reFetchData }: TransactionDetailContentProps) {
   const { customerId } = useAuth()
+  const router = useRouter()
   const shopId = typeof window !== "undefined" ? localStorage.getItem("shopId") : null
+
 
   // State untuk UI & Form
   const [loadingAction, setLoadingAction] = useState<boolean>(false)
@@ -179,22 +182,24 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     performAction(apiService.cancel(payload), "Transaksi telah dibatalkan.")
   }
 
-  const handleDoneTransaction = () => {
+  const handleDoneTransaction = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log(customerId)
+    console.log(refNum)
+    
     // Backend membutuhkan customerId untuk pengembalian deposit
-    const transactionCustomerId = typeof window != "undefined" ? localStorage.getItem("customerId") : null
-    if (!transactionCustomerId) {
+    if (!customerId) {
       toast("Customer ID tidak ditemukan untuk transaksi ini.")
       return
     }
-    const payload = { reference_number: refNum, customer_id: transactionCustomerId }
+    const payload = { reference_number: refNum, customer_id: customerId }
     performAction(apiService.done(payload), "Transaksi telah selesai.")
   }
 
   // --- FUTURE/PLACEHOLDER ACTIONS ---
   const handleTrackProduct = () => {
-    const idPayload = role === "customer" ? { customer_id: customerId || "" } : { shop_id: shopId || "" }
-    performAction(apiService.track(refNum, idPayload), "Melacak produk...")
-    toast("Fitur 'Lacak Produk' sedang dalam pengembangan.")
+    localStorage.setItem('seller_refference_number',transactionData.transaction_detail.reference_number)
+    router.push('/dashboard-seller/transaction-history/track-order');
   }
 
   const handleBuyProduct = () => {

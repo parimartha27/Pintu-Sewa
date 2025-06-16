@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { transactionDetailBaseUrl } from "@/types/globalVar";
+import { usePathname } from "next/navigation";
+
 
 interface ShippingFlow {
   process_date: string;
@@ -28,11 +30,23 @@ interface TrackingInfo {
 }
 
 export default function TrackPackage() {
+  const pathname = usePathname();
+
+  const isTransactionHistory = pathname.includes("transaction-history");
+  
   const [refNumber, setRefNumber] = useState<string | null>(
     typeof window !== "undefined"
       ? localStorage.getItem("reference_number")
       : null
   );
+
+    const [refNumberSeller, setRefNumberSeller] = useState<string | null>(
+    typeof window !== "undefined"
+      ? localStorage.getItem("seller_refference_number")
+      : null
+  );
+
+
   const { customerId } = useAuth();
   const [trackingData, setTrackingData] = useState<TrackingInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,12 +55,16 @@ export default function TrackPackage() {
   useEffect(() => {
     const fetchTrackingDetails = async () => {
       try {
-        console.log("Ref Number : " + refNumber);
-        if (!refNumber) {
+        const refference_number = isTransactionHistory ? refNumberSeller : refNumber;
+        
+        console.log("Ref Number : " + refference_number);
+        if (!refference_number) {
           throw new Error("Reference number or customer ID not found");
         }
+        const role = isTransactionHistory ? "Seller" : "Customer";
+
         const response = await axios.get(
-          `${transactionDetailBaseUrl}/shipping/${refNumber}`
+          `${transactionDetailBaseUrl}/shipping/${refference_number}/${role}`
         );
         console.log(response);
         const result = response.data.output_schema;
