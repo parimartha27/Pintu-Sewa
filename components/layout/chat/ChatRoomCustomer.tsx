@@ -86,7 +86,7 @@ const ChatRoomLayout = ({ item }: ChatRoomProps) => {
           </div>
         ))
       )}
-      <ChatFooter headerChat={item} />
+      <ChatFooter headerChat={item.id} />
     </div>
   )
 }
