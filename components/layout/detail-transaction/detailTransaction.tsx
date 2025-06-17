@@ -493,7 +493,9 @@ export function TransactionDetailContent({
             <div className="flex justify-between">
               <span className="text-gray-600">Metode Pembayaran</span>
               <span className="font-medium">
-                {payment_detail.payment_method}
+                {payment_detail.payment_method === "Pintu_Sewa_Wallet"
+  ? "Pintu Sewa Wallet"
+  : payment_detail.payment_method}
               </span>
             </div>
             <div className="flex justify-between">
