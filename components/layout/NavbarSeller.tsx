@@ -10,16 +10,34 @@ const NavigationBarSeller: React.FC = () => {
 
   const [shopName, setShopName] = useState("Shop Name")
   const [shopImage, setShopImage] = useState(defaultImage)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const name = localStorage.getItem("shopName")
-      const image = localStorage.getItem("shopImage")
+    const name = localStorage.getItem("shopName")
+    const image = localStorage.getItem("shopImage")
 
-      if (name) setShopName(name)
-      if (image) setShopImage(image)
-    }
+    if (name) setShopName(name)
+    if (image) setShopImage(image)
+    setIsMounted(true)
   }, [])
+
+  if (!isMounted) {
+    // ✅ Skeleton Loading
+    return (
+      <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>
+        <div className='h-[24px] bg-color-primaryDark w-full'></div>
+        <div className='flex h-24 items-center justify-between px-4 md:px-10 animate-pulse'>
+          <div className='ml-8 w-[150px] h-[50px] bg-gray-200 rounded'></div>
+          <div className='flex items-center gap-4'>
+            <div className='hidden md:block text-right'>
+              <div className='w-[80px] h-[14px] bg-gray-200 rounded mb-1'></div>
+            </div>
+            <div className='w-[50px] h-[50px] rounded-full bg-gray-200'></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className='sticky top-0 z-50 w-full bg-white border-b border-gray-200'>

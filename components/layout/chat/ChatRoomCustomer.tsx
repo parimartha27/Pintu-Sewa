@@ -1,79 +1,73 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { chatBaseUrl } from "@/types/globalVar";
-import ChatFooter from "@/components/fragments/chat/ChatFooter";
-import ChatHeader from "@/components/fragments/chat/ChatHeader";
-import OthersChatBox from "@/components/fragments/chat/OthersChatBox";
-import SelfChatBox from "@/components/fragments/chat/SelfChatBox";
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { chatBaseUrl } from "@/types/globalVar"
+import ChatFooter from "@/components/fragments/chat/ChatFooter"
+import ChatHeader from "@/components/fragments/chat/ChatHeader"
+import OthersChatBox from "@/components/fragments/chat/OthersChatBox"
+import SelfChatBox from "@/components/fragments/chat/SelfChatBox"
 
 interface ChatItem {
-  id: string;
-  name: string;
-  image: string;
-  customer_id: string;
-  shop_id: string;
+  id: string
+  name: string
+  image: string
+  customer_id: string
+  shop_id: string
 }
 
 interface ChatMessage {
-  message: string;
-  sender_type: string;
-  time: string;
-  date: string;
+  message: string
+  sender_type: string
+  time: string
+  date: string
 }
 
 interface GrupChatMessage {
-  date: string;
-  messages: ChatMessage[];
+  date: string
+  messages: ChatMessage[]
 }
 
 interface ChatRoomProps {
-  item: ChatItem;
+  item: ChatItem
 }
 
 const ChatRoomLayout = ({ item }: ChatRoomProps) => {
-  const [chatGroups, setChatGroups] = useState<GrupChatMessage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [chatGroups, setChatGroups] = useState<GrupChatMessage[]>([])
+  const [loading, setLoading] = useState(true)
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(
-        `${chatBaseUrl}/view-roomchat/${item.id}`
-      );
-      setChatGroups(
-        Array.isArray(response.data.output_schema)
-          ? response.data.output_schema
-          : []
-      );
+      const response = await axios.get(`${chatBaseUrl}/view-roomchat/${item.id}`)
+      setChatGroups(Array.isArray(response.data.output_schema) ? response.data.output_schema : [])
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchMessages();
-    // const interval = setInterval(() => {
-    //   fetchMessages();
-    // }, 500); // polling every 5 seconds
+    fetchMessages()
+    const interval = setInterval(() => {
+      fetchMessages()
+    }, 500) // polling every 5 seconds
 
-    // return () => clearInterval(interval);
-  }, [item.id]);
+    return () => clearInterval(interval)
+  }, [item.id])
 
   return (
-    <div className="w-full justify-between lg:w-full flex flex-col border-l-[1px] border-[#D9D9D9] border-opacity-70">
+    <div className='w-full justify-between lg:w-full flex flex-col border-l-[1px] border-[#D9D9D9] border-opacity-70'>
       <ChatHeader detailHeader={item} />
       {loading ? (
-        <p className="text-center text-gray-500">Loading messages...</p>
+        <p className='text-center text-gray-500'>Loading messages...</p>
       ) : chatGroups.length === 0 ? (
-        <p className="text-center text-gray-400 italic">Tidak ada message</p>
+        <p className='text-center text-gray-400 italic'>Tidak ada message</p>
       ) : (
         chatGroups.map((group) => (
           <div
             key={group.date}
-            className="flex flex-col pt-7 px-6 space-y-6 max-h-[450px] overflow-y-auto hide-scrollbar"
+            className='flex flex-col pt-7 px-6 space-y-6 max-h-[450px] overflow-y-auto hide-scrollbar'
           >
-            <h3 className="text-color-primary text-center">{group.date}</h3>
+            <h3 className='text-color-primary text-center'>{group.date}</h3>
             {group.messages.map((msg, index) =>
               msg.sender_type.toLowerCase() === "customer" ? (
                 <SelfChatBox
@@ -94,7 +88,7 @@ const ChatRoomLayout = ({ item }: ChatRoomProps) => {
       )}
       <ChatFooter headerChat={item} />
     </div>
-  );
-};
+  )
+}
 
-export default ChatRoomLayout;
+export default ChatRoomLayout

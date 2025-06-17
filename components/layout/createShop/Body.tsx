@@ -134,7 +134,7 @@ const CreateShopBody = () => {
       if (response.data) {
         localStorage.setItem("shopId", response.data.output_schema.id)
         localStorage.setItem("shopName", response.data.output_schema.name)
-        localStorage.setItem("shopImage", defaultImage)
+        localStorage.setItem("shopImage", response.data.output_schema.image)
         setAlertState({
           isOpen: true,
           message: "Toko berhasil dibuat",
