@@ -59,14 +59,17 @@ const WalletSeller = () => {
     message: "",
     isWrong: true,
   })
+  const defaultImage = "https://res.cloudinary.com/dtizgexle/image/upload/v1749995104/logoTOko_fshgim.jpg"
 
   const fetchShopId = async () => {
     try {
       const response = await axios.get(`${shopBaseUrl}/get-shop/${customerId}`)
       if (response.data.error_schema.error_code === "PS-00-000") {
+        const name = response.data.output_schema.shop_name
+        const image = response.data.output_schema.shop_image
         localStorage.setItem("shopId", response.data.output_schema.shop_id)
-        localStorage.setItem("shopName", response.data.output_schema.shop_name)
-        localStorage.setItem("shopImage", response.data.output_schema.shop_image)
+        localStorage.setItem("shopName", name)
+        localStorage.setItem("shopImage", image ? image : defaultImage)
         setShopId(response.data.output_schema.shop_id)
       } else if (response.data.error_schema.error_code === "PS-00-002") {
         router.push("/create-shop")

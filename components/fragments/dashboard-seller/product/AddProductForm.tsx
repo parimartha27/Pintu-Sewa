@@ -39,7 +39,7 @@ interface ProductFormData {
   }
   minimumRentalDuration: number
   rentToBuy: {
-    is_rnb: boolean
+    isRnb: boolean
     buy_price: number
   }
 }
@@ -99,14 +99,14 @@ export default function AddProductForm() {
       },
       minimumRentalDuration: 1,
       rentToBuy: {
-        is_rnb: false,
+        isRnb: false,
         buy_price: 0,
       },
     },
   })
 
   const watchRentalOptions = useWatch({ control, name: "rentalOptions" })
-  const watchRentToBuy = useWatch({ control, name: "rentToBuy.is_rnb" })
+  const watchRentToBuy = useWatch({ control, name: "rentToBuy.isRnb" })
 
   const calculateRentalType = () => {
     let type = 0
@@ -154,7 +154,7 @@ export default function AddProductForm() {
     formData.append("name", data.name)
     formData.append("category", data.category)
     formData.append("rentCategory", String(calculateRentalType()))
-    formData.append("is_rnb", String(data.rentToBuy.is_rnb))
+    formData.append("isRnb", String(data.rentToBuy.isRnb))
     formData.append("weight", String(data.dimensions.weight))
     formData.append("height", String(data.dimensions.height))
     formData.append("width", String(data.dimensions.width))
@@ -169,7 +169,7 @@ export default function AddProductForm() {
     if (watchRentalOptions.daily) formData.append("dailyPrice", String(data.rentalOptions.dailyPrice))
     if (watchRentalOptions.weekly) formData.append("weeklyPrice", String(data.rentalOptions.weeklyPrice))
     if (watchRentalOptions.monthly) formData.append("monthlyPrice", String(data.rentalOptions.monthlyPrice))
-    if (data.rentToBuy.is_rnb) formData.append("buyPrice", String(data.rentToBuy.buy_price))
+    if (data.rentToBuy.isRnb) formData.append("buyPrice", String(data.rentToBuy.buy_price))
 
     formData.append("image", imageFile)
 
@@ -614,7 +614,7 @@ export default function AddProductForm() {
             <Label className='font-medium'>Rent to Buy</Label>
             <div className='text-sm text-gray-500 mb-2'>Aktifkan jika penyewa boleh membeli produk ini setelah masa sewa.</div>
             <Controller
-              name='rentToBuy.is_rnb'
+              name='rentToBuy.isRnb'
               control={control}
               render={({ field }) => (
                 <div className='flex items-center space-x-4 mt-2'>
