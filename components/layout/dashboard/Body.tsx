@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/auth/useAuth";
 
 
 const DashboardBody = () => {
-  const { data: session } = useSession();
+
   const [isClient, setIsClient] = useState(false);
 
   const [mostRentedProducts, setMostRentedProducts] = useState<
@@ -37,7 +37,7 @@ const DashboardBody = () => {
 
   const { customerId, token } = useAuth();
 
-  const isLoggedIn = isClient && (!!session || !!token);
+  const isLoggedIn = isClient && (customerId && token);
 
   useEffect(() => {
     setIsClient(true);
