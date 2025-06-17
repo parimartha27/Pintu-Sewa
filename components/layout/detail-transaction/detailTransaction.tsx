@@ -26,6 +26,7 @@ interface TransactionResponse {
     shipping_address: string
     shipping_partner: string
     shipping_code: string | null
+    return_code: string
   }
   product_details: Array<{
     order_id: string
@@ -66,7 +67,7 @@ type ShippingPayload = { reference_number: string; shipping_code: string }
 type ReturnPayload = { reference_number: string; return_code: string }
 type BasicPayload = { reference_number: string }
 type DonePayload = { reference_number: string; customer_id: string }
-type CancelPayload = { reference_number: string; customer_id: string }
+type CancelPayload = { reference_number: string }
 
 const handleApiCall = async (request: Promise<any>) => {
   const response = await request
@@ -170,12 +171,8 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
   }
 
   const handleCancelTransaction = () => {
-    const transactionCustomerId = typeof window != "undefined" ? localStorage.getItem("customerId") : null
-    if (!transactionCustomerId) {
-      toast("Customer ID tidak ditemukan untuk transaksi ini.")
-      return
-    }
-    const payload = { reference_number: refNum, customer_id: transactionCustomerId }
+    const payload = { reference_number: refNum }
+    console.log(payload.reference_number)
     performAction(apiService.cancel(payload), "Transaksi telah dibatalkan.")
   }
 
@@ -192,7 +189,12 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
   // --- FUTURE/PLACEHOLDER ACTIONS ---
   const handleTrackProduct = () => {
     localStorage.setItem("seller_refference_number", transactionData.transaction_detail.reference_number)
-    router.push("/dashboard-seller/transaction-history/track-order")
+
+    if (customerId) {
+      router.push("/order-history/lacak-produk")
+    } else {
+      router.push("/dashboard-seller/transaction-history/track-order")
+    }
   }
 
   const handleBuyProduct = () => {
@@ -250,6 +252,12 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
                 <div className='flex justify-between'>
                   <p className='text-sm text-primary'>Kode Pengiriman</p>
                   <p className='font-medium'>{transaction_detail.shipping_code}</p>
+                </div>
+              )}
+              {transaction_detail.return_code && (
+                <div className='flex justify-between'>
+                  <p className='text-sm text-primary'>Kode Pengembalian</p>
+                  <p className='font-medium'>{transaction_detail.return_code}</p>
                 </div>
               )}
             </div>
@@ -368,51 +376,99 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
       )}
 
       {/* === CUSTOMER VIEW === */}
-      {isCustomer && status === "Belum Dibayar" && <Button onClick={handlePayment}>Bayar Sekarang</Button>}
+      {isCustomer && status === "Belum Dibayar" && (
+        <Button
+          className='bg-custom-gradient-tr'
+          onClick={handlePayment}
+        >
+          Bayar Sekarang
+        </Button>
+      )}
       {isCustomer && status === "Dikirim" && (
         <div className='flex gap-2'>
-          <Button onClick={handleReceiveItem}>Barang Sudah Diterima</Button>
+          <Button
+            className='bg-custom-gradient-tr'
+            onClick={handleReceiveItem}
+          >
+            Barang Diterima
+          </Button>
           <Button
             onClick={handleTrackProduct}
-            variant='outline'
+            className='border-2 border-color-primaryDark bg-white text-color-primaryDark
+             hover:bg-slate-300 '
           >
-            Lacak Transaksi
+            Lacak Produk
           </Button>
         </div>
       )}
       {isCustomer && status === "Sedang Disewa" && !showReturnForm && (
         <div className='flex gap-2'>
-          <Button onClick={() => setShowReturnForm(true)}>Kembalikan Barang</Button>
+          <Button
+            className='bg-custom-gradient-tr'
+            onClick={() => setShowReturnForm(true)}
+          >
+            Kembalikan Barang
+          </Button>
           <Button
             onClick={handleBuyProduct}
-            variant='outline'
+            className='border-2 border-color-primaryDark bg-white text-color-primaryDark
+             hover:bg-slate-300 '
           >
             Beli Barang
           </Button>
         </div>
       )}
-      {isCustomer && status === "Selesai" && <Button onClick={handleSubmitRating}>Beri Rating</Button>}
+      {isCustomer && status === "Selesai" && (
+        <Button
+          className='bg-custom-circle-gradient-br'
+          onClick={handleSubmitRating}
+        >
+          Beri Rating
+        </Button>
+      )}
 
       {/* === SELLER VIEW === */}
       {isSeller && status === "Diproses" && !showShippingForm && (
         <div className='flex gap-2'>
-          <Button onClick={() => setShowShippingForm(true)}>Kirim Pesanan</Button>
+          <Button
+            onClick={() => setShowShippingForm(true)}
+            className='bg-custom-gradient-tr'
+          >
+            Kirim Pesanan
+          </Button>
           <Button
             onClick={handleCancelTransaction}
-            variant='destructive'
+            className='border-2 border-red-600 bg-white text-red-800 outline-none hover:bg-red-600 hover:text-white'
           >
             Batalkan Pesanan
           </Button>
         </div>
       )}
-      {isSeller && (status === "Dikirim" || status === "Dikembalikan") && <Button onClick={handleTrackProduct}>Lacak Produk</Button>}
-      {isSeller && status === "Dikembalikan" && (
+      {isSeller && status === "Dikirim" && (
         <Button
-          onClick={handleDoneTransaction}
-          className='mt-2'
+          className='bg-custom-gradient-tr'
+          onClick={handleTrackProduct}
         >
-          Konfirmasi Barang Diterima & Kembalikan Deposit
+          Lacak Produk
         </Button>
+      )}
+      {isSeller && status === "Dikembalikan" && (
+        <div className='flex-row space-x-4'>
+          <Button
+            onClick={handleDoneTransaction}
+            className='bg-custom-gradient-tr'
+          >
+            Barang Diterima
+          </Button>
+
+          <Button
+            className='border-2 border-color-primaryDark bg-white text-color-primaryDark
+             hover:bg-slate-300 '
+            onClick={handleTrackProduct}
+          >
+            Lacak Produk
+          </Button>
+        </div>
       )}
 
       {/* === CONDITIONAL FORMS === */}
@@ -431,12 +487,17 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
           <div className='flex gap-2 justify-end'>
             <Button
               type='button'
-              variant='ghost'
+              className='border-2 border-red-600 bg-white text-red-800 outline-none hover:bg-red-600 hover:text-white'
               onClick={() => setShowReturnForm(false)}
             >
               Batal
             </Button>
-            <Button type='submit'>Submit</Button>
+            <Button
+              className='bg-custom-gradient-tr'
+              type='submit'
+            >
+              Submit
+            </Button>
           </div>
         </form>
       )}
@@ -456,12 +517,17 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
           <div className='flex gap-2 justify-end'>
             <Button
               type='button'
-              variant='ghost'
+              className='border-2 border-red-600 bg-white text-red-800 outline-none hover:bg-red-600 hover:text-white'
               onClick={() => setShowShippingForm(false)}
             >
               Batal
             </Button>
-            <Button type='submit'>Submit</Button>
+            <Button
+              className='bg-custom-gradient-tr'
+              type='submit'
+            >
+              Submit
+            </Button>
           </div>
         </form>
       )}

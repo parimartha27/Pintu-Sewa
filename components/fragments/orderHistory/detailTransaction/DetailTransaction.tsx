@@ -44,6 +44,7 @@ interface TransactionDetail {
   shipping_address: string
   shipping_partner: string
   shipping_code: string | null
+  return_code: string
 }
 
 interface PaymentDetail {
@@ -255,6 +256,13 @@ export default function TransactionDetail() {
                   <div className='flex justify-between'>
                     <p className='text-sm text-primary'>Kode Pengiriman</p>
                     <p className='font-medium'>{transaction_detail.shipping_code}</p>
+                  </div>
+                )}
+
+                {transaction_detail.return_code && (
+                  <div className='flex justify-between'>
+                    <p className='text-sm text-primary'>Kode Pengembalian</p>
+                    <p className='font-medium'>{transaction_detail.return_code}</p>
                   </div>
                 )}
               </div>

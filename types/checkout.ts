@@ -41,7 +41,7 @@ export interface RentedItemProps {
   quantity: number;
   available_to_rent: boolean;
   image:string
-  subtotal_product_price: number;
+  sub_total_price: number;
 }
 
 export interface checkoutFromCartResponseProps {
