@@ -12,11 +12,13 @@ const NavigationBarSeller: React.FC = () => {
   const [shopImage, setShopImage] = useState(defaultImage)
 
   useEffect(() => {
-    const name = localStorage.getItem("shopName")
-    const image = localStorage.getItem("shopImage")
+    if (typeof window !== "undefined") {
+      const name = localStorage.getItem("shopName")
+      const image = localStorage.getItem("shopImage")
 
-    if (name) setShopName(name)
-    if (image) setShopImage(image)
+      if (name) setShopName(name)
+      if (image) setShopImage(image)
+    }
   }, [])
 
   return (

@@ -333,7 +333,7 @@ export default function AddProductForm() {
             </Label>
             <Input
               id='stock'
-              type='number'
+              type='numeric'
               placeholder='1'
               {...register("stock", { required: "Stok wajib diisi", valueAsNumber: true, min: { value: 1, message: "Stok minimal 1" } })}
             />
@@ -348,7 +348,7 @@ export default function AddProductForm() {
                 <Label htmlFor='length'>Panjang (cm)</Label>
                 <Input
                   id='length'
-                  type='number'
+                  type='numeric'
                   placeholder='0'
                   {...register("dimensions.length", { required: "Wajib diisi", valueAsNumber: true, min: { value: 1, message: "Min 1" } })}
                 />
@@ -358,7 +358,7 @@ export default function AddProductForm() {
                 <Label htmlFor='width'>Lebar (cm)</Label>
                 <Input
                   id='width'
-                  type='number'
+                  type='numeric'
                   placeholder='0'
                   {...register("dimensions.width", { required: "Wajib diisi", valueAsNumber: true, min: { value: 1, message: "Min 1" } })}
                 />
@@ -368,7 +368,7 @@ export default function AddProductForm() {
                 <Label htmlFor='height'>Tinggi (cm)</Label>
                 <Input
                   id='height'
-                  type='number'
+                  type='numeric'
                   placeholder='0'
                   {...register("dimensions.height", { required: "Wajib diisi", valueAsNumber: true, min: { value: 1, message: "Min 1" } })}
                 />
@@ -378,7 +378,7 @@ export default function AddProductForm() {
                 <Label htmlFor='weight'>Berat (gr)</Label>
                 <Input
                   id='weight'
-                  type='number'
+                  type='numeric'
                   placeholder='0'
                   {...register("dimensions.weight", { required: "Wajib diisi", valueAsNumber: true, min: { value: 1, message: "Min 1" } })}
                 />
