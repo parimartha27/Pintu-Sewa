@@ -10,8 +10,8 @@ import { fetchMostRentedProducts, fetchNearCustomerProducts, fetchRecommendedPro
 import { useAuth } from "@/hooks/auth/useAuth"
 
 const DashboardBody = () => {
-  const { data: session } = useSession()
-  const [isClient, setIsClient] = useState(false)
+
+  const [isClient, setIsClient] = useState(false);
 
   const [mostRentedProducts, setMostRentedProducts] = useState<ProductCardProps[]>([])
   const [nearCustomerProducts, setNearCustomerProducts] = useState<ProductCardProps[]>([])
@@ -26,7 +26,7 @@ const DashboardBody = () => {
 
   const { customerId, token } = useAuth()
 
-  const isLoggedIn = isClient && (!!session || !!token)
+  const isLoggedIn = isClient && (customerId && token);
 
   useEffect(() => {
     setIsClient(true)

@@ -1,9 +1,3 @@
-Auth: 
-- Backend bagi algoritma buat jwt nya, buat gua validasi pakai keynya aja di middleware
-- setiap hit api cek apakah jwt expired, jika ya maka hit api refresh token, set token di cookies
-- kalo log out hapus refresh token
-- refresh token expired, user harus login ulang
-
 Homepage
 - Ngerubah Fatching Image -> yang tadinya ke unsplash sekarang ke cloudinary ( PAR )
 - Input Satu Satu Barang ( PAR )
@@ -13,7 +7,7 @@ Homepage
 - Kosistensi Bahasa Kategori ( Bahasa Indonesia Semua ) (MAT) -> DONE
 - Card Product kalau Rattingnya kosong maka rating tidak perlu ditampilkan (MAT) -> DONE
 
-Login -> Ganti Passwordnya gk bisa ( MAT )
+Login -> Ganti Passwordnya gk bisa ( MAT ) -> DONE
 
 Footer : 
 Tentang Pintu Sewa - Biodata kita (PAR)
@@ -33,7 +27,7 @@ Max price min price fixing (MAT) -> DONE
 Benerin Pageable Search ( INI BARENG BARENG )
 
 Forgot Password : 
-Tambahin OTP ( MAT )
+Tambahin OTP ( MAT ) -> DONE
 
 Wallet : 
 Bagian methode pembayaran disamakan dengan checkout ( YAN )
@@ -70,7 +64,7 @@ Waktu checkout yang di cart jangan hapus ( YAN )
 Register :
 No Telp -> To Be Confirm ( PAR )
 Syarat dan Ktentuan - dibikin hyperlink ke Syarat dan Ketentuan Page ( MAT ) -> DONE
-Google Oauth ( MAT ) -> MINTA BACKEND KIRIM STATUS UNTUK LEMPAR DIA KEMANA, DAN ENDPOINT BUAT BALIKIN PROFILE PICTURE DAN USERNAMENYA KALO UDAH REGISTER
+Google Oauth ( MAT ) -> (DONE)
 Validasi kalau dapat status REGISTERED ke halaman daftar ( MAT ) -> DONE
 Validasi kalau dapat status VERIFY_OTP ke halaman send OTP ( MAT ) -> DONE
 Backend harus kirim status tambahin penjagaan ( YAN )

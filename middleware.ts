@@ -39,6 +39,7 @@ export function middleware(request: NextRequest) {
   const cookies = request.cookies
   const customerId = cookies.get("customerId")?.value
   const token = cookies.get("token")?.value
+  
   const isLoggedIn = Boolean(customerId && token)
 
   const publicRoutes = [
