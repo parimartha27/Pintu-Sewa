@@ -12,11 +12,15 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { formatCurrency } from "@/lib/utils"
-import { transactionBaseUrl, reviewBaseUrl, trackingBaseUrl, transactionDetailBaseUrl } from "@/types/globalVar"
+import { transactionBaseUrl, reviewBaseUrl, trackingBaseUrl, checkoutBaseUrl } from "@/types/globalVar"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { ReviewDialog } from "@/components/layout/detail-transaction/reviewDialog"
 import { StarRating } from "@/components/ui/star-rating"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import MetodePembayaranFragments from "@/components/fragments/checkout/MetodePembayaran"
+import { BuyProductDialog } from "@/components/layout/detail-transaction/buyDialog"
 
 interface TransactionResponse {
   transaction_detail: {
@@ -60,8 +64,14 @@ interface TransactionDetailContentProps {
   reFetchData: () => void
 }
 
+interface CheckPaymentAmountResponse {
+  product_name: string
+  amount_to_pay: number
+}
+
 const api = axios.create({ baseURL: transactionBaseUrl })
 const reviewApi = axios.create({ baseURL: reviewBaseUrl })
+const checkoutApi = axios.create({ baseURL: checkoutBaseUrl })
 
 type PaymentPayload = { reference_numbers: string[]; payment_method: string; customer_id: string; amount: number }
 type ShippingPayload = { reference_number: string; shipping_code: string }
@@ -90,10 +100,10 @@ const apiService = {
     console.log("TODO: Implement tracking API call", `${trackingBaseUrl}/lacak-produk/${refNum}`, idPayload)
     return Promise.resolve()
   },
-  buy: (payload: { reference_number: string; transaction_id: string }) => {
-    console.log("TODO: Implement buy product API call", `${transactionBaseUrl}/buy-product`, payload)
-    return Promise.resolve()
-  },
+  checkPaymentAmount: (payload: { customer_id: string; product_id: string; reference_number: string; transaction_id: string }) => handleApiCall(checkoutApi.post("/check-payment-amount", payload)),
+
+  buyProduct: (payload: { customer_id: string; product_id: string; reference_number: string; transaction_id: string; amount_payment: number; payment_method: string }) => handleApiCall(checkoutApi.post("/buy-product", payload)),
+
   addReview: (payload: FormData) => {
     return handleApiCall(
       reviewApi.post("/add", payload, {
@@ -117,8 +127,9 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
 
   const [returnCode, setReturnCode] = useState<string>("")
   const [shippingCode, setShippingCode] = useState<string>("")
-  const [review, setReview] = useState<string>("")
-  const [rating, setRating] = useState<number>(0)
+  const [isBuyProductDialogOpen, setBuyProductDialogOpen] = useState<boolean>(false)
+  const [buyProductInfo, setBuyProductInfo] = useState<CheckPaymentAmountResponse | null>(null)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
 
   const { transaction_detail, product_details, payment_detail, shop_detail } = transactionData
   const status = transaction_detail.status
@@ -196,10 +207,57 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     }
   }
 
-  const handleBuyProduct = () => {
-    const payload = { reference_number: refNum, transaction_id: product_details[0].order_id }
-    performAction(apiService.buy(payload), "Proses pembelian...")
-    toast("Fitur 'Beli Barang' sedang dalam pengembangan.")
+  const handleBuyProduct = async () => {
+    if (!customerId) {
+      toast.error("Customer ID tidak ditemukan, silakan login ulang.")
+      return
+    }
+
+    setLoadingAction(true)
+    try {
+      const payload = {
+        customer_id: customerId,
+        product_id: product_details[0].product_id,
+        reference_number: refNum,
+        transaction_id: product_details[0].order_id,
+      }
+
+      const response = await apiService.checkPaymentAmount(payload)
+
+      console.log("ini data", response)
+      const data: CheckPaymentAmountResponse = response.output_schema
+
+      setBuyProductInfo({
+        product_name: data.product_name,
+        amount_to_pay: data.amount_to_pay,
+      })
+      setBuyProductDialogOpen(true)
+    } catch (error) {
+      const err = error as AxiosError<{ error_schema: { error_message: string } }>
+      const errorMessage = err.response?.data?.error_schema?.error_message || "Gagal mengambil detail pembelian."
+      toast.error(errorMessage)
+    } finally {
+      setLoadingAction(false)
+    }
+  }
+
+  const handleSubmitBuyProduct = () => {
+    if (!customerId || !buyProductInfo) return
+
+    const payload = {
+      customer_id: customerId,
+      product_id: product_details[0].product_id,
+      reference_number: refNum,
+      transaction_id: product_details[0].order_id,
+      amount_payment: buyProductInfo.amount_to_pay,
+      payment_method: selectedPaymentMethod,
+    }
+
+    performAction(apiService.buyProduct(payload), "Pembelian berhasil! Transaksi Anda akan diperbarui.").then(() => {
+      setBuyProductDialogOpen(false)
+      setBuyProductInfo(null)
+      setSelectedPaymentMethod("")
+    })
   }
 
   const handleSubmitRating = (payload: { rating: number; comment: string; image?: File }) => {
@@ -423,9 +481,11 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
           </Button>
           <Button
             onClick={handleBuyProduct}
+            disabled={loadingAction}
             className='border-2 border-color-primaryDark bg-white text-color-primaryDark
-             hover:bg-slate-300 '
+                   hover:bg-slate-300 '
           >
+            {loadingAction && !isBuyProductDialogOpen ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : null}
             Beli Barang
           </Button>
         </div>
@@ -552,6 +612,15 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
           </div>
         </form>
       )}
+      <BuyProductDialog
+        open={isBuyProductDialogOpen}
+        onOpenChange={setBuyProductDialogOpen}
+        productInfo={buyProductInfo}
+        isLoading={loadingAction}
+        selectedMethod={selectedPaymentMethod}
+        onSelectMethod={setSelectedPaymentMethod}
+        onSubmit={handleSubmitBuyProduct}
+      />
     </div>
   )
 }

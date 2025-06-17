@@ -95,7 +95,7 @@ export default function CustomerTransactionDetailPage() {
       <TransactionDetailContent
         transactionData={transactionData}
         role='customer'
-        reFetchData={fetchTransactionDetail} // Teruskan fungsi re-fetch
+        reFetchData={fetchTransactionDetail} 
       />
     )
   }
