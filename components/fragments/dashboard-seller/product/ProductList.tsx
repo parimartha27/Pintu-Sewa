@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
+import { productBaseUrl } from "@/types/globalVar"
 
 interface Product {
   id: string
@@ -21,7 +22,7 @@ interface Product {
   weekly_price: number
   monthly_price: number
   stock: number
-  status: "AVAILABLE" | "UNAVAILABLE" | "AVAIABLE"
+  status: string
   main_image: string
   rating: number
   rnb: boolean
@@ -54,7 +55,7 @@ function formatCurrency(amount: number): string {
 }
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/product",
+  baseURL: productBaseUrl,
   headers: { "Content-Type": "application/json" },
 })
 
@@ -96,7 +97,7 @@ export default function ProductDashboardPage() {
   const fetchProducts = useCallback(async () => {
     setIsLoading(true)
     try {
-      const result = await getProductsByShop(shopId, filters)
+      const result = await getProductsByShop(filters)
       setData(result)
     } catch (error) {
       console.error("Fetch error:", error)
@@ -141,9 +142,9 @@ export default function ProductDashboardPage() {
           </div>
           <Button
             onClick={() => router.push("/dashboard-seller/product/add")}
-            className='bg-primary-blue hover:bg-blue-900 text-white'
+            className='bg-custom-gradient-tr hover:bg-blue-900 text-white'
           >
-            <PlusCircle className='mr-2 h-4 w-4' />
+            <PlusCircle className='mr-2 h-4 w-4 bg' />
             Tambah Produk
           </Button>
         </div>
@@ -197,14 +198,7 @@ export default function ProductDashboardPage() {
                         <div>
                           <div className='font-medium text-primary-dark'>{product.name}</div>
                           <div className='text-sm text-gray-500'>{product.category}</div>
-                          {product.rnb && (
-                            <Badge
-                              variant='secondary'
-                              className='mt-1'
-                            >
-                              RnB
-                            </Badge>
-                          )}
+                          {product.rnb && <Badge className='mt-1 bg-color-secondary'>RnB</Badge>}
                         </div>
                       </div>
                     </TableCell>
@@ -214,9 +208,8 @@ export default function ProductDashboardPage() {
                     <TableCell className='font-medium'>{product.stock}</TableCell>
                     <TableCell>
                       <Switch
-                        checked={product.status.toUpperCase() === "AVAILABLE"}
-                        disabled
-                        className='data-[state=checked]:bg-primary-blue'
+                        checked={product.status === "AVAILABLE"}
+                        className='data-[state=checked]:bg-color-secondary'
                       />
                     </TableCell>
                     <TableCell>
