@@ -8,16 +8,8 @@ import axios from "axios";
 import { chatBaseUrl } from "@/types/globalVar";
 import { usePathname } from "next/navigation";
 
-interface ChatItem {
-  id: string;
-  name: string;
-  image: string;
-  customer_id: string;
-  shop_id: string;
-}
-
 interface ChatFooterProps {
-  headerChat: ChatItem;
+  headerChat: string;
 }
 
 const ChatFooter = ({ headerChat }: ChatFooterProps) => {
@@ -31,7 +23,7 @@ const ChatFooter = ({ headerChat }: ChatFooterProps) => {
       const payload = {
         message: message,
         sender_type: sender,
-        room_chat_id: headerChat.id,
+        room_chat_id: headerChat,
       };
       const response = await axios.post(`${chatBaseUrl}/send-message`, payload);
       setMessage(""); 
