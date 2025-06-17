@@ -1,12 +1,10 @@
-// components/layout/detail-transaction/detailTransaction.tsx
-
 "use client"
 
 import { useState } from "react"
 import axios, { AxiosError } from "axios"
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingBag, Loader2, Router } from "lucide-react"
+import { ShoppingBag, Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/auth/useAuth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,6 +15,8 @@ import { formatCurrency } from "@/lib/utils"
 import { transactionBaseUrl, reviewBaseUrl, trackingBaseUrl, transactionDetailBaseUrl } from "@/types/globalVar"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { ReviewDialog } from "@/components/layout/detail-transaction/reviewDialog"
+import { StarRating } from "@/components/ui/star-rating"
 
 interface TransactionResponse {
   transaction_detail: {
@@ -61,6 +61,7 @@ interface TransactionDetailContentProps {
 }
 
 const api = axios.create({ baseURL: transactionBaseUrl })
+const reviewApi = axios.create({ baseURL: reviewBaseUrl })
 
 type PaymentPayload = { reference_numbers: string[]; payment_method: string; customer_id: string; amount: number }
 type ShippingPayload = { reference_number: string; shipping_code: string }
@@ -84,33 +85,36 @@ const apiService = {
   return: (payload: ReturnPayload) => handleApiCall(api.patch("/transaction-detail/return-item", payload)),
   done: (payload: DonePayload) => handleApiCall(api.patch("/transaction-detail/done", payload)),
   cancel: (payload: CancelPayload) => handleApiCall(api.patch("/transaction-detail/cancelled", payload)),
-  // [MASA DEPAN] Fungsi placeholder
+
   track: (refNum: string, idPayload: { customer_id?: string; shop_id?: string }) => {
     console.log("TODO: Implement tracking API call", `${trackingBaseUrl}/lacak-produk/${refNum}`, idPayload)
-    return Promise.resolve() // Placeholder
+    return Promise.resolve()
   },
   buy: (payload: { reference_number: string; transaction_id: string }) => {
     console.log("TODO: Implement buy product API call", `${transactionBaseUrl}/buy-product`, payload)
-    return Promise.resolve() // Placeholder
+    return Promise.resolve()
   },
-  rate: (payload: { customer_id: string; reference_number: string; rating: number; description: string }) => {
-    console.log("TODO: Implement rating API call", `${reviewBaseUrl}/add`, payload)
-    return Promise.resolve() // Placeholder
+  addReview: (payload: FormData) => {
+    return handleApiCall(
+      reviewApi.post("/add", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+    )
   },
 }
 
-// --- MAIN COMPONENT ---
 export function TransactionDetailContent({ transactionData, role, reFetchData }: TransactionDetailContentProps) {
   const { customerId } = useAuth()
   const router = useRouter()
   const shopId = typeof window !== "undefined" ? localStorage.getItem("shopId") : null
 
-  // State untuk UI & Form
   const [loadingAction, setLoadingAction] = useState<boolean>(false)
   const [showReturnForm, setShowReturnForm] = useState<boolean>(false)
   const [showShippingForm, setShowShippingForm] = useState<boolean>(false)
+  const [isReviewDialogOpen, setReviewDialogOpen] = useState<boolean>(false)
 
-  // State untuk Form Inputs
   const [returnCode, setReturnCode] = useState<string>("")
   const [shippingCode, setShippingCode] = useState<string>("")
   const [review, setReview] = useState<string>("")
@@ -120,26 +124,24 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
   const status = transaction_detail.status
   const refNum = transaction_detail.reference_number
 
-  // Generic action handler
   const performAction = async (action: Promise<any>, successMessage: string) => {
     setLoadingAction(true)
     try {
       await action
       toast(successMessage)
-      reFetchData() // Muat ulang data untuk status terbaru
+      reFetchData()
     } catch (error) {
       const err = error as AxiosError<{ error_schema: { error_message: string } }>
       const errorMessage = err.response?.data?.error_schema?.error_message || "Gagal melakukan aksi."
       toast(errorMessage)
     } finally {
       setLoadingAction(false)
-      // Reset forms
+      setReviewDialogOpen(false)
       setShowReturnForm(false)
       setShowShippingForm(false)
     }
   }
 
-  // --- CUSTOMER ACTIONS ---
   const handlePayment = () => {
     if (!customerId) return
     const payload: PaymentPayload = {
@@ -162,7 +164,6 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     performAction(apiService.return(payload), "Formulir pengembalian telah dikirim.")
   }
 
-  // --- SELLER ACTIONS ---
   const handleShipItem = (e: React.FormEvent) => {
     e.preventDefault()
     if (!shippingCode) return
@@ -172,7 +173,6 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
 
   const handleCancelTransaction = () => {
     const payload = { reference_number: refNum }
-    console.log(payload.reference_number)
     performAction(apiService.cancel(payload), "Transaksi telah dibatalkan.")
   }
 
@@ -186,7 +186,6 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
     performAction(apiService.done(payload), "Transaksi telah selesai.")
   }
 
-  // --- FUTURE/PLACEHOLDER ACTIONS ---
   const handleTrackProduct = () => {
     localStorage.setItem("seller_refference_number", transactionData.transaction_detail.reference_number)
 
@@ -198,20 +197,33 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
   }
 
   const handleBuyProduct = () => {
-    // Anda perlu `transaction_id`. Asumsikan `order_id` adalah `transaction_id`
     const payload = { reference_number: refNum, transaction_id: product_details[0].order_id }
     performAction(apiService.buy(payload), "Proses pembelian...")
     toast("Fitur 'Beli Barang' sedang dalam pengembangan.")
   }
 
-  const handleSubmitRating = () => {
-    if (!customerId) return
-    const payload = { customer_id: customerId, reference_number: refNum, rating: rating, description: review }
-    performAction(apiService.rate(payload), "Rating telah dikirim...")
-    toast("Fitur Rating sedang dalam pengembangan.")
+  const handleSubmitRating = (payload: { rating: number; comment: string; image?: File }) => {
+    if (!customerId) {
+      toast.error("Customer ID tidak ditemukan, silakan login ulang.")
+      return
+    }
+
+    const formData = new FormData()
+    formData.append("customerId", customerId)
+    formData.append("rating", payload.rating.toString())
+    formData.append("comment", payload.comment)
+
+    product_details.forEach((product) => {
+      formData.append("productIds", product.product_id)
+    })
+
+    if (payload.image) {
+      formData.append("image", payload.image)
+    }
+
+    performAction(apiService.addReview(formData), "Ulasan Anda berhasil dikirim! Terima kasih.")
   }
 
-  // ---- RENDER LOGIC ----
   const isCustomer = role === "customer"
   const isSeller = role === "seller"
 
@@ -419,12 +431,21 @@ export function TransactionDetailContent({ transactionData, role, reFetchData }:
         </div>
       )}
       {isCustomer && status === "Selesai" && (
-        <Button
-          className='bg-custom-circle-gradient-br'
-          onClick={handleSubmitRating}
-        >
-          Beri Rating
-        </Button>
+        <>
+          <Button
+            className='bg-custom-circle-gradient-br'
+            onClick={() => setReviewDialogOpen(true)}
+          >
+            Beri Rating
+          </Button>
+          <ReviewDialog
+            open={isReviewDialogOpen}
+            onOpenChange={setReviewDialogOpen}
+            onSubmit={handleSubmitRating}
+            productNames={product_details.map((p) => p.product_name)}
+            isLoading={loadingAction}
+          />
+        </>
       )}
 
       {/* === SELLER VIEW === */}
