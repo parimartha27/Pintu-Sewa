@@ -6,7 +6,7 @@ import { ErrorSchema } from "@/types/errorSchema"
 
 interface userdataProps {
   email: string
-  // username: string;
+  username: string;
   profilePicture: string
 }
 
@@ -196,7 +196,7 @@ export const useAuthForm = (type?: string) => {
     try {
       console.log("Login with Google")
       const response = await signIn("google", {
-        callbackUrl: "/",
+        callbackUrl: "/oauth-checking",
         redirect: false,
       })
 
@@ -206,7 +206,7 @@ export const useAuthForm = (type?: string) => {
 
         if (session?.user) {
           const userData: userdataProps = {
-            // username: session.user.name || "Guest",
+            username: session.user.name || "Guest",
             email: session.user.email || "",
             profilePicture: session.user.image || "/default-profile.png",
           }
@@ -214,7 +214,7 @@ export const useAuthForm = (type?: string) => {
           //DISINI MINTA ENDPOINT BALIKAN
           await sendOauthData(userData, (response) => {
             if (response.error_schema?.error_message === "SUCCESS") {
-              document.cookie = `userId=${response.output_schema.user_id}; path=/; Secure; SameSite=Lax`
+              document.cookie = `customerId=${response.output_schema.customer_id}; path=/; Secure; SameSite=Lax`
               router.push("/input-biodata")
             }
           })

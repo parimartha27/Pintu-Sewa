@@ -271,7 +271,6 @@ const InputBiodataContent = () => {
                 id='email'
                 type='text'
                 value={email}
-                // [FIX] Menggunakan state untuk properti disabled
                 disabled={isEmailDisabled}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -348,7 +347,7 @@ const InputBiodataContent = () => {
                         type='text'
                         placeholder='Pilih tanggal'
                         value={date ? format(date, "dd MMMM yyyy", { locale: id }) : ""}
-                        readOnly={true}
+                        readonly={true}
                       />
                       <ChevronDown className='h-4 w-4 absolute right-3 top-14 -translate-y-1/2 text-[#73787B] pointer-events-none' />
                     </div>

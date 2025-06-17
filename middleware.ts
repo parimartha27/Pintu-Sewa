@@ -55,7 +55,8 @@ export function middleware(request: NextRequest) {
     "/privacy-policy",
     "/terms-and-conditions",
     "/frequently-asked-questions",
-    "/about"
+    "/about",
+    "/oauth-checking"
   ]
 
   const isPublicRoute =
