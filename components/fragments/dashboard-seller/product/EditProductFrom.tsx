@@ -1,5 +1,3 @@
-// app/dashboard-seller/product/edit/[productId]/page.tsx
-
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
@@ -20,7 +18,6 @@ import { Card } from "@/components/ui/card"
 import Alert from "@/components/layout/Alert"
 import { X, Upload } from "lucide-react"
 
-// Tipe data untuk form, didefinisikan secara manual
 interface EditProductFormData {
   name: string
   category: string
@@ -48,7 +45,6 @@ interface EditProductFormData {
   status: string
 }
 
-// Tipe data dari API GET (snake_case)
 interface ProductDetailApiResponse {
   id: string
   name: string
@@ -67,8 +63,7 @@ interface ProductDetailApiResponse {
   stock: number
   min_rented: number
   status: string
-  image: string // Sesuai info terakhir, ini adalah string
-  // Field lain yang mungkin ada dari backend, seperti buy_price dan deposit
+  image: string
   buy_price?: number
   deposit?: number
 }
