@@ -28,13 +28,13 @@ interface NavbarProps {
 
 const Navbar = ({ type }: NavbarProps) => {
   // const [token] = useState<string>(localStorage.getItem("token") || "");
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const router = useRouter();
   // const [username, setUsername] = useState<string>(
   //   localStorage.getItem("username") || "Guest"
   // );
   const [profileImage, setProfileImage] = useState<string>("");
-  const [, setIsLoading] = useState(true);
+  const [loading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [openOptionMobile, setOpenOptionMobile] = useState(false);
   const popupRef = useRef<HTMLDivElement | null>(null);
@@ -66,6 +66,7 @@ const Navbar = ({ type }: NavbarProps) => {
     } else {
       setProfileImage(Guest.src);
     }
+    setIsLoading(false);
   }, []);
 
   const debouncedSearch = useRef(
@@ -111,34 +112,34 @@ const Navbar = ({ type }: NavbarProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (status !== "loading") {
-      setIsLoading(false);
+  // useEffect(() => {
+  //   if (status !== "loading") {
+  //     setIsLoading(false);
 
-      if (status === "authenticated") {
-        setUsername(session?.user?.name || "Guest");
-        setProfileImage(session?.user?.image || Guest);
-      }
+  //     if (status === "authenticated") {
+  //       setUsername(session?.user?.name || "Guest");
+  //       setProfileImage(session?.user?.image || Guest);
+  //     }
 
-      console.log("token: " + token);
-      if (token && customerId) {
-        const image = localStorage.getItem("image");
-        console.log("ada token: " + token);
-        console.log("ada customerId: " + customerId);
-        // console.log("google image: " + image + " guest " + Guest.src)
+  //     console.log("token: " + token);
+  //     if (token && customerId) {
+  //       const image = localStorage.getItem("image");
+  //       console.log("ada token: " + token);
+  //       console.log("ada customerId: " + customerId);
+  //       // console.log("google image: " + image + " guest " + Guest.src)
 
-        setUsername(localStorage.getItem("username") || "Guest");
+  //       setUsername(localStorage.getItem("username") || "Guest");
 
-        if (image) {
-          console.log("ada image");
-          setProfileImage(image);
-        } else {
-          console.log("tidak ada image");
-          setProfileImage(Guest.src);
-        }
-      }
-    }
-  }, []);
+  //       if (image) {
+  //         console.log("ada image");
+  //         setProfileImage(image);
+  //       } else {
+  //         console.log("tidak ada image");
+  //         setProfileImage(Guest.src);
+  //       }
+  //     }
+  //   }
+  // }, []);
 
   return (
     <div className="flex flex-col w-full sticky top-0 z-50">
@@ -226,7 +227,7 @@ const Navbar = ({ type }: NavbarProps) => {
         </div>
 
         <div className="flex justify-center md:justify-start lg:justify-center items-center lg:ml-0 lg:mr-0 w-1/5 md:w-2/6 lg:w-3/12">
-          {status === "loading" ? (
+          {loading ? (
             <div className="flex items-center gap-4 pr-4">
               <div className="hidden md:flex items-center gap-4">
                 <Skeleton className="hidden xl:block h-[30px] w-[60px] rounded-full ml-5" />
@@ -242,7 +243,7 @@ const Navbar = ({ type }: NavbarProps) => {
                 </div>
               </div>
             </div>
-          ) : session || (token && customerId) ? (
+          ) : (token && customerId) ? (
             /* ================== Sudah login ======================= */
             <>
               <div className="flex min-w-[60px] sm:w-2/5 md:w-2/6 md:max-w-[200px] space-x-3 lg:space-x-1 pr-1 justify-end mt-2 lg:mr-2 md:ml-6 lg:ml-0">

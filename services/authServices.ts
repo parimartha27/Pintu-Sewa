@@ -56,8 +56,11 @@ interface OauthResponse {
   output_schema: {
     email?: string;
     phone_number?: string;
-    user_id?: string;
-    status?: string
+    customer_id?: string;
+    status?: string;
+    token?:string;
+    username?:string;
+    image?:string
   };
 }
 

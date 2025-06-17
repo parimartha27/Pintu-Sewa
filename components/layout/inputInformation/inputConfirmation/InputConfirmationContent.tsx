@@ -48,7 +48,7 @@ const InputConfirmationContentLayout = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return; 
-    console.log("IMAGE LOCAL STORAGE" + localStorage.getItem("image"));
+    console.log("IMAGE LOCAL STORAGE " + localStorage.getItem("image"));
 
     const storedImage = localStorage.getItem("image");
     if (storedImage) {
@@ -83,7 +83,9 @@ const InputConfirmationContentLayout = () => {
   
     if (data.image) {
       try {
+        console.log("data image:" + data.image);
         setImage(dataUrlToFile(data.image, "image"));
+        console.log("image baru diset:" + image);
       } catch (err) {
         console.error("Failed to convert data URL to File:", err);
       }
