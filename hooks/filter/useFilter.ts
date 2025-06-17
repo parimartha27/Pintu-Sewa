@@ -15,6 +15,8 @@ const useFilter = () => {
       currentParams.set(paramName, value);
     }
 
+    console.log(currentParams.toString())
+    currentParams.set('page', '1')
     router.push(`?${currentParams.toString()}`,  { scroll: false });
   };
 
@@ -103,8 +105,9 @@ const handleMultiInputFilter = (params: Record<string, string | null>) => {
     } else {
       currentParams.set(key, value.toString());
     }
+    
   });
-
+  currentParams.set('page', '1')
   const newUrl = `?${currentParams.toString()}`;
   
   router.replace(newUrl,  { scroll: false });
