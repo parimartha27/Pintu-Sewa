@@ -290,7 +290,7 @@ export default function AddProductForm() {
             >
               Foto Produk <span className='text-red-500'>*</span>
             </Label>
-            <div className='text-sm text-gray-500 mb-2'>Format: JPG, PNG. Ukuran Maks: 1MB. Backend hanya menerima 1 foto utama.</div>
+            <div className='text-sm text-gray-500 mb-2'>Format: JPG, PNG. Ukuran Maks: 1MB.</div>
             <div className='mt-2'>
               <div className='border border-dashed border-gray-300 rounded-lg flex items-center justify-center h-48 w-48 relative bg-gray-50'>
                 {imagePreview ? (
