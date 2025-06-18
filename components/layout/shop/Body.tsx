@@ -39,7 +39,7 @@ const ShopLayout = () => {
       setReviewLoading(true);
       const reviewFilter = {
         hasMedia: searcParams.get("hasMedia") || "true",
-        rating: searcParams.get("rating") || "4",
+        rating: searcParams.get("rating") || "5",
         // reviewTopics: searcParams.get("reviewTopics"),
       };
   

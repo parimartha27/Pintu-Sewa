@@ -40,7 +40,7 @@ const Review = () => {
       try {
         const filter = {
           hasMedia: searchParams.get("hasMedia") || "true",
-          rating: searchParams.get("rating") || "4",
+          rating: searchParams.get("rating") || "5",
           // reviewTopics: searchParams.get("reviewTopics") || "kondisi barang",
         };
 
